@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -46,7 +47,7 @@ export default function PaiementPage() {
   async function payer() {
     setLoading(true); setError("");
     try {
-      const res  = await fetch("/api/paiement/initier/", {
+      const res  = await fetch(API_URL + '/api/paiement/initier/", {
         method:  "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body:    JSON.stringify({

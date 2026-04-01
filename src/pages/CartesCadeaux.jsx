@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
@@ -323,7 +324,7 @@ export default function CartesCadeaux() {
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
     try {
-      const res  = await fetch("/api/cadeaux/commander/", {
+      const res  = await fetch(API_URL + '/api/cadeaux/commander/", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify(form),
       });

@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InscriptionForm from "./InscriptionForm";
@@ -43,7 +44,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
     setLoading(true);
     setError("");
     try {
-      const res  = await fetch("/api/auth/login/", {
+      const res  = await fetch(API_URL + '/api/auth/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

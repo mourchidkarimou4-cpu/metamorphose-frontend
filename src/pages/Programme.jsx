@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -44,7 +45,7 @@ function useReveal() {
 function useSiteContent() {
   const [content, setContent] = useState({});
   useEffect(() => {
-    fetch("/api/admin/config/public/")
+    fetch(API_URL + '/api/admin/config/public/")
       .then(r => r.ok ? r.json() : [])
       .then(data => {
         const map = {};

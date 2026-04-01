@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
@@ -61,7 +62,7 @@ export default function CarteScan() {
     const token = localStorage.getItem("mmorphose_token");
     try {
       // D'abord récupérer l'ID de la carte
-      const res = await fetch("/api/cadeaux/admin/liste/", {
+      const res = await fetch(API_URL + '/api/cadeaux/admin/liste/", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const cartes = await res.json();
@@ -88,7 +89,7 @@ export default function CarteScan() {
     setActionLoading(true);
     const token = localStorage.getItem("mmorphose_token");
     try {
-      const res = await fetch("/api/cadeaux/admin/liste/", {
+      const res = await fetch(API_URL + '/api/cadeaux/admin/liste/", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const cartes = await res.json();

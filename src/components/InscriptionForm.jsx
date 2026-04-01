@@ -1,3 +1,4 @@
+import API_URL from '../config.js'
 import { useState } from "react";
 
 /* ================================================================
@@ -138,7 +139,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
     setApiError("");
 
     try {
-      const res = await fetch("/api/contact/", {
+      const res = await fetch(API_URL + '/api/contact/", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({
