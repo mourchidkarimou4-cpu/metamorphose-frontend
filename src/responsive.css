@@ -1,0 +1,95 @@
+/* ================================================================
+   RESPONSIVE GLOBAL — Méta'Morph'Ose
+   ================================================================ */
+
+/* ── BREAKPOINTS
+   Mobile  : < 480px
+   Tablet  : 480px – 768px
+   Desktop : > 768px
+   ================================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── GRILLES RESPONSIVES ─────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Grilles 2 colonnes → 1 colonne */
+  .story-grid,
+  .contact-grid,
+  .valeurs-grid,
+  .faq-grid,
+  .temo-grid,
+  .aa-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Grilles 2 colonnes formules → 1 colonne */
+  .grid-formules {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Nav mobile */
+  .nav-links {
+    display: none !important;
+  }
+
+  /* Dashboard admin sidebar */
+  .admin-layout {
+    flex-direction: column !important;
+  }
+
+  .admin-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding: 12px !important;
+    gap: 6px !important;
+  }
+
+  .admin-sidebar .sidebar-item {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .admin-main {
+    padding: 24px 16px !important;
+  }
+
+  /* Modales */
+  .admin-modal,
+  .modal-box {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 16px !important;
+  }
+
+  /* Tableaux → cartes */
+  .row-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Textes plus petits */
+  h1 { font-size: clamp(1.6rem, 8vw, 2.5rem) !important; }
+  h2 { font-size: clamp(1.3rem, 6vw, 2rem) !important; }
+
+  /* Padding réduit */
+  section { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* Boutons pleine largeur */
+  .btn-group {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .btn-group a,
+  .btn-group button {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+}
