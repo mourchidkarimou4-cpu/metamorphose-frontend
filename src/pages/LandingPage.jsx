@@ -168,7 +168,7 @@ function useSiteContent() {
   const [content, setContent] = useState({});
   const [loaded,  setLoaded]  = useState(false);
   useEffect(() => {
-    fetch(API_URL + '/api/admin/config/public/")
+    fetch(API_URL + '/api/admin/config/public/')
       .then(r => {
         if (!r.ok) throw new Error("API indisponible");
         return r.json();
@@ -1408,7 +1408,7 @@ function ListeAttente({ get }) {
     if (!email.trim()) { setError("Veuillez entrer votre email."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(API_URL + '/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
+      const res = await fetch(API_URL + '/api/liste-attente/', { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue.");
     } catch { setError("Serveur inaccessible."); }

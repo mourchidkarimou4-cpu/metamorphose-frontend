@@ -32,7 +32,7 @@ function useReveal() {
 function useSiteContent() {
   const [content, setContent] = useState({});
   useEffect(() => {
-    fetch(API_URL + '/api/admin/config/public/")
+    fetch(API_URL + '/api/admin/config/public/')
       .then(r => r.ok ? r.json() : [])
       .then(data => {
         const map = {};
@@ -50,7 +50,7 @@ export default function Temoignages() {
   useReveal();
 
   useEffect(() => {
-    fetch(API_URL + '/api/avis/")
+    fetch(API_URL + '/api/avis/')
       .then(r => r.ok ? r.json() : [])
       .then(data => { setTemos(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));

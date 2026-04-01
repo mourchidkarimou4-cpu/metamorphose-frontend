@@ -33,7 +33,7 @@ export default function ResetPassword() {
     if (!email.trim()) { setError1("Veuillez entrer votre email."); return; }
     setLoading1(true); setError1("");
     try {
-      await fetch(API_URL + '/api/auth/reset-password/", {
+      await fetch(API_URL + '/api/auth/reset-password/', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, origin: window.location.origin }),
@@ -49,7 +49,7 @@ export default function ResetPassword() {
     if (password !== confirm)  { setError2("Les mots de passe ne correspondent pas."); return; }
     setLoading2(true); setError2("");
     try {
-      const res = await fetch(API_URL + '/api/auth/reset-confirm/", {
+      const res = await fetch(API_URL + '/api/auth/reset-confirm/', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
