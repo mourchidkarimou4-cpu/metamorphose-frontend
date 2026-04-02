@@ -891,7 +891,7 @@ function ImagesView({ api, toast }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/images/upload/', {
+        const res = await fetch(API_URL + '/api/admin/images/upload/', {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,
@@ -1056,7 +1056,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/cadeaux/admin/liste/', {
+    fetch(API_URL + '/api/cadeaux/admin/liste/', {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => r.json())
@@ -1624,7 +1624,7 @@ function RessourcesAdminView({ api, toast }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/images/upload/', {
+      const res = await fetch(API_URL + '/api/admin/images/upload/', {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -1739,7 +1739,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token");
 
   useEffect(() => {
-    fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/liste-attente/', { headers:{"Authorization":`Bearer ${token}`} })
+    fetch(API_URL + '/api/admin/liste-attente/', { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -1747,7 +1747,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/liste-attente/notifier/', {
+    const res = await fetch(API_URL + '/api/admin/liste-attente/notifier/', {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -1801,7 +1801,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/newsletter/', {
+      const res = await fetch(API_URL + '/api/admin/newsletter/', {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -1866,10 +1866,10 @@ function ExportView({ toast }) {
   }
 
   const exports = [
-    { label:"Membres",    desc:"Tous les membres avec leurs informations",     url:API_URL + 'https://metamorphose-backend.onrender.com/api/admin/export/membres/',  file:"membres_metamorphose.csv" },
-    { label:"Demandes",   desc:"Toutes les demandes d'inscription reçues",     url:API_URL + 'https://metamorphose-backend.onrender.com/api/admin/export/demandes/', file:"demandes_metamorphose.csv" },
-    { label:"Témoignages",desc:"Témoignages approuvés avec notes et pays",     url:API_URL + 'https://metamorphose-backend.onrender.com/api/admin/export/temoignages/', file:"temoignages_metamorphose.csv" },
-    { label:"Liste attente",desc:"Personnes en liste d'attente",               url:API_URL + 'https://metamorphose-backend.onrender.com/api/admin/export/attente/',  file:"liste_attente.csv" },
+    { label:"Membres",    desc:"Tous les membres avec leurs informations",     url:API_URL + '/api/admin/export/membres/',  file:"membres_metamorphose.csv" },
+    { label:"Demandes",   desc:"Toutes les demandes d'inscription reçues",     url:API_URL + '/api/admin/export/demandes/', file:"demandes_metamorphose.csv" },
+    { label:"Témoignages",desc:"Témoignages approuvés avec notes et pays",     url:API_URL + '/api/admin/export/temoignages/', file:"temoignages_metamorphose.csv" },
+    { label:"Liste attente",desc:"Personnes en liste d'attente",               url:API_URL + '/api/admin/export/attente/',  file:"liste_attente.csv" },
   ];
 
   return (
@@ -1917,7 +1917,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/admin/maintenance/', {
+    await fetch(API_URL + '/api/admin/maintenance/', {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })
@@ -1983,7 +1983,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/update-profile/', {
+      const res = await fetch(API_URL + '/api/auth/update-profile/', {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -1999,7 +1999,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/change-password/', {
+      const res = await fetch(API_URL + '/api/auth/change-password/', {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });

@@ -324,7 +324,7 @@ export default function CartesCadeaux() {
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
     try {
-      const res  = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/cadeaux/commander/', {
+      const res  = await fetch(API_URL + '/api/cadeaux/commander/', {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify(form),
       });

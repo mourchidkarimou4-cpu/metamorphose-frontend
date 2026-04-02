@@ -51,7 +51,7 @@ function FormulaireTeomo({ user, onSuccess }) {
     if (photoApres) data.append("photo_apres", photoApres);
 
     try {
-      const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/avis/soumettre/', {
+      const res = await fetch(API_URL + '/api/avis/soumettre/', {
         method:"POST",
         headers:{ "Authorization": `Bearer ${token}` },
         body: data,
@@ -165,10 +165,10 @@ export default function Dashboard() {
       const headers = { 'Authorization': 'Bearer ' + token }
       try {
         const [uRes, gRes, rRes, tRes] = await Promise.all([
-          fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/me/',            { headers }),
-          fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/contenu/guides/',     { headers }),
-          fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/contenu/replays/',    { headers }),
-          fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/avis/mes-temoignages/', { headers }),
+          fetch(API_URL + '/api/auth/me/',            { headers }),
+          fetch(API_URL + '/api/contenu/guides/',     { headers }),
+          fetch(API_URL + '/api/contenu/replays/',    { headers }),
+          fetch(API_URL + '/api/avis/mes-temoignages/', { headers }),
         ])
         if (uRes.status === 401) { navigate('/espace-membre'); return }
         const [u, g, r, t] = await Promise.all([uRes.json(), gRes.json(), rRes.json(), tRes.json()])
@@ -384,7 +384,7 @@ export default function Dashboard() {
                   setSaving(true); setMsg('');
                   const token = localStorage.getItem('mmorphose_token');
                   try {
-                    const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/update-profile/', {
+                    const res = await fetch(API_URL + '/api/auth/update-profile/', {
                       method:'PATCH',
                       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
                       body: JSON.stringify({ email, first_name:prenom, last_name:nom, whatsapp, pays }),
@@ -463,7 +463,7 @@ export default function Dashboard() {
                   setSaving(true); setMsg('');
                   const token = localStorage.getItem('mmorphose_token');
                   try {
-                    const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/change-password/', {
+                    const res = await fetch(API_URL + '/api/auth/change-password/', {
                       method:'POST',
                       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
                       body: JSON.stringify({ old_password:oldPwd, new_password:newPwd }),
@@ -535,7 +535,7 @@ export default function Dashboard() {
             <div style={{ marginTop:'28px', display:'flex', gap:'12px', flexWrap:'wrap' }}>
                 <button onClick={async () => {
                   const token = localStorage.getItem('mmorphose_token');
-                  const res = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/certificat/', { headers:{'Authorization':`Bearer ${token}`} });
+                  const res = await fetch(API_URL + '/api/auth/certificat/', { headers:{'Authorization':`Bearer ${token}`} });
                   if(res.ok) {
                     const blob = await res.blob();
                     const a = document.createElement('a');
