@@ -47,7 +47,7 @@ export default function PaiementPage() {
   async function payer() {
     setLoading(true); setError("");
     try {
-      const res  = await fetch(API_URL + '/api/paiement/initier/', {
+      const res  = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/paiement/initier/', {
         method:  "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body:    JSON.stringify({

@@ -61,7 +61,7 @@ export default function Temoignages() {
   useEffect(() => {
     let cancelled = false;
     function fetchTemos() {
-      fetch("/api/avis/")
+      fetch("https://metamorphose-backend.onrender.com/api/avis/")
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;

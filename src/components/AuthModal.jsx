@@ -44,7 +44,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
     setLoading(true);
     setError("");
     try {
-      const res  = await fetch(API_URL + '/api/auth/login/', {
+      const res  = await fetch(API_URL + 'https://metamorphose-backend.onrender.com/api/auth/login/', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
