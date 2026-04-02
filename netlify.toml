@@ -5,13 +5,13 @@
 [[redirects]]
   from = "/api/*"
   to = "https://metamorphose-backend.onrender.com/api/:splat"
-  status = 200
+  status = 301
   force = true
 
 [[redirects]]
   from = "/media/*"
   to = "https://metamorphose-backend.onrender.com/media/:splat"
-  status = 200
+  status = 301
   force = true
 
 [[redirects]]
