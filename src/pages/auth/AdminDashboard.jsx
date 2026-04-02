@@ -309,7 +309,7 @@ function StatsView({ stats }) {
         <p style={{ fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--or)", marginBottom:"20px" }}>
           Répartition par formule
         </p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"12px" }}>
           {Object.entries(FORMULES).map(([code, label]) => (
             <div key={code} style={{ textAlign:"center", padding:"16px", background:"rgba(255,255,255,.03)", borderRadius:"4px" }}>
               <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.8rem", fontWeight:700, color:"var(--rose)", marginBottom:"6px" }}>{stats.formules?.[code] || 0}</p>
@@ -1107,7 +1107,7 @@ function CartesView({ api, toast }) {
       </div>
 
       {/* Stats rapides */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px", marginBottom:"24px" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"12px", marginBottom:"24px" }}>
         {[
           { label:"Total",       value: cartes.length,                                color:"var(--or)" },
           { label:"En attente",  value: cartes.filter(c=>c.statut==="en_attente").length, color:"var(--or)" },

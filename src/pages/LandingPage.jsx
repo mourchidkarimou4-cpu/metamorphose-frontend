@@ -634,7 +634,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"57px", zIndex:99 }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 16px", textAlign:"center", position:"sticky", top:"57px", overflow:"hidden", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
