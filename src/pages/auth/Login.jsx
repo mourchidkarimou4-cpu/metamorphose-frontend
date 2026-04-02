@@ -19,6 +19,7 @@ export default function Login() {
       })
       const data = await res.json()
       if (res.ok) {
+        localStorage.clear()
         localStorage.setItem('mmorphose_token', data.access)
         localStorage.setItem('mmorphose_user',  JSON.stringify(data.user))
         navigate(data.user.is_staff ? '/admin' : '/dashboard')
