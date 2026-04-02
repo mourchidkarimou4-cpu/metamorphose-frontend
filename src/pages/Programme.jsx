@@ -1,4 +1,3 @@
-import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -45,13 +44,23 @@ function useReveal() {
 function useSiteContent() {
   const [content, setContent] = useState({});
   useEffect(() => {
-    fetch(API_URL + '/api/admin/config/public/')
-      .then(r => r.ok ? r.json() : [])
-      .then(data => {
-        const map = {};
-        if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
-        setContent(map);
-      }).catch(() => {});
+    let cancelled = false;
+    function fetchContent() {
+      fetch("/api/admin/config/public/")
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => {
+          if (cancelled) return;
+          const map = {};
+          if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
+          setContent(map);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setTimeout(fetchContent, 6000);
+        });
+    }
+    fetchContent();
+    return () => { cancelled = true; };
   }, []);
   return (cle, def = "") => content[cle] || def;
 }

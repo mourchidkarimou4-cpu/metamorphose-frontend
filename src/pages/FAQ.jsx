@@ -1,4 +1,3 @@
-import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,13 +26,23 @@ function useReveal() {
 function useSiteContent() {
   const [content, setContent] = useState({});
   useEffect(() => {
-    fetch(API_URL + '/api/admin/config/public/')
-      .then(r => r.ok ? r.json() : [])
-      .then(data => {
-        const map = {};
-        if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
-        setContent(map);
-      }).catch(() => {});
+    let cancelled = false;
+    function fetchContent() {
+      fetch("/api/admin/config/public/")
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => {
+          if (cancelled) return;
+          const map = {};
+          if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
+          setContent(map);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setTimeout(fetchContent, 6000);
+        });
+    }
+    fetchContent();
+    return () => { cancelled = true; };
   }, []);
   return (cle, def = "") => content[cle] || def;
 }
@@ -57,7 +66,7 @@ export default function FAQPage() {
     { cat:"resultats",  q:"Combien de temps pour voir des résultats ?",                               r:"Les premières transformations se font sentir dès les premières semaines. Le programme est conçu pour des résultats progressifs et durables." },
     { cat:"inscription", q:"Comment s'inscrire au programme ?",                                        r:"Remplissez le formulaire sur la page Contact et Prélia vous contactera sous 24–48h pour confirmer votre place." },
     { cat:"inscription", q:"Quand commence la prochaine vague ?",                                     r:"Les vagues sont ouvertes plusieurs fois par an. Après votre demande, Prélia vous communiquera la prochaine date disponible." },
-  ].filter(f => f.r);
+  ].filter(f => f.q);
 
   const categories = [
     { id:"tout",        label:"Toutes" },

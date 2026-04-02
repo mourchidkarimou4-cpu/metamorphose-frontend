@@ -166,22 +166,30 @@ function useScrollTheme() {
 function useSiteContent() {
   const [content, setContent] = useState({});
   const [loaded,  setLoaded]  = useState(false);
+
   useEffect(() => {
-    fetch("/api/admin/config/public/")
-      .then(r => {
-        if (!r.ok) throw new Error("API indisponible");
-        return r.json();
-      })
-      .then(data => {
-        const map = {};
-        if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
-        setContent(map);
-        setLoaded(true);
-      })
-      .catch(() => {
-        // Backend indisponible — afficher le site avec les valeurs par defaut
-        setLoaded(true);
-      });
+    let cancelled = false;
+    function fetchContent() {
+      fetch("/api/admin/config/public/")
+        .then(r => {
+          if (!r.ok) throw new Error("API indisponible");
+          return r.json();
+        })
+        .then(data => {
+          if (cancelled) return;
+          const map = {};
+          if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
+          setContent(map);
+          setLoaded(true);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          // Backend en cold start Render — réessayer dans 6 secondes
+          setTimeout(fetchContent, 6000);
+        });
+    }
+    fetchContent();
+    return () => { cancelled = true; };
   }, []);
   const get = (cle, defaut = "") => content[cle] || defaut;
 
