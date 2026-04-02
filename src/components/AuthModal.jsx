@@ -54,7 +54,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
         localStorage.setItem("mmorphose_token", data.access);
         localStorage.setItem("mmorphose_user", JSON.stringify(data.user));
         onClose();
-        navigate("/dashboard");
+        window.location.href = data.user.is_staff ? "/admin" : "/dashboard";
       } else {
         setError(data.detail || "Identifiants incorrects.");
       }

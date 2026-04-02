@@ -22,7 +22,7 @@ export default function Login() {
         localStorage.clear()
         localStorage.setItem('mmorphose_token', data.access)
         localStorage.setItem('mmorphose_user',  JSON.stringify(data.user))
-        navigate(data.user.is_staff ? '/admin' : '/dashboard')
+        window.location.href = data.user.is_staff ? '/admin' : '/dashboard'
       } else {
         setError(data.detail || 'Identifiants incorrects.')
       }
