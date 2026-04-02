@@ -1,4 +1,3 @@
-import API_URL from '../config.js'
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import DiagnosticTest from "../components/DiagnosticTest";
@@ -168,7 +167,7 @@ function useSiteContent() {
   const [content, setContent] = useState({});
   const [loaded,  setLoaded]  = useState(false);
   useEffect(() => {
-    fetch(API_URL + '/api/admin/config/public/')
+    fetch("/api/admin/config/public/")
       .then(r => {
         if (!r.ok) throw new Error("API indisponible");
         return r.json();
@@ -1315,7 +1314,7 @@ function PreliaTeaser({ get }) {
   );
 }
 
-function Formules({ get }) {
+function Formules({ get, setShowCalc }) {
   const formules = [
     { code:"F1", label:get("f1_label","Live · Groupe"),      prix:get("f1_prix","65 000"),  color:"#C2185B", items:["2 séances de coaching par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
     { code:"F2", label:get("f2_label","Live · Privé"),        prix:get("f2_prix","150 000"), color:"#C9A96A", items:["Accompagnement individuel","Séances personnalisées","Suivi direct avec Prélia","Exercices adaptés","7 guides PDF bonus","Club des Métamorphosées"], featured:true },
@@ -1408,7 +1407,7 @@ function ListeAttente({ get }) {
     if (!email.trim()) { setError("Veuillez entrer votre email."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(API_URL + '/api/liste-attente/', { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
+      const res = await fetch("/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue.");
     } catch { setError("Serveur inaccessible."); }
@@ -1620,7 +1619,7 @@ export default function LandingPage() {
         <GoldDivider />
         <PreliaTeaser get={get} />
         <GoldDivider />
-        <Formules get={get} />
+        <Formules get={get} setShowCalc={setShowCalc} />
         <ListeAttente get={get} />
         <CTAFinal get={get} />
         <PartagerSection />
