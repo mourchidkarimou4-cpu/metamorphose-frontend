@@ -1532,9 +1532,14 @@ function Ressources({ get }) {
             <div style={{ height:"3px", background:"rgba(255,255,255,.08)", borderRadius:"2px", overflow:"hidden", marginBottom:"16px" }}>
               <div style={{ height:"100%", width:`${progress}%`, background:"var(--rose)", borderRadius:"2px", transition:"width .3s" }}/>
             </div>
-            <button onClick={togglePlay} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--rose)", color:"#fff", border:"none", borderRadius:"3px", padding:"13px 24px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", width:"100%" }}>
-              {playing ? "Pause" : "Écouter la chanson"}
-            </button>
+            <div style={{ display:"flex", gap:"10px" }}>
+              <button onClick={togglePlay} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--rose)", color:"#fff", border:"none", borderRadius:"3px", padding:"13px 20px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", flex:1 }}>
+                {playing ? "Pause" : "Écouter"}
+              </button>
+              <a href={audioUrl} download target="_blank" rel="noreferrer" style={{ display:"flex", alignItems:"center", justifyContent:"center", background:"transparent", color:"var(--rose)", border:"1px solid var(--rose)", borderRadius:"3px", padding:"13px 18px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", textDecoration:"none", whiteSpace:"nowrap" }}>
+                Télécharger
+              </a>
+            </div>
           </div>
           {/* Guide PDF */}
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.15)", borderTop:"3px solid var(--or)", borderRadius:"6px" }}>
@@ -1564,6 +1569,113 @@ function Ressources({ get }) {
             </p>
           </div>
         )}
+      </div>
+    </section>
+  );
+}
+
+
+/* ── APERÇU TRANSFORMATIONS — Compact 3 colonnes ─────────────── */
+function ApercuTransformations({ get }) {
+  const aas = [1,2,3,4,5].map(i => ({
+    avant: get(`aa_avant${i}`,""),
+    apres: get(`aa_apres${i}`,""),
+  })).filter(t => t.avant && t.apres).slice(0,3);
+
+  const temoText = get("temo_intro","Chaque femme qui entre dans Méta'Morph'Ose entame un chemin de révélation.");
+  const videoUrl = get("temo_video_url","");
+
+  return (
+    <section style={{ padding:"60px 24px", background:"linear-gradient(180deg,#18100d 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
+      <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
+
+        {/* Titre */}
+        <div style={{ textAlign:"center", marginBottom:"40px" }}>
+          <span className="label label-light reveal" style={{ justifyContent:"center" }}>Elles ont osé</span>
+          <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.4rem,3vw,2rem)", fontWeight:600 }}>
+            {get("temo_titre","Elles ont osé. Leur transformation parle d'elle-même.")}
+          </h2>
+        </div>
+
+        {/* Grille 3 colonnes */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px", alignItems:"start" }}>
+
+          {/* Colonne 1 — Vidéo ou photo témoignage */}
+          <div className="reveal" style={{ background:"rgba(255,255,255,.025)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"6px", overflow:"hidden" }}>
+            {videoUrl ? (
+              <div style={{ position:"relative", paddingBottom:"56.25%", height:0 }}>
+                <iframe src={videoUrl} style={{ position:"absolute", inset:0, width:"100%", height:"100%", border:"none" }} allowFullScreen title="Témoignage vidéo"/>
+              </div>
+            ) : (
+              <div style={{ padding:"28px 24px" }}>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Témoignage</p>
+                <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"rgba(248,245,242,.7)", lineHeight:1.75, marginBottom:"20px" }}>
+                  « {temoText} »
+                </p>
+                <div style={{ display:"flex", gap:"10px", alignItems:"center" }}>
+                  <div style={{ width:"32px", height:"32px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.4)", flexShrink:0 }}/>
+                  <div>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500, color:"var(--blanc)" }}>Une Métamorphosée</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Programme Live · Groupe</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div style={{ padding:"16px 24px", borderTop:"1px solid rgba(255,255,255,.05)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div style={{ display:"flex", gap:"2px" }}>
+                {[1,2,3,4,5].map(i => <span key={i} style={{ color:"#C9A96A", fontSize:".85rem" }}>★</span>)}
+              </div>
+              <a href="/temoignages" style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(201,169,106,.6)", textDecoration:"none" }}>Voir tous →</a>
+            </div>
+          </div>
+
+          {/* Colonne 2 — Avant/Après */}
+          <div className="reveal" style={{ background:"rgba(255,255,255,.025)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"6px", padding:"28px 24px" }}>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"20px" }}>
+              {get("aa_titre","Avant → Après")}
+            </p>
+            {aas.length > 0 ? aas.map((t,i) => (
+              <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 20px 1fr", gap:"8px", alignItems:"center", padding:"10px 0", borderBottom: i < aas.length-1 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.4)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
+                <p style={{ textAlign:"center", color:"var(--or)", fontSize:".75rem" }}>→</p>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:500, color:"rgba(248,245,242,.85)", lineHeight:1.4 }}>{t.apres}</p>
+              </div>
+            )) : (
+              [
+                { avant:"Peur du regard des autres", apres:"Confiance rayonnante" },
+                { avant:"Image floue et incohérente", apres:"Style aligné et affirmé" },
+                { avant:"Hésitation et doutes", apres:"Passage à l'action concret" },
+              ].map((t,i) => (
+                <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 20px 1fr", gap:"8px", alignItems:"center", padding:"10px 0", borderBottom: i < 2 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.4)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
+                  <p style={{ textAlign:"center", color:"var(--or)", fontSize:".75rem" }}>→</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:500, color:"rgba(248,245,242,.85)", lineHeight:1.4 }}>{t.apres}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Colonne 3 — Témoignage écrit */}
+          <div className="reveal" style={{ background:"rgba(255,255,255,.025)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"6px", padding:"28px 24px", display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
+            <div>
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"16px" }}>Témoignage écrit</p>
+              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(248,245,242,.75)", lineHeight:1.8, marginBottom:"20px" }}>
+                « Cette transformation m'a permis de me réconcilier avec moi-même. Je me sens enfin alignée, visible et libre. »
+              </p>
+              <div style={{ display:"flex", gap:"10px", alignItems:"center", marginBottom:"24px" }}>
+                <div style={{ width:"32px", height:"32px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.4)", flexShrink:0 }}/>
+                <div>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500 }}>Aïcha M.</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Vague 2025 · Bénin</p>
+                </div>
+              </div>
+            </div>
+            <a href="/temoignages" style={{ display:"flex", alignItems:"center", justifyContent:"center", background:"transparent", color:"var(--or)", border:"1px solid rgba(201,169,106,.3)", borderRadius:"3px", padding:"11px 20px", fontFamily:"var(--ff-b)", fontWeight:500, fontSize:".7rem", letterSpacing:".12em", textTransform:"uppercase", textDecoration:"none" }}>
+              Voir tous les témoignages
+            </a>
+          </div>
+
+        </div>
       </div>
     </section>
   );
@@ -1709,6 +1821,8 @@ export default function LandingPage() {
         <Methode get={get} />
         <GoldDivider />
         <PreliaTeaser get={get} />
+        <GoldDivider />
+        <ApercuTransformations get={get} />
         <GoldDivider />
         <Formules get={get} setShowCalc={setShowCalc} />
         <ListeAttente get={get} />
