@@ -210,7 +210,7 @@ function VerificateurCode() {
     if (!code.trim()) return;
     setLoading(true); setError(""); setResult(null);
     try {
-      const res  = await fetch(`/api/cadeaux/verifier/${code.trim().toUpperCase()}/`);
+      const res  = await fetch(`${API_URL}/api/cadeaux/verifier/${code.trim().toUpperCase()}/`);
       const data = await res.json();
       if (res.ok) setResult(data);
       else setError(data.detail || "Code invalide.");

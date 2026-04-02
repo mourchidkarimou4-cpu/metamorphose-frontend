@@ -44,7 +44,7 @@ export default function CarteScan() {
     setIsAdmin(user?.is_staff || false);
 
     // Charger les infos de la carte
-    fetch(`/api/cadeaux/verifier/${code}/`)
+    fetch(`${API_URL}/api/cadeaux/verifier/${code}/`)
       .then(r => r.json())
       .then(data => {
         setCarte(data);
@@ -69,7 +69,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
+      const res2 = await fetch(`${API_URL}/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -96,7 +96,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
+      const res2 = await fetch(`${API_URL}/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ email: carteAdmin.destinataire_email })

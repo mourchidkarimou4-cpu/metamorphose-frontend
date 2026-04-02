@@ -169,7 +169,7 @@ function useAdminAPI() {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`/api/admin${path}`, opts);
+    const res = await fetch(`${API_URL}/api/admin${path}`, opts);
     if (res.status === 401) { navigate("/espace-membre"); return null; }
     if (res.status === 204) return true;
     return res.json();
@@ -1065,7 +1065,7 @@ function CartesView({ api, toast }) {
   }, []);
 
   async function activer(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/activer/`, {
+    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/activer/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1076,7 +1076,7 @@ function CartesView({ api, toast }) {
   }
 
   async function marquerUtilisee(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/utiliser/`, {
+    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/utiliser/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1249,7 +1249,7 @@ function TemoignagesView({ api, toast }) {
 
   function fetchTemos() {
     setLoading(true);
-    fetch(`/api/avis/admin/?statut=${filter}`, {
+    fetch(`${API_URL}/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.json())
@@ -1293,7 +1293,7 @@ function TemoignagesView({ api, toast }) {
     if (audioFichier) data.append("audio_fichier",  audioFichier);
 
     try {
-      const url    = modal === "add" ? "/api/avis/admin/ajouter/" : `/api/avis/admin/${selected.id}/modifier/`;
+      const url    = modal === "add" ? `${API_URL}/api/avis/admin/ajouter/` : `${API_URL}/api/avis/admin/${selected.id}/modifier/`;
       const method = modal === "add" ? "POST" : "PATCH";
       const res    = await fetch(url, {
         method,
@@ -1312,7 +1312,7 @@ function TemoignagesView({ api, toast }) {
   }
 
   async function action(id, type) {
-    const res = await fetch(`/api/avis/admin/${id}/${type}/`, {
+    const res = await fetch(`${API_URL}/api/avis/admin/${id}/${type}/`, {
       method:"POST", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.ok) { fetchTemos(); setModal(null); toast(type==="approuver"?"Approuvé":"Refusé", type==="approuver"?"success":"error"); }
@@ -1320,7 +1320,7 @@ function TemoignagesView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce témoignage ?")) return;
-    const res = await fetch(`/api/avis/admin/${id}/supprimer/`, {
+    const res = await fetch(`${API_URL}/api/avis/admin/${id}/supprimer/`, {
       method:"DELETE", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.status === 204) { fetchTemos(); setModal(null); toast("Supprimé", "error"); }
