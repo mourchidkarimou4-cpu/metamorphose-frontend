@@ -1,95 +1,340 @@
 /* ================================================================
    RESPONSIVE GLOBAL — Méta'Morph'Ose
-   ================================================================ */
-
-/* ── BREAKPOINTS
-   Mobile  : < 480px
-   Tablet  : 480px – 768px
-   Desktop : > 768px
+   Breakpoints :
+   xs  : < 360px   (petits Android)
+   sm  : < 480px   (mobile standard)
+   md  : < 768px   (tablette portrait)
+   lg  : < 1024px  (tablette paysage / petit laptop)
+   xl  : < 1280px  (laptop standard)
    ================================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ── GRILLES RESPONSIVES ─────────────────────────────────────── */
-@media (max-width: 768px) {
+img, video, iframe { max-width: 100%; height: auto; }
 
-  /* Grilles 2 colonnes → 1 colonne */
+/* ── TYPOGRAPHY FLUIDE ───────────────────────────────────────── */
+html { font-size: 16px; }
+
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+  h1 { font-size: clamp(1.6rem, 8vw, 2.4rem) !important; }
+  h2 { font-size: clamp(1.2rem, 6vw, 1.8rem) !important; }
+  h3 { font-size: clamp(1rem, 5vw, 1.4rem) !important; }
+  p  { font-size: clamp(.82rem, 3.5vw, 1rem) !important; }
+}
+
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+}
+
+/* ── LANDING PAGE — HERO ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-title { font-size: clamp(1.8rem, 9vw, 3rem) !important; }
+  .hero-sub   { font-size: clamp(.82rem, 3.5vw, 1rem) !important; }
+}
+
+/* ── NAVIGATION ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-links  { display: none !important; }
+  .nav-ctas   { display: none !important; }
+  .nav-desktop{ display: none !important; }
+  .hamburger  { display: block !important; }
+  .mobile-only{ display: flex !important; }
+  .desktop-only{ display: none !important; }
+}
+
+/* ── GRILLES GÉNÉRALES ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-prelia,
+  .grid-formules,
+  .grid-footer,
   .story-grid,
   .contact-grid,
   .valeurs-grid,
   .faq-grid,
   .temo-grid,
-  .aa-grid {
+  .pillar-grid,
+  .bonus-grid {
     grid-template-columns: 1fr !important;
-    gap: 24px !important;
+    gap: 20px !important;
   }
 
-  /* Grilles 2 colonnes formules → 1 colonne */
-  .grid-formules {
-    grid-template-columns: 1fr !important;
+  .grid-avant-apres {
+    grid-template-columns: 1fr 24px 1fr !important;
   }
 
-  /* Nav mobile */
-  .nav-links {
-    display: none !important;
-  }
-
-  /* Dashboard admin sidebar */
-  .admin-layout {
-    flex-direction: column !important;
-  }
-
-  .admin-sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    padding: 12px !important;
-    gap: 6px !important;
-  }
-
-  .admin-sidebar .sidebar-item {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-  }
-
-  .admin-main {
-    padding: 24px 16px !important;
-  }
-
-  /* Modales */
-  .admin-modal,
-  .modal-box {
-    width: 95vw !important;
-    max-width: 95vw !important;
-    margin: 16px !important;
-  }
-
-  /* Tableaux → cartes */
-  .row-item {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+  .grid-programme {
+    grid-template-columns: 80px 1fr !important;
   }
 }
 
 @media (max-width: 480px) {
-  /* Textes plus petits */
-  h1 { font-size: clamp(1.6rem, 8vw, 2.5rem) !important; }
-  h2 { font-size: clamp(1.3rem, 6vw, 2rem) !important; }
+  .grid-avant-apres {
+    grid-template-columns: 1fr !important;
+  }
+  .avant-label { display: none !important; }
+  .aa-arrow    { display: none !important; }
+  .grid-programme {
+    grid-template-columns: 64px 1fr !important;
+  }
+  .programme-items {
+    grid-template-columns: 1fr !important;
+  }
+}
 
-  /* Padding réduit */
-  section { padding-left: 16px !important; padding-right: 16px !important; }
+/* ── SECTIONS — PADDING ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section-pad    { padding: 64px 20px !important; }
+  .section-pad-sm { padding: 48px 20px !important; }
+  section         { padding-left: 20px !important; padding-right: 20px !important; }
+}
 
-  /* Boutons pleine largeur */
+@media (max-width: 480px) {
+  .section-pad    { padding: 48px 16px !important; }
+  .section-pad-sm { padding: 36px 16px !important; }
+  section         { padding-left: 16px !important; padding-right: 16px !important; }
+}
+
+/* ── BOUTONS ─────────────────────────────────────────────────── */
+@media (max-width: 480px) {
   .btn-group {
     flex-direction: column !important;
+    align-items: stretch !important;
     width: 100% !important;
   }
   .btn-group a,
-  .btn-group button {
+  .btn-group button,
+  .btn-p,
+  .btn-s,
+  .btn-s-dark {
     width: 100% !important;
-    text-align: center !important;
     justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: .72rem !important;
   }
+}
+
+/* ── CARDS ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .formule-card  { padding: 28px 20px !important; }
+  .pillar-card   { padding: 28px 20px !important; }
+}
+
+/* ── PRELIA PHOTO ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .prelia-photo { max-width: 280px !important; margin: 0 auto !important; }
+}
+
+/* ── TITRES H2 ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .h2-title { font-size: clamp(1.4rem, 5vw, 2rem) !important; }
+}
+
+/* ── DASHBOARD ADMIN ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .admin-layout {
+    flex-direction: column !important;
+  }
+  .admin-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    top: auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    overflow-x: auto !important;
+    padding: 12px 16px !important;
+    gap: 6px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(201,169,106,.1) !important;
+  }
+  .admin-sidebar .sidebar-item {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 8px 14px !important;
+    font-size: .65rem !important;
+  }
+  .admin-main {
+    padding: 24px 16px !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-modal,
+  .modal-box {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 16px auto !important;
+    padding: 24px 16px !important;
+  }
+  .row-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .admin-table-row {
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 16px !important;
+  }
+}
+
+/* ── DASHBOARD MEMBRE ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dashboard-tabs {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    padding-bottom: 8px !important;
+  }
+  .dashboard-tab {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: .65rem !important;
+    padding: 8px 14px !important;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── MODALES ─────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 12px !important;
+    align-items: flex-start !important;
+    padding-top: 60px !important;
+  }
+  .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    padding: 24px 16px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* ── FORMULAIRES ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  input, select, textarea {
+    font-size: 16px !important; /* évite zoom iOS sur focus */
+  }
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .grid-footer {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+/* ── SPLASH SCREEN ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .splash-title {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+  }
+}
+
+/* ── CARTE CADEAUX ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .carte-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .carte-preview {
+    width: 100% !important;
+    max-width: 380px !important;
+    margin: 0 auto !important;
+  }
+  .formule-btns {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .formule-btns {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── TÉMOIGNAGES ─────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .aa-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .temo-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .cat-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── SECTION APERÇU TRANSFORMATIONS ─────────────────────────── */
+@media (max-width: 768px) {
+  .apercu-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ── SECTION RESSOURCES ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ressources-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+}
+
+/* ── VAGUE SECTION ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .vague-countdown {
+    gap: 6px !important;
+  }
+  .vague-countdown-item {
+    min-width: 36px !important;
+    padding: 6px 8px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ── SCROLL & OVERFLOW ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  body { overflow-x: hidden !important; }
+  .overflow-hidden-mobile { overflow: hidden !important; }
+}
+
+/* ── UTILITAIRES RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .hide-mobile  { display: none !important; }
+  .show-mobile  { display: block !important; }
+  .center-mobile{ text-align: center !important; }
+  .full-mobile  { width: 100% !important; }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+  .show-desktop { display: block !important; }
 }
