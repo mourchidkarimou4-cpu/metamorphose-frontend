@@ -170,7 +170,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch("/api/admin/config/public/")
+      fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
         .then(r => {
           if (!r.ok) throw new Error("API indisponible");
           return r.json();
@@ -184,7 +184,6 @@ function useSiteContent() {
         })
         .catch(() => {
           if (cancelled) return;
-          // Backend en cold start Render — réessayer dans 6 secondes
           setTimeout(fetchContent, 6000);
         });
     }
@@ -1415,7 +1414,7 @@ function ListeAttente({ get }) {
     if (!email.trim()) { setError("Veuillez entrer votre email."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch("/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
+      const res = await fetch("https://metamorphose-backend.onrender.com/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue.");
     } catch { setError("Serveur inaccessible."); }
@@ -1489,9 +1488,9 @@ function PartagerSection() {
 
 /* ── SECTION RESSOURCES — Chanson + Guide PDF ───────────────── */
 function Ressources({ get }) {
-  const [playing, setPlaying] = useState(false);
+  const [playing,  setPlaying]  = useState(false);
   const [progress, setProgress] = useState(0);
-  const audioRef = useState(null);
+  const audioEl = useState(null)[0];
   const ref = { current: null };
 
   const audioUrl = get("res_audio_url", "/metamorphose.mp3");
@@ -1504,16 +1503,13 @@ function Ressources({ get }) {
   }
 
   function onTimeUpdate() {
-    if (!ref.current) return;
-    const pct = (ref.current.currentTime / ref.current.duration) * 100;
-    setProgress(isNaN(pct) ? 0 : pct);
+    if (!ref.current || !ref.current.duration) return;
+    setProgress((ref.current.currentTime / ref.current.duration) * 100);
   }
 
   return (
     <section style={{ padding:"90px 24px", background:"linear-gradient(180deg,#0A0A0A 0%,#110d09 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"900px", margin:"0 auto" }}>
-
-        {/* Titre section */}
         <div style={{ textAlign:"center", marginBottom:"56px" }}>
           <span className="label label-light reveal" style={{ justifyContent:"center" }}>Cadeaux</span>
           <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,4vw,2.4rem)", fontWeight:600, lineHeight:1.2 }}>
@@ -1523,75 +1519,44 @@ function Ressources({ get }) {
             {get("res_section_desc","Une chanson pour réveiller votre âme. Un guide pour reprendre le contrôle de votre temps.")}
           </p>
         </div>
-
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"24px" }}>
-
           {/* Chanson */}
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(194,24,91,.06)", border:"1px solid rgba(194,24,91,.15)", borderTop:"3px solid var(--rose)", borderRadius:"6px" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>Chanson</p>
-            <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>
-              {get("res_chanson_titre","Métamorphose")}
-            </h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>
-              {get("res_chanson_artiste","Prélia Apedo")}
-            </p>
+            <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>{get("res_chanson_titre","Métamorphose")}</h3>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_chanson_artiste","Prélia Apedo")}</p>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.55)", lineHeight:1.75, marginBottom:"24px" }}>
               {get("res_chanson_desc","Je ne l'ai pas écrite pour distraire... je l'ai écrite pour réveiller.")}
             </p>
-
-            {/* Lecteur audio */}
-            <audio
-              ref={el => { ref.current = el; }}
-              src={audioUrl}
-              onTimeUpdate={onTimeUpdate}
-              onEnded={() => { setPlaying(false); setProgress(0); }}
-            />
-            <div style={{ marginBottom:"16px" }}>
-              <div style={{ height:"3px", background:"rgba(255,255,255,.08)", borderRadius:"2px", overflow:"hidden", marginBottom:"8px" }}>
-                <div style={{ height:"100%", width:`${progress}%`, background:"var(--rose)", borderRadius:"2px", transition:"width .3s" }}/>
-              </div>
+            <audio ref={el => { ref.current = el; }} src={audioUrl} onTimeUpdate={onTimeUpdate} onEnded={() => { setPlaying(false); setProgress(0); }}/>
+            <div style={{ height:"3px", background:"rgba(255,255,255,.08)", borderRadius:"2px", overflow:"hidden", marginBottom:"16px" }}>
+              <div style={{ height:"100%", width:`${progress}%`, background:"var(--rose)", borderRadius:"2px", transition:"width .3s" }}/>
             </div>
-            <button onClick={togglePlay} style={{ display:"flex", alignItems:"center", gap:"10px", background:"var(--rose)", color:"#fff", border:"none", borderRadius:"3px", padding:"13px 24px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", transition:"all .3s", width:"100%", justifyContent:"center" }}
-              onMouseEnter={e=>e.currentTarget.style.background="#a01049"}
-              onMouseLeave={e=>e.currentTarget.style.background="var(--rose)"}>
+            <button onClick={togglePlay} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--rose)", color:"#fff", border:"none", borderRadius:"3px", padding:"13px 24px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", width:"100%" }}>
               {playing ? "Pause" : "Écouter la chanson"}
             </button>
           </div>
-
           {/* Guide PDF */}
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.15)", borderTop:"3px solid var(--or)", borderRadius:"6px" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Guide PDF Gratuit</p>
-            <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>
-              {get("res_guide_titre","Méthode Eisenhower")}
-            </h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>
-              {get("res_guide_sous","Pour les femmes ambitieuses")}
-            </p>
+            <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>{get("res_guide_titre","Méthode Eisenhower")}</h3>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_guide_sous","Pour les femmes ambitieuses")}</p>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.55)", lineHeight:1.75, marginBottom:"20px" }}>
               {get("res_guide_desc","Parce qu'une femme qui veut évoluer doit apprendre à reprendre le contrôle de son temps.")}
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:"8px", marginBottom:"24px" }}>
-              {[
-                get("res_guide_point1","Prioriser ce qui compte vraiment"),
-                get("res_guide_point2","Sortir de la procrastination"),
-                get("res_guide_point3","Passer à l'action avec discipline"),
-              ].filter(Boolean).map((p,i) => (
+              {[get("res_guide_point1","Prioriser ce qui compte vraiment"), get("res_guide_point2","Sortir de la procrastination"), get("res_guide_point3","Passer à l'action avec discipline")].filter(Boolean).map((p,i) => (
                 <div key={i} style={{ display:"flex", gap:"10px", alignItems:"flex-start" }}>
                   <div style={{ width:"4px", height:"4px", borderRadius:"50%", background:"var(--or)", flexShrink:0, marginTop:"8px" }}/>
                   <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.65)" }}>{p}</p>
                 </div>
               ))}
             </div>
-            <a href={pdfUrl} download target="_blank" rel="noreferrer" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", background:"transparent", color:"var(--or)", border:"1px solid var(--or)", borderRadius:"3px", padding:"13px 24px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", textDecoration:"none", transition:"all .3s", width:"100%", boxSizing:"border-box" }}
-              onMouseEnter={e=>{ e.currentTarget.style.background="var(--or)"; e.currentTarget.style.color="var(--noir)"; }}
-              onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.color="var(--or)"; }}>
+            <a href={pdfUrl} download target="_blank" rel="noreferrer" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", background:"transparent", color:"var(--or)", border:"1px solid var(--or)", borderRadius:"3px", padding:"13px 24px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", textDecoration:"none", width:"100%", boxSizing:"border-box" }}>
               Télécharger le guide
             </a>
           </div>
-
         </div>
-
-        {/* Citation finale */}
         {get("res_citation_finale","") && (
           <div className="reveal" style={{ textAlign:"center", marginTop:"48px" }}>
             <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.2rem", color:"rgba(248,245,242,.4)", lineHeight:1.6 }}>
