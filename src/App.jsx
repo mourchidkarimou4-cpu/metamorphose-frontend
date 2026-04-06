@@ -17,6 +17,10 @@ import NotFound       from './pages/NotFound'
 import PaiementPage   from './pages/Paiement'
 import SplashScreen   from './components/SplashScreen'
 import Masterclass    from './pages/Masterclass'
+import Store          from './pages/Store'
+import Don            from './pages/Don'
+import Communaute     from './pages/Communaute'
+import AgentIA        from './pages/AgentIA'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -60,6 +64,10 @@ export default function App() {
       <Route path="/paiement"      element={<PrivateRoute><PaiementPage /></PrivateRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/masterclass"   element={<Masterclass />} />
+      <Route path="/store"         element={<Store />} />
+      <Route path="/don"           element={<Don />} />
+      <Route path="/communaute"    element={<PrivateRoute><Communaute /></PrivateRoute>} />
+      <Route path="/agent-ia"      element={<AgentIA />} />
       <Route path="*"              element={<NotFound />} />
     </Routes>
   );

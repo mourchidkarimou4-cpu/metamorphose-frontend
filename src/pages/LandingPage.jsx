@@ -570,6 +570,9 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
     { label:"Formules",  href:"#formules",  ext:false },
     { label:"Contact",   href:"/contact",   ext:true },
     { label:"Masterclass", href:"/masterclass", ext:true },
+    { label:"Store",       href:"/store",       ext:true },
+    { label:"Don",         href:"/don",         ext:true },
+    { label:"Agent IA",    href:"/agent-ia",    ext:true },
   ];
 
   return (
@@ -635,7 +638,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 16px", textAlign:"center", position:"sticky", top:"57px", overflow:"hidden", zIndex:99 }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"57px", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
@@ -1710,6 +1713,14 @@ function CTAFinal({ get }) {
 }
 
 function Footer({ get }) {
+  const [partenaires, setPartenaires] = useState([]);
+  useEffect(() => {
+    fetch("https://metamorphose-backend.onrender.com/api/admin/partenaires/public/")
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setPartenaires(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
   return (
     <footer style={{ padding:"60px 24px 40px", background:"var(--noir)", borderTop:"1px solid rgba(201,169,106,.1)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
@@ -1768,6 +1779,36 @@ function Footer({ get }) {
             </div>
           </div>
         </div>
+        {/* Section Partenaires */}
+        {partenaires.length > 0 && (
+          <div style={{ borderTop:"1px solid rgba(255,255,255,.04)", paddingTop:"36px", marginBottom:"32px" }}>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"rgba(248,245,242,.2)", marginBottom:"20px", textAlign:"center" }}>Nos Partenaires</p>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:"24px", justifyContent:"center", alignItems:"center" }}>
+              {partenaires.map(p => (
+                p.lien ? (
+                  <a key={p.id} href={p.lien} target="_blank" rel="noreferrer" style={{ textDecoration:"none", transition:"opacity .3s" }}
+                    onMouseEnter={e=>e.currentTarget.style.opacity=".6"}
+                    onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
+                    {p.logo ? (
+                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", filter:"brightness(0) invert(1)", opacity:.35 }}/>
+                    ) : (
+                      <span style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"rgba(248,245,242,.3)", letterSpacing:".1em", textTransform:"uppercase" }}>{p.nom}</span>
+                    )}
+                  </a>
+                ) : (
+                  <div key={p.id}>
+                    {p.logo ? (
+                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", filter:"brightness(0) invert(1)", opacity:.35 }}/>
+                    ) : (
+                      <span style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"rgba(248,245,242,.3)", letterSpacing:".1em", textTransform:"uppercase" }}>{p.nom}</span>
+                    )}
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+
         <div style={{ borderTop:"1px solid rgba(255,255,255,.04)", paddingTop:"24px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:"12px" }}>
           <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.18)", fontWeight:300 }}>© 2025 Meta'Morph'Ose · White & Black · Tous droits réservés.</p>
           <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:".82rem", color:"rgba(201,169,106,.25)" }}>{get("footer_signature","Je ne crée pas des apparences. Je révèle des essences.")}</p>
