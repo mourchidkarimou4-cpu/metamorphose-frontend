@@ -569,6 +569,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
     { label:"Prélia",    href:"/a-propos",  ext:true },
     { label:"Formules",  href:"#formules",  ext:false },
     { label:"Contact",   href:"/contact",   ext:true },
+    { label:"Masterclass", href:"/masterclass", ext:true },
   ];
 
   return (
