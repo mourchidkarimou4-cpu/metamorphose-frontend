@@ -16,6 +16,7 @@ import ResetPassword from './pages/ResetPassword'
 import NotFound       from './pages/NotFound'
 import PaiementPage   from './pages/Paiement'
 import SplashScreen   from './components/SplashScreen'
+import Masterclass    from './pages/Masterclass'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -58,6 +59,7 @@ export default function App() {
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/paiement"      element={<PrivateRoute><PaiementPage /></PrivateRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/masterclass"   element={<Masterclass />} />
       <Route path="*"              element={<NotFound />} />
     </Routes>
   );
