@@ -551,6 +551,7 @@ function Orb({ style }) {
 function Navbar({ scrollProgress, onAuthOpen, get }) {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
+  const [openMenu,  setOpenMenu]  = useState(null); // 'programme'|'formules'|'explorer'|null
   const user   = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
   const isDark = Math.round(scrollProgress * 100) < 55;
 
@@ -560,77 +561,243 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  const navBg      = scrolled ? (isDark ? "rgba(10,10,10,.96)" : "rgba(248,245,242,.96)") : "transparent";
-  const textColor  = !scrolled ? "#F8F5F2" : isDark ? "#F8F5F2" : "#0A0A0A";
-  const borderColor= scrolled ? (isDark ? "rgba(201,169,106,.15)" : "rgba(10,10,10,.08)") : "transparent";
+  useEffect(() => {
+    const close = () => setOpenMenu(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, []);
 
-  const links = [
-    { label:"Programme", href:"/programme", ext:true },
-    { label:"Prélia",    href:"/a-propos",  ext:true },
-    { label:"Formules",  href:"#formules",  ext:false },
-    { label:"Contact",   href:"/contact",   ext:true },
-    { label:"Masterclass", href:"/masterclass", ext:true },
-    { label:"Store",       href:"/store",       ext:true },
-    { label:"Don",         href:"/don",         ext:true },
-    { label:"Agent IA",    href:"/agent-ia",    ext:true },
-  ];
+  const navBg      = scrolled ? "rgba(10,10,10,.97)" : "transparent";
+  const borderColor= scrolled ? "rgba(201,169,106,.15)" : "transparent";
+
+  /* ── Styles partagés ── */
+  const triggerStyle = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:".82rem", fontWeight:300, letterSpacing:".08em",
+    color:"rgba(248,245,242,.42)", background:"none", border:"none",
+    cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
+    gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
+  };
+  const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.85)" };
+
+  const ctaLinkStyle = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:".82rem", fontWeight:300, letterSpacing:".08em",
+    color:"rgba(201,169,106,.55)", background:"none", border:"none",
+    borderBottom:"1px solid rgba(201,169,106,.28)", padding:"3px 0",
+    cursor:"pointer", textDecoration:"none", transition:"all .3s",
+    lineHeight:1.2,
+  };
+
+  /* ── Panel partagé ── */
+  const panelStyle = {
+    position:"absolute", top:"calc(100% + 1px)", left:"50%", transform:"translateX(-50%)",
+    background:"#0d0d0d", border:"1px solid rgba(201,169,106,.12)",
+    borderTop:"1px solid rgba(201,169,106,.3)", zIndex:300,
+    animation:"panelIn .22s cubic-bezier(.4,0,.2,1) both",
+  };
+
+  const panelLabel = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:".6rem", fontWeight:300, letterSpacing:".28em", textTransform:"uppercase",
+    color:"rgba(201,169,106,.35)", marginBottom:"20px",
+    paddingBottom:"10px", borderBottom:"1px solid rgba(255,255,255,.04)",
+    display:"block",
+  };
+
+  function DropRow({ num, title, desc, href, to }) {
+    const [hov, setHov] = useState(false);
+    const inner = (
+      <>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".95rem", color: hov ? "rgba(201,169,106,.4)" : "rgba(201,169,106,.15)", width:"30px", flexShrink:0, lineHeight:1.3, transition:"color .2s" }}>{num}</span>
+        <div style={{ flex:1 }}>
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".85rem", fontWeight:400, color: hov ? "#C9A96A" : "rgba(248,245,242,.78)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
+          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".58rem", fontWeight:300, color:"rgba(248,245,242,.25)", letterSpacing:".05em" }}>{desc}</span>
+        </div>
+        <span style={{ fontSize:".6rem", color: hov ? "rgba(201,169,106,.4)" : "rgba(255,255,255,.1)", transition:"color .2s", paddingTop:"4px" }}>→</span>
+      </>
+    );
+    const rowStyle = { display:"flex", alignItems:"flex-start", gap:"0", padding:"11px 0", borderBottom:"1px solid rgba(255,255,255,.03)", cursor:"pointer", textDecoration:"none" };
+    if (to) return <Link to={to} style={rowStyle} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>{inner}</Link>;
+    return <a href={href} style={rowStyle} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}>{inner}</a>;
+  }
+
+  function FormRow({ code, name, prix, tag, to }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <Link to={to||"#formules"} style={{ display:"flex", alignItems:"center", padding:"11px 0", borderBottom:"1px solid rgba(255,255,255,.03)", cursor:"pointer", textDecoration:"none" }}
+        onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".9rem", color:"rgba(201,169,106,.2)", width:"28px" }}>{code}</span>
+        <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".83rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", flex:1, padding:"0 14px", transition:"color .2s" }}>
+          {name} {tag && <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".48rem", letterSpacing:".14em", textTransform:"uppercase", border:"1px solid rgba(201,169,106,.25)", color:"rgba(201,169,106,.6)", padding:"2px 6px", marginLeft:"8px" }}>{tag}</span>}
+        </span>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".82rem", fontWeight:300, color: hov ? "rgba(201,169,106,.7)" : "rgba(201,169,106,.4)", transition:"color .2s" }}>{prix}</span>
+      </Link>
+    );
+  }
+
+  function ExpRow({ title, desc, to }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <Link to={to} style={{ display:"flex", alignItems:"flex-start", gap:"12px", padding:"12px 14px", cursor:"pointer", textDecoration:"none", background: hov ? "rgba(201,169,106,.04)" : "transparent", transition:"background .2s" }}
+        onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
+        <span style={{ width:"3px", height:"3px", borderRadius:"50%", background: hov ? "#C9A96A" : "rgba(201,169,106,.25)", flexShrink:0, marginTop:"8px", transition:"background .2s" }}/>
+        <div>
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".8rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
+          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".56rem", fontWeight:300, color:"rgba(248,245,242,.22)", letterSpacing:".04em" }}>{desc}</span>
+        </div>
+      </Link>
+    );
+  }
+
+  function toggle(name, e) { e.stopPropagation(); setOpenMenu(openMenu === name ? null : name); }
 
   return (
     <>
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"14px 24px":"22px 24px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s var(--ease)" }}>
+      <style>{`
+        @keyframes panelIn { from{opacity:0;transform:translateX(-50%) translateY(-6px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+        .nav-lux-trigger:hover { color:rgba(201,169,106,.85) !important; }
+        .nav-lux-trigger.active { color:rgba(201,169,106,.85) !important; }
+        .nav-lux-trigger.active::after { content:''; position:absolute; bottom:-1px; left:16px; right:16px; height:1px; background:linear-gradient(90deg,transparent,rgba(201,169,106,.6),transparent); }
+        .cta-lux:hover { color:rgba(201,169,106,.85) !important; border-bottom-color:rgba(201,169,106,.6) !important; }
+      `}</style>
 
-        {/* Logo */}
-        <a href="#" style={{ textDecoration:"none", display:"flex", alignItems:"center", gap:"10px", flexShrink:0 }}>
-          {get("logo_site","") && (
-            <img src={get("logo_site","")} alt="Logo" style={{ height:"30px", objectFit:"contain" }}/>
-          )}
-          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{ color:isDark||!scrolled?"var(--blanc)":"var(--noir)" }}>Meta'</span>
-            <span style={{ color:"var(--or)" }}>Morph'</span>
-            <span style={{ color:"var(--rose)" }}>Ose</span>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"0 32px":"0 32px", height:scrolled?"60px":"72px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
+
+        {/* ── Logo ── */}
+        <a href="#" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
+          {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/>}
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400, letterSpacing:".04em", lineHeight:1 }}>
+            <span style={{ color:"#F8F5F2" }}>Méta'</span>
+            <span style={{ color:"#C9A96A" }}>Morph'</span>
+            <span style={{ color:"#C2185B" }}>Ose</span>
+          </span>
+          <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".5rem", fontWeight:300, letterSpacing:".32em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", lineHeight:1 }}>
+            White & Black · Prélia Apedo
           </span>
         </a>
 
-        {/* Links desktop */}
-        <ul className="nav-links" style={{ gap:"24px", listStyle:"none", fontFamily:"var(--ff-b)", fontSize:".68rem", fontWeight:500, letterSpacing:".12em", textTransform:"uppercase" }}>
-          {links.map(l => (
-            <li key={l.label}>
-              <a href={l.href} style={{ color:textColor, textDecoration:"none", opacity:.75, transition:"opacity .3s" }}
-                onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=.75}>{l.label}</a>
-            </li>
-          ))}
-          <li>
-            <Link to="/brunch" style={{ color:"var(--or)", textDecoration:"none", opacity:.75 }}
-              onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=.75}>Le Brunch</Link>
-          </li>
-        </ul>
+        {/* ── Links desktop ── */}
+        <div className="nav-links" style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }}>
 
-        {/* CTAs desktop */}
-        <div className="nav-ctas" style={{ alignItems:"center", gap:"10px", flexShrink:0 }}>
+          {/* Programme */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="programme"?"active":""}`}
+              style={openMenu==="programme" ? triggerActiveStyle : triggerStyle}
+              onClick={e=>toggle("programme",e)}>
+              Programme
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.4, transition:"transform .3s", transform:openMenu==="programme"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="programme" && (
+              <div style={{ ...panelStyle, width:"440px", padding:"28px 32px" }} onClick={e=>e.stopPropagation()}>
+                <span style={panelLabel}>Le Programme</span>
+                <DropRow num="I"  title="Le Programme MMO"     desc="8 semaines · Méta · Morph · Ose"              to="/programme"/>
+                <DropRow num="II" title="À Propos de Prélia"   desc="Son histoire, sa mission, ses certifications" to="/a-propos"/>
+                <DropRow num="III" title="Témoignages"          desc="Elles ont osé. Leur transformation parle."    to="/temoignages"/>
+                <DropRow num="IV" title="Questions Fréquentes"  desc="Tout ce que vous souhaitez savoir"            to="/faq"/>
+              </div>
+            )}
+          </div>
+
+          {/* Formules */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="formules"?"active":""}`}
+              style={openMenu==="formules" ? triggerActiveStyle : triggerStyle}
+              onClick={e=>toggle("formules",e)}>
+              Formules
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.4, transition:"transform .3s", transform:openMenu==="formules"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="formules" && (
+              <div style={{ ...panelStyle, width:"400px", padding:"24px 32px" }} onClick={e=>e.stopPropagation()}>
+                <span style={panelLabel}>4 Formules d'accompagnement</span>
+                <FormRow code="F1" name="Live · Groupe"       prix="65 000 FCFA"  to="/#formules"/>
+                <FormRow code="F2" name="Live · Privé"        prix="150 000 FCFA" tag="Recommandé" to="/#formules"/>
+                <FormRow code="F3" name="Présentiel · Groupe" prix="250 000 FCFA" to="/#formules"/>
+                <FormRow code="F4" name="Présentiel · Privé"  prix="350 000 FCFA" to="/#formules"/>
+                <div style={{ marginTop:"16px", paddingTop:"14px", borderTop:"1px solid rgba(255,255,255,.04)", textAlign:"center" }}>
+                  <a href="#formules" style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".75rem", color:"rgba(201,169,106,.4)", textDecoration:"none" }} onClick={()=>setOpenMenu(null)}>
+                    Trouver ma formule →
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Explorer */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="explorer"?"active":""}`}
+              style={{ ...(openMenu==="explorer" ? triggerActiveStyle : triggerStyle), color: openMenu==="explorer" ? "rgba(201,169,106,.85)" : "rgba(201,169,106,.45)" }}
+              onClick={e=>toggle("explorer",e)}>
+              Explorer
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.5, transition:"transform .3s", transform:openMenu==="explorer"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="#C9A96A" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="explorer" && (
+              <div style={{ ...panelStyle, width:"540px", padding:"28px 0 0" }} onClick={e=>e.stopPropagation()}>
+                <span style={{ ...panelLabel, margin:"0 32px 20px", paddingBottom:"10px" }}>L'univers Méta'Morph'Ose</span>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0" }}>
+                  <ExpRow title="Masterclass OSEZ"  desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
+                  <ExpRow title="Store MMO"          desc="Guides, formations & replays"       to="/store"/>
+                  <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
+                  <ExpRow title="Agent IA MÉTA"      desc="Assistante intelligente · 24h/24"   to="/agent-ia"/>
+                  <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
+                  <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
+                </div>
+                <Link to="/brunch" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 32px", borderTop:"1px solid rgba(255,255,255,.04)", textDecoration:"none", marginTop:"4px" }}
+                  onClick={()=>setOpenMenu(null)}
+                  onMouseEnter={e=>{ e.currentTarget.style.background="rgba(194,24,91,.04)"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; }}>
+                  <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontStyle:"italic", fontSize:".82rem", color:"rgba(194,24,91,.55)" }}>Le Brunch des Métamorphosées</span>
+                  <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".65rem", color:"rgba(194,24,91,.3)", letterSpacing:".08em" }}>Événement annuel →</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Contact */}
+          <Link to="/contact" style={{ ...triggerStyle, textDecoration:"none" }}
+            onMouseEnter={e=>e.currentTarget.style.color="rgba(201,169,106,.85)"}
+            onMouseLeave={e=>e.currentTarget.style.color="rgba(248,245,242,.42)"}>
+            Contact
+          </Link>
+
+        </div>
+
+        {/* ── CTAs ── */}
+        <div className="nav-ctas" style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
           {user ? (
-            <Link to="/dashboard" style={{ fontFamily:"var(--ff-b)", fontSize:".66rem", fontWeight:500, letterSpacing:".1em", textTransform:"uppercase", color:"var(--or)", textDecoration:"none", border:"1px solid rgba(201,169,106,.3)", borderRadius:"3px", padding:"9px 16px", transition:"all .3s", whiteSpace:"nowrap" }}
-              onMouseEnter={e=>e.currentTarget.style.background="rgba(201,169,106,.08)"}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            <Link to="/dashboard" className="cta-lux" style={ctaLinkStyle}
+              onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
               Mon espace
             </Link>
           ) : (
-            <button onClick={() => onAuthOpen("login")} style={{ fontFamily:"var(--ff-b)", fontSize:".66rem", fontWeight:500, letterSpacing:".1em", textTransform:"uppercase", color:isDark||!scrolled?"rgba(248,245,242,.6)":"rgba(10,10,10,.5)", background:"none", border:"none", cursor:"pointer", padding:"9px 4px", whiteSpace:"nowrap" }}
-              onMouseEnter={e=>e.target.style.color="var(--or)"}
-              onMouseLeave={e=>e.target.style.color=isDark||!scrolled?"rgba(248,245,242,.6)":"rgba(10,10,10,.5)"}>
-              Espace membre
+            <button onClick={() => onAuthOpen("login")} className="cta-lux" style={ctaLinkStyle}
+              onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
+              Mon espace
             </button>
           )}
-          <button onClick={() => onAuthOpen("inscription")} className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem" }}>
+          <div style={{ width:"1px", height:"12px", background:"rgba(255,255,255,.07)" }}/>
+          <button onClick={() => onAuthOpen("inscription")} style={ctaLinkStyle}
+            onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
+            onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
             S'inscrire
           </button>
         </div>
 
-        {/* Burger mobile */}
-        <button onClick={()=>setMenuOpen(true)} className="mobile-only" style={{ background:"none", border:"1px solid rgba(201,169,106,.3)", borderRadius:"3px", color:"var(--or)", padding:"8px 14px", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".1em", textTransform:"uppercase" }}>
+        {/* ── Burger mobile ── */}
+        <button onClick={()=>setMenuOpen(true)} className="mobile-only" style={{ background:"none", border:"1px solid rgba(201,169,106,.25)", borderRadius:"2px", color:"var(--or)", padding:"7px 14px", cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".82rem", letterSpacing:".08em" }}>
           Menu
         </button>
       </nav>
-      {/* Bandeau fermeture inscriptions */}
+
+      {/* ── Bandeau fermeture ── */}
       {get("vague_active","1") === "1" && get("vague_date_fermeture","") && (() => {
         const dateF = new Date(get("vague_date_fermeture",""));
         const diff  = dateF - new Date();
@@ -638,7 +805,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"57px", zIndex:99 }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"60px", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
@@ -648,51 +815,51 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         );
       })()}
 
-
-      {/* Menu mobile plein écran */}
+      {/* ── Menu mobile ── */}
       {menuOpen && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(10,10,10,.99)", zIndex:300, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"0", overflowY:"auto", padding:"80px 24px 40px" }}>
-          <button onClick={()=>setMenuOpen(false)} style={{ position:"absolute", top:"20px", right:"20px", background:"none", border:"1px solid rgba(201,169,106,.25)", borderRadius:"3px", color:"var(--or)", padding:"8px 16px", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".1em", textTransform:"uppercase" }}>
+        <div style={{ position:"fixed", inset:0, background:"rgba(10,10,10,.99)", zIndex:300, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflowY:"auto", padding:"80px 24px 40px" }}>
+          <button onClick={()=>setMenuOpen(false)} style={{ position:"absolute", top:"20px", right:"20px", background:"none", border:"1px solid rgba(201,169,106,.2)", color:"rgba(201,169,106,.5)", padding:"7px 16px", cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".82rem" }}>
             Fermer
           </button>
-
-          {/* Logo mobile */}
           <div style={{ marginBottom:"40px", textAlign:"center" }}>
-            {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"40px", objectFit:"contain", marginBottom:"8px" }}/>}
-            <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.2rem" }}>
-              <span style={{ color:"var(--blanc)" }}>Meta'</span>
-              <span style={{ color:"var(--or)" }}>Morph'</span>
-              <span style={{ color:"var(--rose)" }}>Ose</span>
+            {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"36px", objectFit:"contain", marginBottom:"8px" }}/>}
+            <p style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.15rem" }}>
+              <span style={{ color:"#F8F5F2" }}>Méta'</span><span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
             </p>
           </div>
-
-          {/* Liens */}
           {[
-            ...links,
-            { label:"Témoignages", href:"/temoignages", ext:true },
-            { label:"FAQ",         href:"/faq",         ext:true },
-            { label:"Le Brunch",   href:"/brunch",      ext:true },
-            { label:"Carte Cadeau",href:"/carte-cadeau",ext:true },
+            { label:"Programme",    to:"/programme" },
+            { label:"À Propos",     to:"/a-propos" },
+            { label:"Formules",     to:"/#formules" },
+            { label:"Témoignages",  to:"/temoignages" },
+            { label:"FAQ",          to:"/faq" },
+            { label:"Masterclass",  to:"/masterclass" },
+            { label:"Store MMO",    to:"/store" },
+            { label:"Lives",        to:"/live" },
+            { label:"Agent IA",     to:"/agent-ia" },
+            { label:"Communauté",   to:"/communaute" },
+            { label:"Don",          to:"/don" },
+            { label:"Le Brunch",    to:"/brunch" },
+            { label:"Contact",      to:"/contact" },
           ].map((l,i) => (
-            <Link key={l.label} to={l.href} onClick={()=>setMenuOpen(false)} style={{ fontFamily:"var(--ff-t)", fontSize:"1.4rem", color:"var(--blanc)", textDecoration:"none", padding:"14px 0", borderBottom:"1px solid rgba(255,255,255,.05)", width:"100%", textAlign:"center", transition:"color .3s" }}
-              onMouseEnter={e=>e.target.style.color="var(--or)"}
-              onMouseLeave={e=>e.target.style.color="var(--blanc)"}>
+            <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
+              style={{ fontFamily:"'Playfair Display',Georgia,serif", fontStyle:"italic", fontSize:"1.3rem", color:"rgba(248,245,242,.7)", textDecoration:"none", padding:"12px 0", borderBottom:"1px solid rgba(255,255,255,.04)", width:"100%", textAlign:"center", transition:"color .3s" }}
+              onMouseEnter={e=>e.currentTarget.style.color="#C9A96A"}
+              onMouseLeave={e=>e.currentTarget.style.color="rgba(248,245,242,.7)"}>
               {l.label}
             </Link>
           ))}
-
-          {/* CTAs mobile */}
           <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginTop:"32px", width:"100%" }}>
-            <button onClick={()=>{onAuthOpen("inscription");setMenuOpen(false);}} className="btn-p" style={{ width:"100%", padding:"16px", fontSize:".75rem" }}>
+            <button onClick={()=>{onAuthOpen("inscription");setMenuOpen(false);}} style={{ ...ctaLinkStyle, border:"none", borderBottom:"1px solid rgba(201,169,106,.3)", fontSize:".9rem", padding:"14px 0", width:"100%", textAlign:"center" }}>
               S'inscrire
             </button>
             {user ? (
-              <Link to="/dashboard" onClick={()=>setMenuOpen(false)} className="btn-s" style={{ width:"100%", padding:"15px", fontSize:".75rem", textAlign:"center" }}>
+              <Link to="/dashboard" onClick={()=>setMenuOpen(false)} style={{ ...ctaLinkStyle, border:"none", borderBottom:"1px solid rgba(201,169,106,.2)", fontSize:".82rem", padding:"12px 0", width:"100%", textAlign:"center" }}>
                 Mon espace
               </Link>
             ) : (
-              <button onClick={()=>{onAuthOpen("login");setMenuOpen(false);}} className="btn-s" style={{ width:"100%", padding:"15px", fontSize:".75rem" }}>
-                Espace membre
+              <button onClick={()=>{onAuthOpen("login");setMenuOpen(false);}} style={{ ...ctaLinkStyle, border:"none", borderBottom:"1px solid rgba(201,169,106,.2)", fontSize:".82rem", padding:"12px 0", width:"100%", textAlign:"center" }}>
+                Mon espace
               </button>
             )}
           </div>
@@ -701,6 +868,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
     </>
   );
 }
+
 
 
 /* ── DIAPORAMA HERO ─────────────────────────────────────────── */
