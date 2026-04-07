@@ -23,6 +23,7 @@ import Communaute     from './pages/Communaute'
 import AgentIA        from './pages/AgentIA'
 import LiveMasterclass from './pages/LiveMasterclass'
 import LiveMasterclass from './pages/LiveMasterclass'
+import LiveMasterclass from './pages/LiveMasterclass'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -70,6 +71,7 @@ export default function App() {
       <Route path="/don"           element={<Don />} />
       <Route path="/communaute"    element={<PrivateRoute><Communaute /></PrivateRoute>} />
       <Route path="/agent-ia"      element={<AgentIA />} />
+      <Route path="/live"          element={<PrivateRoute><LiveMasterclass /></PrivateRoute>} />
       <Route path="/live"          element={<PrivateRoute><LiveMasterclass /></PrivateRoute>} />
       <Route path="/live"          element={<PrivateRoute><LiveMasterclass /></PrivateRoute>} />
       <Route path="*"              element={<NotFound />} />
