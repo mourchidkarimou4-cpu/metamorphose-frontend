@@ -22,6 +22,8 @@ import Don            from './pages/Don'
 import Communaute     from './pages/Communaute'
 import AgentIA        from './pages/AgentIA'
 import LiveMasterclass from './pages/LiveMasterclass'
+import SuperAdmin     from './pages/SuperAdmin'
+import SuperAdmin     from './pages/SuperAdmin'
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
@@ -66,6 +68,8 @@ export default function App() {
       <Route path="/communaute"    element={<PrivateRoute><Communaute /></PrivateRoute>} />
       <Route path="/agent-ia"      element={<AgentIA />} />
       <Route path="/live"          element={<PrivateRoute><LiveMasterclass /></PrivateRoute>} />
+      <Route path="/super-admin"   element={<SuperAdmin />} />
+      <Route path="/super-admin"   element={<SuperAdmin />} />
       <Route path="*"              element={<NotFound />} />
     </Routes>
   );
