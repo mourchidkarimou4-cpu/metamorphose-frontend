@@ -169,6 +169,7 @@ function useSiteContent() {
 
   useEffect(() => {
     let cancelled = false;
+    let retries = 0;
     function fetchContent() {
       fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
         .then(r => {
@@ -184,7 +185,7 @@ function useSiteContent() {
         })
         .catch(() => {
           if (cancelled) return;
-          setTimeout(fetchContent, 6000);
+          if (retries++ < 3) setTimeout(fetchContent, 6000);
         });
     }
     fetchContent();
