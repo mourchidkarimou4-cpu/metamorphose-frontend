@@ -12,7 +12,7 @@ import Login          from './pages/auth/Login'
 import Dashboard      from './pages/auth/Dashboard'
 import AdminDashboard from './pages/auth/AdminDashboard'
 import CarteScan      from './pages/CarteScan'
-import ResetPassword from './pages/ResetPassword'
+import ResetPassword  from './pages/ResetPassword'
 import NotFound       from './pages/NotFound'
 import PaiementPage   from './pages/Paiement'
 import SplashScreen   from './components/SplashScreen'
@@ -23,7 +23,6 @@ import Communaute     from './pages/Communaute'
 import AgentIA        from './pages/AgentIA'
 import LiveMasterclass from './pages/LiveMasterclass'
 
-/* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
   const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
@@ -31,7 +30,6 @@ function PrivateRoute({ children }) {
   return children;
 }
 
-/* ── Route protégée admin ──────────────────────────────────── */
 function AdminRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
   const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
@@ -43,11 +41,9 @@ function AdminRoute({ children }) {
 export default function App() {
   const isLanding = window.location.pathname === "/";
   const [showSplash, setShowSplash] = useState(isLanding);
-
   if (showSplash) {
     return <SplashScreen onDone={() => setShowSplash(false)} />;
   }
-
   return (
     <Routes>
       <Route path="/"              element={<LandingPage />} />
@@ -70,5 +66,7 @@ export default function App() {
       <Route path="/communaute"    element={<PrivateRoute><Communaute /></PrivateRoute>} />
       <Route path="/agent-ia"      element={<AgentIA />} />
       <Route path="/live"          element={<PrivateRoute><LiveMasterclass /></PrivateRoute>} />
+      <Route path="*"              element={<NotFound />} />
+    </Routes>
   );
 }
