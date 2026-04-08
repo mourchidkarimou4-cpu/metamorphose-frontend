@@ -534,8 +534,8 @@ function DetailCours() {
           }}>← Voir tous les cours</Link>
         </div>
       </main>
-    </>
     <AuraButton />
+    </>
   )
 }
 
