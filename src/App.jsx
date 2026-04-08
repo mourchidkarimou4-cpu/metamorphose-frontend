@@ -69,6 +69,8 @@ export default function App() {
       <Route path="/aura"         element={<Aura />} />
       <Route path="/mmo-learning"  element={<MMOLearning />} />
       <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
+      <Route path="/evenements"           element={<Evenements />} />
+      <Route path="/scan"                  element={<ScanTicket />} />
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
