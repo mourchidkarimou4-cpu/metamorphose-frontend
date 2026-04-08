@@ -2,18 +2,20 @@
   command = "npm run build"
   publish = "dist"
 
+# Proxy transparent vers le backend — l'URL Render n'est pas exposée au navigateur
 [[redirects]]
   from = "/api/*"
   to = "https://metamorphose-backend.onrender.com/api/:splat"
-  status = 301
+  status = 200
   force = true
 
 [[redirects]]
   from = "/media/*"
   to = "https://metamorphose-backend.onrender.com/media/:splat"
-  status = 301
+  status = 200
   force = true
 
+# SPA fallback — toutes les routes React gérées par index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

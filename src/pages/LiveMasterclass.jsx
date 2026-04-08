@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const BACKEND = "https://metamorphose-backend.onrender.com";
 const JITSI_DOMAIN = "meet.jit.si";
 
 const STYLES = `
@@ -161,7 +160,7 @@ export default function LiveMasterclass() {
 
   // Charger les replays
   useEffect(() => {
-    fetch(`${BACKEND}/api/contenu/replays/`, {
+    fetch(`/api/contenu/replays/`, {
       headers: token ? { "Authorization": `Bearer ${token}` } : {},
     })
     .then(r => r.ok ? r.json() : [])
@@ -173,7 +172,7 @@ export default function LiveMasterclass() {
   useEffect(() => {
     // En production, appeler l'API pour vérifier le statut du live
     // Pour l'instant on utilise SiteConfig
-    fetch(`${BACKEND}/api/admin/config/public/`)
+    fetch(`/api/admin/config/public/`)
       .then(r => r.ok ? r.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
@@ -193,12 +192,12 @@ export default function LiveMasterclass() {
     setRoomName(room);
     // Sauvegarder le nom de la salle dans SiteConfig
     if (token) {
-      fetch(`${BACKEND}/api/admin/config/update/`, {
+      fetch(`/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_actif", valeur:"1", section:"live" }),
       });
-      fetch(`${BACKEND}/api/admin/config/update/`, {
+      fetch(`/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_room_name", valeur:room, section:"live" }),
@@ -210,7 +209,7 @@ export default function LiveMasterclass() {
 
   function terminerLive() {
     if (token) {
-      fetch(`${BACKEND}/api/admin/config/update/`, {
+      fetch(`/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_actif", valeur:"0", section:"live" }),

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const BACKEND = "https://metamorphose-backend.onrender.com";
 const WHATSAPP_COMMUNAUTE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
 
 const STYLES = `
@@ -154,7 +153,7 @@ export default function Communaute() {
   // Vérifier si le membre est actif (a complété le programme)
   useEffect(() => {
     if (!token) { setLoadingUser(false); return; }
-    fetch(`${BACKEND}/api/auth/me/`, {
+    fetch(`/api/auth/me/`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.ok ? r.json() : null)

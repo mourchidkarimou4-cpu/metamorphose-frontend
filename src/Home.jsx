@@ -1076,7 +1076,7 @@ function PreliaSection() {
           <div style={{
             display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "36px",
           }}>
-            {["Conseil Coach en Image", "Styliste certifiée", "Leader Oratrice — Académie Internationale du Leadership"].map((cert, i) => (
+            {['Coach en Image certifiée', 'Styliste certifiée', 'Experte en transformation Personnelle', 'Oratrice & leader certifiée', 'Thérapeute du cœur certifiée', 'Coach Mind Education certifiée'].map((cert, i) => (
               <span key={i} style={{
                 padding: "7px 14px",
                 border: "1px solid rgba(201,169,106,0.25)",

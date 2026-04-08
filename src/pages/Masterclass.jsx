@@ -67,8 +67,8 @@ const STYLES = `
     display:inline-flex; align-items:center; justify-content:center; gap:12px;
     background:#25D366; color:#fff; font-family:var(--ff-b); font-weight:700;
     font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
-    padding:18px 36px; border:none; border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s; white-space:nowrap;
+    padding:16px 24px; border:none; border-radius:2px; cursor:pointer;
+    text-decoration:none; transition:all .35s; white-space:normal; text-align:center;
   }
   .btn-wa:hover { background:#1da851; transform:translateY(-3px); box-shadow:0 14px 40px rgba(37,211,102,.4); }
 
@@ -257,7 +257,7 @@ function MessageSucces({ inscrit }) {
           JE REJOINS LE GROUPE WHATSAPP
         </a>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.3)", fontStyle:"italic" }}>
-          💥 MASTERCLASS OSEZ 💥
+          💥 MASTERCLASS OSE 💥
         </p>
       </div>
     </div>
@@ -383,7 +383,7 @@ export default function Masterclass() {
               <div>
                 <h1 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.8rem,5vw,3.2rem)", fontWeight:700, lineHeight:1.1, marginBottom:"20px", animation:"fadeUp .8s .1s both" }}>
                   <em style={{ fontStyle:"italic", fontWeight:400, background:"linear-gradient(135deg,var(--or),var(--or-light),var(--or))", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmer 4s linear infinite", display:"block", marginBottom:"8px" }}>
-                    OSEZ ÊTRE TOI-MÊME
+                    OSE ÊTRE TOI-MÊME
                   </em>
                   Embrasse ton image authentique et réussis
                 </h1>
@@ -569,7 +569,7 @@ export default function Masterclass() {
         <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#18100d,#2e1e14)" }}>
           <div style={{ maxWidth:"900px", margin:"0 auto" }}>
             <div style={{ textAlign:"center", marginBottom:"48px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>La formatrice</p>
+              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}></p>
               <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>Qui suis-je pour t'aider ?</h2>
             </div>
             <div className="prelia-grid reveal" style={{ display:"grid", gridTemplateColumns:"260px 1fr", gap:"48px", alignItems:"start" }}>
@@ -595,7 +595,7 @@ export default function Masterclass() {
                   « Aujourd'hui, j'aide les femmes à faire la même transformation. »
                 </blockquote>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:"8px", marginTop:"20px" }}>
-                  {["Coach en Image certifiée", "Styliste", "Leader Oratrice — AIL", "Experte transformation"].map((c,i) => (
+                  {['Coach en Image certifiée', 'Styliste certifiée', 'Experte en transformation Personnelle', 'Oratrice & leader certifiée', 'Thérapeute du cœur certifiée', 'Coach Mind Education certifiée'].map((c,i) => (
                     <span key={i} style={{ padding:"6px 14px", border:"1px solid rgba(201,169,106,.2)", borderRadius:"100px", fontFamily:"var(--ff-b)", fontSize:".66rem", color:"rgba(201,169,106,.75)", fontWeight:500 }}>{c}</span>
                   ))}
                 </div>
