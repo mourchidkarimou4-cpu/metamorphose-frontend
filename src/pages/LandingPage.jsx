@@ -2000,6 +2000,7 @@ export default function LandingPage() {
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       {showCalc && <CalculateurFormule onClose={() => setShowCalc(false)} />}
 
+      <WhatsAppButton get={get} />
       <AuraButton />
 
             <main>
