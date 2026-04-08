@@ -2575,7 +2575,7 @@ function TicketsView({ api, toast }) {
       {/* Onglets */}
       <div style={{display:'flex',gap:'4px',marginBottom:'24px',background:'rgba(255,255,255,.03)',borderRadius:'4px',padding:'4px',width:'fit-content'}}>
         {[['evenements','Événements'],['tickets','Tickets']].map(([id,label])=>(
-          <button key={id} onClick={()=>{ setOnglet(id); if(id==='tickets') loadTickets(selEv) else loadEvenements() }}
+          <button key={id} onClick={()=>{ setOnglet(id); if(id==='tickets'){ loadTickets(selEv) } else { loadEvenements() } }}
             style={{padding:'8px 18px',borderRadius:'3px',border:'none',cursor:'pointer',fontFamily:'var(--ff-b)',fontSize:'.68rem',fontWeight:500,letterSpacing:'.1em',textTransform:'uppercase',background:onglet===id?'var(--rose)':'transparent',color:onglet===id?'#fff':'var(--text-sub)',transition:'all .25s'}}>
             {label}
           </button>
