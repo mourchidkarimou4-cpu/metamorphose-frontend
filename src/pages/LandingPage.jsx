@@ -1882,7 +1882,7 @@ function CTAFinal({ get }) {
 function Footer({ get }) {
   const [partenaires, setPartenaires] = useState([]);
   useEffect(() => {
-    fetch("https://metamorphose-backend.onrender.com/api/admin/partenaires/public/")
+    fetch("/api/admin/partenaires/public/")
       .then(r => r.ok ? r.json() : [])
       .then(data => setPartenaires(Array.isArray(data) ? data : []))
       .catch(() => {});
