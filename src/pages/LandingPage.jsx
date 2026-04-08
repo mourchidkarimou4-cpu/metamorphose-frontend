@@ -170,7 +170,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
+      fetch("/api/admin/config/public/")
         .then(r => {
           if (!r.ok) throw new Error("API indisponible");
           return r.json();
