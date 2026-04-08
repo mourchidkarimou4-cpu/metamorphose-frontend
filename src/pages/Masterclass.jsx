@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 
 const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
-const BACKEND = "https://metamorphose-backend.onrender.com";
+const BACKEND = "";
 const DATE_MASTERCLASS = "2026-04-26T17:00:00Z";
 
 const PAYS_INDICATIFS = [

@@ -34,7 +34,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
+      fetch("/api/admin/config/public/")
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;
@@ -63,7 +63,7 @@ export default function Temoignages() {
   useEffect(() => {
     let cancelled = false;
     function fetchTemos() {
-      fetch("https://metamorphose-backend.onrender.com/api/avis/")
+      fetch("/api/avis/")
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;

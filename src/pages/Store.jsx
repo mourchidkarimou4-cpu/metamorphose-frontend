@@ -3,7 +3,7 @@ import usePageBackground from "../hooks/usePageBackground";
 import { Link, useNavigate } from "react-router-dom";
 
 const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY"; // À remplacer
-const BACKEND = "https://metamorphose-backend.onrender.com";
+const BACKEND = "";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');

@@ -47,7 +47,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
+      fetch("/api/admin/config/public/")
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;
