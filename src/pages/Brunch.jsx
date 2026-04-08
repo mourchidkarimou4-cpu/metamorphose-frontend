@@ -57,7 +57,7 @@ export default function Brunch() {
           Commencer ma transformation
         </a>
       </div>
-    </div>
-    <AuraButton />
+      <AuraButton />
+  </div>
   )
 }

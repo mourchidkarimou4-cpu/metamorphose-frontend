@@ -307,6 +307,7 @@ export default function Temoignages() {
           </section>
         </div>
       </div>
+      <AuraButton />
     </>
   );
 }

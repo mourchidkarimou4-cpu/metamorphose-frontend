@@ -587,6 +587,7 @@ export default function CartesCadeaux() {
           )}
         </div>
       </div>
+      <AuraButton />
     </>
   );
 }

@@ -200,6 +200,7 @@ export default function APropos() {
           </section>
         </div>
       </div>
+      <AuraButton />
     </>
   );
 }

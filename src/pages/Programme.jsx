@@ -263,6 +263,7 @@ export default function Programme() {
           </section>
         </div>
       </div>
+      <AuraButton />
     </>
   );
 }

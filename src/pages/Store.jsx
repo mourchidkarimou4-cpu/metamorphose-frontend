@@ -545,6 +545,7 @@ export default function Store() {
           onClose={() => setProduitSelectionne(null)}
         />
       )}
+      <AuraButton />
     </>
   );
 }
