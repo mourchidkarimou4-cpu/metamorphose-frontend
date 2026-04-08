@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import DiagnosticTest from "../components/DiagnosticTest";
 import AuthModal from "../components/AuthModal";
 import AuraButton from "../components/AuraButton";
 
@@ -1988,7 +1987,6 @@ function Footer({ get }) {
 
 export default function LandingPage() {
   const scrollProgress = useScrollTheme();
-  const [showDiag, setShowDiag] = useState(false);
   const [authTab,  setAuthTab]  = useState(null);
   const { get, loaded } = useSiteContent();
   useReveal();
@@ -2002,25 +2000,9 @@ export default function LandingPage() {
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       {showCalc && <CalculateurFormule onClose={() => setShowCalc(false)} />}
 
-      {/* Bouton Test Diagnostic — masqué si connectée */}
-      {!JSON.parse(localStorage.getItem("mmorphose_user") || "null") && <button onClick={() => setShowDiag(true)} style={{ position:"fixed", bottom:"20px", right:"16px", zIndex:150, background:"var(--rose)", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", padding:"12px 18px", border:"none", borderRadius:"100px", cursor:"pointer", boxShadow:"0 8px 30px rgba(194,24,91,.45)", animation:"pulse-rose 3s ease-in-out infinite", maxWidth:"calc(100vw - 32px)" }}>
-        {get("diag_btn","Test Diagnostic")}
-      </button>}
+      <AuraButton />
 
-      {/* WhatsApp flottant */}
-      <WhatsAppButton get={get} />
-
-      {showDiag && (
-        <div style={{ position:"fixed", inset:0, zIndex:500, background:"rgba(10,10,10,.92)", backdropFilter:"blur(12px)", display:"flex", alignItems:"flex-start", justifyContent:"center", padding:"16px", overflowY:"auto" }}
-          onClick={e => { if(e.target===e.currentTarget) setShowDiag(false); }}>
-          <div style={{ maxWidth:"680px", width:"100%", position:"relative", marginTop:"20px", marginBottom:"20px" }}>
-            <button onClick={() => setShowDiag(false)} style={{ position:"absolute", top:"-40px", right:"0", background:"none", border:"none", color:"rgba(201,169,106,.6)", fontSize:".85rem", cursor:"pointer", fontFamily:"var(--ff-b)", letterSpacing:".1em", textTransform:"uppercase" }}>Fermer</button>
-            <DiagnosticTest theme="dark" onComplete={(score) => { if(score>=4) setTimeout(()=>setShowDiag(false),3000); }} />
-          </div>
-        </div>
-      )}
-
-      <main>
+            <main>
         <Hero get={get} />
         <GoldDivider />
         <VagueSection get={get} />
