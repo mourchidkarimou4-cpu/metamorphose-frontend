@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
+import AuraButton from '../components/AuraButton'
 import { Link } from 'react-router-dom'
 
 export default function Brunch() {
@@ -57,5 +58,6 @@ export default function Brunch() {
         </a>
       </div>
     </div>
+    <AuraButton />
   )
 }

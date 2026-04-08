@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
+import AuraButton from '../components/AuraButton'
 import { Link, useNavigate } from "react-router-dom";
 
 const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY"; // À remplacer

@@ -1,5 +1,6 @@
 import API_URL from '../config.js'
 import { useState, useRef , useEffect } from "react";
+import AuraButton from '../components/AuraButton'
 import usePageBackground from "../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
