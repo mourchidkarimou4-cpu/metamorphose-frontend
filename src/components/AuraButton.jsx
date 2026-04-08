@@ -23,7 +23,7 @@ const STYLES = `
   }
   .aura-fab:hover{transform:scale(1.08)}
   .aura-window {
-    position:fixed;bottom:160px;right:16px;z-index:200;
+    position:fixed;bottom:230px;right:16px;z-index:200;
     width:360px;max-width:calc(100vw - 32px);
     background:#141414;border:1px solid rgba(201,169,106,.2);
     border-radius:20px;overflow:hidden;
@@ -293,7 +293,7 @@ export default function AuraButton() {
       <style>{STYLES}</style>
 
       {/* FAB */}
-      <div style={{position:'fixed',bottom:'88px',right:'16px',zIndex:149,display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'8px'}}>
+      <div style={{position:'fixed',bottom:'152px',right:'16px',zIndex:149,display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'8px'}}>
         {!open && (
           <div style={{background:'rgba(10,10,10,.92)',backdropFilter:'blur(8px)',border:'1px solid rgba(201,169,106,.25)',borderRadius:'20px',padding:'6px 14px',whiteSpace:'nowrap',fontFamily:"'Montserrat',sans-serif",fontSize:'.68rem',fontWeight:500,color:'rgba(201,169,106,.9)',animation:'aura-msg-in .4s .5s both'}}>
             ✦ Parlez à Aura
