@@ -747,6 +747,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Aura Métamorphose"      desc="Assistante intelligente · 24h/24"   to="/aura"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
                   <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
+                  <ExpRow title="MMO Learning"        desc="Cours de coaching gratuits"          to="/mmo-learning"/>
                 </div>
                 <Link to="/brunch" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 32px", borderTop:"1px solid rgba(255,255,255,.04)", textDecoration:"none", marginTop:"4px" }}
                   onClick={()=>setOpenMenu(null)}
@@ -839,6 +840,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             { label:"Aura",          to:"/aura" },
             { label:"Communauté",   to:"/communaute" },
             { label:"Don",          to:"/don" },
+            { label:"MMO Learning", to:"/mmo-learning" },
             { label:"Le Brunch",    to:"/brunch" },
             { label:"Contact",      to:"/contact" },
           ].map((l,i) => (
