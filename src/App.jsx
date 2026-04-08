@@ -23,6 +23,7 @@ import Store          from './pages/Store'
 import LiveMasterclass from './pages/LiveMasterclass'
 import Aura from './pages/Aura'
 import Masterclass from './pages/Masterclass'
+import MMOLearning from './pages/MMOLearning'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -65,7 +66,9 @@ export default function App() {
       <Route path="/store"      element={<Store />} />
       <Route path="/live"          element={<LiveMasterclass />} />
       <Route path="/masterclass"   element={<Masterclass />} />
-      <Route path="/aura"      element={<Aura />} />
+      <Route path="/aura"         element={<Aura />} />
+      <Route path="/mmo-learning"  element={<MMOLearning />} />
+      <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
