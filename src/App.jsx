@@ -24,6 +24,8 @@ import LiveMasterclass from './pages/LiveMasterclass'
 import Aura from './pages/Aura'
 import Masterclass from './pages/Masterclass'
 import MMOLearning from './pages/MMOLearning'
+import Evenements    from './pages/Evenements'
+import ScanTicket    from './pages/ScanTicket'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
