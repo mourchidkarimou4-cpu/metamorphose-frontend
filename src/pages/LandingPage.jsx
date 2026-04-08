@@ -836,7 +836,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             { label:"Masterclass",  to:"/masterclass" },
             { label:"Store MMO",    to:"/store" },
             { label:"Lives",        to:"/live" },
-            { label:"Agent IA",     to:"/agent-ia" },
+            { label:"Aura",          to:"/aura" },
             { label:"Communauté",   to:"/communaute" },
             { label:"Don",          to:"/don" },
             { label:"Le Brunch",    to:"/brunch" },
