@@ -10,7 +10,109 @@ const STYLES = `
   @keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
   @keyframes orb      { 0%,100%{transform:scale(1);opacity:.08} 50%{transform:scale(1.3);opacity:.15} }
   @keyframes countdown{ from{width:100%} to{width:0%} }
+
+  /* ── AJOUTS DESIGN GLOBAL ── */
+  @keyframes particle{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(-100vh) rotate(720deg);opacity:0}}
+  @keyframes shimmer-or{0%{background-position:-200% center}100%{background-position:200% center}}
+  @keyframes pulse-or{0%,100%{box-shadow:0 0 20px rgba(201,169,106,.2)}50%{box-shadow:0 0 40px rgba(201,169,106,.5)}}
+  @keyframes float-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  /* Scrollbar signature */
+  ::-webkit-scrollbar{width:3px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(201,169,106,.4);border-radius:2px}
+
+  /* Hover card amélioré */
+  .card-hover{transition:transform .4s cubic-bezier(0.4,0,0.2,1),box-shadow .4s cubic-bezier(0.4,0,0.2,1),border-color .4s cubic-bezier(0.4,0,0.2,1) !important}
+  .card-hover:hover{transform:translateY(-10px) scale(1.02) !important;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 30px rgba(201,169,106,.07) !important}
+
+  /* Boutons enrichis */
+  .btn-p{transition:background .25s,transform .25s,box-shadow .25s !important}
+  .btn-p:hover{transform:translateY(-3px) !important;box-shadow:0 14px 40px rgba(194,24,91,.38) !important}
+  .btn-s{transition:all .25s !important}
+  .btn-s:hover{transform:translateY(-3px) !important}
+
+  /* Sélection texte */
+  ::selection{background:rgba(194,24,91,.3);color:#F8F5F2}
+
+  /* Gold line */
+  .gold-line-anim{height:1px;background:linear-gradient(90deg,transparent,#C9A96A,transparent);opacity:.25;margin:0}
 `;
+
+// ── PARTICULES DORÉES ────────────────────────────────────────
+function GoldParticles() {{
+  const pts = [
+    {{s:3,x:"12%",d:"0s",  du:"7s", o:.5}},
+    {{s:2,x:"32%",d:"1.3s",du:"9s", o:.35}},
+    {{s:4,x:"55%",d:"0.6s",du:"6s", o:.55}},
+    {{s:2,x:"75%",d:"2.1s",du:"8s", o:.4}},
+    {{s:3,x:"88%",d:"1s",  du:"7.5s",o:.45}},
+  ];
+  return (
+    <>
+      <BackToTop />
+      <GoldCursor />
+      <GoldParticles />
+      <div style={{{{position:"fixed",inset:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}}}>
+      {{pts.map((p,i) => (
+        <div key={{i}} style={{{{
+          position:"absolute", bottom:"-10px", left:p.x,
+          width:`${{p.s}}px`, height:`${{p.s}}px`, borderRadius:"50%",
+          background:`rgba(201,169,106,${{p.o}})`,
+          boxShadow:`0 0 ${{p.s*2}}px rgba(201,169,106,${{p.o}})`,
+          animation:`particle ${{p.du}} ${{p.d}} ease-in infinite`,
+        }}}}/>
+      ))}}
+    </div>
+  );
+}}
+
+// ── BOUTON RETOUR EN HAUT ────────────────────────────────────
+function BackToTop() {{
+  const [vis, setVis] = useState(false);
+  useEffect(() => {{
+    const fn = () => setVis(window.scrollY > 400);
+    window.addEventListener("scroll", fn, {{passive:true}});
+    return () => window.removeEventListener("scroll", fn);
+  }}, []);
+  if (!vis) return null;
+  return (
+    <button onClick={{()=>window.scrollTo({{top:0,behavior:"smooth"}})}}
+      style={{{{
+        position:"fixed", bottom:"148px", right:"16px", zIndex:148,
+        width:"44px", height:"44px", borderRadius:"50%",
+        background:"rgba(201,169,106,.1)", border:"1px solid rgba(201,169,106,.3)",
+        cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
+        backdropFilter:"blur(12px)", transition:"all .3s",
+      }}}}
+      onMouseEnter={{e=>{{e.currentTarget.style.background="rgba(201,169,106,.22)";e.currentTarget.style.transform="translateY(-3px)"}}}}
+      onMouseLeave={{e=>{{e.currentTarget.style.background="rgba(201,169,106,.1)";e.currentTarget.style.transform="none"}}}}
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 12V4M4 8l4-4 4 4" stroke="#C9A96A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </button>
+  );
+}}
+
+// ── CURSEUR LUMINEUX ─────────────────────────────────────────
+function GoldCursor() {{
+  const [pos, setPos] = useState({{x:-200,y:-200}});
+  useEffect(() => {{
+    const fn = e => setPos({{x:e.clientX, y:e.clientY}});
+    window.addEventListener("mousemove", fn, {{passive:true}});
+    return () => window.removeEventListener("mousemove", fn);
+  }}, []);
+  return (
+    <div style={{{{
+      position:"fixed", left:pos.x-200, top:pos.y-200,
+      width:"400px", height:"400px", borderRadius:"50%",
+      background:"radial-gradient(circle,rgba(201,169,106,.04) 0%,transparent 70%)",
+      pointerEvents:"none", zIndex:9998, transition:"left .08s linear, top .08s linear",
+    }}}}/>
+  );
+}}
+
 
 export default function NotFound() {
   usePageBackground("notfound");

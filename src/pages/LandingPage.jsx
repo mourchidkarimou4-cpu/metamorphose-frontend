@@ -20,6 +20,7 @@ const STYLES = `
   ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--noir)}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px}
 
   @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+  @keyframes particle{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(-100vh) rotate(720deg);opacity:0}}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
   @keyframes pulse-rose{0%,100%{box-shadow:0 0 24px rgba(194,24,91,.35)}50%{box-shadow:0 0 52px rgba(194,24,91,.65)}}
   @keyframes orb{0%,100%{transform:scale(1) translate(0,0);opacity:.12}40%{transform:scale(1.3) translate(20px,-15px);opacity:.22}70%{transform:scale(.85) translate(-15px,10px);opacity:.08}}
@@ -49,8 +50,8 @@ const STYLES = `
   .reveal-scale.visible{opacity:1;transform:scale(1)}
   .reveal-dramatic{opacity:0;transform:translateY(60px) scale(.97);filter:blur(4px);transition:opacity 1s ease,transform 1s ease,filter 1s ease}
   .reveal-dramatic.visible{opacity:1;transform:none;filter:blur(0)}
-  .formule-card{transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease)}
-  .formule-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .formule-card{transition:transform .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease),background .4s var(--ease)}
+  .formule-card:hover{transform:translateY(-12px) scale(1.03) perspective(1000px) rotateX(2deg);box-shadow:0 24px 80px rgba(0,0,0,.5),0 0 40px rgba(201,169,106,.08);border-color:rgba(201,169,106,.5) !important}
   @keyframes slideIn{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:scale(1)}}
   @keyframes slideOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.05)}}
   .slide-active{animation:slideIn 1.2s ease both}
@@ -555,6 +556,120 @@ function Orb({ style }) {
   return <div style={{ position:"absolute", borderRadius:"50%", background:"radial-gradient(circle,rgba(201,169,106,.28),transparent 70%)", animation:"orb 10s ease-in-out infinite", pointerEvents:"none", ...style }}/>;
 }
 
+// ── PARTICULES DORÉES FLOTTANTES ──────────────────────────────
+function GoldParticles() {
+  const particles = [
+    { size:3, x:"15%", delay:"0s",   dur:"6s",  opacity:.6 },
+    { size:2, x:"28%", delay:"1.2s", dur:"8s",  opacity:.4 },
+    { size:4, x:"42%", delay:"0.5s", dur:"7s",  opacity:.5 },
+    { size:2, x:"58%", delay:"2s",   dur:"9s",  opacity:.35 },
+    { size:3, x:"72%", delay:"0.8s", dur:"6.5s",opacity:.55 },
+    { size:2, x:"85%", delay:"1.5s", dur:"7.5s",opacity:.4 },
+    { size:5, x:"22%", delay:"3s",   dur:"10s", opacity:.3 },
+    { size:2, x:"68%", delay:"2.5s", dur:"8.5s",opacity:.45 },
+  ];
+  return (
+    <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden", zIndex:1 }}>
+      {particles.map((p,i) => (
+        <div key={i} style={{
+          position:"absolute",
+          bottom:"-10px",
+          left:p.x,
+          width:`${p.size}px`,
+          height:`${p.size}px`,
+          borderRadius:"50%",
+          background:`rgba(201,169,106,${p.opacity})`,
+          boxShadow:`0 0 ${p.size*2}px rgba(201,169,106,${p.opacity})`,
+          animation:`particle ${p.dur} ${p.delay} ease-in infinite`,
+        }}/>
+      ))}
+    </div>
+  );
+}
+
+// ── BOUTON RETOUR EN HAUT ─────────────────────────────────────
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    function onScroll() { setVisible(window.scrollY > 500); }
+    window.addEventListener("scroll", onScroll, { passive:true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <button
+      onClick={() => window.scrollTo({ top:0, behavior:"smooth" })}
+      style={{
+        position:"fixed", bottom:"148px", right:"16px", zIndex:148,
+        width:"44px", height:"44px", borderRadius:"50%",
+        background:"rgba(201,169,106,.12)",
+        border:"1px solid rgba(201,169,106,.35)",
+        cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
+        backdropFilter:"blur(12px)",
+        transition:"all .3s",
+        animation:"revealUp .4s both",
+      }}
+      onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.25)"; e.currentTarget.style.transform="translateY(-3px)"; }}
+      onMouseLeave={e=>{ e.currentTarget.style.background="rgba(201,169,106,.12)"; e.currentTarget.style.transform="none"; }}
+      title="Retour en haut"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 12V4M4 8l4-4 4 4" stroke="#C9A96A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </button>
+  );
+}
+
+// ── CURSEUR LUMINEUX ──────────────────────────────────────────
+function GoldCursor() {
+  const [pos, setPos] = useState({ x:-100, y:-100 });
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    function onMove(e) { setPos({ x:e.clientX, y:e.clientY }); setVisible(true); }
+    function onLeave() { setVisible(false); }
+    window.addEventListener("mousemove", onMove, { passive:true });
+    window.addEventListener("mouseleave", onLeave);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseleave", onLeave); };
+  }, []);
+  return (
+    <div style={{
+      position:"fixed",
+      left:pos.x - 200,
+      top:pos.y - 200,
+      width:"400px",
+      height:"400px",
+      borderRadius:"50%",
+      background:"radial-gradient(circle,rgba(201,169,106,.04) 0%,transparent 70%)",
+      pointerEvents:"none",
+      zIndex:9999,
+      opacity: visible ? 1 : 0,
+      transition:"opacity .3s, left .08s linear, top .08s linear",
+    }}/>
+  );
+}
+
+// ── SÉPARATEUR ANIMÉ PREMIUM ──────────────────────────────────
+function GoldDividerAnimated() {
+  const ref = useRef(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if(e.isIntersecting) setVis(true); }, { threshold:.5 });
+    if(ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{ display:"flex", alignItems:"center", gap:"16px", padding:"0 24px", maxWidth:"900px", margin:"0 auto" }}>
+      <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,transparent,rgba(201,169,106,.3))", transform:vis?"scaleX(1)":"scaleX(0)", transformOrigin:"right", transition:"transform 1.2s cubic-bezier(0.4,0,0.2,1)" }}/>
+      <div style={{ display:"flex", gap:"6px", alignItems:"center", opacity:vis?1:0, transition:"opacity .8s .4s" }}>
+        <div style={{ width:"4px", height:"4px", borderRadius:"50%", background:"rgba(201,169,106,.4)" }}/>
+        <div style={{ width:"6px", height:"6px", borderRadius:"50%", background:"#C9A96A", boxShadow:"0 0 8px rgba(201,169,106,.6)" }}/>
+        <div style={{ width:"4px", height:"4px", borderRadius:"50%", background:"rgba(201,169,106,.4)" }}/>
+      </div>
+      <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,rgba(201,169,106,.3),transparent)", transform:vis?"scaleX(1)":"scaleX(0)", transformOrigin:"left", transition:"transform 1.2s cubic-bezier(0.4,0,0.2,1)" }}/>
+    </div>
+  );
+}
+
 function Navbar({ scrollProgress, onAuthOpen, get }) {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
@@ -1038,6 +1153,7 @@ function Hero({ get }) {
   return (
     <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"140px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
       <HeroDiaporama get={get} />
+      <GoldParticles />
 
       {/* Contenu au-dessus du diaporama */}
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", maxWidth:"900px", width:"100%", transform:`translateY(${offset * 0.25}px)`, transition:"transform .05s linear" }}>
@@ -1954,6 +2070,16 @@ function Footer({ get }) {
             </div>
           </div>
         </div>
+        {/* Signature Prélia */}
+        <div style={{ textAlign:"center", padding:"32px 0 0", borderTop:"1px solid rgba(255,255,255,.04)", marginBottom:"0" }}>
+          <div style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"rgba(201,169,106,.5)", letterSpacing:".04em", lineHeight:1.8 }}>
+            Je ne crée pas des apparences.
+          </div>
+          <div style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"rgba(201,169,106,.7)", letterSpacing:".04em", marginBottom:"6px" }}>
+            Je révèle des essences.
+          </div>
+          <div style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.4)" }}>— Prélia Apedo</div>
+        </div>
         {/* Section Partenaires */}
         {partenaires.length > 0 && (
           <div style={{ borderTop:"1px solid rgba(255,255,255,.04)", paddingTop:"36px", marginBottom:"32px" }}>
@@ -2027,20 +2153,22 @@ export default function LandingPage() {
         </div>
       )}
 
+      <BackToTop />
+      <GoldCursor />
       <main>
         <Hero get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <VagueSection get={get} />
         <StatsSection get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <Probleme get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <Methode get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <PreliaTeaser get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <ApercuTransformations get={get} />
-        <GoldDivider />
+        <GoldDividerAnimated />
         <Formules get={get} setShowCalc={setShowCalc} />
         <ListeAttente get={get} />
         <Ressources get={get} />
