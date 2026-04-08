@@ -41,8 +41,7 @@ function NavBar() {
       padding:'0 32px', height:'64px',
       display:'flex', alignItems:'center', justifyContent:'space-between',
     }}>
-      <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
-      <Link to="/" style={{ fontFamily:'var(--ff-b)', fontSize:'.68rem', letterSpacing:'.15em', textTransform:'uppercase', color:'rgba(248,245,242,.35)', textDecoration:'none' }}>← Accueil</Link>
+      <Link to="/" style={{ textDecoration:'none' }}>
         <span style={{ fontFamily:"var(--ff-t)", fontSize:'1rem' }}>
           <span style={{color:'#F8F5F2'}}>Méta'</span>
           <span style={{color:'#C9A96A'}}>Morph'</span>
