@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -283,6 +284,7 @@ function TicketQR({ inscrit }) {
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Masterclass() {
+  usePageBackground("live");
   const time = useCountdown(DATE_MASTERCLASS);
   const [inscrit, setInscrit] = useState(null);
   const [voirPlus, setVoirPlus] = useState(false);

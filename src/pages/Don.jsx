@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY";
@@ -112,6 +113,7 @@ function useReveal() {
 }
 
 export default function Don() {
+  usePageBackground("don");
   const [montant,       setMontant]       = useState(5000);
   const [montantCustom, setMontantCustom] = useState("");
   const [showCustom,    setShowCustom]    = useState(false);

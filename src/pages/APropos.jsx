@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const STYLES = `
@@ -56,6 +57,7 @@ function useSiteContent() {
 }
 
 export default function APropos() {
+  usePageBackground("apropos");
   const get = useSiteContent();
   useReveal();
 

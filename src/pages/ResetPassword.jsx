@@ -1,5 +1,6 @@
 import API_URL from '../config.js'
-import { useState } from "react";
+import { useState , useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
 const STYLES = `
@@ -10,6 +11,7 @@ const STYLES = `
 `;
 
 export default function ResetPassword() {
+  usePageBackground("auth");
   const [params]    = useSearchParams();
   const navigate    = useNavigate();
   const token       = params.get("token");

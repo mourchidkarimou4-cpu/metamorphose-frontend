@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const JITSI_DOMAIN = "meet.jit.si";
@@ -135,6 +136,7 @@ function JitsiMeet({ roomName, displayName, isAdmin, onClose }) {
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function LiveMasterclass() {
+  usePageBackground("live");
   const [tab,         setTab]         = useState("live"); // live | replays
   const [liveActif,   setLiveActif]   = useState(false);
   const [roomName,    setRoomName]    = useState("");

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300&display=swap');
@@ -12,6 +13,7 @@ const STYLES = `
 `;
 
 export default function NotFound() {
+  usePageBackground("notfound");
   const navigate   = useNavigate();
   const [count, setCount] = useState(10);
 

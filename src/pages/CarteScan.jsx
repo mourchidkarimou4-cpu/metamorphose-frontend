@@ -1,5 +1,6 @@
 import API_URL from '../config.js'
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { useParams, Link } from "react-router-dom";
 
 /* ================================================================
@@ -29,6 +30,7 @@ const STATUT_CONFIG = {
 };
 
 export default function CarteScan() {
+  usePageBackground("carte");
   const { code }     = useParams();
   const [carte,      setCarte]      = useState(null);
   const [loading,    setLoading]    = useState(true);

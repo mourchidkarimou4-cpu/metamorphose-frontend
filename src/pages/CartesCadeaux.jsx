@@ -1,5 +1,6 @@
 import API_URL from '../config.js'
-import { useState, useRef } from "react";
+import { useState, useRef , useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
 
@@ -292,6 +293,7 @@ function VerificateurCode() {
 
 /* ── PAGE PRINCIPALE ─────────────────────────────────────────── */
 export default function CartesCadeaux() {
+  usePageBackground("carte");
   const [form, setForm] = useState({
     formule:"F2", acheteur_nom:"", acheteur_email:"", acheteur_tel:"",
     destinataire_nom:"", destinataire_email:"", occasion:"", message_perso:"",

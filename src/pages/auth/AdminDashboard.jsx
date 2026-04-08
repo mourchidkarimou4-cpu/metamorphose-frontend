@@ -1,5 +1,6 @@
 import API_URL from '../../config.js'
 import { useState, useEffect, useCallback } from "react";
+import usePageBackground from "../../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -2048,6 +2049,7 @@ function MonCompteView({ toast }) {
 }
 
 export default function AdminDashboard() {
+  usePageBackground("admin");
   const navigate = useNavigate();
   const [active,  setActive]  = useState("stats");
   const [stats,   setStats]   = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});

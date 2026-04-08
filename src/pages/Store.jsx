@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link, useNavigate } from "react-router-dom";
 
 const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY"; // À remplacer
@@ -346,6 +347,7 @@ function ModalAchat({ produit, onClose }) {
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Store() {
+  usePageBackground("store");
   const [categorie, setCategorie] = useState("tout");
   const [produitSelectionne, setProduitSelectionne] = useState(null);
   useReveal();

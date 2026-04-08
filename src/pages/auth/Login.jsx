@@ -1,8 +1,10 @@
 import API_URL from '../../config.js'
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
+import usePageBackground from "../../hooks/usePageBackground";
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
+  usePageBackground("auth");
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState('')

@@ -21,7 +21,7 @@ import Communaute     from './pages/Communaute'
 import Don            from './pages/Don'
 import Store          from './pages/Store'
 import LiveMasterclass from './pages/LiveMasterclass'
-import AgentIA        from './pages/AgentIA'
+import Aura           from './pages/Aura'
 import Masterclass     from './pages/Masterclass'
 
 /* ── Route protégée membre ─────────────────────────────────── */
@@ -64,7 +64,7 @@ export default function App() {
       <Route path="/don"           element={<Don />} />
       <Route path="/store"         element={<Store />} />
       <Route path="/live"          element={<LiveMasterclass />} />
-      <Route path="/agent-ia"      element={<AgentIA />} />
+      <Route path="/aura"          element={<Aura />} />
       <Route path="/masterclass"    element={<Masterclass />} />
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/reset-password" element={<ResetPassword />} />

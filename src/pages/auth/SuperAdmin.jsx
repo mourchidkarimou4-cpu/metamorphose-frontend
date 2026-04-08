@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import usePageBackground from "../../hooks/usePageBackground";
 
 const SERVER = "http://localhost:8765";
 
@@ -612,6 +613,7 @@ function Dashboard({ token }) {
 
 /* ── APP ──────────────────────────────────────────────── */
 export default function SuperAdmin() {
+  usePageBackground("admin");
   const [token, setToken] = useState(() => sessionStorage.getItem("sa_token") || "");
 
   function handleLogin(t) {

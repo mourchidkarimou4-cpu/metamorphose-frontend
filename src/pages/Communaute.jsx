@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link, useNavigate } from "react-router-dom";
 
 const WHATSAPP_COMMUNAUTE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
@@ -144,6 +145,7 @@ function LockedOverlay({ estMembre, estConnecte }) {
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Communaute() {
+  usePageBackground("communaute");
   const [user]          = useState(() => JSON.parse(localStorage.getItem("mmorphose_user") || "null"));
   const [token]         = useState(() => localStorage.getItem("mmorphose_token"));
   const [userData,      setUserData]      = useState(null);

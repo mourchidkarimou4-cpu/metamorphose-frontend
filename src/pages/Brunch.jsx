@@ -1,6 +1,9 @@
+import { useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from 'react-router-dom'
 
 export default function Brunch() {
+  usePageBackground("brunch");
   return (
     <div style={{ background:"#0A0A0A", minHeight:"100vh", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif" }}>
       <style>{`

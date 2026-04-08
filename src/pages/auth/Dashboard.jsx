@@ -1,3 +1,4 @@
+import usePageBackground from "../../hooks/usePageBackground";
 import API_URL from '../../config.js'
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -146,6 +147,7 @@ function FormulaireTeomo({ user, onSuccess }) {
 }
 
 export default function Dashboard() {
+  usePageBackground("admin");
   const [user,    setUser]    = useState(null)
   const [guides,  setGuides]  = useState([])
   const [replays, setReplays] = useState([])

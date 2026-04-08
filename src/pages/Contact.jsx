@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 import InscriptionForm from "../components/InscriptionForm";
 
@@ -20,6 +21,7 @@ const STYLES = `
 `;
 
 export default function Contact() {
+  usePageBackground("contact");
   const [submitted, setSubmitted] = useState(false);
 
   return (

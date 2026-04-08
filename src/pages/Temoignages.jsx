@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const STYLES = `
@@ -53,6 +54,7 @@ function useSiteContent() {
 }
 
 export default function Temoignages() {
+  usePageBackground("temoignages");
   const get = useSiteContent();
   const [temos,   setTemos]   = useState([]);
   const [loading, setLoading] = useState(true);
