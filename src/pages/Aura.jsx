@@ -440,26 +440,23 @@ export default function Aura() {
     setHistory(newHistory);
     setIsTyping(true);
 
-    try {
-      const res = await fetch("/api/aura/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newHistory }),
-      });
-      const data = await res.json();
-      const reply = data?.content?.[0]?.text || "Je suis là pour toi... 💖 Dis-moi ce que tu ressens.";
-      setIsTyping(false);
-      addAuraMessage(reply);
-      setHistory(prev => [...prev, { role: "assistant", content: reply }]);
+    // Réponse locale — flow guidé sans IA externe
+    await delay(900);
+    setIsTyping(false);
 
-      const newCount = echangeCount + 1;
-      setEchangeCount(newCount);
-      if (newCount >= 3 && !showCTA) {
-        setTimeout(() => setShowCTA(true), 1000);
-      }
-    } catch {
-      setIsTyping(false);
-      addAuraMessage("Je suis là... mais j'ai besoin d'un instant. Réessaie ? 🌿");
+    const reponsesLibres = [
+      "Merci de me partager cela. 💛\n\nChaque mot que tu poses est déjà un pas vers toi-même.\n\nVeux-tu qu'on explore ensemble ce que tu ressens ?",
+      "Je t'entends... et ce que tu traverses mérite toute ton attention. 🌿\n\nSouvent, ce qu'on n'arrive pas à nommer, c'est ce qui nous pèse le plus.",
+      "Tu n'es pas seule dans ce chemin. 💖\n\nLa transformation commence toujours par ce moment — celui où on ose dire les choses.",
+      "Ce que tu partages est précieux. ✦\n\nPrend le temps de ressentir sans te juger. C'est déjà une forme de courage.",
+    ];
+    const idx = Math.floor(Math.random() * reponsesLibres.length);
+    addAuraMessage(reponsesLibres[idx]);
+
+    const newCount = echangeCount + 1;
+    setEchangeCount(newCount);
+    if (newCount >= 2 && !showCTA) {
+      setTimeout(() => setShowCTA(true), 1000);
     }
   }
 
