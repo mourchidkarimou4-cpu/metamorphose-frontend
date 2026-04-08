@@ -866,7 +866,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Masterclass OSEZ"  desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
                   <ExpRow title="Store MMO"          desc="Guides, formations & replays"       to="/store"/>
                   <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
-                  <ExpRow title="Assistante Métamorphose"      desc="Assistante intelligente · 24h/24"   to="/agent-ia"/>
+                  <ExpRow title="Aura Métamorphose"            desc="Assistante de transformation · 24h/24" to="/aura"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
                   <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
                 </div>
@@ -958,7 +958,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             { label:"Masterclass",  to:"/masterclass" },
             { label:"Store MMO",    to:"/store" },
             { label:"Lives",        to:"/live" },
-            { label:"Agent IA",     to:"/agent-ia" },
+            { label:"Aura",         to:"/aura" },
             { label:"Communauté",   to:"/communaute" },
             { label:"Don",          to:"/don" },
             { label:"Le Brunch",    to:"/brunch" },
