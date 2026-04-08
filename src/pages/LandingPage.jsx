@@ -744,7 +744,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Masterclass OSEZ"  desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
                   <ExpRow title="Store MMO"          desc="Guides, formations & replays"       to="/store"/>
                   <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
-                  <ExpRow title="Agent IA MÉTA"      desc="Assistante intelligente · 24h/24"   to="/agent-ia"/>
+                  <ExpRow title="Aura Métamorphose"      desc="Assistante intelligente · 24h/24"   to="/aura"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
                   <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
                 </div>
