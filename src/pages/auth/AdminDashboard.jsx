@@ -1,6 +1,4 @@
-import API_URL from '../../config.js'
 import { useState, useEffect, useCallback } from "react";
-import usePageBackground from "../../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -170,7 +168,7 @@ function useAdminAPI() {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`${API_URL}/api/admin${path}`, opts);
+    const res = await fetch(`/api/admin${path}`, opts);
     if (res.status === 401) { navigate("/espace-membre"); return null; }
     if (res.status === 204) return true;
     return res.json();
@@ -310,7 +308,7 @@ function StatsView({ stats }) {
         <p style={{ fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--or)", marginBottom:"20px" }}>
           Répartition par formule
         </p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"12px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px" }}>
           {Object.entries(FORMULES).map(([code, label]) => (
             <div key={code} style={{ textAlign:"center", padding:"16px", background:"rgba(255,255,255,.03)", borderRadius:"4px" }}>
               <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.8rem", fontWeight:700, color:"var(--rose)", marginBottom:"6px" }}>{stats.formules?.[code] || 0}</p>
@@ -892,7 +890,7 @@ function ImagesView({ api, toast }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch(API_URL + '/api/admin/images/upload/', {
+        const res = await fetch("/api/admin/images/upload/", {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,
@@ -1057,7 +1055,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch(API_URL + '/api/cadeaux/admin/liste/', {
+    fetch("/api/cadeaux/admin/liste/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => r.json())
@@ -1066,7 +1064,7 @@ function CartesView({ api, toast }) {
   }, []);
 
   async function activer(c) {
-    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/activer/`, {
+    const res = await fetch(`/api/cadeaux/admin/${c.id}/activer/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1077,7 +1075,7 @@ function CartesView({ api, toast }) {
   }
 
   async function marquerUtilisee(c) {
-    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/utiliser/`, {
+    const res = await fetch(`/api/cadeaux/admin/${c.id}/utiliser/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1108,7 +1106,7 @@ function CartesView({ api, toast }) {
       </div>
 
       {/* Stats rapides */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"12px", marginBottom:"24px" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px", marginBottom:"24px" }}>
         {[
           { label:"Total",       value: cartes.length,                                color:"var(--or)" },
           { label:"En attente",  value: cartes.filter(c=>c.statut==="en_attente").length, color:"var(--or)" },
@@ -1250,7 +1248,7 @@ function TemoignagesView({ api, toast }) {
 
   function fetchTemos() {
     setLoading(true);
-    fetch(`${API_URL}/api/avis/admin/?statut=${filter}`, {
+    fetch(`/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.json())
@@ -1294,7 +1292,7 @@ function TemoignagesView({ api, toast }) {
     if (audioFichier) data.append("audio_fichier",  audioFichier);
 
     try {
-      const url    = modal === "add" ? `${API_URL}/api/avis/admin/ajouter/` : `${API_URL}/api/avis/admin/${selected.id}/modifier/`;
+      const url    = modal === "add" ? "/api/avis/admin/ajouter/" : `/api/avis/admin/${selected.id}/modifier/`;
       const method = modal === "add" ? "POST" : "PATCH";
       const res    = await fetch(url, {
         method,
@@ -1313,7 +1311,7 @@ function TemoignagesView({ api, toast }) {
   }
 
   async function action(id, type) {
-    const res = await fetch(`${API_URL}/api/avis/admin/${id}/${type}/`, {
+    const res = await fetch(`/api/avis/admin/${id}/${type}/`, {
       method:"POST", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.ok) { fetchTemos(); setModal(null); toast(type==="approuver"?"Approuvé":"Refusé", type==="approuver"?"success":"error"); }
@@ -1321,7 +1319,7 @@ function TemoignagesView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce témoignage ?")) return;
-    const res = await fetch(`${API_URL}/api/avis/admin/${id}/supprimer/`, {
+    const res = await fetch(`/api/avis/admin/${id}/supprimer/`, {
       method:"DELETE", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.status === 204) { fetchTemos(); setModal(null); toast("Supprimé", "error"); }
@@ -1625,7 +1623,7 @@ function RessourcesAdminView({ api, toast }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch(API_URL + '/api/admin/images/upload/', {
+      const res = await fetch("/api/admin/images/upload/", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -1740,7 +1738,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token");
 
   useEffect(() => {
-    fetch(API_URL + '/api/admin/liste-attente/', { headers:{"Authorization":`Bearer ${token}`} })
+    fetch("/api/admin/liste-attente/", { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -1748,7 +1746,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch(API_URL + '/api/admin/liste-attente/notifier/', {
+    const res = await fetch("/api/admin/liste-attente/notifier/", {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -1802,7 +1800,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch(API_URL + '/api/admin/newsletter/', {
+      const res = await fetch("/api/admin/newsletter/", {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -1867,10 +1865,10 @@ function ExportView({ toast }) {
   }
 
   const exports = [
-    { label:"Membres",    desc:"Tous les membres avec leurs informations",     url:API_URL + '/api/admin/export/membres/',  file:"membres_metamorphose.csv" },
-    { label:"Demandes",   desc:"Toutes les demandes d'inscription reçues",     url:API_URL + '/api/admin/export/demandes/', file:"demandes_metamorphose.csv" },
-    { label:"Témoignages",desc:"Témoignages approuvés avec notes et pays",     url:API_URL + '/api/admin/export/temoignages/', file:"temoignages_metamorphose.csv" },
-    { label:"Liste attente",desc:"Personnes en liste d'attente",               url:API_URL + '/api/admin/export/attente/',  file:"liste_attente.csv" },
+    { label:"Membres",    desc:"Tous les membres avec leurs informations",     url:"/api/admin/export/membres/",  file:"membres_metamorphose.csv" },
+    { label:"Demandes",   desc:"Toutes les demandes d'inscription reçues",     url:"/api/admin/export/demandes/", file:"demandes_metamorphose.csv" },
+    { label:"Témoignages",desc:"Témoignages approuvés avec notes et pays",     url:"/api/admin/export/temoignages/", file:"temoignages_metamorphose.csv" },
+    { label:"Liste attente",desc:"Personnes en liste d'attente",               url:"/api/admin/export/attente/",  file:"liste_attente.csv" },
   ];
 
   return (
@@ -1918,7 +1916,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch(API_URL + '/api/admin/maintenance/', {
+    await fetch("/api/admin/maintenance/", {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })
@@ -1984,7 +1982,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch(API_URL + '/api/auth/update-profile/', {
+      const res = await fetch("/api/auth/update-profile/", {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -2000,7 +1998,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch(API_URL + '/api/auth/change-password/', {
+      const res = await fetch("/api/auth/change-password/", {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });
@@ -2049,7 +2047,6 @@ function MonCompteView({ toast }) {
 }
 
 export default function AdminDashboard() {
-  usePageBackground("admin");
   const navigate = useNavigate();
   const [active,  setActive]  = useState("stats");
   const [stats,   setStats]   = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});

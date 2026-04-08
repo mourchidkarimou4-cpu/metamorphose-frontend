@@ -1,10 +1,7 @@
-import API_URL from '../../config.js'
-import { useState , useEffect } from 'react'
-import usePageBackground from "../../hooks/usePageBackground";
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
-  usePageBackground("auth");
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState('')
@@ -21,10 +18,13 @@ export default function Login() {
       })
       const data = await res.json()
       if (res.ok) {
-        localStorage.clear()
-        localStorage.setItem('mmorphose_token', data.access)
-        localStorage.setItem('mmorphose_user',  JSON.stringify(data.user))
-        window.location.href = data.user.is_staff ? '/admin' : '/dashboard'
+        // CORRECTION 1 : setItem ciblés au lieu de localStorage.clear()
+        // CORRECTION 2 : refresh token stocké (renouvellement automatique)
+        localStorage.setItem('mmorphose_token',  data.access)
+        localStorage.setItem('mmorphose_refresh', data.refresh)
+        localStorage.setItem('mmorphose_user',   JSON.stringify(data.user))
+        // CORRECTION 3 : navigate() + replace:true au lieu de window.location.href
+        navigate(data.user.is_staff ? '/admin' : '/dashboard', { replace: true })
       } else {
         setError(data.detail || 'Identifiants incorrects.')
       }
@@ -49,7 +49,7 @@ export default function Login() {
         </Link>
 
         <p style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.1rem', marginBottom:'8px' }}>
-          <span style={{color:'#F8F5F2'}}>Meta'</span>
+          <span style={{color:'#F8F5F2'}}>Méta'</span>
           <span style={{color:'#C9A96A'}}>Morph'</span>
           <span style={{color:'#C2185B'}}>Ose</span>
         </p>
@@ -63,9 +63,9 @@ export default function Login() {
         )}
 
         <form onSubmit={handle} style={{ display:'flex', flexDirection:'column', gap:'13px' }}>
-          <input type="email" placeholder="Adresse e-mail" value={email} onChange={e=>setEmail(e.target.value)} required
+          <input type="email" placeholder="Adresse e-mail" value={email} onChange={e=>setEmail(e.target.value)} required autoComplete="email"
             style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', padding:'13px 16px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.88rem', fontWeight:300, width:'100%' }}/>
-          <input type="password" placeholder="Mot de passe" value={password} onChange={e=>setPassword(e.target.value)} required
+          <input type="password" placeholder="Mot de passe" value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="current-password"
             style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', padding:'13px 16px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.88rem', fontWeight:300, width:'100%' }}/>
           <button type="submit" disabled={loading} style={{ background:'#C2185B', color:'#fff', fontFamily:"'Montserrat'", fontWeight:600, fontSize:'.75rem', letterSpacing:'.15em', textTransform:'uppercase', padding:'15px', border:'none', borderRadius:'3px', cursor:loading?'not-allowed':'pointer', opacity:loading?.7:1, marginTop:'6px', transition:'all .3s' }}>
             {loading ? 'Connexion...' : 'Se connecter'}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const STYLES = `
@@ -49,7 +48,6 @@ function useSiteContent() {
 }
 
 export default function FAQPage() {
-  usePageBackground("faq");
   const get = useSiteContent();
   const [open, setOpen] = useState(null);
   const [cat,  setCat]  = useState("tout");

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
 const STYLES = `
@@ -57,14 +56,13 @@ function useSiteContent() {
 }
 
 export default function APropos() {
-  usePageBackground("apropos");
   const get = useSiteContent();
   useReveal();
 
   const valeurs = get("valeurs_items","Authenticité:Être soi-même pleinement|Bienveillance:Évoluer dans un espace sûr|Excellence:Une expérience structurée|Empowerment:Reprendre le pouvoir|Spiritualité:Transformation profonde|Holistique:Intérieur, extérieur, action")
     .split("|").filter(Boolean).map(v => { const [t, d] = v.split(":"); return { titre:t, desc:d }; });
 
-  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
+  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste|Leader Oratrice — AIL").split("|").filter(Boolean);
 
   return (
     <>

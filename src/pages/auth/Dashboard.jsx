@@ -1,5 +1,3 @@
-import usePageBackground from "../../hooks/usePageBackground";
-import API_URL from '../../config.js'
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -52,7 +50,7 @@ function FormulaireTeomo({ user, onSuccess }) {
     if (photoApres) data.append("photo_apres", photoApres);
 
     try {
-      const res = await fetch(API_URL + '/api/avis/soumettre/', {
+      const res = await fetch("/api/avis/soumettre/", {
         method:"POST",
         headers:{ "Authorization": `Bearer ${token}` },
         body: data,
@@ -146,8 +144,158 @@ function FormulaireTeomo({ user, onSuccess }) {
   );
 }
 
+
+/* ─────────────────────────────────────────────────────────────
+ * CORRECTION CRITIQUE : hooks extraits en vrais composants React.
+ *
+ * Ancienne version (buggée) : useState() appelé dans des IIFE :
+ *   {(() => { const [x, setX] = React.useState(''); ... })()}
+ * → Violation des Règles des Hooks → crashes silencieux possibles.
+ *
+ * Nouvelle version : FormulaireProfil et FormulaireMotDePasse
+ * sont de vrais composants React avec leurs propres hooks.
+ * ───────────────────────────────────────────────────────────── */
+function FormulaireProfil({ user }) {
+  const [prenom,   setPrenom]   = useState(user?.first_name || '')
+  const [nom,      setNom]      = useState(user?.last_name  || '')
+  const [email,    setEmail]    = useState(user?.email      || '')
+  const [whatsapp, setWhatsapp] = useState(user?.whatsapp   || '')
+  const [pays,     setPays]     = useState(user?.pays       || '')
+  const [saving,   setSaving]   = useState(false)
+  const [msg,      setMsg]      = useState('')
+
+  async function save(e) {
+    e.preventDefault()
+    setSaving(true); setMsg('')
+    const token = localStorage.getItem('mmorphose_token')
+    try {
+      const res = await fetch('/api/auth/update-profile/', {
+        method:'PATCH',
+        headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
+        body: JSON.stringify({ email, first_name:prenom, last_name:nom, whatsapp, pays }),
+      })
+      if (res.ok) {
+        const d = await res.json()
+        const saved = JSON.parse(localStorage.getItem('mmorphose_user') || '{}')
+        localStorage.setItem('mmorphose_user', JSON.stringify({...saved,...d}))
+        setMsg('success')
+      } else {
+        const d = await res.json()
+        setMsg(d.detail || 'Erreur')
+      }
+    } catch { setMsg('Serveur inaccessible.') }
+    setSaving(false)
+  }
+
+  const inputStyle = { width:'100%', padding:'11px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.85rem', fontWeight:300, outline:'none' }
+
+  return (
+    <div style={{ padding:'24px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'6px', marginBottom:'16px' }}>
+      <p style={{ fontFamily:"'Montserrat'", fontSize:'.65rem', letterSpacing:'.18em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'18px' }}>
+        Informations personnelles
+      </p>
+      <form onSubmit={save} style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+          <div>
+            <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Prénom</label>
+            <input style={inputStyle} value={prenom} onChange={e=>setPrenom(e.target.value)} placeholder='Votre prénom'/>
+          </div>
+          <div>
+            <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Nom</label>
+            <input style={inputStyle} value={nom} onChange={e=>setNom(e.target.value)} placeholder='Votre nom'/>
+          </div>
+        </div>
+        <div>
+          <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Email *</label>
+          <input style={inputStyle} type='email' value={email} onChange={e=>setEmail(e.target.value)} required/>
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+          <div>
+            <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>WhatsApp</label>
+            <input style={inputStyle} value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} placeholder='+229 01 XX XX XX'/>
+          </div>
+          <div>
+            <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Pays</label>
+            <input style={inputStyle} value={pays} onChange={e=>setPays(e.target.value)} placeholder='Votre pays'/>
+          </div>
+        </div>
+        {msg === 'success' && <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#4CAF50', textAlign:'center' }}>Informations mises à jour ✓</p>}
+        {msg && msg !== 'success' && <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#ef5350', textAlign:'center' }}>{msg}</p>}
+        <button type='submit' disabled={saving} style={{ padding:'13px', background:'#C2185B', color:'#fff', border:'none', borderRadius:'3px', fontFamily:"'Montserrat'", fontWeight:600, fontSize:'.74rem', letterSpacing:'.15em', textTransform:'uppercase', cursor:saving?'not-allowed':'pointer', opacity:saving?.7:1 }}>
+          {saving ? 'Enregistrement...' : 'Enregistrer'}
+        </button>
+      </form>
+    </div>
+  )
+}
+
+function FormulaireMotDePasse() {
+  const [oldPwd,  setOldPwd]  = useState('')
+  const [newPwd,  setNewPwd]  = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [showPwd, setShowPwd] = useState(false)
+  const [saving,  setSaving]  = useState(false)
+  const [msg,     setMsg]     = useState('')
+
+  async function changePass(e) {
+    e.preventDefault()
+    if (newPwd.length < 8)  { setMsg('8 caractères minimum'); return }
+    if (newPwd !== confirm) { setMsg('Les mots de passe ne correspondent pas'); return }
+    setSaving(true); setMsg('')
+    const token = localStorage.getItem('mmorphose_token')
+    try {
+      const res = await fetch('/api/auth/change-password/', {
+        method:'POST',
+        headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
+        body: JSON.stringify({ old_password:oldPwd, new_password:newPwd }),
+      })
+      if (res.ok) {
+        setMsg('success')
+        setOldPwd(''); setNewPwd(''); setConfirm('')
+      } else {
+        const d = await res.json()
+        setMsg(d.detail || 'Ancien mot de passe incorrect')
+      }
+    } catch { setMsg('Serveur inaccessible.') }
+    setSaving(false)
+  }
+
+  const inputStyle = { width:'100%', padding:'11px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.85rem', fontWeight:300, outline:'none' }
+
+  return (
+    <div style={{ padding:'24px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'6px' }}>
+      <p style={{ fontFamily:"'Montserrat'", fontSize:'.65rem', letterSpacing:'.18em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'18px' }}>
+        Changer le mot de passe
+      </p>
+      <form onSubmit={changePass} style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
+        {[
+          { label:'Ancien mot de passe',       val:oldPwd,  set:setOldPwd },
+          { label:'Nouveau mot de passe',       val:newPwd,  set:setNewPwd },
+          { label:'Confirmer le mot de passe',  val:confirm, set:setConfirm },
+        ].map(({label,val,set},i) => (
+          <div key={i}>
+            <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>{label}</label>
+            <div style={{ position:'relative' }}>
+              <input style={{...inputStyle, paddingRight:'60px'}} type={showPwd?'text':'password'} value={val} onChange={e=>set(e.target.value)} placeholder='••••••••' required/>
+              {i === 0 && (
+                <button type='button' onClick={()=>setShowPwd(!showPwd)} style={{ position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(248,245,242,.4)', cursor:'pointer', fontFamily:"'Montserrat'", fontSize:'.68rem' }}>
+                  {showPwd?'Cacher':'Voir'}
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+        {msg === 'success' && <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#4CAF50', textAlign:'center' }}>Mot de passe modifié ✓</p>}
+        {msg && msg !== 'success' && <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#ef5350', textAlign:'center' }}>{msg}</p>}
+        <button type='submit' disabled={saving} style={{ padding:'13px', background:'transparent', color:'#C9A96A', border:'1px solid #C9A96A', borderRadius:'3px', fontFamily:"'Montserrat'", fontWeight:600, fontSize:'.74rem', letterSpacing:'.15em', textTransform:'uppercase', cursor:saving?'not-allowed':'pointer', opacity:saving?.7:1 }}>
+          {saving ? 'Modification...' : 'Changer le mot de passe'}
+        </button>
+      </form>
+    </div>
+  )
+}
+
 export default function Dashboard() {
-  usePageBackground("admin");
   const [user,    setUser]    = useState(null)
   const [guides,  setGuides]  = useState([])
   const [replays, setReplays] = useState([])
@@ -167,10 +315,10 @@ export default function Dashboard() {
       const headers = { 'Authorization': 'Bearer ' + token }
       try {
         const [uRes, gRes, rRes, tRes] = await Promise.all([
-          fetch(API_URL + '/api/auth/me/',            { headers }),
-          fetch(API_URL + '/api/contenu/guides/',     { headers }),
-          fetch(API_URL + '/api/contenu/replays/',    { headers }),
-          fetch(API_URL + '/api/avis/mes-temoignages/', { headers }),
+          fetch('/api/auth/me/',            { headers }),
+          fetch('/api/contenu/guides/',     { headers }),
+          fetch('/api/contenu/replays/',    { headers }),
+          fetch('/api/avis/mes-temoignages/', { headers }),
         ])
         if (uRes.status === 401) { navigate('/espace-membre'); return }
         const [u, g, r, t] = await Promise.all([uRes.json(), gRes.json(), rRes.json(), tRes.json()])
@@ -190,12 +338,12 @@ export default function Dashboard() {
   }
 
   const BONUS = [
-    'Gerer efficacement son temps (Methode Eisenhower)',
-    'Trouver la passion de son coeur',
+    'Gérer efficacement son temps (Méthode Eisenhower)',
+    'Trouver la passion de son cœur',
     'Se presenter et parler de soi avec impact',
     'Affirmations pour situations du quotidien',
-    'Definir ses objectifs et sa vision',
-    'Club des Metamorphosees',
+    'Définir ses objectifs et sa vision',
+    'Club des Métamorphosées',
     'Replays des sessions live',
   ]
 
@@ -240,7 +388,7 @@ export default function Dashboard() {
             <button onClick={logout} style={{ background:'none', border:'1px solid rgba(255,255,255,.1)', borderRadius:'3px', padding:'8px 16px', color:'rgba(248,245,242,.4)', fontFamily:"'Montserrat'", fontSize:'.68rem', letterSpacing:'.12em', textTransform:'uppercase', cursor:'pointer', transition:'all .3s' }}
               onMouseEnter={e=>{e.target.style.borderColor='rgba(194,24,91,.4)';e.target.style.color='#C2185B'}}
               onMouseLeave={e=>{e.target.style.borderColor='rgba(255,255,255,.1)';e.target.style.color='rgba(248,245,242,.4)'}}>
-              Se deconnecter
+              Se déconnecter
             </button>
           </div>
         )}
@@ -254,7 +402,7 @@ export default function Dashboard() {
           </h1>
           {user && user.actif === false && (
             <div style={{ marginTop:'16px', padding:'14px 18px', background:'rgba(201,169,106,.06)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', fontSize:'.82rem', fontWeight:300, color:'rgba(248,245,242,.65)' }}>
-              Votre acces est en cours d activation. Prelia vous confirmera votre place sous 24 a 48h.
+              Votre acces est en cours d'activation. Prélia vous confirmera votre place sous 24 à 48h.
             </div>
           )}
         </div>
@@ -277,7 +425,7 @@ export default function Dashboard() {
         {tab === 'replays' && (
           <div style={{ animation:'fadeUp .5s both' }}>
             <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'16px' }}>
-              Replays · {replays.length > 0 ? replays.length + ' disponibles' : 'Bientot disponibles'}
+              Replays · {replays.length > 0 ? replays.length + ' disponibles' : 'Bientôt disponibles'}
             </p>
             {replays.length > 0 ? replays.map((r,i) => (
               <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 20px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'3px', marginBottom:'10px' }}>
@@ -289,7 +437,7 @@ export default function Dashboard() {
               </div>
             )) : (
               <div style={{ padding:'40px', textAlign:'center', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'4px' }}>
-                <p style={{ fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1rem', color:'rgba(248,245,242,.3)' }}>Les replays seront disponibles des le debut de votre vague.</p>
+                <p style={{ fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1rem', color:'rgba(248,245,242,.3)' }}>Les replays seront disponibles dès le début de votre vague.</p>
               </div>
             )}
           </div>
@@ -307,7 +455,7 @@ export default function Dashboard() {
                 </div>
                 {g.fichier
                   ? <a href={g.fichier} download style={{ background:'rgba(201,169,106,.1)', color:'#C9A96A', padding:'9px 18px', borderRadius:'3px', textDecoration:'none', fontFamily:"'Montserrat'", fontSize:'.68rem', fontWeight:600, letterSpacing:'.1em', textTransform:'uppercase', border:'1px solid rgba(201,169,106,.2)' }}>PDF</a>
-                  : <span style={{ fontSize:'.72rem', color:'rgba(248,245,242,.2)', fontStyle:'italic' }}>Bientot</span>
+                  : <span style={{ fontSize:'.72rem', color:'rgba(248,245,242,.2)', fontStyle:'italic' }}>Bientôt</span>
                 }
               </div>
             ))}
@@ -366,155 +514,8 @@ export default function Dashboard() {
         {tab === 'compte' && (
           <div style={{ maxWidth:'500px', animation:'fadeUp .5s both' }}>
             <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'20px' }}>Mon Compte</p>
-
-            {/* Informations personnelles */}
-            <div style={{ padding:'24px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'6px', marginBottom:'16px' }}>
-              <p style={{ fontFamily:"'Montserrat'", fontSize:'.65rem', letterSpacing:'.18em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'18px' }}>
-                Informations personnelles
-              </p>
-              {(() => {
-                const [prenom,   setPrenom]   = React.useState(user?.first_name  || '');
-                const [nom,      setNom]      = React.useState(user?.last_name   || '');
-                const [email,    setEmail]    = React.useState(user?.email       || '');
-                const [whatsapp, setWhatsapp] = React.useState(user?.whatsapp    || '');
-                const [pays,     setPays]     = React.useState(user?.pays        || '');
-                const [saving,   setSaving]   = React.useState(false);
-                const [msg,      setMsg]      = React.useState('');
-
-                async function save(e) {
-                  e.preventDefault();
-                  setSaving(true); setMsg('');
-                  const token = localStorage.getItem('mmorphose_token');
-                  try {
-                    const res = await fetch(API_URL + '/api/auth/update-profile/', {
-                      method:'PATCH',
-                      headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
-                      body: JSON.stringify({ email, first_name:prenom, last_name:nom, whatsapp, pays }),
-                    });
-                    if (res.ok) {
-                      const d = await res.json();
-                      localStorage.setItem('mmorphose_user', JSON.stringify({...user,...d}));
-                      setMsg('success');
-                    } else {
-                      const d = await res.json();
-                      setMsg(d.detail || 'Erreur');
-                    }
-                  } catch { setMsg('Serveur inaccessible.'); }
-                  setSaving(false);
-                }
-
-                const inputStyle = { width:'100%', padding:'11px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.85rem', fontWeight:300, outline:'none' };
-
-                return (
-                  <form onSubmit={save} style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                      <div>
-                        <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Prénom</label>
-                        <input style={inputStyle} value={prenom} onChange={e=>setPrenom(e.target.value)} placeholder='Votre prénom'/>
-                      </div>
-                      <div>
-                        <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Nom</label>
-                        <input style={inputStyle} value={nom} onChange={e=>setNom(e.target.value)} placeholder='Votre nom'/>
-                      </div>
-                    </div>
-                    <div>
-                      <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Email *</label>
-                      <input style={inputStyle} type='email' value={email} onChange={e=>setEmail(e.target.value)} required/>
-                    </div>
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                      <div>
-                        <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>WhatsApp</label>
-                        <input style={inputStyle} value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} placeholder='+229 01 XX XX XX'/>
-                      </div>
-                      <div>
-                        <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>Pays</label>
-                        <input style={inputStyle} value={pays} onChange={e=>setPays(e.target.value)} placeholder='Votre pays'/>
-                      </div>
-                    </div>
-                    {msg === 'success' && (
-                      <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#4CAF50', textAlign:'center' }}>Informations mises à jour</p>
-                    )}
-                    {msg && msg !== 'success' && (
-                      <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#ef5350', textAlign:'center' }}>{msg}</p>
-                    )}
-                    <button type='submit' disabled={saving} style={{ padding:'13px', background:'#C2185B', color:'#fff', border:'none', borderRadius:'3px', fontFamily:"'Montserrat'", fontWeight:600, fontSize:'.74rem', letterSpacing:'.15em', textTransform:'uppercase', cursor:saving?'not-allowed':'pointer', opacity:saving?.7:1 }}>
-                      {saving ? 'Enregistrement...' : 'Enregistrer'}
-                    </button>
-                  </form>
-                );
-              })()}
-            </div>
-
-            {/* Changer mot de passe */}
-            <div style={{ padding:'24px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'6px' }}>
-              <p style={{ fontFamily:"'Montserrat'", fontSize:'.65rem', letterSpacing:'.18em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'18px' }}>
-                Changer le mot de passe
-              </p>
-              {(() => {
-                const [oldPwd,   setOldPwd]   = React.useState('');
-                const [newPwd,   setNewPwd]   = React.useState('');
-                const [confirm,  setConfirm]  = React.useState('');
-                const [showPwd,  setShowPwd]  = React.useState(false);
-                const [saving,   setSaving]   = React.useState(false);
-                const [msg,      setMsg]      = React.useState('');
-
-                async function changePass(e) {
-                  e.preventDefault();
-                  if (newPwd.length < 8) { setMsg('8 caractères minimum'); return; }
-                  if (newPwd !== confirm) { setMsg('Les mots de passe ne correspondent pas'); return; }
-                  setSaving(true); setMsg('');
-                  const token = localStorage.getItem('mmorphose_token');
-                  try {
-                    const res = await fetch(API_URL + '/api/auth/change-password/', {
-                      method:'POST',
-                      headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
-                      body: JSON.stringify({ old_password:oldPwd, new_password:newPwd }),
-                    });
-                    if (res.ok) {
-                      setMsg('success');
-                      setOldPwd(''); setNewPwd(''); setConfirm('');
-                    } else {
-                      const d = await res.json();
-                      setMsg(d.detail || 'Ancien mot de passe incorrect');
-                    }
-                  } catch { setMsg('Serveur inaccessible.'); }
-                  setSaving(false);
-                }
-
-                const inputStyle = { width:'100%', padding:'11px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.85rem', fontWeight:300, outline:'none' };
-
-                return (
-                  <form onSubmit={changePass} style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                    {[
-                      { label:'Ancien mot de passe',        val:oldPwd,  set:setOldPwd },
-                      { label:'Nouveau mot de passe',       val:newPwd,  set:setNewPwd },
-                      { label:'Confirmer le mot de passe',  val:confirm, set:setConfirm },
-                    ].map(({label,val,set},i) => (
-                      <div key={i}>
-                        <label style={{ fontFamily:"'Montserrat'", fontSize:'.6rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(248,245,242,.4)', display:'block', marginBottom:'6px' }}>{label}</label>
-                        <div style={{ position:'relative' }}>
-                          <input style={{...inputStyle, paddingRight:'60px'}} type={showPwd?'text':'password'} value={val} onChange={e=>set(e.target.value)} placeholder='••••••••' required/>
-                          {i === 0 && (
-                            <button type='button' onClick={()=>setShowPwd(!showPwd)} style={{ position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(248,245,242,.4)', cursor:'pointer', fontFamily:"'Montserrat'", fontSize:'.68rem' }}>
-                              {showPwd?'Cacher':'Voir'}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {msg === 'success' && (
-                      <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#4CAF50', textAlign:'center' }}>Mot de passe modifié</p>
-                    )}
-                    {msg && msg !== 'success' && (
-                      <p style={{ fontFamily:"'Montserrat'", fontSize:'.78rem', color:'#ef5350', textAlign:'center' }}>{msg}</p>
-                    )}
-                    <button type='submit' disabled={saving} style={{ padding:'13px', background:'transparent', color:'#C9A96A', border:'1px solid #C9A96A', borderRadius:'3px', fontFamily:"'Montserrat'", fontWeight:600, fontSize:'.74rem', letterSpacing:'.15em', textTransform:'uppercase', cursor:saving?'not-allowed':'pointer', opacity:saving?.7:1 }}>
-                      {saving ? 'Modification...' : 'Changer le mot de passe'}
-                    </button>
-                  </form>
-                );
-              })()}
-            </div>
+            <FormulaireProfil user={user} />
+            <FormulaireMotDePasse />
           </div>
         )}
 
@@ -524,10 +525,10 @@ export default function Dashboard() {
             <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'20px' }}>Mon profil</p>
             {[
               ['Email',    user.email],
-              ['Formule',  FORMULES[user.formule] || 'Non definie'],
-              ['Pays',     user.pays || 'Non renseigne'],
-              ['WhatsApp', user.whatsapp || 'Non renseigne'],
-              ['Statut',   user.actif ? 'Acces actif' : 'En attente'],
+              ['Formule',  FORMULES[user.formule] || 'Non définie'],
+              ['Pays',     user.pays || 'Non renseigné'],
+              ['WhatsApp', user.whatsapp || 'Non renseigné'],
+              ['Statut',   user.actif ? 'Accès actif' : 'En attente'],
             ].map(([label,val],i) => (
               <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'14px 0', borderBottom:'1px solid rgba(255,255,255,.05)' }}>
                 <span style={{ fontSize:'.72rem', fontWeight:500, letterSpacing:'.1em', textTransform:'uppercase', color:'rgba(248,245,242,.35)' }}>{label}</span>
@@ -535,21 +536,21 @@ export default function Dashboard() {
               </div>
             ))}
             <div style={{ marginTop:'28px', display:'flex', gap:'12px', flexWrap:'wrap' }}>
-                <button onClick={async () => {
-                  const token = localStorage.getItem('mmorphose_token');
-                  const res = await fetch(API_URL + '/api/auth/certificat/', { headers:{'Authorization':`Bearer ${token}`} });
-                  if(res.ok) {
-                    const blob = await res.blob();
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = 'Certificat_MetaMorphOse.pdf';
-                    a.click();
-                  } else { alert('Erreur lors de la génération du certificat.'); }
-                }} style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', color:'#fff', background:'#C2185B', border:'none', borderRadius:'3px', padding:'12px 20px', cursor:'pointer' }}>
-                  Télécharger mon certificat
-                </button>
+              <button onClick={async () => {
+                const token = localStorage.getItem('mmorphose_token');
+                const res = await fetch('/api/auth/certificat/', { headers:{'Authorization':`Bearer ${token}`} });
+                if(res.ok) {
+                  const blob = await res.blob();
+                  const a = document.createElement('a');
+                  a.href = URL.createObjectURL(blob);
+                  a.download = 'Certificat_MetaMorphOse.pdf';
+                  a.click();
+                } else { alert('Erreur lors de la génération du certificat.'); }
+              }} style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', color:'#fff', background:'#C2185B', border:'none', borderRadius:'3px', padding:'12px 20px', cursor:'pointer' }}>
+                Télécharger mon certificat
+              </button>
               <a href="https://wa.me/22901961140933" style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:500, letterSpacing:'.12em', textTransform:'uppercase', color:'#C9A96A', textDecoration:'none', border:'1px solid rgba(201,169,106,.25)', borderRadius:'3px', padding:'12px 20px', display:'inline-block' }}>
-                Contacter Prelia
+                Contacter Prélia
               </a>
             </div>
           </div>

@@ -1,4 +1,3 @@
-import API_URL from '../config.js'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InscriptionForm from "./InscriptionForm";
@@ -44,7 +43,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
     setLoading(true);
     setError("");
     try {
-      const res  = await fetch(API_URL + '/api/auth/login/', {
+      const res  = await fetch("/api/auth/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -54,7 +53,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
         localStorage.setItem("mmorphose_token", data.access);
         localStorage.setItem("mmorphose_user", JSON.stringify(data.user));
         onClose();
-        window.location.href = data.user.is_staff ? "/admin" : "/dashboard";
+        navigate("/dashboard");
       } else {
         setError(data.detail || "Identifiants incorrects.");
       }
@@ -87,10 +86,10 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
         pointerEvents: "none",
       }}>
         <div style={{
-          maxWidth: "480px", width: "100%",
+          maxWidth: "520px", width: "100%",
           background: "#141414",
           border: "1px solid rgba(201,169,106,.15)",
-          borderRadius: "6px", maxHeight: "90vh", overflowY: "auto",
+          borderRadius: "6px",
           pointerEvents: "all",
           animation: "modalIn .4s both",
           position: "relative",
@@ -104,7 +103,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
           }}></button>
 
           {/* Logo */}
-          <div style={{ textAlign: "center", padding: "20px 28px 0" }}>
+          <div style={{ textAlign: "center", padding: "36px 36px 0" }}>
             <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "1rem", marginBottom: "20px" }}>
               <span style={{color:"#F8F5F2"}}>Méta'</span>
               <span style={{color:"#C9A96A"}}>Morph'</span>
@@ -132,7 +131,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
             </div>
           </div>
 
-          <div style={{ padding: "16px 28px 24px" }}>
+          <div style={{ padding: "28px 36px 36px" }}>
 
             {/* ── ONGLET INSCRIPTION ── */}
             {tab === "inscription" && (

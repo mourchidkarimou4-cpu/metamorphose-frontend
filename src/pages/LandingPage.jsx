@@ -169,11 +169,8 @@ function useSiteContent() {
 
   useEffect(() => {
     let cancelled = false;
-    let retries   = 0;
-    let timerId   = null;
-
     function fetchContent() {
-      fetch("/api/admin/config/public/")
+      fetch("https://metamorphose-backend.onrender.com/api/admin/config/public/")
         .then(r => {
           if (!r.ok) throw new Error("API indisponible");
           return r.json();
@@ -187,15 +184,11 @@ function useSiteContent() {
         })
         .catch(() => {
           if (cancelled) return;
-          if (retries++ < 3) timerId = setTimeout(fetchContent, 6000);
+          setTimeout(fetchContent, 6000);
         });
     }
-
     fetchContent();
-    return () => {
-      cancelled = true;
-      if (timerId) clearTimeout(timerId);
-    };
+    return () => { cancelled = true; };
   }, []);
   const get = (cle, defaut = "") => content[cle] || defaut;
 
@@ -253,23 +246,23 @@ function StatCard({ valeur, label, delay="0s" }) {
       <p style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(2.2rem,5vw,3.5rem)", fontWeight:700, lineHeight:1, marginBottom:"10px", background:"linear-gradient(135deg,#C9A96A,#E8D5A8,#C9A96A)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerGold 3s linear infinite" }}>
         {started ? count : 0}{suffix}
       </p>
-      <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.85)", fontWeight:500, wordBreak:"break-word", overflowWrap:"break-word", hyphens:"auto" }}>{label}</p>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.4)", fontWeight:500 }}>{label}</p>
     </div>
   );
 }
 
 function StatsSection({ get }) {
   const stats = [
-    { valeur: get("stat_femmes","100+"),  label: get("stat_label1","Femmes transformées") },
-    { valeur: get("stat_pays","8+"),     label: get("stat_label2","Pays représentés") },
-    { valeur: get("stat_semaines","8"),   label: get("stat_label3","Semaines d'accompagnement") },
+    { valeur: get("stat_femmes","200+"),  label: get("stat_label1","Femmes transformées") },
+    { valeur: get("stat_pays","15+"),     label: get("stat_label2","Pays représentés") },
+    { valeur: get("stat_semaines","8"),   label: get("stat_label3","Semaines de programme") },
     { valeur: get("stat_4","98%"),        label: get("stat_label4","Taux de satisfaction") },
   ];
   return (
     <section style={{ padding:"80px 24px" }}>
       <div style={{ maxWidth:"900px", margin:"0 auto" }}>
         <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", textAlign:"center", marginBottom:"40px" }}>En chiffres</p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"16px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:"16px" }}>
           {stats.map((s,i) => <StatCard key={i} valeur={s.valeur} label={s.label} delay={`${i*.12}s`}/>)}
         </div>
       </div>
@@ -301,12 +294,12 @@ function useCountdown(dateStr) {
 
 function VagueSection({ get }) {
   const active     = get("vague_active","0") === "1";
-  const total      = parseInt(get("vague_places_total","60"));
-  const prises     = parseInt(get("vague_places_prises","20"));
+  const total      = parseInt(get("vague_places_total","20"));
+  const prises     = parseInt(get("vague_places_prises","0"));
   const restantes  = Math.max(0, total - prises);
   const pct        = Math.min(100, Math.round((prises / total) * 100));
-  const dateFerme  = get("vague_date_fermeture","2026-05-10");
-  const nomVague   = get("vague_nom","Prochaine cohorte · 5 Mai 2026");
+  const dateFerme  = get("vague_date_fermeture","");
+  const nomVague   = get("vague_nom","Prochaine vague");
   const time       = useCountdown(dateFerme);
 
   if (!active) return null;
@@ -339,7 +332,7 @@ function VagueSection({ get }) {
                 <div style={{ background:"rgba(194,24,91,.15)", border:"1px solid rgba(194,24,91,.3)", borderRadius:"3px", padding:"8px 12px", fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:700, color:"var(--rose)", minWidth:"44px" }}>
                   {String(t.v).padStart(2,"0")}
                 </div>
-                <p style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(248,245,242,.85)", marginTop:"4px" }}>{t.l}</p>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", marginTop:"4px" }}>{t.l}</p>
               </div>
             ))}
           </div>
@@ -350,7 +343,7 @@ function VagueSection({ get }) {
       <div style={{ height:"4px", background:"rgba(255,255,255,.08)", borderRadius:"2px", overflow:"hidden", marginBottom:"8px" }}>
         <div style={{ height:"100%", width:`${pct}%`, background:"linear-gradient(90deg,var(--rose),#e91e8c)", borderRadius:"2px", transition:"width 1s var(--ease)" }}/>
       </div>
-      <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.85)", fontWeight:300 }}>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.4)", fontWeight:300 }}>
         {prises} inscription{prises > 1?"s":""} sur {total} places · Les inscriptions ferment le {dateFerme ? new Date(dateFerme).toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" }) : ""}
       </p>
     </div>
@@ -510,7 +503,7 @@ function CalculateurFormule({ onClose }) {
 /* ── Chat WhatsApp flottant ─────────────────────────────────── */
 function WhatsAppButton({ get }) {
   const [open, setOpen] = useState(false);
-  const numero  = get("whatsapp_numero","22901961140933");
+  const numero  = get("whatsapp_numero","");  // CORRECTION : pas de numéro hardcodé dans le code source public
   const message = encodeURIComponent(get("whatsapp_message","Bonjour Prélia, je suis intéressée par Méta'Morph'Ose."));
   const url     = `https://wa.me/${numero}?text=${message}`;
 
@@ -526,7 +519,7 @@ function WhatsAppButton({ get }) {
             Ouvrir WhatsApp
           </a>
           <div style={{ marginTop:"12px", display:"flex", flexDirection:"column", gap:"6px" }}>
-            <a href={`tel:+${numero}`} style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.85)", textDecoration:"none", textAlign:"center" }}>
+            <a href={`tel:+${numero}`} style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", textDecoration:"none", textAlign:"center" }}>
               +{numero.replace(/(\d{3})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,"$1 $2 $3 $4 $5 $6")}
             </a>
           </div>
@@ -580,8 +573,8 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
   /* ── Styles partagés ── */
   const triggerStyle = {
     fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
-    fontSize:".82rem", fontWeight:600, letterSpacing:".08em",
-    color:"rgba(248,245,242,.92)", background:"none", border:"none",
+    fontSize:".82rem", fontWeight:300, letterSpacing:".08em",
+    color:"rgba(248,245,242,.42)", background:"none", border:"none",
     cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
     gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
   };
@@ -598,19 +591,16 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
   /* ── Panel partagé ── */
   const panelStyle = {
-    position:"fixed", top: scrolled ? "60px" : "72px", left:"50%", transform:"translateX(-50%)",
-    background:"#1c1c1c",
-    border:"1px solid rgba(201,169,106,.35)",
-    borderTop:"2px solid rgba(201,169,106,.7)",
-    zIndex:300,
-    boxShadow:"0 20px 60px rgba(0,0,0,.6)",
+    position:"absolute", top:"calc(100% + 1px)", left:"50%", transform:"translateX(-50%)",
+    background:"#0d0d0d", border:"1px solid rgba(201,169,106,.12)",
+    borderTop:"1px solid rgba(201,169,106,.3)", zIndex:300,
     animation:"panelIn .22s cubic-bezier(.4,0,.2,1) both",
   };
 
   const panelLabel = {
     fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
     fontSize:".6rem", fontWeight:300, letterSpacing:".28em", textTransform:"uppercase",
-    color:"rgba(201,169,106,.7)", marginBottom:"20px",
+    color:"rgba(201,169,106,.35)", marginBottom:"20px",
     paddingBottom:"10px", borderBottom:"1px solid rgba(255,255,255,.04)",
     display:"block",
   };
@@ -637,11 +627,11 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
     return (
       <Link to={to||"#formules"} style={{ display:"flex", alignItems:"center", padding:"11px 0", borderBottom:"1px solid rgba(255,255,255,.03)", cursor:"pointer", textDecoration:"none" }}
         onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
-        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".9rem", color:"rgba(201,169,106,.5)", width:"28px" }}>{code}</span>
-        <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".83rem", fontWeight:600, color: hov ? "#C9A96A" : "rgba(248,245,242,.95)", flex:1, padding:"0 14px", transition:"color .2s" }}>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".9rem", color:"rgba(201,169,106,.2)", width:"28px" }}>{code}</span>
+        <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".83rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", flex:1, padding:"0 14px", transition:"color .2s" }}>
           {name} {tag && <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".48rem", letterSpacing:".14em", textTransform:"uppercase", border:"1px solid rgba(201,169,106,.25)", color:"rgba(201,169,106,.6)", padding:"2px 6px", marginLeft:"8px" }}>{tag}</span>}
         </span>
-        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".82rem", fontWeight:300, color: hov ? "#C9A96A" : "rgba(201,169,106,.85)", transition:"color .2s" }}>{prix}</span>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".82rem", fontWeight:300, color: hov ? "rgba(201,169,106,.7)" : "rgba(201,169,106,.4)", transition:"color .2s" }}>{prix}</span>
       </Link>
     );
   }
@@ -653,7 +643,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
         <span style={{ width:"3px", height:"3px", borderRadius:"50%", background: hov ? "#C9A96A" : "rgba(201,169,106,.25)", flexShrink:0, marginTop:"8px", transition:"background .2s" }}/>
         <div>
-          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".8rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.95)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".8rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
           <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".56rem", fontWeight:300, color:"rgba(248,245,242,.22)", letterSpacing:".04em" }}>{desc}</span>
         </div>
       </Link>
@@ -682,10 +672,13 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             <span style={{ color:"#C9A96A" }}>Morph'</span>
             <span style={{ color:"#C2185B" }}>Ose</span>
           </span>
+          <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".5rem", fontWeight:300, letterSpacing:".32em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", lineHeight:1 }}>
+            White & Black · Prélia Apedo
+          </span>
         </a>
 
         {/* ── Links desktop ── */}
-        <div className="nav-links" style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center", zIndex:201 }}>
+        <div className="nav-links" style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }}>
 
           {/* Programme */}
           <div style={{ position:"relative" }}>
@@ -751,7 +744,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Masterclass OSEZ"  desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
                   <ExpRow title="Store MMO"          desc="Guides, formations & replays"       to="/store"/>
                   <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
-                  <ExpRow title="Aura Métamorphose"            desc="Assistante de transformation · 24h/24" to="/aura"/>
+                  <ExpRow title="Agent IA MÉTA"      desc="Assistante intelligente · 24h/24"   to="/agent-ia"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
                   <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
                 </div>
@@ -805,18 +798,18 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
       </nav>
 
       {/* ── Bandeau fermeture ── */}
-      {get("vague_active","1") === "1" && get("vague_date_fermeture","2026-05-10") && (() => {
-        const dateF = new Date(get("vague_date_fermeture","2026-05-10"));
+      {get("vague_active","1") === "1" && get("vague_date_fermeture","") && (() => {
+        const dateF = new Date(get("vague_date_fermeture",""));
         const diff  = dateF - new Date();
         if (diff <= 0) return null;
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"60px", zIndex:99, marginTop:"0" }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"60px", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
-              {" "}— {parseInt(get("vague_places_total","0")) - parseInt(get("vague_places_prises","20"))} places restantes
+              {" "}— {parseInt(get("vague_places_total","0")) - parseInt(get("vague_places_prises","0"))} places restantes
             </p>
           </div>
         );
@@ -843,7 +836,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             { label:"Masterclass",  to:"/masterclass" },
             { label:"Store MMO",    to:"/store" },
             { label:"Lives",        to:"/live" },
-            { label:"Aura",         to:"/aura" },
+            { label:"Agent IA",     to:"/agent-ia" },
             { label:"Communauté",   to:"/communaute" },
             { label:"Don",          to:"/don" },
             { label:"Le Brunch",    to:"/brunch" },
@@ -902,7 +895,7 @@ const SLIDES = [
   },
 ];
 
-function HeroDiaporama({ get }) { // images plein écran derrière navbar transparente
+function HeroDiaporama({ get }) {
   const [current, setCurrent] = useState(0);
   const [prev,    setPrev]    = useState(null);
 
@@ -1036,14 +1029,14 @@ function Hero({ get }) {
   }, []);
 
   return (
-    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"140px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
+    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
       <HeroDiaporama get={get} />
 
       {/* Contenu au-dessus du diaporama */}
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", maxWidth:"900px", width:"100%", transform:`translateY(${offset * 0.25}px)`, transition:"transform .05s linear" }}>
 
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".66rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", opacity:.8, marginBottom:"28px", animation:"revealUp .8s both" }}>
-        {get("hero_mention","Un programme créé par Prélia Apedo Ahonon · Fondatrice de White & Black")}
+        {get("hero_mention","Un programme créé par Prélia Apedo · Fondatrice de White & Black")}
       </p>
 
       <h1 className="hero-title" style={{ position:"relative", fontFamily:"var(--ff-t)", fontSize:"clamp(2.2rem,8vw,6.5rem)", fontWeight:700, lineHeight:1.06, marginBottom:"24px", animation:"revealUp .9s .15s both" }}>
@@ -1233,7 +1226,7 @@ function AvantApres({ get }) {
 
         {transformations.map((t,i) => (
           <div key={i} className="reveal grid-avant-apres" style={{ transitionDelay:`${i*.08}s`, display:"grid", gridTemplateColumns:"1fr 40px 1fr", alignItems:"center", padding:"16px 0", borderBottom:"1px solid rgba(255,255,255,.04)" }}>
-            <div style={{ padding:"14px 18px", background:"rgba(255,255,255,.02)", borderRadius:"2px", fontFamily:"var(--ff-b)", fontSize:".88rem", color:"rgba(248,245,242,.85)", fontWeight:300, fontStyle:"italic" }}>{t.avant}</div>
+            <div style={{ padding:"14px 18px", background:"rgba(255,255,255,.02)", borderRadius:"2px", fontFamily:"var(--ff-b)", fontSize:".88rem", color:"rgba(248,245,242,.4)", fontWeight:300, fontStyle:"italic" }}>{t.avant}</div>
             <div style={{ textAlign:"center", color:"var(--or)", fontSize:".9rem", fontFamily:"var(--ff-b)" }}>→</div>
             <div style={{ padding:"14px 18px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"2px", fontFamily:"var(--ff-b)", fontSize:".88rem", color:"rgba(248,245,242,.88)", fontWeight:400 }}>{t.apres}</div>
           </div>
@@ -1304,7 +1297,7 @@ function PourQui({ get }) {
                   <div style={{ width:"20px", height:"20px", borderRadius:"50%", background:"rgba(239,83,80,.08)", border:"1px solid rgba(239,83,80,.25)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:"1px" }}>
                     <div style={{ width:"8px", height:"1px", background:"rgba(239,83,80,.6)", borderRadius:"1px" }}/>
                   </div>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.85)", lineHeight:1.6 }}>{item}</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.4)", lineHeight:1.6 }}>{item}</p>
                 </div>
               ))}
             </div>
@@ -1322,7 +1315,7 @@ function PourQui({ get }) {
 }
 
 function Prelia({ get }) {
-  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
+  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste|Leader Oratrice — AIL").split("|").filter(Boolean);
   return (
     <section id="prelia" style={{ padding:"130px 24px", background:"linear-gradient(135deg,#3a2518 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
@@ -1330,7 +1323,7 @@ function Prelia({ get }) {
           <div className="reveal-left">
             <div style={{ position:"relative", paddingBottom:"125%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.18)", borderRadius:"4px", overflow:"hidden" }}>
               {get("photo_prelia","") ? (
-                <img src={get("photo_prelia","")} alt="Prélia Apedo Ahonon"
+                <img src={get("photo_prelia","")} alt="Prélia Apedo"
                   style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
               ) : (
                 <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"12px" }}>
@@ -1340,7 +1333,7 @@ function Prelia({ get }) {
               <div style={{ position:"absolute", inset:"14px", border:"1px solid rgba(201,169,106,.08)", borderRadius:"2px", pointerEvents:"none" }}/>
             </div>
             <div style={{ marginTop:"20px", textAlign:"center" }}>
-              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo Ahonon</p>
+              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo</p>
               {get("logo_white_black","") && (
                 <img src={get("logo_white_black","")} alt="White & Black"
                   style={{ height:"24px", objectFit:"contain", opacity:.6, marginTop:"8px" }}/>
@@ -1374,7 +1367,7 @@ function Prelia({ get }) {
           <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.8rem", color:"var(--or)", lineHeight:1.4 }}>
             {get("prelia_signature","Je ne crée pas des apparences. Je révèle des essences.")}
           </p>
-          <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"16px" }}>— Prélia Apedo Ahonon</p>
+          <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"16px" }}>— Prélia Apedo</p>
         </div>
       </div>
     </section>
@@ -1439,7 +1432,7 @@ function Temoignages({ get }) {
 
 /* ── PRÉLIA TEASER (version courte) ─────────────────────────── */
 function PreliaTeaser({ get }) {
-  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
+  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste|Leader Oratrice — AIL").split("|").filter(Boolean);
   return (
     <section id="prelia" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#18100d 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
@@ -1449,7 +1442,7 @@ function PreliaTeaser({ get }) {
           <div className="reveal-left prelia-photo">
             <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.18)", borderRadius:"4px", overflow:"hidden" }}>
               {get("photo_prelia","") ? (
-                <img src={get("photo_prelia","")} alt="Prélia Apedo Ahonon" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                <img src={get("photo_prelia","")} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
               ) : (
                 <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
                   <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)" }}>Photo Prélia Apedo</p>
@@ -1458,7 +1451,7 @@ function PreliaTeaser({ get }) {
               <div style={{ position:"absolute", inset:"14px", border:"1px solid rgba(201,169,106,.08)", borderRadius:"2px", pointerEvents:"none" }}/>
             </div>
             <div style={{ textAlign:"center", marginTop:"14px" }}>
-              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo Ahonon</p>
+              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo</p>
               <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"4px" }}>Fondatrice · White & Black · Meta'Morph'Ose</p>
             </div>
           </div>
@@ -1493,7 +1486,7 @@ function PreliaTeaser({ get }) {
           <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.6rem", color:"var(--or)", lineHeight:1.4 }}>
             {get("prelia_signature","Je ne crée pas des apparences. Je révèle des essences.")}
           </p>
-          <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"12px" }}>— Prélia Apedo Ahonon</p>
+          <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"12px" }}>— Prélia Apedo</p>
         </div>
       </div>
     </section>
@@ -1528,7 +1521,7 @@ function Formules({ get, setShowCalc }) {
               <div style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".25em", textTransform:"uppercase", color:f.color, marginBottom:"8px" }}>{f.label}</div>
               <div style={{ marginBottom:"24px" }}>
                 <span style={{ fontFamily:"var(--ff-t)", fontSize:"2rem", fontWeight:700, color:"var(--blanc)" }}>{f.prix}</span>
-                <span style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.85)", marginLeft:"6px" }}>FCFA</span>
+                <span style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginLeft:"6px" }}>FCFA</span>
               </div>
               <ul style={{ listStyle:"none", display:"flex", flexDirection:"column", gap:"10px", marginBottom:"28px" }}>
                 {f.items.map((item,j) => (
@@ -1585,7 +1578,7 @@ function ListeAttente({ get }) {
   const [loading, setLoading] = useState(false);
   const [done,    setDone]    = useState(false);
   const [error,   setError]   = useState("");
-  const placesDispo = parseInt(get("vague_places_total","60")) - parseInt(get("vague_places_prises","20"));
+  const placesDispo = parseInt(get("vague_places_total","20")) - parseInt(get("vague_places_prises","0"));
   if (placesDispo > 3) return null;
 
   async function inscrire(e) {
@@ -1593,7 +1586,7 @@ function ListeAttente({ get }) {
     if (!email.trim()) { setError("Veuillez entrer votre email."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch("/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
+      const res = await fetch("https://metamorphose-backend.onrender.com/api/liste-attente/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue.");
     } catch { setError("Serveur inaccessible."); }
@@ -1669,8 +1662,7 @@ function PartagerSection() {
 function Ressources({ get }) {
   const [playing,  setPlaying]  = useState(false);
   const [progress, setProgress] = useState(0);
-  const audioEl = useState(null)[0];
-  const ref = { current: null };
+  const ref = useRef(null);  // CORRECTION : vrai useRef pour que l'audio persiste entre rendus
 
   const audioUrl = get("res_audio_url", "/metamorphose.mp3");
   const pdfUrl   = get("res_pdf_url",   "/guide-eisenhower.pdf");
@@ -1703,7 +1695,7 @@ function Ressources({ get }) {
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(194,24,91,.06)", border:"1px solid rgba(194,24,91,.15)", borderTop:"3px solid var(--rose)", borderRadius:"6px" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>Chanson</p>
             <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>{get("res_chanson_titre","Métamorphose")}</h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.85)", marginBottom:"16px" }}>{get("res_chanson_artiste","Prélia Apedo Ahonon")}</p>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_chanson_artiste","Prélia Apedo")}</p>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.55)", lineHeight:1.75, marginBottom:"24px" }}>
               {get("res_chanson_desc","Je ne l'ai pas écrite pour distraire... je l'ai écrite pour réveiller.")}
             </p>
@@ -1724,7 +1716,7 @@ function Ressources({ get }) {
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.15)", borderTop:"3px solid var(--or)", borderRadius:"6px" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Guide PDF Gratuit</p>
             <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>{get("res_guide_titre","Méthode Eisenhower")}</h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.85)", marginBottom:"16px" }}>{get("res_guide_sous","Pour les femmes ambitieuses")}</p>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_guide_sous","Pour les femmes ambitieuses")}</p>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.55)", lineHeight:1.75, marginBottom:"20px" }}>
               {get("res_guide_desc","Parce qu'une femme qui veut évoluer doit apprendre à reprendre le contrôle de son temps.")}
             </p>
@@ -1743,7 +1735,7 @@ function Ressources({ get }) {
         </div>
         {get("res_citation_finale","") && (
           <div className="reveal" style={{ textAlign:"center", marginTop:"48px" }}>
-            <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.2rem", color:"rgba(248,245,242,.85)", lineHeight:1.6 }}>
+            <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.2rem", color:"rgba(248,245,242,.4)", lineHeight:1.6 }}>
               « {get("res_citation_finale","")} »
             </p>
           </div>
@@ -1815,7 +1807,7 @@ function ApercuTransformations({ get }) {
             </p>
             {aas.length > 0 ? aas.map((t,i) => (
               <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 20px 1fr", gap:"8px", alignItems:"center", padding:"10px 0", borderBottom: i < aas.length-1 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
-                <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.85)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.4)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
                 <p style={{ textAlign:"center", color:"var(--or)", fontSize:".75rem" }}>→</p>
                 <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:500, color:"rgba(248,245,242,.85)", lineHeight:1.4 }}>{t.apres}</p>
               </div>
@@ -1826,7 +1818,7 @@ function ApercuTransformations({ get }) {
                 { avant:"Hésitation et doutes", apres:"Passage à l'action concret" },
               ].map((t,i) => (
                 <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 20px 1fr", gap:"8px", alignItems:"center", padding:"10px 0", borderBottom: i < 2 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.85)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.4)", fontStyle:"italic", lineHeight:1.4 }}>{t.avant}</p>
                   <p style={{ textAlign:"center", color:"var(--or)", fontSize:".75rem" }}>→</p>
                   <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:500, color:"rgba(248,245,242,.85)", lineHeight:1.4 }}>{t.apres}</p>
                 </div>
@@ -1890,7 +1882,7 @@ function CTAFinal({ get }) {
 function Footer({ get }) {
   const [partenaires, setPartenaires] = useState([]);
   useEffect(() => {
-    fetch("/api/admin/partenaires/public/")
+    fetch("https://metamorphose-backend.onrender.com/api/admin/partenaires/public/")
       .then(r => r.ok ? r.json() : [])
       .then(data => setPartenaires(Array.isArray(data) ? data : []))
       .catch(() => {});
@@ -1910,7 +1902,7 @@ function Footer({ get }) {
                 <span>Meta'</span><span style={{color:"var(--or)"}}>Morph'</span><span style={{color:"var(--rose)"}}>Ose</span>
               </span>
             </div>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", fontWeight:300, lineHeight:1.7, marginBottom:"20px" }}>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, lineHeight:1.7, marginBottom:"20px" }}>
               De l'ombre à la lumière en 60 jours. Un programme de transformation féminine par Prélia Apedo.
             </p>
             <div style={{ display:"flex", gap:"14px" }}>
@@ -1933,11 +1925,11 @@ function Footer({ get }) {
             ].map(([href,to,label,ext]) => (
               <div key={label} style={{ marginBottom:"10px" }}>
                 {ext ? (
-                  <Link to={to} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", textDecoration:"none", fontWeight:300 }}
-                    onMouseEnter={e=>e.target.style.color="var(--blanc)"} onMouseLeave={e=>e.target.style.color="rgba(248,245,242,.85)"}>{label}</Link>
+                  <Link to={to} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", textDecoration:"none", fontWeight:300 }}
+                    onMouseEnter={e=>e.target.style.color="var(--blanc)"} onMouseLeave={e=>e.target.style.color="rgba(248,245,242,.35)"}>{label}</Link>
                 ) : (
-                  <a href={href} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", textDecoration:"none", fontWeight:300 }}
-                    onMouseEnter={e=>e.target.style.color="var(--blanc)"} onMouseLeave={e=>e.target.style.color="rgba(248,245,242,.85)"}>{label}</a>
+                  <a href={href} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", textDecoration:"none", fontWeight:300 }}
+                    onMouseEnter={e=>e.target.style.color="var(--blanc)"} onMouseLeave={e=>e.target.style.color="rgba(248,245,242,.35)"}>{label}</a>
                 )}
               </div>
             ))}
@@ -1945,9 +1937,9 @@ function Footer({ get }) {
           <div>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"18px" }}>Contact</p>
             <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
-              <a href={`tel:${get("footer_tel1","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", fontWeight:300, textDecoration:"none" }}>{get("footer_tel1","+229 01 96 11 40 93")}</a>
-              <a href={`tel:${get("footer_tel2","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", fontWeight:300, textDecoration:"none" }}>{get("footer_tel2","+229 01 59 37 65 60")}</a>
-              <a href={`mailto:${get("footer_email","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.85)", fontWeight:300, textDecoration:"none" }}>{get("footer_email","whiteblackdress22@gmail.com")}</a>
+              <a href={`tel:${get("footer_tel1","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, textDecoration:"none" }}>{get("footer_tel1","+229 01 96 11 40 93")}</a>
+              <a href={`tel:${get("footer_tel2","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, textDecoration:"none" }}>{get("footer_tel2","+229 01 59 37 65 60")}</a>
+              <a href={`mailto:${get("footer_email","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, textDecoration:"none" }}>{get("footer_email","whiteblackdress22@gmail.com")}</a>
             </div>
             <div style={{ marginTop:"24px" }}>
               <Link to="/espace-membre" className="btn-s" style={{ fontSize:".68rem", padding:"10px 20px" }}>Espace Membre</Link>
@@ -2009,10 +2001,10 @@ export default function LandingPage() {
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       {showCalc && <CalculateurFormule onClose={() => setShowCalc(false)} />}
 
-      {/* Bouton Test Diagnostic */}
-      <button onClick={() => setShowDiag(true)} style={{ position:"fixed", bottom:"20px", right:"16px", zIndex:150, background:"var(--rose)", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", padding:"12px 18px", border:"none", borderRadius:"100px", cursor:"pointer", boxShadow:"0 8px 30px rgba(194,24,91,.45)", animation:"pulse-rose 3s ease-in-out infinite", maxWidth:"calc(100vw - 32px)" }}>
+      {/* Bouton Test Diagnostic — masqué si connectée */}
+      {!JSON.parse(localStorage.getItem("mmorphose_user") || "null") && <button onClick={() => setShowDiag(true)} style={{ position:"fixed", bottom:"20px", right:"16px", zIndex:150, background:"var(--rose)", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", padding:"12px 18px", border:"none", borderRadius:"100px", cursor:"pointer", boxShadow:"0 8px 30px rgba(194,24,91,.45)", animation:"pulse-rose 3s ease-in-out infinite", maxWidth:"calc(100vw - 32px)" }}>
         {get("diag_btn","Test Diagnostic")}
-      </button>
+      </button>}
 
       {/* WhatsApp flottant */}
       <WhatsAppButton get={get} />
