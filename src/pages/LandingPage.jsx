@@ -672,9 +672,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             <span style={{ color:"#C9A96A" }}>Morph'</span>
             <span style={{ color:"#C2185B" }}>Ose</span>
           </span>
-          <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".5rem", fontWeight:300, letterSpacing:".32em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", lineHeight:1 }}>
-            White & Black · Prélia Apedo
-          </span>
+
         </a>
 
         {/* ── Links desktop ── */}
@@ -746,7 +744,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
                   <ExpRow title="Aura Métamorphose"      desc="Assistante intelligente · 24h/24"   to="/aura"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
-                  <ExpRow title="Faire un Don"       desc="Soutenir le programme"              to="/don"/>
+                  <ExpRow title="Don"               desc="Soutenir le programme"              to="/don"/>
                   <ExpRow title="MMO Learning"        desc="Cours de coaching gratuits"          to="/mmo-learning"/>
                 </div>
                 <Link to="/brunch" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 32px", borderTop:"1px solid rgba(255,255,255,.04)", textDecoration:"none", marginTop:"4px" }}
