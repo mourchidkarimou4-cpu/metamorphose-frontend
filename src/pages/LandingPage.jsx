@@ -254,10 +254,10 @@ function StatCard({ valeur, label, delay="0s" }) {
 
 function StatsSection({ get }) {
   const stats = [
-    { valeur: get("stat_femmes","200+"),  label: get("stat_label1","Femmes transformées") },
-    { valeur: get("stat_pays","15+"),     label: get("stat_label2","Pays représentés") },
-    { valeur: get("stat_semaines","8"),   label: get("stat_label3","Semaines de programme") },
-    { valeur: get("stat_4","98%"),        label: get("stat_label4","Taux de satisfaction") },
+    { valeur: get("stat_femmes","100"),   label: get("stat_label1","Femmes transformées") },
+    { valeur: get("stat_pays","8"),       label: get("stat_label2","Pays représentés") },
+    { valeur: get("stat_semaines","8"),   label: get("stat_label3","Semaines d'accompagnement") },
+    { valeur: get("stat_satisfaction","98%"), label: get("stat_label4","Taux de satisfaction") },
   ];
   return (
     <section style={{ padding:"80px 24px" }}>
