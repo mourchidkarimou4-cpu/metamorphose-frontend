@@ -125,6 +125,8 @@ const STYLES = `
   /* ── RESPONSIVE ─────────────────────────────────────────────── */
   @media(max-width:900px){
     .admin-layout{flex-direction:column !important}
+    .sidebar-label{display:none !important}
+    .sidebar-short{display:block !important}
     .admin-sidebar{width:100% !important;height:auto !important;flex-direction:row !important;overflow-x:auto !important;padding:10px 8px !important;gap:4px !important;min-height:unset !important;position:relative !important}
     .admin-sidebar .sidebar-label{display:none !important}
     .admin-main{padding:20px 16px !important}
@@ -199,6 +201,166 @@ function Toast({ toasts }) {
 
 /* ── SIDEBAR ────────────────────────────────────────────────── */
 function Sidebar({ active, setActive, counts }) {
+  const [open, setOpen] = useState({
+    membres:true, contenu:false, evenements:false,
+    communication:false, parametres:false, monespace:false
+  })
+
+  function toggle(key) { setOpen(p => ({...p,[key]:!p[key]})) }
+
+  const SECTIONS = [
+    {
+      key:'membres', label:'Membres',
+      items:[
+        { id:"membres",       label:"Membres",       short:"M",  count:counts.membres },
+        { id:"demandes",      label:"Demandes",      short:"D",  count:counts.non_traites, urgent:true },
+        { id:"liste_attente", label:"Liste d'attente",short:"L" },
+      ]
+    },
+    {
+      key:'contenu', label:'Contenu',
+      items:[
+        { id:"replays",    label:"Replays",            short:"R",  count:counts.replays },
+        { id:"guides",     label:"Guides PDF",         short:"G",  count:counts.guides },
+        { id:"learning",   label:"MMO Learning",       short:"ML" },
+        { id:"config",     label:"Contenu du site",    short:"CS" },
+        { id:"images",     label:"Photos & Logos",     short:"PL" },
+        { id:"ressources", label:"Chanson & Guide PDF",short:"CG" },
+      ]
+    },
+    {
+      key:'evenements', label:'Événements',
+      items:[
+        { id:"tickets",     label:"Tickets & Événements", short:"TE" },
+        { id:"cartes",      label:"Cartes Cadeaux",        short:"CC" },
+        { id:"partenaires", label:"Partenaires",            short:"P" },
+      ]
+    },
+    {
+      key:'communication', label:'Communication',
+      items:[
+        { id:"temoignages", label:"Témoignages",       short:"T",  urgent:true },
+        { id:"newsletter",  label:"Newsletter",         short:"NL" },
+        { id:"abonnes",     label:"Abonnés",            short:"AB" },
+        { id:"live",        label:"Live",               short:"LV" },
+      ]
+    },
+    {
+      key:'parametres', label:'Paramètres',
+      items:[
+        { id:"export",      label:"Export CSV",         short:"EX" },
+        { id:"maintenance", label:"Maintenance",        short:"MM" },
+      ]
+    },
+    {
+      key:'monespace', label:'Mon Espace',
+      items:[
+        { id:"mon_compte",     label:"Mon Compte",      short:"MC" },
+        { id:"mon_profil",     label:"Mon Profil",      short:"MP" },
+        { id:"mes_replays",    label:"Replays",         short:"R" },
+        { id:"mes_guides",     label:"Guides",          short:"G" },
+        { id:"mon_temoignage", label:"Témoignage",      short:"T" },
+        { id:"mon_certificat", label:"Certificat",      short:"C" },
+      ]
+    },
+  ]
+
+  return (
+    <aside className="admin-sidebar" style={{
+      width:"220px", flexShrink:0, background:"var(--surface)",
+      borderRight:"1px solid var(--border)", display:"flex",
+      flexDirection:"column", height:"100vh", position:"sticky", top:0,
+      overflowY:"auto",
+    }}>
+      {/* Logo */}
+      <div style={{ padding:"20px 16px 16px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
+        <p style={{ fontFamily:"var(--ff-t)", fontSize:".95rem" }}>
+          <span style={{color:"var(--text)"}}>Méta'</span>
+          <span style={{color:"var(--or)"}}>Morph'</span>
+          <span style={{color:"var(--rose)"}}>Ose</span>
+        </p>
+        <p style={{ fontSize:".58rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--text-sub)", marginTop:"3px" }}>
+          Admin Dashboard
+        </p>
+      </div>
+
+      {/* Vue d'ensemble */}
+      <nav style={{ padding:"8px 8px 0", flex:1 }}>
+        <button onClick={() => setActive("stats")}
+          className="tab-btn"
+          style={{
+            width:"100%", justifyContent:"flex-start", marginBottom:"2px",
+            background: active==="stats" ? "rgba(194,24,91,.12)" : "transparent",
+            color: active==="stats" ? "var(--rose)" : "var(--text-sub)",
+            borderLeft: active==="stats" ? "2px solid var(--rose)" : "2px solid transparent",
+            borderRadius: active==="stats" ? "0 3px 3px 0" : "3px",
+            padding:"8px 10px", fontSize:".65rem",
+          }}>
+          <span style={{flex:1,textAlign:"left"}}>Vue d'ensemble</span>
+        </button>
+
+        {/* Sections repliables */}
+        {SECTIONS.map(section => (
+          <div key={section.key} style={{marginBottom:"2px"}}>
+            {/* Titre section cliquable */}
+            <button onClick={() => toggle(section.key)} style={{
+              width:"100%", display:"flex", alignItems:"center", justifyContent:"space-between",
+              padding:"8px 10px", background:"transparent", border:"none", cursor:"pointer",
+              fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".18em",
+              textTransform:"uppercase", color:"rgba(248,245,242,.25)",
+              borderRadius:"3px", transition:"all .2s",
+            }}
+            onMouseEnter={e=>e.currentTarget.style.color="rgba(201,169,106,.5)"}
+            onMouseLeave={e=>e.currentTarget.style.color="rgba(248,245,242,.25)"}>
+              <span>{section.label}</span>
+              <span style={{
+                fontSize:".6rem", transition:"transform .25s",
+                transform: open[section.key] ? "rotate(180deg)" : "none",
+                opacity:.5,
+              }}>▾</span>
+            </button>
+
+            {/* Items de la section */}
+            {open[section.key] && section.items.map(t => (
+              <button key={t.id} onClick={() => setActive(t.id)}
+                className="tab-btn"
+                style={{
+                  width:"100%", justifyContent:"flex-start", marginBottom:"1px",
+                  background: active===t.id ? "rgba(194,24,91,.12)" : "transparent",
+                  color: active===t.id ? "var(--rose)" : "var(--text-sub)",
+                  borderLeft: active===t.id ? "2px solid var(--rose)" : "2px solid transparent",
+                  borderRadius: active===t.id ? "0 3px 3px 0" : "3px",
+                  padding:"7px 10px 7px 16px", fontSize:".65rem",
+                }}>
+                {/* Mobile : short label, Desktop : full label */}
+                <span className="sidebar-label" style={{flex:1,textAlign:"left"}}>{t.label}</span>
+                <span className="sidebar-short" style={{flex:1,textAlign:"left",display:"none"}}>{t.short}</span>
+                {(t.count > 0) && (
+                  <span style={{
+                    background: t.urgent ? "var(--rose)" : "rgba(255,255,255,.1)",
+                    color: t.urgent ? "#fff" : "var(--text-sub)",
+                    borderRadius:"100px", padding:"1px 6px",
+                    fontSize:".58rem", fontWeight:600, marginLeft:"4px",
+                  }}>{t.count}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer sidebar */}
+      <div style={{ padding:"12px 8px", borderTop:"1px solid var(--border)", flexShrink:0 }}>
+        <a href="/" target="_blank" style={{
+          display:"block", padding:"7px 10px", fontFamily:"var(--ff-b)",
+          fontSize:".62rem", letterSpacing:".1em", textTransform:"uppercase",
+          color:"var(--text-sub)", textDecoration:"none", borderRadius:"3px",
+          marginBottom:"4px",
+        }}>Voir le site</a>
+      </div>
+    </aside>
+  )
+}) {
   const tabs = [
     // ── TABLEAU DE BORD ──
     { id:"stats",         label:"Vue d'ensemble",      icon:"" },
