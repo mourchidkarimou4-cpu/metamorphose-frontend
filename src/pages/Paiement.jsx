@@ -50,7 +50,7 @@ export default function PaiementPage() {
       const f = FORMULES.find(x => x.id === formule);
 
       // Récupérer la clé publique et le mode sandbox depuis le backend
-      const initRes = await fetch(`/api/paiement/initier/?formule=${formule}`, {
+      const initRes = await fetch(`${API_URL}/api/paiement/initier/?formule=${formule}`, {
         headers: { "Authorization": `Bearer ${token}` },
       });
       if (!initRes.ok) {

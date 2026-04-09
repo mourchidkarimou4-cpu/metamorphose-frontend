@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_URL from '../config';
 import { useSearchParams, Link } from 'react-router-dom'
 
 export default function ScanTicket() {
@@ -15,7 +16,7 @@ export default function ScanTicket() {
   async function verifier(c) {
     setLoading(true);setResult(null)
     try {
-      const res  = await fetch(`/api/tickets/verifier/${c}/`)
+      const res  = await fetch(`${API_URL}/api/tickets/verifier/${c}/`)
       const data = await res.json()
       setResult({...data,code:c})
     } catch { setResult({valide:false,detail:'Erreur réseau'}) }
@@ -26,7 +27,7 @@ export default function ScanTicket() {
     if(!result?.code) return
     setScanning(true)
     try {
-      const res  = await fetch(`/api/tickets/scanner/${result.code}/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}})
+      const res  = await fetch(`${API_URL}/api/tickets/scanner/${result.code}/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}})
       const data = await res.json()
       setResult(prev=>({...prev,...data,scanned:true}))
     } catch { setResult(prev=>({...prev,detail:'Erreur lors du scan'})) }

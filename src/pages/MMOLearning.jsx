@@ -377,7 +377,7 @@ function DetailCours() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/learning/cours/${slug}/`)
+    fetch(`${API_URL}/api/learning/cours/${slug}/`)
       .then(r => { if (!r.ok) throw new Error(); return r.json() })
       .then(data => { setCours(data); setLoading(false) })
       .catch(() => { setLoading(false); navigate('/mmo-learning') })

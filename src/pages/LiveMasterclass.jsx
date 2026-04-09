@@ -163,7 +163,7 @@ export default function LiveMasterclass() {
 
   // Charger les replays
   useEffect(() => {
-    fetch(`/api/contenu/replays/`, {
+    fetch(`${API_URL}/api/contenu/replays/`, {
       headers: token ? { "Authorization": `Bearer ${token}` } : {},
     })
     .then(r => r.ok ? r.json() : [])
@@ -195,12 +195,12 @@ export default function LiveMasterclass() {
     setRoomName(room);
     // Sauvegarder le nom de la salle dans SiteConfig
     if (token) {
-      fetch(`/api/admin/config/update/`, {
+      fetch(`${API_URL}/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_actif", valeur:"1", section:"live" }),
       });
-      fetch(`/api/admin/config/update/`, {
+      fetch(`${API_URL}/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_room_name", valeur:room, section:"live" }),
@@ -212,7 +212,7 @@ export default function LiveMasterclass() {
 
   function terminerLive() {
     if (token) {
-      fetch(`/api/admin/config/update/`, {
+      fetch(`${API_URL}/api/admin/config/update/`, {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
         body: JSON.stringify({ cle:"live_actif", valeur:"0", section:"live" }),

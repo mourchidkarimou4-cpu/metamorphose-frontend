@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import API_URL from '../config';
 import usePageBackground from "../hooks/usePageBackground";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -155,7 +156,7 @@ export default function Communaute() {
   // Vérifier si le membre est actif (a complété le programme)
   useEffect(() => {
     if (!token) { setLoadingUser(false); return; }
-    fetch(`/api/auth/me/`, {
+    fetch(`${API_URL}/api/auth/me/`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.ok ? r.json() : null)
