@@ -217,6 +217,10 @@ function Sidebar({ active, setActive, counts }) {
     { id:"mon_compte",    label:"Mon Compte" },
     { id:"learning",      label:"MMO Learning" },
     { id:"partenaires",   label:"Partenaires" },
+    { id:"tickets",       label:"Tickets & Événements" },
+    { id:"abonnes",       label:"Abonnés Newsletter" },
+    { id:"live",          label:"Live" },
+    { id:"partenaires",   label:"Partenaires" },
     { id:"tickets",       label:"Tickets" },
   ];
 
@@ -2097,6 +2101,10 @@ export default function AdminDashboard() {
           {active === "tickets"         && <TicketsView {...viewProps} />}
           {active === "partenaires"     && <PartenairesView {...viewProps} />}
           {active === "learning"        && <LearningView {...viewProps} />}
+          {active === "partenaires"     && <PartenairesView {...viewProps} />}
+          {active === "tickets"         && <TicketsView {...viewProps} />}
+          {active === "abonnes"         && <AbonnesView {...viewProps} />}
+          {active === "live"            && <LiveView {...viewProps} />}
           {active === "mon_compte"     && <MonCompteView {...viewProps} />}
         </main>
       </div>
@@ -2677,6 +2685,214 @@ function TicketsView({ api, toast }) {
                 <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Annuler</button>
                 <button className="admin-btn admin-btn-primary" onClick={sauvegarder}>{editing?'Enregistrer':'Créer'}</button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ================================================================
+   ABONNÉS NEWSLETTER VIEW
+   ================================================================ */
+function AbonnesView({ api, toast }) {
+  const [abonnes,  setAbonnes]  = useState([])
+  const [loading,  setLoading]  = useState(true)
+  const [recherche,setRecherche]= useState('')
+  const token = localStorage.getItem('mmorphose_token')
+
+  function apiA(method, path, body=null) {
+    const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
+    if (body) opts.body = JSON.stringify(body)
+    return fetch(`/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
+  }
+
+  function load() {
+    setLoading(true)
+    fetch('/api/admin/export/newsletter/', {
+      headers:{'Authorization':`Bearer ${token}`}
+    })
+    .then(r => r.ok ? r.text() : Promise.reject())
+    .then(csv => {
+      const lines = csv.split('\n').slice(1).filter(Boolean)
+      const data  = lines.map(l => {
+        const [email, prenom, actif, date] = l.split(',')
+        return { email: email?.replace(/"/g,''), prenom: prenom?.replace(/"/g,''), actif: actif?.includes('1'), date }
+      })
+      setAbonnes(data)
+      setLoading(false)
+    })
+    .catch(() => {
+      // Fallback — endpoint direct
+      fetch('/api/contenu/newsletter/liste/', {
+        headers:{'Authorization':`Bearer ${token}`}
+      })
+      .then(r => r.json())
+      .then(d => { setAbonnes(Array.isArray(d)?d:[]); setLoading(false) })
+      .catch(() => setLoading(false))
+    })
+  }
+
+  useEffect(()=>{ load() },[])
+
+  const filtres = abonnes.filter(a =>
+    !recherche || a.email?.toLowerCase().includes(recherche.toLowerCase()) ||
+    a.prenom?.toLowerCase().includes(recherche.toLowerCase())
+  )
+  const actifs = abonnes.filter(a => a.actif).length
+
+  return (
+    <div style={{animation:'fadeUp .5s both'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'32px',flexWrap:'wrap',gap:'12px'}}>
+        <div>
+          <h2 style={{fontFamily:'var(--ff-t)',fontSize:'1.6rem',fontWeight:600}}>Abonnés Newsletter</h2>
+          <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'var(--text-sub)',marginTop:'4px'}}>
+            {actifs} abonné{actifs!==1?'s':''} actif{actifs!==1?'s':''}
+          </p>
+        </div>
+        <a href="/api/admin/export/newsletter/" target="_blank"
+          style={{padding:'9px 18px',borderRadius:'3px',background:'rgba(201,169,106,.1)',border:'1px solid rgba(201,169,106,.25)',color:'var(--or)',fontFamily:'var(--ff-b)',fontSize:'.7rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none'}}>
+          Exporter CSV
+        </a>
+      </div>
+
+      <input placeholder="Rechercher par email ou prénom..."
+        value={recherche} onChange={e=>setRecherche(e.target.value)}
+        style={{width:'100%',padding:'10px 14px',background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.08)',borderRadius:'3px',color:'var(--text)',fontFamily:'var(--ff-b)',fontSize:'.82rem',fontWeight:300,outline:'none',marginBottom:'20px'}}
+      />
+
+      {loading ? <p style={{color:'var(--text-sub)',fontFamily:'var(--ff-b)'}}>Chargement...</p> :
+      filtres.length===0 ? (
+        <div style={{padding:'60px',textAlign:'center',background:'rgba(255,255,255,.02)',border:'1px solid rgba(255,255,255,.05)',borderRadius:'6px'}}>
+          <p style={{fontFamily:'var(--ff-t)',fontStyle:'italic',fontSize:'1.1rem',color:'rgba(248,245,242,.3)'}}>Aucun abonné</p>
+        </div>
+      ) : filtres.map((a,i) => (
+        <div key={i} className="row-item" style={{gap:'12px'}}>
+          <div style={{flex:1}}>
+            <p style={{fontFamily:'var(--ff-b)',fontWeight:500,fontSize:'.85rem'}}>{a.email}</p>
+            {a.prenom && <p style={{fontFamily:'var(--ff-b)',fontSize:'.72rem',color:'var(--text-sub)',marginTop:'2px'}}>{a.prenom}</p>}
+          </div>
+          <span className={`badge ${a.actif?'badge-green':'badge-red'}`}>{a.actif?'Actif':'Désabonné'}</span>
+          {a.date && <span style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',color:'var(--text-sub)'}}>{a.date?.substring(0,10)}</span>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ================================================================
+   LIVE VIEW — Gestion du live Jitsi
+   ================================================================ */
+function LiveView({ api, toast }) {
+  const [actif,    setActif]    = useState(false)
+  const [roomName, setRoomName] = useState('')
+  const [loading,  setLoading]  = useState(true)
+  const [saving,   setSaving]   = useState(false)
+
+  useEffect(()=>{
+    api('GET','/config/').then(data => {
+      if (Array.isArray(data)) {
+        const liveActif = data.find(c=>c.cle==='live_actif')
+        const liveRoom  = data.find(c=>c.cle==='live_room_name')
+        setActif(liveActif?.valeur === '1')
+        setRoomName(liveRoom?.valeur || '')
+      }
+      setLoading(false)
+    })
+  },[])
+
+  async function sauvegarder() {
+    setSaving(true)
+    await api('POST','/config/update/',{cle:'live_actif',     valeur: actif?'1':'0', section:'live'})
+    await api('POST','/config/update/',{cle:'live_room_name', valeur: roomName,       section:'live'})
+    toast('Paramètres live sauvegardés ✓','success')
+    setSaving(false)
+  }
+
+  async function toggleLive() {
+    const nouvelEtat = !actif
+    setActif(nouvelEtat)
+    await api('POST','/config/update/',{cle:'live_actif', valeur: nouvelEtat?'1':'0', section:'live'})
+    toast(nouvelEtat ? '🔴 Live activé — les membres peuvent rejoindre' : 'Live désactivé', nouvelEtat?'success':'error')
+  }
+
+  const lienJitsi = `https://meet.jit.si/${roomName}`
+  const lienMembre = `${window.location.origin}/live`
+
+  const inp = {width:'100%',padding:'10px 14px',background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.08)',borderRadius:'3px',color:'var(--text)',fontFamily:'var(--ff-b)',fontSize:'.82rem',fontWeight:300,outline:'none'}
+  const lbl = {fontFamily:'var(--ff-b)',fontSize:'.62rem',letterSpacing:'.14em',textTransform:'uppercase',color:'var(--text-sub)',display:'block',marginBottom:'6px'}
+
+  return (
+    <div style={{animation:'fadeUp .5s both'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'32px',flexWrap:'wrap',gap:'12px'}}>
+        <div>
+          <h2 style={{fontFamily:'var(--ff-t)',fontSize:'1.6rem',fontWeight:600}}>Live Streaming</h2>
+          <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'var(--text-sub)',marginTop:'4px'}}>Gérez vos sessions en direct via Jitsi Meet</p>
+        </div>
+        <span className={`badge ${actif?'badge-green':'badge-red'}`} style={{fontSize:'.72rem',padding:'6px 14px'}}>
+          {actif ? '🔴 Live EN COURS' : 'Live inactif'}
+        </span>
+      </div>
+
+      {loading ? <p style={{color:'var(--text-sub)',fontFamily:'var(--ff-b)'}}>Chargement...</p> : (
+        <div style={{display:'flex',flexDirection:'column',gap:'24px'}}>
+
+          {/* Statut */}
+          <div style={{padding:'24px',background:'rgba(255,255,255,.02)',border:`1px solid ${actif?'rgba(76,175,80,.3)':'rgba(255,255,255,.06)'}`,borderRadius:'6px'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'16px'}}>
+              <div>
+                <p style={{fontFamily:'var(--ff-b)',fontWeight:500,fontSize:'.88rem',marginBottom:'4px'}}>
+                  {actif ? 'Le live est actuellement actif' : 'Le live est désactivé'}
+                </p>
+                <p style={{fontFamily:'var(--ff-b)',fontSize:'.75rem',color:'var(--text-sub)'}}>
+                  {actif ? 'Les membres voient le bouton "Rejoindre le live" sur /live' : 'Les membres voient une page d\'attente'}
+                </p>
+              </div>
+              <button onClick={toggleLive}
+                style={{padding:'12px 24px',background:actif?'rgba(239,83,80,.15)':'rgba(76,175,80,.15)',border:`1px solid ${actif?'rgba(239,83,80,.3)':'rgba(76,175,80,.3)'}`,borderRadius:'3px',color:actif?'#ef5350':'#4CAF50',fontFamily:'var(--ff-b)',fontSize:'.72rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',cursor:'pointer'}}>
+                {actif ? 'Arrêter le live' : 'Démarrer le live'}
+              </button>
+            </div>
+          </div>
+
+          {/* Config */}
+          <div style={{padding:'24px',background:'rgba(255,255,255,.02)',border:'1px solid rgba(255,255,255,.06)',borderRadius:'6px'}}>
+            <p style={{fontFamily:'var(--ff-t)',fontSize:'1rem',fontWeight:600,marginBottom:'20px'}}>Configuration</p>
+            <div>
+              <label style={lbl}>Nom de la salle Jitsi</label>
+              <input style={inp} value={roomName} onChange={e=>setRoomName(e.target.value)}
+                placeholder="ex: metamorphose-live-2026"/>
+              <p style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',color:'var(--text-sub)',marginTop:'6px'}}>
+                Lien Jitsi (pour vous) : <a href={lienJitsi} target="_blank" rel="noreferrer"
+                  style={{color:'var(--or)',textDecoration:'none'}}>{lienJitsi}</a>
+              </p>
+              <p style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',color:'var(--text-sub)',marginTop:'4px'}}>
+                Lien membres : <span style={{color:'var(--or)'}}>{lienMembre}</span>
+              </p>
+            </div>
+            <button onClick={sauvegarder} disabled={saving}
+              style={{marginTop:'16px',padding:'10px 24px',background:'var(--rose)',border:'none',borderRadius:'3px',color:'#fff',fontFamily:'var(--ff-b)',fontSize:'.72rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',cursor:'pointer',opacity:saving?.6:1}}>
+              {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+            </button>
+          </div>
+
+          {/* Instructions */}
+          <div style={{padding:'24px',background:'rgba(201,169,106,.04)',border:'1px solid rgba(201,169,106,.12)',borderRadius:'6px'}}>
+            <p style={{fontFamily:'var(--ff-t)',fontSize:'1rem',fontWeight:600,color:'var(--or)',marginBottom:'16px'}}>Comment faire un live ?</p>
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+              {[
+                '1. Entrez un nom de salle unique ci-dessus et sauvegardez',
+                '2. Cliquez "Démarrer le live" — vos membres voient le bouton sur /live',
+                '3. Ouvrez le lien Jitsi (ci-dessus) dans votre navigateur pour animer',
+                '4. Vos membres cliquent sur "Rejoindre" depuis la page /live',
+                '5. Cliquez "Arrêter le live" quand la session est terminée',
+              ].map((step,i) => (
+                <div key={i} style={{display:'flex',gap:'12px',alignItems:'flex-start'}}>
+                  <span style={{color:'var(--or)',fontFamily:'var(--ff-b)',fontSize:'.72rem',fontWeight:600,flexShrink:0,marginTop:'2px'}}>{i+1}.</span>
+                  <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'rgba(248,245,242,.6)',fontWeight:300,lineHeight:1.6}}>{step.substring(3)}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
