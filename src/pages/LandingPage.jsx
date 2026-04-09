@@ -1649,7 +1649,7 @@ function ListeAttente({ get }) {
           </div>
         ) : (
           <form onSubmit={inscrire} style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:"12px" }}>
               <input value={prenom} onChange={e=>setPrenom(e.target.value)} placeholder="Votre prénom" style={{ padding:"13px 16px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".88rem", fontWeight:300, outline:"none" }}/>
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Votre email *" required style={{ padding:"13px 16px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".88rem", fontWeight:300, outline:"none" }}/>
             </div>
