@@ -232,9 +232,9 @@ export default function APropos() {
             </div>
             <Para>Lorsque l'image extérieure s'aligne avec l'identité intérieure, quelque chose de profond se produit.</Para>
             <div className="reveal philo-grid" style={{ margin:"24px 0" }}>
-              {[{icon:"🌟",text:"La posture change."},{icon:"💪",text:"La confiance grandit."},{icon:"🎯",text:"Les décisions deviennent plus claires."},{icon:"✨",text:"La femme prend sa place avec assurance."}].map((item,i) => (
+              {[{icon:"01",text:"La posture change."},{icon:"02",text:"La confiance grandit."},{icon:"03",text:"Les décisions deviennent plus claires."},{icon:"04",text:"La femme prend sa place avec assurance."}].map((item,i) => (
                 <div key={i} style={{ padding:"20px", background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.05)", borderRadius:"4px", textAlign:"center" }}>
-                  <p style={{ fontSize:"1.5rem", marginBottom:"10px" }}>{item.icon}</p>
+                  <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.6rem", fontWeight:700, color:"#C9A96A", marginBottom:"10px", letterSpacing:".05em" }}>{item.icon}</p>
                   <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.6)", lineHeight:1.6 }}>{item.text}</p>
                 </div>
               ))}
