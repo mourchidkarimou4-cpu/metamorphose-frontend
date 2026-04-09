@@ -1989,7 +1989,7 @@ function Footer({ get }) {
   return (
     <footer style={{ padding:"60px 24px 40px", background:"var(--noir)", borderTop:"1px solid rgba(201,169,106,.1)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
-        <div className="grid-footer" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"48px", marginBottom:"48px" }}>
+        <div className="grid-footer" style={{ display:"grid", gridTemplateColumns:"1.5fr 1fr 1.2fr 1.2fr", gap:"32px", marginBottom:"48px" }}>
           <div>
             <div style={{ marginBottom:"14px", display:"flex", alignItems:"center", gap:"10px" }}>
               {get("logo_site","") && (
