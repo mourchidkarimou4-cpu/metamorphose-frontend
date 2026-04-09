@@ -9,7 +9,7 @@
       "destination": "https://metamorphose-backend.onrender.com/media/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api|media).*)",
       "destination": "/index.html"
     }
   ]
