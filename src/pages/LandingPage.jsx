@@ -1352,7 +1352,7 @@ function PourQui({ get }) {
 }
 
 function Prelia({ get }) {
-  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste|Leader Oratrice — AIL").split("|").filter(Boolean);
+  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
   return (
     <section id="prelia" style={{ padding:"130px 24px", background:"linear-gradient(135deg,#3a2518 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
@@ -1469,7 +1469,7 @@ function Temoignages({ get }) {
 
 /* ── PRÉLIA TEASER (version courte) ─────────────────────────── */
 function PreliaTeaser({ get }) {
-  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste|Leader Oratrice — AIL").split("|").filter(Boolean);
+  const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
   return (
     <section id="prelia" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#18100d 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
