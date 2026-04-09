@@ -200,36 +200,54 @@ function Toast({ toasts }) {
 /* ── SIDEBAR ────────────────────────────────────────────────── */
 function Sidebar({ active, setActive, counts }) {
   const tabs = [
-    { id:"stats",    label:"Vue d'ensemble", icon:"" },
-    { id:"divider_admin", label:"── GESTION ──", divider:true },
-    { id:"membres",  label:"Membres",        icon:"", count: counts.membres },
-    { id:"demandes", label:"Demandes",       icon:"", count: counts.non_traites, urgent: true },
-    { id:"replays",  label:"Replays",        icon:"",  count: counts.replays },
-    { id:"guides",   label:"Guides PDF",     icon:"", count: counts.guides },
-    { id:"config",   label:"Contenu du site" },
-    { id:"images",   label:"Photos et Logos" },
-    { id:"cartes",   label:"Cartes Cadeaux" },
-    { id:"temoignages", label:"Témoignages", urgent:true },
-    { id:"ressources", label:"Chanson et Guide PDF" },
+    // ── TABLEAU DE BORD ──
+    { id:"stats",         label:"Vue d'ensemble",      icon:"" },
+
+    // ── MEMBRES ──
+    { id:"div1", divider:true, label:"── Membres ──" },
+    { id:"membres",       label:"Membres",             icon:"", count: counts.membres },
+    { id:"demandes",      label:"Demandes",            icon:"", count: counts.non_traites, urgent:true },
     { id:"liste_attente", label:"Liste d'attente" },
-    { id:"newsletter",    label:"Newsletter" },
-    { id:"export",        label:"Export CSV" },
-    { id:"maintenance",   label:"Mode Maintenance" },
-    { id:"divider_membre", label:"── MON ESPACE ──", divider:true },
-    { id:"mon_compte",    label:"Mon Compte" },
-    { id:"mes_replays",   label:"Replays" },
-    { id:"mes_guides",    label:"Guides PDF" },
-    { id:"mon_temoignage",label:"Mon Témoignage" },
-    { id:"mon_profil",    label:"Mon Profil" },
-    { id:"mon_certificat",label:"Mon Certificat" },
+
+    // ── CONTENU ──
+    { id:"div2", divider:true, label:"── Contenu ──" },
+    { id:"replays",       label:"Replays",             icon:"",  count: counts.replays },
+    { id:"guides",        label:"Guides PDF",          icon:"", count: counts.guides },
     { id:"learning",      label:"MMO Learning" },
-    { id:"partenaires",   label:"Partenaires" },
+    { id:"config",        label:"Contenu du site" },
+    { id:"images",        label:"Photos et Logos" },
+    { id:"ressources",    label:"Chanson et Guide PDF" },
+
+    // ── ÉVÉNEMENTS & COMMERCE ──
+    { id:"div3", divider:true, label:"── Événements ──" },
     { id:"tickets",       label:"Tickets & Événements" },
+    { id:"cartes",        label:"Cartes Cadeaux" },
+    { id:"partenaires",   label:"Partenaires" },
+
+    // ── COMMUNICATION ──
+    { id:"div4", divider:true, label:"── Communication ──" },
+    { id:"temoignages",   label:"Témoignages",         urgent:true },
+    { id:"newsletter",    label:"Newsletter" },
     { id:"abonnes",       label:"Abonnés Newsletter" },
     { id:"live",          label:"Live" },
+
+    // ── PARAMÈTRES ──
+    { id:"div5", divider:true, label:"── Paramètres ──" },
+    { id:"export",        label:"Export CSV" },
+    { id:"maintenance",   label:"Mode Maintenance" },
+
+    // ── MON ESPACE ──
+    { id:"div6", divider:true, label:"── Mon Espace ──" },
+    { id:"mon_compte",     label:"Mon Compte" },
+    { id:"mon_profil",     label:"Mon Profil" },
+    { id:"mes_replays",    label:"Replays" },
+    { id:"mes_guides",     label:"Guides PDF" },
+    { id:"mon_temoignage", label:"Mon Témoignage" },
+    { id:"mon_certificat", label:"Mon Certificat" },
   ];
 
   return (
+
     <aside className="admin-sidebar" style={{ width:"220px", flexShrink:0, background:"var(--surface)", borderRight:"1px solid var(--border)", display:"flex", flexDirection:"column", height:"100vh", position:"sticky", top:0 }}>
       {/* Logo */}
       <div style={{ padding:"24px 20px 20px", borderBottom:"1px solid var(--border)" }}>
