@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const STYLES = `
@@ -8,8 +8,7 @@ const STYLES = `
   @keyframes spin    { to{transform:rotate(360deg)} }
 `;
 
-const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY";
-const KKIAPAY_SANDBOX    = true;
+// clé et sandbox chargées dynamiquement depuis /api/paiement/initier/
 
 const FORMULES = [
   { id:"F1", label:"Live · Groupe",       prix:65000,  color:"#C2185B", desc:"2 séances/semaine · En ligne · Groupe" },
@@ -37,6 +36,7 @@ export default function PaiementPage() {
   const [step,         setStep]     = useState("choix");
   const token = localStorage.getItem("mmorphose_token");
   const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const listenerRef = useRef(null);
 
   useEffect(() => {
     if (!token || !user) navigate("/espace-membre");
@@ -48,17 +48,31 @@ export default function PaiementPage() {
       await loadKkiapay();
       const f = FORMULES.find(x => x.id === formule);
 
+      // Récupérer la clé publique et le mode sandbox depuis le backend
+      const initRes = await fetch(`/api/paiement/initier/?formule=${formule}`, {
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+      if (!initRes.ok) {
+        setError("Impossible d'initialiser le paiement.");
+        setLoading(false);
+        return;
+      }
+      const initData = await initRes.json();
+
       window.openKkiapayWidget({
-        amount:    f.prix,
-        api_key:   KKIAPAY_PUBLIC_KEY,
-        sandbox:   KKIAPAY_SANDBOX,
+        amount:    initData.montant,
+        api_key:   initData.public_key,
+        sandbox:   initData.sandbox,
         email:     user?.email || "",
         name:      user?.first_name || "",
         theme:     "#C9A96A",
         callback:  `${window.location.origin}/paiement?formule=${formule}`,
       });
 
-      window.addSuccessListener(async (response) => {
+      if (listenerRef.current && window.removeSuccessListener) {
+        window.removeSuccessListener(listenerRef.current);
+      }
+      listenerRef.current = async (response) => {
         setStep("processing");
         try {
           const res = await fetch("/api/paiement/confirmer/", {
@@ -86,7 +100,8 @@ export default function PaiementPage() {
           setStep("choix");
         }
         setLoading(false);
-      });
+      };
+      window.addSuccessListener(listenerRef.current);
 
     } catch {
       setError("Impossible d'ouvrir le widget de paiement.");

@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { useState } from 'react'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import LandingPage    from './pages/LandingPage'
 import Programme      from './pages/Programme'
 import APropos        from './pages/APropos'
@@ -27,6 +27,25 @@ import MMOLearning from './pages/MMOLearning'
 import Evenements    from './pages/Evenements'
 import ScanTicket    from './pages/ScanTicket'
 
+/* ── Refresh token automatique ────────────────────────────── */
+async function tryRefresh() {
+  const refresh = localStorage.getItem("mmorphose_refresh");
+  if (!refresh) return false;
+  try {
+    const res  = await fetch("/api/auth/refresh/", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ refresh }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    localStorage.setItem("mmorphose_token", data.access);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
@@ -44,7 +63,37 @@ function AdminRoute({ children }) {
   return children;
 }
 
+function MaintenancePage() {
+  return (
+    <div style={{ background:'#0A0A0A', minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'#F8F5F2', fontFamily:"'Montserrat',sans-serif" }}>
+      <p style={{ fontSize:'.62rem', letterSpacing:'.28em', textTransform:'uppercase', color:'rgba(201,169,106,.5)', marginBottom:'16px' }}>Site en maintenance</p>
+      <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', marginBottom:'16px' }}>
+        <span style={{color:'#F8F5F2'}}>Méta'</span>
+        <span style={{color:'#C9A96A'}}>Morph'</span>
+        <span style={{color:'#C2185B'}}>Ose</span>
+      </h1>
+      <p style={{ fontWeight:300, fontSize:'.85rem', color:'rgba(248,245,242,.45)', maxWidth:'360px', textAlign:'center', lineHeight:1.7 }}>
+        Le site est temporairement en maintenance. Revenez dans quelques instants.
+      </p>
+    </div>
+  );
+}
+
 export default function App() {
+  const [maintenance, setMaintenance] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/admin/config/public/')
+      .then(r => r.json())
+      .then(data => {
+        const m = data.find?.(c => c.cle === 'maintenance_active');
+        if (m?.valeur === '1') setMaintenance(true);
+      })
+      .catch(() => {});
+  }, []);
+
+  if (maintenance) return <MaintenancePage />;
+
   const isLanding = window.location.pathname === "/";
   const [showSplash, setShowSplash] = useState(isLanding);
 

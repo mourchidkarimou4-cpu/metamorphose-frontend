@@ -147,7 +147,7 @@ export default function FAQPage() {
             <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.1rem", fontWeight:600, marginBottom:"10px" }}>Vous ne trouvez pas votre réponse ?</p>
             <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.5)", marginBottom:"20px" }}>Contactez Prélia directement — elle répond personnellement.</p>
             <div style={{ display:"flex", gap:"12px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href="https://wa.me/22901961140933" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"3px", textDecoration:"none" }}>
+              <a href="{WHATSAPP_URL}" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"3px", textDecoration:"none" }}>
                 WhatsApp
               </a>
               <Link to="/contact" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#C2185B", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"3px", textDecoration:"none" }}>

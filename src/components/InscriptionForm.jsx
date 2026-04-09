@@ -221,7 +221,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
               Pour toute question urgente :
             </p>
             <div style={{ display:"flex", gap:"16px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href="https://wa.me/22901961140933" style={{ color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
+              <a href="{WHATSAPP_URL}" style={{ color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
                 WhatsApp +229 01 96 11 40 93
               </a>
               <a href="mailto:whiteblackdress22@gmail.com" style={{ color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
@@ -385,7 +385,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
               {apiError}
               <div style={{ marginTop:"8px", fontSize:".78rem", color:textSub }}>
                 Contactez-nous directement :{" "}
-                <a href="https://wa.me/22901961140933" style={{ color:"#C9A96A" }}>WhatsApp</a>
+                <a href="{WHATSAPP_URL}" style={{ color:"#C9A96A" }}>WhatsApp</a>
                 {" "}ou{" "}
                 <a href="mailto:whiteblackdress22@gmail.com" style={{ color:"#C9A96A" }}>Email</a>
               </div>
@@ -410,7 +410,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
           <div style={{ textAlign:"center", marginTop:"20px" }}>
             <p style={{ fontWeight:300, fontSize:".78rem", color:textSub }}>
               Préférez-vous écrire directement ?{" "}
-              <a href="https://wa.me/22901961140933" style={{ color:"#C9A96A", textDecoration:"none", fontWeight:500 }}>
+              <a href="{WHATSAPP_URL}" style={{ color:"#C9A96A", textDecoration:"none", fontWeight:500 }}>
                 WhatsApp 
               </a>
             </p>

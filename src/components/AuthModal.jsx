@@ -50,8 +50,9 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
       });
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem("mmorphose_token", data.access);
-        localStorage.setItem("mmorphose_user", JSON.stringify(data.user));
+        localStorage.setItem("mmorphose_token",   data.access);
+        localStorage.setItem("mmorphose_refresh",  data.refresh);
+        localStorage.setItem("mmorphose_user",     JSON.stringify(data.user));
         onClose();
         navigate("/dashboard");
       } else {
@@ -234,7 +235,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
                   <p style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 300, fontSize: ".75rem", color: "rgba(248,245,242,.3)", marginBottom: "8px" }}>
                     Problème de connexion ?
                   </p>
-                  <a href="https://wa.me/22901961140933" style={{ color: "#C9A96A", fontFamily: "'Montserrat',sans-serif", fontSize: ".75rem", fontWeight: 500, textDecoration: "none" }}>
+                  <a href="{WHATSAPP_URL}" style={{ color: "#C9A96A", fontFamily: "'Montserrat',sans-serif", fontSize: ".75rem", fontWeight: 500, textDecoration: "none" }}>
                     Contacter Prélia sur WhatsApp
                   </a>
                 </div>

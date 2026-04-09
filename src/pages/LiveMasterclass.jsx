@@ -370,7 +370,7 @@ export default function LiveMasterclass() {
                   <button onClick={()=>setTab("replays")} className="btn-or">
                     Voir les replays
                   </button>
-                  <a href="https://wa.me/22901961140933" target="_blank" rel="noreferrer" className="btn-p">
+                  <a href="{WHATSAPP_URL}" target="_blank" rel="noreferrer" className="btn-p">
                     Contacter Prélia
                   </a>
                 </div>

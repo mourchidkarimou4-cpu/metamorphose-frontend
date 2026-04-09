@@ -231,7 +231,7 @@ export default function CarteScan() {
                     <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.4)", marginBottom:"16px", lineHeight:1.65 }}>
                       Cette carte est valide. Présentez-la à Prélia pour l'utiliser.
                     </p>
-                    <a href="https://wa.me/22901961140933" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", gap:"8px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
+                    <a href="{WHATSAPP_URL}" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", gap:"8px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
                       Contacter Prélia
                     </a>
                   </div>

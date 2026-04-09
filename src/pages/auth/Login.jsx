@@ -81,7 +81,7 @@ export default function Login() {
         </p>
         <div style={{ marginTop:'16px', padding:'12px', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'3px' }}>
           <p style={{ fontSize:'.75rem', fontWeight:300, color:'rgba(248,245,242,.25)', marginBottom:'6px' }}>Problème de connexion ?</p>
-          <a href="https://wa.me/22901961140933" style={{ color:'#C9A96A', fontSize:'.75rem', fontWeight:500, textDecoration:'none' }}>Contacter Prélia sur WhatsApp</a>
+          <a href="{WHATSAPP_URL}" style={{ color:'#C9A96A', fontSize:'.75rem', fontWeight:500, textDecoration:'none' }}>Contacter Prélia sur WhatsApp</a>
         </div>
       </div>
     </div>

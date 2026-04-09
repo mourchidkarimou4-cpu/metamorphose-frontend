@@ -154,6 +154,7 @@ const SECTIONS_CONFIG = [
   { id:"diagnostic",  label:"Test Diagnostic" },
   { id:"images",      label:"Photos et Logos" },
   { id:"vague",       label:"Vague & Places" },
+  { id:"stats_site",  label:"Stats du site" },
   { id:"contact",     label:"WhatsApp & Contact" },
 ];
 
@@ -172,7 +173,7 @@ function useAdminAPI() {
     if (res.status === 401) { navigate("/espace-membre"); return null; }
     if (res.status === 204) return true;
     return res.json();
-  }, [token]);
+  }, [token, navigate]);
 
   return call;
 }
@@ -279,7 +280,7 @@ function Sidebar({ active, setActive, counts }) {
         <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"var(--text-sub)", textDecoration:"none", display:"block", marginBottom:"10px" }}>
            Voir le site
         </Link>
-        <button onClick={() => { localStorage.removeItem("mmorphose_token"); localStorage.removeItem("mmorphose_user"); window.location.href="/"; }}
+        <button onClick={() => { localStorage.removeItem("mmorphose_token"); localStorage.removeItem("mmorphose_user"); localStorage.removeItem("mmorphose_refresh"); window.location.href="/espace-membre"; }}
           style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(239,83,80,.5)", transition:"color .3s" }}
           onMouseEnter={e=>e.target.style.color="#ef5350"}
           onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.5)"}>
@@ -346,7 +347,7 @@ function MembresView({ api, toast }) {
   const [filter,  setFilter]  = useState("tous");
 
   useEffect(() => {
-    api("GET", "/membres/").then(d => { if(d) setMembres(d); setLoading(false); });
+    api("GET", "/membres/").then(d => { if(d) setMembres(Array.isArray(d) ? d : Array.isArray(d?.results) ? d.results : []); setLoading(false); });
   }, []);
 
   async function toggleActif(m) {
@@ -765,7 +766,8 @@ function ConfigView({ api, toast, sectionFilter = null }) {
   }
 
   async function addConfig(cle, valeur) {
-    const created = await api("POST", "/config/update/", { cle, valeur, section });
+    const sectionCible = sectionFilter || section;
+    const created = await api("POST", "/config/update/", { cle, valeur, section: sectionCible });
     if (created) {
       setConfigs(p => [...p.filter(c=>c.cle!==cle), created]);
       setEdits(e => ({...e, [cle]: valeur}));
@@ -1075,8 +1077,8 @@ function CartesView({ api, toast }) {
     fetch("/api/cadeaux/admin/liste/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
-    .then(r => r.json())
-    .then(d => { if(Array.isArray(d)) setCartes(d); setLoading(false); })
+    .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
+    .then(d => { if(d && Array.isArray(d)) setCartes(d); setLoading(false); })
     .catch(() => setLoading(false));
   }, []);
 
@@ -1085,6 +1087,7 @@ function CartesView({ api, toast }) {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
+    if (res.status === 401) { window.location.href="/espace-membre"; return; }
     if (res.ok) {
       setCartes(p => p.map(x => x.id===c.id ? {...x, statut:"payee"} : x));
       toast("Carte activée", "success");
@@ -1096,6 +1099,7 @@ function CartesView({ api, toast }) {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
+    if (res.status === 401) { window.location.href="/espace-membre"; return; }
     if (res.ok) {
       setCartes(p => p.map(x => x.id===c.id ? {...x, statut:"utilisee"} : x));
       toast("Carte marquée utilisée", "success");
@@ -1269,7 +1273,7 @@ function TemoignagesView({ api, toast }) {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.json())
-    .then(d => { setTemos(Array.isArray(d) ? d : []); setLoading(false); })
+    .then(d => { setTemos(Array.isArray(d) ? d : Array.isArray(d?.results) ? d.results : []); setLoading(false); })
     .catch(() => setLoading(false));
   }
 
@@ -2111,18 +2115,6 @@ export default function AdminDashboard() {
           {active === "tickets"         && <TicketsView {...viewProps} />}
           {active === "partenaires"     && <PartenairesView {...viewProps} />}
           {active === "learning"        && <LearningView {...viewProps} />}
-          {active === "partenaires"     && <PartenairesView {...viewProps} />}
-          {active === "tickets"         && <TicketsView {...viewProps} />}
-          {active === "abonnes"         && <AbonnesView {...viewProps} />}
-          {active === "live"            && <LiveView {...viewProps} />}
-          {active === "mes_replays"    && <MesReplaysView {...viewProps} />}
-          {active === "mes_guides"     && <MesGuidesView {...viewProps} />}
-          {active === "mon_temoignage" && <MonTemoignageView {...viewProps} />}
-          {active === "mon_profil"     && <MonProfilView {...viewProps} />}
-          {active === "mon_certificat" && <MonCertificatView {...viewProps} />}
-          {active === "mon_compte"     && <MonCompteView {...viewProps} />}
-          {active === "partenaires"     && <PartenairesView {...viewProps} />}
-          {active === "tickets"         && <TicketsView {...viewProps} />}
           {active === "abonnes"         && <AbonnesView {...viewProps} />}
           {active === "live"            && <LiveView {...viewProps} />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
@@ -2130,6 +2122,7 @@ export default function AdminDashboard() {
           {active === "mon_temoignage"  && <MonTemoignageView {...viewProps} />}
           {active === "mon_profil"      && <MonProfilView {...viewProps} />}
           {active === "mon_certificat"  && <MonCertificatView {...viewProps} />}
+          {active === "mon_compte"      && <MonCompteView {...viewProps} />}
         </main>
       </div>
       <Toast toasts={toasts} />
@@ -2153,7 +2146,10 @@ function LearningView({ api, toast }) {
   function apiL(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/learning/admin${path}`, opts).then(r => r.status===204 ? true : r.json())
+    return fetch(`/api/learning/admin${path}`, opts).then(r => {
+      if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
+      return r.status === 204 ? true : r.json()
+    })
   }
 
   function load() {
@@ -2362,7 +2358,10 @@ function PartenairesView({ api, toast }) {
   function apiP(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/admin/partenaires${path}`, opts).then(r => r.status===204 ? true : r.json())
+    return fetch(`/api/admin/partenaires${path}`, opts).then(r => {
+      if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
+      return r.status === 204 ? true : r.json()
+    })
   }
 
   function load() {
@@ -2734,28 +2733,26 @@ function AbonnesView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch('/api/admin/export/newsletter/', {
+    // Charger les abonnés newsletter via l'export CSV admin
+    fetch('/api/admin/export/abonnes/', {
       headers:{'Authorization':`Bearer ${token}`}
     })
     .then(r => r.ok ? r.text() : Promise.reject())
     .then(csv => {
       const lines = csv.split('\n').slice(1).filter(Boolean)
       const data  = lines.map(l => {
-        const [email, prenom, actif, date] = l.split(',')
-        return { email: email?.replace(/"/g,''), prenom: prenom?.replace(/"/g,''), actif: actif?.includes('1'), date }
-      })
+        const parts = l.split(',')
+        return {
+          email:  parts[0]?.replace(/"/g,'').trim(),
+          prenom: parts[1]?.replace(/"/g,'').trim(),
+          actif:  parts[2]?.replace(/"/g,'').trim() === 'Oui',
+          date:   parts[3]?.replace(/"/g,'').trim(),
+        }
+      }).filter(a => a.email)
       setAbonnes(data)
       setLoading(false)
     })
-    .catch(() => {
-      // Fallback — endpoint direct
-      fetch('/api/contenu/newsletter/liste/', {
-        headers:{'Authorization':`Bearer ${token}`}
-      })
-      .then(r => r.json())
-      .then(d => { setAbonnes(Array.isArray(d)?d:[]); setLoading(false) })
-      .catch(() => setLoading(false))
-    })
+    .catch(() => { setAbonnes([]); setLoading(false) })
   }
 
   useEffect(()=>{ load() },[])
@@ -2954,8 +2951,8 @@ function MesReplaysView({ api, toast }) {
             <p style={{fontFamily:'var(--ff-b)',fontWeight:500,fontSize:'.88rem',marginBottom:'4px'}}>{r.titre}</p>
             {r.description && <p style={{fontFamily:'var(--ff-b)',fontWeight:300,fontSize:'.75rem',color:'var(--text-sub)'}}>{r.description}</p>}
           </div>
-          {r.url && (
-            <a href={r.url} target="_blank" rel="noreferrer"
+          {r.video_url && (
+            <a href={r.video_url} target="_blank" rel="noreferrer"
               style={{padding:'8px 16px',background:'var(--rose)',border:'none',borderRadius:'3px',color:'#fff',fontFamily:'var(--ff-b)',fontSize:'.68rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none'}}>
               Regarder
             </a>
@@ -2994,8 +2991,8 @@ function MesGuidesView({ api, toast }) {
             <p style={{fontFamily:'var(--ff-b)',fontWeight:500,fontSize:'.88rem',marginBottom:'4px'}}>{g.titre}</p>
             {g.description && <p style={{fontFamily:'var(--ff-b)',fontWeight:300,fontSize:'.75rem',color:'var(--text-sub)'}}>{g.description}</p>}
           </div>
-          {g.fichier_url && (
-            <a href={g.fichier_url} target="_blank" rel="noreferrer"
+          {g.fichier && (
+            <a href={g.fichier} target="_blank" rel="noreferrer"
               style={{padding:'8px 16px',background:'rgba(201,169,106,.1)',border:'1px solid rgba(201,169,106,.25)',borderRadius:'3px',color:'var(--or)',fontFamily:'var(--ff-b)',fontSize:'.68rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none'}}>
               Télécharger
             </a>
@@ -3018,7 +3015,7 @@ function MonTemoignageView({ api, toast }) {
     if (!form.texte.trim()) { toast('Veuillez écrire votre témoignage','error'); return }
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch('/api/avis/', {
+    const res = await fetch('/api/avis/soumettre/', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)

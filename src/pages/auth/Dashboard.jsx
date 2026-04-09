@@ -300,6 +300,7 @@ export default function Dashboard() {
   const [guides,  setGuides]  = useState([])
   const [replays, setReplays] = useState([])
   const [mesTemos,setMesTemos]= useState([])
+  const [mesTickets,setMesTickets]= useState([])
   const [loading, setLoading] = useState(true)
   const [tab,     setTab]     = useState('replays')
   const [temoSubmitted, setTemoSubmitted] = useState(false)
@@ -319,11 +320,13 @@ export default function Dashboard() {
           fetch('/api/contenu/guides/',     { headers }),
           fetch('/api/contenu/replays/',    { headers }),
           fetch('/api/avis/mes-temoignages/', { headers }),
+          fetch('/api/tickets/mes-tickets/',     { headers }),
         ])
         if (uRes.status === 401) { navigate('/espace-membre'); return }
-        const [u, g, r, t] = await Promise.all([uRes.json(), gRes.json(), rRes.json(), tRes.json()])
+        const [u, g, r, t, tk] = await Promise.all([uRes.json(), gRes.json(), rRes.json(), tRes.json(), (await fetch('/api/tickets/mes-tickets/', { headers })).json()])
         setUser(u); setGuides(g); setReplays(r)
         setMesTemos(Array.isArray(t) ? t : [])
+        setMesTickets(Array.isArray(tk) ? tk : [])
         localStorage.setItem('mmorphose_user', JSON.stringify(u))
       } catch {}
       setLoading(false)
@@ -409,7 +412,7 @@ export default function Dashboard() {
 
         {/* Tabs */}
         <div style={{ display:'flex', gap:'4px', marginBottom:'28px', background:'rgba(255,255,255,.03)', borderRadius:'4px', padding:'4px', width:'100%', overflowX:'auto', flexWrap:'nowrap' }}>
-          {[['replays','Replays'],['guides','Guides PDF'],['temoignage','Mon Témoignage'],['profil','Mon profil'],['compte','Mon Compte']].map(([id,label]) => (
+          {[['replays','Replays'],['guides','Guides PDF'],['tickets','Mes Tickets'],['temoignage','Mon Témoignage'],['profil','Mon profil'],['compte','Mon Compte']].map(([id,label]) => (
             <button key={id} onClick={()=>setTab(id)} style={{
               padding:'10px 18px', borderRadius:'3px', border:'none', cursor:'pointer',
               fontFamily:"'Montserrat'", fontSize:'.7rem', fontWeight:500,
@@ -424,11 +427,27 @@ export default function Dashboard() {
         {/* Replays */}
         {tab === 'replays' && (
           <div style={{ animation:'fadeUp .5s both' }}>
-            <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'16px' }}>
-              Replays · {replays.length > 0 ? replays.length + ' disponibles' : 'Bientôt disponibles'}
-            </p>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'16px', flexWrap:'wrap', gap:'10px' }}>
+              <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A' }}>
+                Replays · {replays.length > 0 ? replays.length + ' disponibles' : 'Bientôt disponibles'}
+              </p>
+              {replays.length > 1 && (
+                <input
+                  type="search"
+                  placeholder="Rechercher un replay…"
+                  onChange={e => {
+                    const q = e.target.value.toLowerCase();
+                    const els = document.querySelectorAll('.replay-item');
+                    els.forEach(el => {
+                      el.style.display = el.dataset.titre?.toLowerCase().includes(q) ? '' : 'none';
+                    });
+                  }}
+                  style={{ padding:'8px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'#F8F5F2', fontFamily:"'Montserrat'", fontSize:'.78rem', outline:'none', minWidth:'200px' }}
+                />
+              )}
+            </div>
             {replays.length > 0 ? replays.map((r,i) => (
-              <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 20px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'3px', marginBottom:'10px' }}>
+              <div key={i} className="replay-item" data-titre={r.titre} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 20px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'3px', marginBottom:'10px' }}>
                 <div>
                   <p style={{ fontWeight:500, fontSize:'.88rem', marginBottom:'3px' }}>{r.titre}</p>
                   <p style={{ fontWeight:300, fontSize:'.75rem', color:'rgba(248,245,242,.4)' }}>Semaine {r.semaine}</p>
@@ -459,6 +478,43 @@ export default function Dashboard() {
                 }
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Tickets */}
+        {tab === 'tickets' && (
+          <div style={{ animation:'fadeUp .5s both' }}>
+            <p style={{ fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'#C9A96A', marginBottom:'16px' }}>
+              Mes Tickets · {mesTickets.length > 0 ? mesTickets.length + ' réservation(s)' : 'Aucun ticket'}
+            </p>
+            {mesTickets.length > 0 ? mesTickets.map((tk, i) => (
+              <div key={i} style={{ padding:'16px 20px', background:'rgba(255,255,255,.025)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'3px', marginBottom:'10px' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:'8px' }}>
+                  <div>
+                    <p style={{ fontWeight:500, fontSize:'.88rem', marginBottom:'4px' }}>{tk.evenement_nom}</p>
+                    <p style={{ fontWeight:300, fontSize:'.75rem', color:'rgba(248,245,242,.4)', marginBottom:'2px' }}>
+                      {tk.evenement_date ? new Date(tk.evenement_date).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}) : ''}
+                      {tk.evenement_lieu ? ` · ${tk.evenement_lieu}` : ''}
+                    </p>
+                    <p style={{ fontWeight:300, fontSize:'.72rem', color:'rgba(248,245,242,.3)', fontFamily:'monospace' }}>#{String(tk.code).substring(0,8).toUpperCase()}</p>
+                  </div>
+                  <span style={{
+                    fontSize:'.62rem', fontWeight:600, letterSpacing:'.1em', textTransform:'uppercase',
+                    padding:'4px 10px', borderRadius:'100px',
+                    color: tk.statut==='valide'?'#4CAF50': tk.statut==='scanne'?'#C9A96A':'#ef5350',
+                    border: `1px solid ${tk.statut==='valide'?'rgba(76,175,80,.4)': tk.statut==='scanne'?'rgba(201,169,106,.4)':'rgba(239,83,80,.4)'}`,
+                  }}>
+                    {tk.statut==='valide'?'Valide': tk.statut==='scanne'?'Scanné':'Annulé'}
+                  </span>
+                </div>
+              </div>
+            )) : (
+              <div style={{ padding:'40px', textAlign:'center', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'4px' }}>
+                <p style={{ fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1rem', color:'rgba(248,245,242,.3)' }}>
+                  Vous n'avez pas encore de ticket. Découvrez nos événements.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -549,7 +605,7 @@ export default function Dashboard() {
               }} style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', color:'#fff', background:'#C2185B', border:'none', borderRadius:'3px', padding:'12px 20px', cursor:'pointer' }}>
                 Télécharger mon certificat
               </button>
-              <a href="https://wa.me/22901961140933" style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:500, letterSpacing:'.12em', textTransform:'uppercase', color:'#C9A96A', textDecoration:'none', border:'1px solid rgba(201,169,106,.25)', borderRadius:'3px', padding:'12px 20px', display:'inline-block' }}>
+              <a href="{WHATSAPP_URL}" style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:500, letterSpacing:'.12em', textTransform:'uppercase', color:'#C9A96A', textDecoration:'none', border:'1px solid rgba(201,169,106,.25)', borderRadius:'3px', padding:'12px 20px', display:'inline-block' }}>
                 Contacter Prélia
               </a>
             </div>

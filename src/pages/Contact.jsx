@@ -92,7 +92,7 @@ export default function Contact() {
               <div style={{ padding:"24px", background:"rgba(255,255,255,.025)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"4px", marginBottom:"28px" }}>
                 <p style={{ fontSize:".62rem", letterSpacing:".22em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px" }}>Contact direct</p>
                 {[
-                  { href:"https://wa.me/22901961140933", label:"+229 01 96 11 40 93" },
+                  { href:"{WHATSAPP_URL}", label:"+229 01 96 11 40 93" },
                   { href:"https://wa.me/22901593765600", label:"+229 01 59 37 65 60" },
                   { href:"mailto:whiteblackdress22@gmail.com", label:"whiteblackdress22@gmail.com" },
                 ].map((c,i) => (
