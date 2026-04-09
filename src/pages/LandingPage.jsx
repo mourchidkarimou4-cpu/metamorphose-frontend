@@ -817,7 +817,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
       {/* ── Menu mobile — drawer plein écran ── */}
       {menuOpen && (
-        <div style={{ position:"fixed", inset:0, background:"#0A0A0A", zIndex:300, display:"flex", flexDirection:"column", overflowY:"auto" }}>
+        <div style={{ position:"fixed", inset:0, background:"linear-gradient(180deg,#0d0a06 0%,#0A0A0A 100%)", zIndex:300, display:"flex", flexDirection:"column", overflowY:"auto" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"20px 24px", borderBottom:"1px solid rgba(201,169,106,.12)", flexShrink:0 }}>
             <p style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem" }}>
               <span style={{ color:"#F8F5F2" }}>Méta'</span><span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
@@ -827,7 +827,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
           <div style={{ flex:1, padding:"8px 0 32px" }}>
             <div style={{ padding:"20px 24px 4px" }}>
-              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"rgba(201,169,106,.5)" }}>Programme</p>
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A" }}>Programme</p>
             </div>
             {[
               { label:"Le Programme",    to:"/programme" },
@@ -838,14 +838,14 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
                 style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px"}}>
+                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
 
             <div style={{ padding:"24px 24px 4px" }}>
-              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"rgba(201,169,106,.5)" }}>L'Univers MMO</p>
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A" }}>L'Univers MMO</p>
             </div>
             {[
               { label:"Store MMO",      to:"/store" },
@@ -857,14 +857,14 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
                 style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px"}}>
+                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
 
             <div style={{ padding:"24px 24px 4px" }}>
-              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"rgba(201,169,106,.5)" }}>Découvrir</p>
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A" }}>Découvrir</p>
             </div>
             {[
               { label:"À Propos",    to:"/a-propos" },
@@ -875,8 +875,8 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
                 style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px"}}>
+                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
