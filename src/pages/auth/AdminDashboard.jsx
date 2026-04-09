@@ -209,6 +209,8 @@ function Sidebar({ active, setActive, counts }) {
     { id:"replays",  label:"Replays",        icon:"",  count: counts.replays },
     { id:"guides",   label:"Guides PDF",     icon:"", count: counts.guides },
     { id:"config",   label:"Contenu du site" },
+    { id:"stats_site", label:"Stats du site" },
+    { id:"vague",    label:"Vague & Places" },
     { id:"images",   label:"Photos et Logos" },
     { id:"cartes",   label:"Cartes Cadeaux" },
     { id:"temoignages", label:"Témoignages", urgent:true },
