@@ -458,13 +458,13 @@ export default function Masterclass() {
                 <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Qu'allons-nous voir pendant cette rencontre 100% GRATUITE ?</p>
                 <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
                   {[
-                    { emoji:"😔", text:"Tu doutes de toi" },
-                    { emoji:"👀", text:"Tu te compares aux autres" },
-                    { emoji:"😰", text:"Tu as peur du regard" },
-                    { emoji:"🌑", text:"Tu te sens invisible" },
+                    { icon:"01", text:"Tu doutes de toi" },
+                    { icon:"02", text:"Tu te compares aux autres" },
+                    { icon:"03", text:"Tu as peur du regard" },
+                    { icon:"04", text:"Tu te sens invisible" },
                   ].map((item, i) => (
                     <div key={i} style={{ display:"flex", gap:"14px", alignItems:"center", padding:"14px 20px", background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.05)", borderLeft:"3px solid var(--rose)", borderRadius:"2px" }}>
-                      <span style={{ fontSize:"1.1rem" }}>{item.emoji}</span>
+                      <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem", fontWeight:700, color:"#C9A96A" }}>{item.icon}</span>
                       <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.75)" }}>{item.text}</p>
                     </div>
                   ))}
@@ -681,7 +681,7 @@ export default function Masterclass() {
                   "Tu cherches des solutions rapides sans travailler sur toi en profondeur",
                 ].map((item, i) => (
                   <div key={i} style={{ display:"flex", gap:"12px", alignItems:"flex-start", marginBottom:"12px" }}>
-                    <span style={{ color:"rgba(239,83,80,.6)", flexShrink:0, fontSize:".85rem" }}>❌</span>
+                    <span style={{ fontFamily:"'Playfair Display',serif", fontSize:".75rem", fontWeight:700, color:"rgba(239,83,80,.6)", flexShrink:0 }}>✕</span>
                     <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.5)", lineHeight:1.6 }}>{item}</p>
                   </div>
                 ))}
