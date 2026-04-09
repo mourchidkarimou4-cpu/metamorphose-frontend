@@ -817,7 +817,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
       {/* ── Menu mobile — drawer plein écran ── */}
       {menuOpen && (
-        <div style={{ position:"fixed", inset:0, background:"linear-gradient(180deg,#0d0a06 0%,#0A0A0A 100%)", zIndex:300, display:"flex", flexDirection:"column", overflowY:"auto" }}>
+        <div style={{ position:"fixed", inset:0, background:"#0A0A0A", zIndex:300, display:"flex", flexDirection:"column", overflowY:"auto" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"20px 24px", borderBottom:"1px solid rgba(201,169,106,.12)", flexShrink:0 }}>
             <p style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem" }}>
               <span style={{ color:"#F8F5F2" }}>Méta'</span><span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
@@ -837,9 +837,9 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
               { label:"MMO Learning",    to:"/mmo-learning" },
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
-                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
+                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.7)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.color="#F8F5F2";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C9A96A"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.7)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
@@ -856,9 +856,9 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
               { label:"Cartes Cadeaux", to:"/carte-cadeau" },
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
-                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
+                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.7)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.color="#F8F5F2";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C9A96A"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.7)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
@@ -874,9 +874,9 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
               { label:"Don",         to:"/don" },
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
-                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.85)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.color="#C9A96A";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C2185B"}}
-                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.85)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
+                style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.7)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.color="#F8F5F2";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C9A96A"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.7)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
                 {l.label}
               </Link>
             ))}
