@@ -125,8 +125,6 @@ const STYLES = `
   /* ── RESPONSIVE ─────────────────────────────────────────────── */
   @media(max-width:900px){
     .admin-layout{flex-direction:column !important}
-    .sidebar-label{display:none !important}
-    .sidebar-short{display:block !important}
     .admin-sidebar{width:100% !important;height:auto !important;flex-direction:row !important;overflow-x:auto !important;padding:10px 8px !important;gap:4px !important;min-height:unset !important;position:relative !important}
     .admin-sidebar .sidebar-label{display:none !important}
     .admin-main{padding:20px 16px !important}
@@ -205,7 +203,6 @@ function Sidebar({ active, setActive, counts }) {
     membres:true, contenu:false, evenements:false,
     communication:false, parametres:false, monespace:false
   });
-
   function toggle(key) { setOpen(p => ({...p,[key]:!p[key]})); }
 
   const SECTIONS = [
@@ -258,7 +255,7 @@ function Sidebar({ active, setActive, counts }) {
         <p style={{ fontSize:".55rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--text-sub)", marginTop:"3px" }}>Admin Dashboard</p>
       </div>
 
-      <nav style={{ padding:"8px 8px 0", flex:1 }}>
+      <nav style={{ padding:"8px 8px 0", flex:1, overflowY:"auto" }}>
         <button onClick={() => setActive("stats")} className="tab-btn" style={{
           width:"100%", justifyContent:"flex-start", marginBottom:"4px",
           background: active==="stats" ? "rgba(194,24,91,.12)" : "transparent",
