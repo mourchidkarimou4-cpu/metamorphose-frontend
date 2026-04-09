@@ -45,7 +45,7 @@ function ModalReservation({ ev, onClose, onSuccess }) {
     try {
       const headers={'Content-Type':'application/json'}
       if(token) headers['Authorization']=`Bearer ${token}`
-      const res  = await fetch(`${API_URL}/api/tickets/reserver/',{method:'POST',headers,body:JSON.stringify({evenement_id:ev.id,...form})})
+      const res  = await fetch(`${API_URL}/api/tickets/reserver/`,{method:'POST',headers,body:JSON.stringify({evenement_id:ev.id,...form})})
       const data = await res.json()
       if(!res.ok){setError(data.detail||'Erreur');setLoading(false);return}
       onSuccess(data)
@@ -104,7 +104,7 @@ export default function Evenements() {
   const [modal,     setModal]      = useState(null)
 
   useEffect(()=>{
-    fetch(`${API_URL}/api/tickets/evenements/')
+    fetch(`${API_URL}/api/tickets/evenements/`)
       .then(r=>r.json()).then(d=>{setEvenements(Array.isArray(d)?d:[]);setLoading(false)})
       .catch(()=>setLoading(false))
   },[])

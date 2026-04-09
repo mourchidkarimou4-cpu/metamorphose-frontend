@@ -35,7 +35,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch(`${API_URL}/api/admin/config/public/")
+      fetch(`${API_URL}/api/admin/config/public/`)
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;
@@ -63,7 +63,7 @@ export default function Temoignages() {
   useEffect(() => {
     let cancelled = false;
     function fetchTemos() {
-      fetch(`${API_URL}/api/avis/")
+      fetch(`${API_URL}/api/avis/`)
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;

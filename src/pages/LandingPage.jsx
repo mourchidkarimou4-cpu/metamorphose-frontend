@@ -171,7 +171,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch(`${API_URL}/api/admin/config/public/")
+      fetch(`${API_URL}/api/admin/config/public/`)
         .then(r => {
           if (!r.ok) throw new Error("API indisponible");
           return r.json();
@@ -1929,7 +1929,7 @@ function NewsletterWidget() {
     if (!email.trim()) return;
     setStatus("loading");
     try {
-      const res  = await fetch(`${API_URL}/api/contenu/newsletter/abonner/", {
+      const res  = await fetch(`${API_URL}/api/contenu/newsletter/abonner/`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ email: email.trim(), prenom: prenom.trim() }),
@@ -1981,7 +1981,7 @@ function NewsletterWidget() {
 function Footer({ get }) {
   const [partenaires, setPartenaires] = useState([]);
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/partenaires/public/")
+    fetch(`${API_URL}/api/admin/partenaires/public/`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setPartenaires(Array.isArray(data) ? data : []))
       .catch(() => {});

@@ -39,7 +39,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch(`${API_URL}/api/admin/config/public/")
+      fetch(`${API_URL}/api/admin/config/public/`)
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;

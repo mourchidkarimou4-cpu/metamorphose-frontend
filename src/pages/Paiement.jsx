@@ -76,7 +76,7 @@ export default function PaiementPage() {
       listenerRef.current = async (response) => {
         setStep("processing");
         try {
-          const res = await fetch(`${API_URL}/api/paiement/confirmer/", {
+          const res = await fetch(`${API_URL}/api/paiement/confirmer/`, {
             method:  "POST",
             headers: {
               "Authorization": `Bearer ${token}`,

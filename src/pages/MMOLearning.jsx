@@ -159,8 +159,8 @@ function ListeCours() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/learning/cours/').then(r => r.json()),
-      fetch(`${API_URL}/api/learning/categories/').then(r => r.json()),
+      fetch(`${API_URL}/api/learning/cours/`).then(r => r.json()),
+      fetch(`${API_URL}/api/learning/categories/`).then(r => r.json()),
     ]).then(([c, cat]) => {
       setCours(Array.isArray(c) ? c : [])
       setCategories(Array.isArray(cat) ? cat : [])

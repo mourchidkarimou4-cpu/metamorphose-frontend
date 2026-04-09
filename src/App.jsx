@@ -33,7 +33,7 @@ async function tryRefresh() {
   const refresh = localStorage.getItem("mmorphose_refresh");
   if (!refresh) return false;
   try {
-    const res  = await fetch(`${API_URL}/api/auth/refresh/", {
+    const res  = await fetch(`${API_URL}/api/auth/refresh/`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ refresh }),
@@ -84,7 +84,7 @@ export default function App() {
   const [maintenance, setMaintenance] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/config/public/')
+    fetch(`${API_URL}/api/admin/config/public/`)
       .then(r => r.json())
       .then(data => {
         const m = data.find?.(c => c.cle === 'maintenance_active');
