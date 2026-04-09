@@ -101,7 +101,7 @@ const STYLES = `
   .modal-box {
     background:#141414; border:1px solid rgba(201,169,106,.15);
     border-radius:6px; padding:36px; width:100%; max-width:520px;
-    max-height:90vh; overflow-y:auto;
+    max-height:85vh; overflow-y:auto;
     animation:fadeUp .35s both;
   }
 
@@ -220,8 +220,6 @@ function Sidebar({ active, setActive, counts }) {
     { id:"tickets",       label:"Tickets & Événements" },
     { id:"abonnes",       label:"Abonnés Newsletter" },
     { id:"live",          label:"Live" },
-    { id:"partenaires",   label:"Partenaires" },
-    { id:"tickets",       label:"Tickets" },
   ];
 
   return (
