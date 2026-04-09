@@ -87,6 +87,8 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
       }}>
         <div style={{
           maxWidth: "520px", width: "100%",
+          maxHeight: "90vh",
+          overflowY: "auto",
           background: "#141414",
           border: "1px solid rgba(201,169,106,.15)",
           borderRadius: "6px",
