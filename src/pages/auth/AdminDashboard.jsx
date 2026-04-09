@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
+import API_URL from '../../config';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
@@ -909,7 +910,7 @@ function ImagesView({ api, toast }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch("/api/admin/images/upload/", {
+        const res = await fetch(`${API_URL}/api/admin/images/upload/", {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,
@@ -1074,7 +1075,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch("/api/cadeaux/admin/liste/", {
+    fetch(`${API_URL}/api/cadeaux/admin/liste/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
@@ -1644,7 +1645,7 @@ function RessourcesAdminView({ api, toast }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch("/api/admin/images/upload/", {
+      const res = await fetch(`${API_URL}/api/admin/images/upload/", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -1759,7 +1760,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token");
 
   useEffect(() => {
-    fetch("/api/admin/liste-attente/", { headers:{"Authorization":`Bearer ${token}`} })
+    fetch(`${API_URL}/api/admin/liste-attente/", { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -1767,7 +1768,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch("/api/admin/liste-attente/notifier/", {
+    const res = await fetch(`${API_URL}/api/admin/liste-attente/notifier/", {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -1821,7 +1822,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch("/api/admin/newsletter/", {
+      const res = await fetch(`${API_URL}/api/admin/newsletter/", {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -1937,7 +1938,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch("/api/admin/maintenance/", {
+    await fetch(`${API_URL}/api/admin/maintenance/", {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })
@@ -2003,7 +2004,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch("/api/auth/update-profile/", {
+      const res = await fetch(`${API_URL}/api/auth/update-profile/", {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -2019,7 +2020,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch("/api/auth/change-password/", {
+      const res = await fetch(`${API_URL}/api/auth/change-password/", {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });
@@ -2734,7 +2735,7 @@ function AbonnesView({ api, toast }) {
   function load() {
     setLoading(true)
     // Charger les abonnés newsletter via l'export CSV admin
-    fetch('/api/admin/export/abonnes/', {
+    fetch(`${API_URL}/api/admin/export/abonnes/', {
       headers:{'Authorization':`Bearer ${token}`}
     })
     .then(r => r.ok ? r.text() : Promise.reject())
@@ -3015,7 +3016,7 @@ function MonTemoignageView({ api, toast }) {
     if (!form.texte.trim()) { toast('Veuillez écrire votre témoignage','error'); return }
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch('/api/avis/soumettre/', {
+    const res = await fetch(`${API_URL}/api/avis/soumettre/', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3086,7 +3087,7 @@ function MonProfilView({ api, toast }) {
 
   async function sauvegarder() {
     setLoading(true)
-    const res = await fetch('/api/auth/update-profile/', {
+    const res = await fetch(`${API_URL}/api/auth/update-profile/', {
       method:'PATCH',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3098,7 +3099,7 @@ function MonProfilView({ api, toast }) {
 
   async function changerMdp() {
     if (!mdp.old_password || !mdp.new_password) { toast('Remplissez les deux champs','error'); return }
-    const res = await fetch('/api/auth/change-password/', {
+    const res = await fetch(`${API_URL}/api/auth/change-password/', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(mdp)
@@ -3154,7 +3155,7 @@ function MonCertificatView({ toast }) {
   async function telecharger() {
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/certificat/', {
+      const res = await fetch(`${API_URL}/api/auth/certificat/', {
         headers:{'Authorization':`Bearer ${token}`}
       })
       if (!res.ok) { toast('Erreur génération certificat','error'); setLoading(false); return }

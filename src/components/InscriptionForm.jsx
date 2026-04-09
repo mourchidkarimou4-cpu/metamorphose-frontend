@@ -139,7 +139,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
     setApiError("");
 
     try {
-      const res = await fetch('/api/auth/contact/', {
+      const res = await fetch(`${API_URL}/api/auth/contact/', {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({

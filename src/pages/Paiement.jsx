@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import API_URL from '../config';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -75,7 +76,7 @@ export default function PaiementPage() {
       listenerRef.current = async (response) => {
         setStep("processing");
         try {
-          const res = await fetch("/api/paiement/confirmer/", {
+          const res = await fetch(`${API_URL}/api/paiement/confirmer/", {
             method:  "POST",
             headers: {
               "Authorization": `Bearer ${token}`,

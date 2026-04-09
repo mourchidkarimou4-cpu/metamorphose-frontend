@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AuraButton from '../components/AuraButton'
 import { QRCodeSVG } from 'qrcode.react'
+import API_URL from '../config';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -44,7 +45,7 @@ function ModalReservation({ ev, onClose, onSuccess }) {
     try {
       const headers={'Content-Type':'application/json'}
       if(token) headers['Authorization']=`Bearer ${token}`
-      const res  = await fetch('/api/tickets/reserver/',{method:'POST',headers,body:JSON.stringify({evenement_id:ev.id,...form})})
+      const res  = await fetch(`${API_URL}/api/tickets/reserver/',{method:'POST',headers,body:JSON.stringify({evenement_id:ev.id,...form})})
       const data = await res.json()
       if(!res.ok){setError(data.detail||'Erreur');setLoading(false);return}
       onSuccess(data)
@@ -103,7 +104,7 @@ export default function Evenements() {
   const [modal,     setModal]      = useState(null)
 
   useEffect(()=>{
-    fetch('/api/tickets/evenements/')
+    fetch(`${API_URL}/api/tickets/evenements/')
       .then(r=>r.json()).then(d=>{setEvenements(Array.isArray(d)?d:[]);setLoading(false)})
       .catch(()=>setLoading(false))
   },[])

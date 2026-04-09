@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import AuraButton from '../components/AuraButton'
+import API_URL from '../config';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap');
@@ -158,8 +159,8 @@ function ListeCours() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/learning/cours/').then(r => r.json()),
-      fetch('/api/learning/categories/').then(r => r.json()),
+      fetch(`${API_URL}/api/learning/cours/').then(r => r.json()),
+      fetch(`${API_URL}/api/learning/categories/').then(r => r.json()),
     ]).then(([c, cat]) => {
       setCours(Array.isArray(c) ? c : [])
       setCategories(Array.isArray(cat) ? cat : [])
