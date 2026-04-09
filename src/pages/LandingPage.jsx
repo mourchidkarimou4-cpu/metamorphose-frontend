@@ -1915,6 +1915,68 @@ function CTAFinal({ get }) {
   );
 }
 
+
+/* ── Newsletter Widget ─────────────────────────────────────── */
+function NewsletterWidget() {
+  const [email,   setEmail]   = useState("");
+  const [prenom,  setPrenom]  = useState("");
+  const [status,  setStatus]  = useState(null); // null | "loading" | "success" | "error"
+  const [message, setMessage] = useState("");
+
+  async function sAbonner(e) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("loading");
+    try {
+      const res  = await fetch("/api/contenu/newsletter/abonner/", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ email: email.trim(), prenom: prenom.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus("success");
+        setMessage(data.detail || "Inscription confirmée. Merci !");
+        setEmail(""); setPrenom("");
+      } else {
+        setStatus("error");
+        setMessage(data.detail || "Une erreur est survenue.");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur réseau. Réessayez.");
+    }
+  }
+
+  if (status === "success") return (
+    <div style={{ padding:"12px 16px", background:"rgba(76,175,80,.08)", border:"1px solid rgba(76,175,80,.2)", borderRadius:"3px" }}>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"#4CAF50", fontWeight:500 }}>✓ {message}</p>
+    </div>
+  );
+
+  return (
+    <form onSubmit={sAbonner} style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+      <input
+        type="text" placeholder="Votre prénom" value={prenom}
+        onChange={e => setPrenom(e.target.value)}
+        style={{ padding:"9px 12px", background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"2px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, outline:"none" }}
+      />
+      <input
+        type="email" placeholder="Votre email *" value={email}
+        onChange={e => setEmail(e.target.value)} required
+        style={{ padding:"9px 12px", background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"2px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, outline:"none" }}
+      />
+      {status === "error" && (
+        <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"#ef5350" }}>{message}</p>
+      )}
+      <button type="submit" disabled={status === "loading"}
+        style={{ padding:"10px", background:"var(--rose)", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".7rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", opacity:status==="loading"?.6:1 }}>
+        {status === "loading" ? "Inscription..." : "S'abonner ✦"}
+      </button>
+    </form>
+  );
+}
+
 function Footer({ get }) {
   const [partenaires, setPartenaires] = useState([]);
   useEffect(() => {
@@ -1969,6 +2031,13 @@ function Footer({ get }) {
                 )}
               </div>
             ))}
+          </div>
+          <div>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"18px" }}>Newsletter</p>
+            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.4)", lineHeight:1.65, marginBottom:"14px" }}>
+              Recevez nos actualités et conseils exclusifs.
+            </p>
+            <NewsletterWidget />
           </div>
           <div>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"18px" }}>Contact</p>
