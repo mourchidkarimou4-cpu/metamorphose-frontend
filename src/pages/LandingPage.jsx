@@ -84,7 +84,7 @@ const STYLES = `
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
   .grid-prelia{display:grid;grid-template-columns:360px 1fr;gap:72px;align-items:center}
   .grid-formules{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-  .grid-footer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px}
+  .grid-footer{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:36px}
   .grid-programme{display:grid;grid-template-columns:140px 1fr}
   .grid-avant-apres{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center}
 
@@ -97,7 +97,7 @@ const STYLES = `
   /* ── TABLETTE (max 1024px) ── */
   @media(max-width:1024px){
     .grid-prelia{grid-template-columns:280px 1fr;gap:48px}
-    .grid-footer{grid-template-columns:1fr 1fr;gap:32px}
+    .grid-footer{grid-template-columns:1fr 1fr;gap:28px}
     .grid-formules{grid-template-columns:1fr 1fr}
     .nav-links{gap:20px}
   }
