@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import API_URL from '../config';
 import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 
@@ -174,7 +175,7 @@ export default function LiveMasterclass() {
   useEffect(() => {
     // En production, appeler l'API pour vérifier le statut du live
     // Pour l'instant on utilise SiteConfig
-    fetch(`/api/admin/config/public/`)
+    fetch(`${API_URL}/api/admin/config/public/`)
       .then(r => r.ok ? r.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
