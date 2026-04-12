@@ -2063,7 +2063,7 @@ function Footer({ get }) {
                     onMouseEnter={e=>e.currentTarget.style.opacity=".6"}
                     onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
                     {p.logo ? (
-                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", filter:"brightness(0) invert(1)", opacity:.35 }}/>
+                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", opacity:.75 }}/>
                     ) : (
                       <span style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"rgba(248,245,242,.3)", letterSpacing:".1em", textTransform:"uppercase" }}>{p.nom}</span>
                     )}
@@ -2071,7 +2071,7 @@ function Footer({ get }) {
                 ) : (
                   <div key={p.id}>
                     {p.logo ? (
-                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", filter:"brightness(0) invert(1)", opacity:.35 }}/>
+                      <img src={p.logo} alt={p.nom} style={{ height:"36px", objectFit:"contain", opacity:.75 }}/>
                     ) : (
                       <span style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"rgba(248,245,242,.3)", letterSpacing:".1em", textTransform:"uppercase" }}>{p.nom}</span>
                     )}
