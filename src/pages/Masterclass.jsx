@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 
 const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
-const BACKEND = "";
+const BACKEND = API_URL;
 const DATE_MASTERCLASS = "2026-04-26T17:00:00Z";
 
 const PAYS_INDICATIFS = [
@@ -178,6 +178,17 @@ function useReveal() {
 /* ── Formulaire d'inscription ───────────────────────────────── */
 function FormulaireInscription({ onSuccess }) {
   const [prenom,    setPrenom]    = useState("");
+  const [photoPrelia, setPhotoPrelia] = useState("");
+  useEffect(() => {
+    fetch(`${API_URL}/api/admin/config/public/`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        const map = {};
+        if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
+        if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
+      })
+      .catch(() => {});
+  }, []);
   const [email,     setEmail]     = useState("");
   const [indicatif, setIndicatif] = useState("+229");
   const [tel,       setTel]       = useState("");
@@ -451,9 +462,13 @@ export default function Masterclass() {
             {/* Photo Prélia + intro */}
             <div className="prelia-grid reveal" style={{ display:"grid", gridTemplateColumns:"280px 1fr", gap:"52px", alignItems:"center", marginBottom:"64px" }}>
               <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", overflow:"hidden" }}>
-                <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center", padding:"16px" }}>Photo Prélia Apedo</p>
-                </div>
+                {photoPrelia ? (
+                  <img src={photoPrelia} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                ) : (
+                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center", padding:"16px" }}>Photo Prélia Apedo</p>
+                  </div>
+                )}
               </div>
               <div>
                 <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Qu'allons-nous voir pendant cette rencontre 100% GRATUITE ?</p>
