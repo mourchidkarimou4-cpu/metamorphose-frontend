@@ -2473,10 +2473,16 @@ function PartenairesView({ api, toast }) {
               <div><label style={lbl}>Nom *</label>
                 <input style={inp} value={form.nom||''} onChange={e=>set('nom',e.target.value)} placeholder="Nom du partenaire"/>
               </div>
-              <div><label style={lbl}>Logo (URL image)</label>
-                <input style={inp} value={form.logo||''} onChange={e=>set('logo',e.target.value)} placeholder="https://..."/>
+              <div>
+                <label style={lbl}>Logo du partenaire</label>
+                <input style={{...inp, marginBottom:'8px'}} value={form.logo||''} onChange={e=>set('logo',e.target.value)} placeholder="URL du logo (https://...)"/>
+                <label style={{display:'inline-flex',alignItems:'center',gap:'8px',padding:'8px 14px',background:'rgba(201,169,106,.08)',border:'1px solid rgba(201,169,106,.2)',borderRadius:'3px',cursor:uploadingLogo?'not-allowed':'pointer',fontFamily:'var(--ff-b)',fontSize:'.68rem',color:'var(--or)',letterSpacing:'.1em',textTransform:'uppercase',marginBottom:'8px'}}>
+                  {uploadingLogo ? 'Upload en cours...' : '+ Uploader un fichier'}
+                  <input type="file" accept="image/*" style={{display:'none'}} disabled={uploadingLogo} onChange={e=>uploadLogo(e.target.files[0])}/>
+                </label>
+                <p style={{fontFamily:'var(--ff-b)',fontSize:'.6rem',color:'var(--text-sub)',marginBottom:'6px'}}>Saisissez une URL ou uploadez directement un fichier image</p>
                 {form.logo && (
-                  <div style={{marginTop:'8px',padding:'8px',background:'rgba(255,255,255,.04)',borderRadius:'4px',display:'flex',alignItems:'center',justifyContent:'center',height:'60px'}}>
+                  <div style={{padding:'8px',background:'rgba(255,255,255,.04)',borderRadius:'4px',display:'flex',alignItems:'center',justifyContent:'center',height:'60px'}}>
                     <img src={form.logo} alt="preview" style={{maxHeight:'52px',maxWidth:'100%',objectFit:'contain'}}/>
                   </div>
                 )}
