@@ -178,17 +178,7 @@ function useReveal() {
 /* ── Formulaire d'inscription ───────────────────────────────── */
 function FormulaireInscription({ onSuccess }) {
   const [prenom,    setPrenom]    = useState("");
-  const [photoPrelia, setPhotoPrelia] = useState("");
-  useEffect(() => {
-    fetch(`${API_URL}/api/admin/config/public/`)
-      .then(r => r.ok ? r.json() : [])
-      .then(data => {
-        const map = {};
-        if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
-        if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
-      })
-      .catch(() => {});
-  }, []);
+
   const [email,     setEmail]     = useState("");
   const [indicatif, setIndicatif] = useState("+229");
   const [tel,       setTel]       = useState("");
@@ -296,6 +286,17 @@ function TicketQR({ inscrit }) {
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Masterclass() {
+  const [photoPrelia, setPhotoPrelia] = useState("");
+  useEffect(() => {
+    fetch(`${API_URL}/api/admin/config/public/`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        const map = {};
+        if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
+        if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
+      })
+      .catch(() => {});
+  }, []);
   usePageBackground("live");
   const time = useCountdown(DATE_MASTERCLASS);
   const [inscrit, setInscrit] = useState(null);
