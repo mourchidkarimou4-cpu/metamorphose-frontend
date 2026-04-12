@@ -594,9 +594,13 @@ export default function Masterclass() {
             <div className="prelia-grid reveal" style={{ display:"grid", gridTemplateColumns:"260px 1fr", gap:"48px", alignItems:"start" }}>
               <div>
                 <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", overflow:"hidden", marginBottom:"16px" }}>
-                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center" }}>MA PHOTO</p>
-                  </div>
+                  {photoPrelia ? (
+                    <img src={photoPrelia} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                  ) : (
+                    <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center" }}>MA PHOTO</p>
+                    </div>
+                  )}
                 </div>
                 <div style={{ textAlign:"center" }}>
                   <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)" }}>Prélia Apedo</p>
