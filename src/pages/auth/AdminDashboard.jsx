@@ -2373,6 +2373,23 @@ function PartenairesView({ api, toast }) {
   }
   useEffect(()=>{load()},[])
 
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+
+  async function uploadLogo(file) {
+    if (!file) return
+    setUploadingLogo(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('upload_preset', 'metamorphose_unsigned')
+    try {
+      const res = await fetch('https://api.cloudinary.com/v1_1/dp7v6vlgs/image/upload', { method:'POST', body:fd })
+      const data = await res.json()
+      if (data.secure_url) { set('logo', data.secure_url); toast('Logo uploadé ✓', 'success') }
+      else toast('Erreur upload', 'error')
+    } catch { toast('Erreur upload', 'error') }
+    setUploadingLogo(false)
+  }
+
   function openModal(item=null) {
     setEditing(item)
     setForm(item || {nom:'', logo:'', lien:'', ordre:0, actif:true})
