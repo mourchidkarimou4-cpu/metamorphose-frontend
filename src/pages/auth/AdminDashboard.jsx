@@ -1316,7 +1316,7 @@ function TemoignagesView({ api, toast }) {
     if (audioFichier) data.append("audio_fichier",  audioFichier);
 
     try {
-      const url    = modal === "add" ? "/api/avis/admin/ajouter/" : `/api/avis/admin/${selected.id}/modifier/`;
+      const url    = modal === "add" ? `${API_URL}/api/avis/admin/ajouter/` : `${API_URL}/api/avis/admin/${selected.id}/modifier/`;
       const method = modal === "add" ? "POST" : "PATCH";
       const res    = await fetch(url, {
         method,
