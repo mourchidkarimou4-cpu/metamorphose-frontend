@@ -230,7 +230,7 @@ function Sidebar({ active, setActive, counts }) {
     { id:"partenaires",   label:"Partenaires" },
     { id:"tickets",       label:"Tickets & Événements" },
     { id:"abonnes",       label:"Abonnés Newsletter" },
-    { id:"live",          label:"Live & Visio" },
+    { id:"live_visio",    label:"Live & Visio" },
   ];
 
   return (
@@ -2253,7 +2253,7 @@ export default function AdminDashboard() {
           {active === "partenaires"     && <PartenairesView {...viewProps} />}
           {active === "learning"        && <LearningView {...viewProps} />}
           {active === "abonnes"         && <AbonnesView {...viewProps} />}
-          {active === "live"            && <LiveAdminView {...viewProps} />}
+          {active === "live_visio"      && <LiveAdminView {...viewProps} />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
           {active === "mes_guides"      && <MesGuidesView {...viewProps} />}
           {active === "mon_temoignage"  && <MonTemoignageView {...viewProps} />}
