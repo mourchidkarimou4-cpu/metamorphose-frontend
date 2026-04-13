@@ -50,10 +50,9 @@ export default function LiveMeeting() {
     if (!myName.trim()) { setError("Entrez votre prénom."); return; }
     setError("");
     try {
-      const token = localStorage.getItem("mmorphose_token");
       const res = await fetch(`${API_URL}/api/live/${roomId}/rejoindre/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(token ? {"Authorization": `Bearer ${token}`} : {}) },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nom: myName, mot_de_passe: password }),
       });
       const data = await res.json();
