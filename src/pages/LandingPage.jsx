@@ -506,7 +506,7 @@ function WhatsAppButton({ get }) {
   const [open, setOpen] = useState(false);
   const numero  = get("whatsapp_numero","");  // CORRECTION : pas de numéro hardcodé dans le code source public
   const message = encodeURIComponent(get("whatsapp_message","Bonjour Prélia, je suis intéressée par Méta'Morph'Ose."));
-  const url     = `https://wa.me/${numero}?text=${message}`;
+  const url     = `https://wa.me/message/DI23LCDIMS5SF1`;
 
   return (
     <div style={{ position:"fixed", bottom:"80px", right:"16px", zIndex:149, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"10px" }}>
@@ -2050,7 +2050,22 @@ function Footer({ get }) {
               <a href={`tel:${get("footer_tel2","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, textDecoration:"none" }}>{get("footer_tel2","+229 01 59 37 65 60")}</a>
               <a href={`mailto:${get("footer_email","")}`} style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, textDecoration:"none" }}>{get("footer_email","whiteblackdress22@gmail.com")}</a>
             </div>
-            <div style={{ marginTop:"24px" }}>
+            <div style={{ marginTop:"16px", display:"flex", flexWrap:"wrap", gap:"8px" }}>
+              {[
+                { label:"Instagram", href:"https://www.instagram.com/preliaapedo?igsh=dGZhd2gxNnJjbXd3&utm_source=qr" },
+                { label:"Facebook",  href:"https://www.facebook.com/share/17mGLiwty7/?mibextid=wwXIfr" },
+                { label:"TikTok",    href:"https://www.tiktok.com/@prelitaa5?_r=1&_t=ZS-93NgdRO4zp6" },
+                { label:"LinkedIn",  href:"https://www.linkedin.com/in/pr%C3%A9lia-apedo-84572139b" },
+              ].map((r,i) => (
+                <a key={i} href={r.href} target="_blank" rel="noreferrer"
+                  style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none", padding:"5px 10px", border:"1px solid rgba(201,169,106,.15)", borderRadius:"2px" }}
+                  onMouseEnter={e=>e.currentTarget.style.color="var(--or)"}
+                  onMouseLeave={e=>e.currentTarget.style.color="rgba(201,169,106,.5)"}>
+                  {r.label}
+                </a>
+              ))}
+            </div>
+            <div style={{ marginTop:"12px" }}>
               <Link to="/espace-membre" className="btn-s" style={{ fontSize:".68rem", padding:"10px 20px" }}>Espace Membre</Link>
             </div>
           </div>
