@@ -147,13 +147,11 @@ export default function FAQPage() {
           <div className="reveal" style={{ marginTop:"48px", padding:"32px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"4px", textAlign:"center" }}>
             <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.1rem", fontWeight:600, marginBottom:"10px" }}>Vous ne trouvez pas votre réponse ?</p>
             <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.5)", marginBottom:"20px" }}>Contactez Prélia directement — elle répond personnellement.</p>
-            <div style={{ display:"flex", gap:"12px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href="{WHATSAPP_URL}" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"3px", textDecoration:"none" }}>
-                WhatsApp
+            <div style={{ display:"flex", justifyContent:"center" }}>
+              <a href="https://wa.me/22901961140933" target="_blank" rel="noreferrer"
+                style={{ display:"inline-flex", alignItems:"center", gap:"10px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"14px 32px", borderRadius:"3px", textDecoration:"none" }}>
+                Contacter Prélia AHONON sur WhatsApp
               </a>
-              <Link to="/contact" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#C2185B", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"3px", textDecoration:"none" }}>
-                Formulaire de contact
-              </Link>
             </div>
           </div>
         </div>
