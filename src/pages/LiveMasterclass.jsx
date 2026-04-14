@@ -1,443 +1,402 @@
-import { useState, useEffect, useRef } from "react";
-import API_URL from '../config';
-import usePageBackground from "../hooks/usePageBackground";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import API_URL from "../config";
 
-const JITSI_DOMAIN = "meet.jit.si";
-
+/* ── STYLES ─────────────────────────────────────────────────── */
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-  :root {
-    --noir:#0A0A0A; --or:#C9A96A; --or-light:#E8D5A8;
-    --rose:#C2185B; --beige:#D8C1A0; --beige-light:#F2EBE0;
-    --blanc:#F8F5F2;
-    --ff-t:'Playfair Display',Georgia,serif;
-    --ff-b:'Montserrat',sans-serif;
-    --ease:cubic-bezier(0.4,0,0.2,1);
+
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  @keyframes pulse-live { 0%,100%{box-shadow:0 0 8px rgba(194,24,91,.4)} 50%{box-shadow:0 0 22px rgba(194,24,91,.7)} }
+  @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.3} }
+  @keyframes spin     { to{transform:rotate(360deg)} }
+
+  .live-page { min-height:100vh; background:#0A0A0A; color:#F8F5F2; font-family:'Montserrat',sans-serif; font-weight:300; }
+
+  .live-hero {
+    text-align:center; padding:80px 24px 48px;
+    background:linear-gradient(180deg, rgba(194,24,91,.06) 0%, transparent 100%);
   }
-  html { scroll-behavior:smooth; }
-  body { background:var(--noir); color:var(--blanc); font-family:var(--ff-b); font-weight:300; overflow-x:hidden; }
-
-  @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
-  @keyframes pulse-rose { 0%,100%{box-shadow:0 0 20px rgba(194,24,91,.35)} 50%{box-shadow:0 0 40px rgba(194,24,91,.65)} }
-  @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:.3} }
-  @keyframes spin    { to{transform:rotate(360deg)} }
-
-  .btn-p {
-    display:inline-flex; align-items:center; justify-content:center; gap:10px;
-    background:var(--rose); color:#fff; font-family:var(--ff-b); font-weight:700;
-    font-size:.75rem; letter-spacing:.16em; text-transform:uppercase;
-    padding:14px 28px; border:none; border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s;
+  .live-hero-label {
+    font-family:'Montserrat',sans-serif; font-size:.62rem; letter-spacing:.3em;
+    text-transform:uppercase; color:#C9A96A; margin-bottom:12px;
   }
-  .btn-p:hover { background:#a01049; transform:translateY(-2px); }
-
-  .btn-or {
-    display:inline-flex; align-items:center; justify-content:center; gap:10px;
-    background:transparent; color:var(--or); font-family:var(--ff-b); font-weight:600;
-    font-size:.75rem; letter-spacing:.16em; text-transform:uppercase;
-    padding:13px 24px; border:1px solid var(--or); border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s;
+  .live-hero h1 {
+    font-family:'Playfair Display',serif; font-size:clamp(1.8rem,5vw,2.8rem);
+    font-weight:600; margin-bottom:14px; line-height:1.2;
   }
-  .btn-or:hover { background:var(--or); color:var(--noir); }
+  .live-hero p {
+    font-size:.88rem; color:rgba(248,245,242,.5); max-width:520px; margin:0 auto;
+    line-height:1.7;
+  }
 
-  .live-badge {
+  .live-tabs {
+    display:flex; gap:0; border-bottom:1px solid rgba(255,255,255,.08);
+    max-width:800px; margin:0 auto; padding:0 24px;
+  }
+  .live-tab {
+    padding:14px 28px; background:none; border:none; border-bottom:2px solid transparent;
+    color:rgba(248,245,242,.4); font-family:'Montserrat',sans-serif; font-size:.78rem;
+    font-weight:500; letter-spacing:.08em; text-transform:uppercase; cursor:pointer;
+    transition:all .3s;
+  }
+  .live-tab.active { color:#C9A96A; border-bottom-color:#C9A96A; }
+
+  .live-content { max-width:800px; margin:0 auto; padding:32px 24px 80px; }
+
+  .salle-card {
+    background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.06);
+    border-radius:10px; padding:28px; margin-bottom:16px;
+    animation:fadeUp .5s ease both; transition:border-color .3s, background .3s;
+  }
+  .salle-card:hover { border-color:rgba(201,169,106,.25); background:rgba(255,255,255,.04); }
+
+  .salle-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 12px; border-radius:20px; font-size:.62rem; font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase;
+  }
+  .salle-badge.active {
+    background:rgba(194,24,91,.12); color:#C2185B; border:1px solid rgba(194,24,91,.25);
+    animation:pulse-live 2s infinite;
+  }
+  .salle-badge.attente {
+    background:rgba(201,169,106,.1); color:#C9A96A; border:1px solid rgba(201,169,106,.2);
+  }
+  .salle-badge .dot {
+    width:7px; height:7px; border-radius:50%; background:currentColor;
+    animation:blink 1.5s infinite;
+  }
+
+  .salle-title {
+    font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600;
+    margin:14px 0 8px;
+  }
+  .salle-desc {
+    font-size:.82rem; color:rgba(248,245,242,.45); line-height:1.6; margin-bottom:16px;
+  }
+  .salle-meta {
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+    font-size:.72rem; color:rgba(248,245,242,.35);
+  }
+  .salle-meta span { display:inline-flex; align-items:center; gap:5px; }
+
+  .btn-rejoindre {
     display:inline-flex; align-items:center; gap:8px;
-    background:rgba(194,24,91,.15); border:1px solid rgba(194,24,91,.4);
-    border-radius:100px; padding:6px 16px;
-    font-family:var(--ff-b); font-size:.65rem; font-weight:700;
-    letter-spacing:.18em; text-transform:uppercase; color:var(--rose);
+    padding:12px 28px; background:#C2185B; border:none; border-radius:6px;
+    color:#fff; font-family:'Montserrat',sans-serif; font-weight:600;
+    font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+    cursor:pointer; transition:all .3s; text-decoration:none;
   }
-  .live-dot {
-    width:8px; height:8px; border-radius:50%; background:var(--rose);
-    animation:blink 1s ease-in-out infinite;
+  .btn-rejoindre:hover { background:#d81b60; transform:translateY(-1px); box-shadow:0 6px 20px rgba(194,24,91,.3); }
+
+  .btn-creer {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 28px; background:transparent; border:1px solid rgba(201,169,106,.3);
+    border-radius:6px; color:#C9A96A; font-family:'Montserrat',sans-serif;
+    font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+    cursor:pointer; transition:all .3s;
   }
+  .btn-creer:hover { background:rgba(201,169,106,.08); border-color:rgba(201,169,106,.5); }
 
   .replay-card {
     background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.06);
-    border-radius:6px; overflow:hidden; transition:all .35s;
+    border-radius:10px; overflow:hidden; margin-bottom:16px;
+    animation:fadeUp .5s ease both; transition:border-color .3s;
   }
-  .replay-card:hover { transform:translateY(-4px); border-color:rgba(201,169,106,.2); }
-
-  .tab-btn {
-    padding:10px 24px; background:transparent;
-    border:none; border-bottom:2px solid transparent;
-    color:rgba(248,245,242,.4); font-family:var(--ff-b);
-    font-size:.72rem; font-weight:500; letter-spacing:.12em;
-    text-transform:uppercase; cursor:pointer; transition:all .25s;
+  .replay-card:hover { border-color:rgba(201,169,106,.2); }
+  .replay-thumb {
+    width:100%; aspect-ratio:16/9; background:#111; display:flex;
+    align-items:center; justify-content:center; position:relative;
   }
-  .tab-btn.active { color:var(--or); border-bottom-color:var(--or); }
-  .tab-btn:hover:not(.active) { color:rgba(248,245,242,.7); }
+  .replay-play {
+    width:56px; height:56px; border-radius:50%; background:rgba(194,24,91,.85);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:transform .3s;
+  }
+  .replay-play:hover { transform:scale(1.1); }
+  .replay-info { padding:18px 22px; }
+  .replay-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; margin-bottom:6px; }
+  .replay-date { font-size:.72rem; color:rgba(248,245,242,.35); }
 
-  #jitsi-container { width:100%; height:100%; border:none; border-radius:4px; }
+  .empty-state {
+    text-align:center; padding:60px 20px;
+    color:rgba(248,245,242,.3); font-size:.88rem;
+  }
+  .empty-state p { margin-bottom:8px; }
 
-  @media(max-width:768px) {
-    .live-grid { grid-template-columns:1fr !important; }
-    .replays-grid { grid-template-columns:1fr !important; }
-    .btn-p, .btn-or { width:100% !important; justify-content:center !important; }
+  .create-form {
+    background:rgba(255,255,255,.03); border:1px solid rgba(201,169,106,.15);
+    border-radius:10px; padding:28px; margin-bottom:24px;
+    animation:fadeUp .4s ease both;
+  }
+  .create-form h3 {
+    font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600;
+    color:#C9A96A; margin-bottom:20px;
+  }
+  .form-group { margin-bottom:14px; }
+  .form-label {
+    display:block; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(248,245,242,.45); margin-bottom:6px;
+  }
+  .form-input {
+    width:100%; padding:11px 14px; background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1); border-radius:6px;
+    color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; outline:none;
+    transition:border-color .3s;
+  }
+  .form-input:focus { border-color:rgba(201,169,106,.4); }
+  .form-input::placeholder { color:rgba(248,245,242,.2); }
+  .form-select {
+    width:100%; padding:11px 14px; background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1); border-radius:6px;
+    color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; outline:none;
+    appearance:none; cursor:pointer;
+  }
+  .form-select option { background:#1a1a1a; }
+  .form-row { display:flex; gap:12px; margin-top:18px; }
+
+  .loader {
+    width:32px; height:32px; border:3px solid rgba(201,169,106,.15);
+    border-top-color:#C9A96A; border-radius:50%; animation:spin .7s linear infinite;
+    margin:40px auto;
+  }
+
+  @media(max-width:600px) {
+    .live-hero { padding:60px 20px 36px; }
+    .salle-card { padding:20px; }
+    .salle-meta { gap:10px; }
+    .form-row { flex-direction:column; }
+    .live-tabs { padding:0 16px; }
+    .live-tab { padding:12px 16px; font-size:.72rem; }
   }
 `;
 
-/* ── Composant Jitsi Meet ───────────────────────────────────── */
-function JitsiMeet({ roomName, displayName, isAdmin, onClose }) {
-  const containerRef = useRef(null);
-  const apiRef       = useRef(null);
-
-  useEffect(() => {
-    if (!window.JitsiMeetExternalAPI) return;
-
-    const options = {
-      roomName: `metamorphose-${roomName}`,
-      width: "100%",
-      height: "100%",
-      parentNode: containerRef.current,
-      userInfo: { displayName: displayName || "Participante" },
-      configOverwrite: {
-        startWithAudioMuted: !isAdmin,
-        startWithVideoMuted: !isAdmin,
-        disableDeepLinking: true,
-        prejoinPageEnabled: false,
-        enableRecording: isAdmin,
-        fileRecordingsEnabled: isAdmin,
-        liveStreamingEnabled: false,
-        toolbarButtons: isAdmin
-          ? ['microphone','camera','chat','recording','tileview','hangup','fullscreen','settings']
-          : ['microphone','camera','chat','tileview','hangup','fullscreen','raisehand'],
-      },
-      interfaceConfigOverwrite: {
-        TOOLBAR_ALWAYS_VISIBLE: true,
-        SHOW_JITSI_WATERMARK: false,
-        SHOW_WATERMARK_FOR_GUESTS: false,
-        DEFAULT_BACKGROUND: '#0A0A0A',
-        DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
-        MOBILE_APP_PROMO: false,
-      },
-    };
-
-    apiRef.current = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, options);
-
-    apiRef.current.addEventListeners({
-      readyToClose: () => { onClose && onClose(); },
-      videoConferenceLeft: () => { onClose && onClose(); },
-    });
-
-    return () => {
-      if (apiRef.current) {
-        apiRef.current.dispose();
-        apiRef.current = null;
-      }
-    };
-  }, [roomName, displayName, isAdmin]);
-
-  return (
-    <div ref={containerRef} style={{ width:"100%", height:"100%", minHeight:"500px", borderRadius:"6px", overflow:"hidden" }}/>
-  );
-}
-
-/* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function LiveMasterclass() {
-  usePageBackground("live");
-  const [tab,         setTab]         = useState("live"); // live | replays
-  const [liveActif,   setLiveActif]   = useState(false);
-  const [roomName,    setRoomName]    = useState("");
-  const [inSession,   setInSession]   = useState(false);
-  const [jitsiLoaded, setJitsiLoaded] = useState(false);
-  const [replays,     setReplays]     = useState([]);
-  const [loadingReplays, setLoadingReplays] = useState(true);
+  const navigate = useNavigate();
+
+  const [tab,       setTab]       = useState("live");
+  const [salles,    setSalles]    = useState([]);
+  const [replays,   setReplays]   = useState([]);
+  const [loading,   setLoading]   = useState(true);
+  const [showForm,  setShowForm]  = useState(false);
+  const [creating,  setCreating]  = useState(false);
+  const [error,     setError]     = useState("");
+
+  const [form, setForm] = useState({
+    titre: "", description: "", mode: "live", mot_de_passe: "", max_participants: 100
+  });
 
   const token   = localStorage.getItem("mmorphose_token");
   const user    = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
   const isAdmin = user?.is_staff === true;
-  const isMembre = !!token && !!user;
 
-  // Charger le SDK Jitsi
   useEffect(() => {
-    if (window.JitsiMeetExternalAPI) { setJitsiLoaded(true); return; }
-    const script = document.createElement("script");
-    script.src = `https://${JITSI_DOMAIN}/external_api.js`;
-    script.async = true;
-    script.onload = () => setJitsiLoaded(true);
-    document.head.appendChild(script);
+    setLoading(true);
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    Promise.all([
+      fetch(`${API_URL}/api/live/${isAdmin ? 'mes-salles' : 'salles-actives'}/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch(`${API_URL}/api/contenu/replays/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+    ]).then(([sallesData, replaysData]) => {
+      setSalles(Array.isArray(sallesData) ? sallesData : []);
+      setReplays(Array.isArray(replaysData) ? replaysData : []);
+      setLoading(false);
+    });
   }, []);
 
-  // Charger les replays
-  useEffect(() => {
-    fetch(`${API_URL}/api/contenu/replays/`, {
-      headers: token ? { "Authorization": `Bearer ${token}` } : {},
-    })
-    .then(r => r.ok ? r.json() : [])
-    .then(data => { setReplays(Array.isArray(data) ? data : []); setLoadingReplays(false); })
-    .catch(() => setLoadingReplays(false));
-  }, []);
-
-  // Vérifier si un live est en cours
-  useEffect(() => {
-    // En production, appeler l'API pour vérifier le statut du live
-    // Pour l'instant on utilise SiteConfig
-    fetch(`${API_URL}/api/admin/config/public/`)
-      .then(r => r.ok ? r.json() : [])
-      .then(data => {
-        if (Array.isArray(data)) {
-          const liveConfig = data.find(d => d.cle === "live_actif");
-          const roomConfig = data.find(d => d.cle === "live_room_name");
-          if (liveConfig?.valeur === "1") {
-            setLiveActif(true);
-            setRoomName(roomConfig?.valeur || "masterclass-mmo");
-          }
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  function demarrerLive() {
-    const room = `masterclass-${Date.now()}`;
-    setRoomName(room);
-    // Sauvegarder le nom de la salle dans SiteConfig
-    if (token) {
-      fetch(`${API_URL}/api/admin/config/update/`, {
+  async function creerSalle(e) {
+    e.preventDefault();
+    if (!form.titre.trim()) { setError("Le titre est requis."); return; }
+    setCreating(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/api/live/creer/`, {
         method: "POST",
-        headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
-        body: JSON.stringify({ cle:"live_actif", valeur:"1", section:"live" }),
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(form),
       });
-      fetch(`${API_URL}/api/admin/config/update/`, {
-        method: "POST",
-        headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
-        body: JSON.stringify({ cle:"live_room_name", valeur:room, section:"live" }),
-      });
+      const data = await res.json();
+      if (res.ok) {
+        navigate(`/meeting/${data.id}`);
+      } else {
+        setError(data.detail || "Erreur lors de la creation.");
+        setCreating(false);
+      }
+    } catch {
+      setError("Erreur reseau.");
+      setCreating(false);
     }
-    setLiveActif(true);
-    setInSession(true);
   }
 
-  function terminerLive() {
-    if (token) {
-      fetch(`${API_URL}/api/admin/config/update/`, {
-        method: "POST",
-        headers: { "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
-        body: JSON.stringify({ cle:"live_actif", valeur:"0", section:"live" }),
-      });
-    }
-    setLiveActif(false);
-    setInSession(false);
-    setRoomName("");
+  function rejoindre(salleId) {
+    navigate(`/meeting/${salleId}`);
   }
+
+  function formatDate(d) {
+    if (!d) return "";
+    const date = new Date(d);
+    return date.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric", hour:"2-digit", minute:"2-digit" });
+  }
+
+  const sallesActives  = salles.filter(s => s.statut === "active");
+  const sallesAttente  = salles.filter(s => s.statut === "attente");
+  const toutesLesSalles = [...sallesActives, ...sallesAttente];
 
   return (
-    <>
+    <div className="live-page">
       <style>{STYLES}</style>
 
-      {/* ── NAVBAR ── */}
-      <nav style={{ padding:"14px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(10,10,10,.97)", backdropFilter:"blur(20px)", zIndex:200, position:"sticky", top:0 }}>
-        <Link to="/" style={{ textDecoration:"none" }}>
-          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{color:"var(--blanc)"}}>Meta'</span>
-            <span style={{color:"var(--or)"}}>Morph'</span>
-            <span style={{color:"var(--rose)"}}>Ose</span>
-          </span>
-        </Link>
-        <div style={{ display:"flex", gap:"12px", alignItems:"center" }}>
-          {liveActif && (
-            <div className="live-badge">
-              <div className="live-dot"/>
-              LIVE EN COURS
-            </div>
-          )}
-          <Link to={isAdmin ? "/admin" : "/dashboard"} style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>
-            {isAdmin ? "Admin" : "Mon espace"}
-          </Link>
-        </div>
-      </nav>
+      <div className="live-hero">
+        <p className="live-hero-label">Meta'Morph'Ose</p>
+        <h1>Lives & Replays</h1>
+        <p>Participez aux lives en direct de Prelia ou revoyez les sessions passees a votre rythme.</p>
+      </div>
 
-      <main style={{ maxWidth:"1200px", margin:"0 auto", padding:"0 24px 80px" }}>
+      <div className="live-tabs">
+        <button className={`live-tab ${tab==="live"?"active":""}`} onClick={()=>setTab("live")}>
+          Live en direct {sallesActives.length > 0 && <span style={{color:"#C2185B",marginLeft:"6px"}}>● {sallesActives.length}</span>}
+        </button>
+        <button className={`live-tab ${tab==="replays"?"active":""}`} onClick={()=>setTab("replays")}>
+          Replays ({replays.length})
+        </button>
+      </div>
 
-        {/* ── HEADER ── */}
-        <div style={{ padding:"48px 0 32px", textAlign:"center" }}>
-          <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px", animation:"fadeUp .7s both" }}>
-            Méta'Morph'Ose
-          </p>
-          <h1 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.8rem,5vw,2.8rem)", fontWeight:700, lineHeight:1.1, marginBottom:"16px", animation:"fadeUp .8s .1s both" }}>
-            Lives & Replays
-          </h1>
-          <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.5)", lineHeight:1.75, animation:"fadeUp .8s .2s both" }}>
-            Participez aux lives en direct de Prélia ou revoyez les sessions passées à votre rythme.
-          </p>
-        </div>
+      <div className="live-content">
+        {loading && <div className="loader" />}
 
-        {/* ── TABS ── */}
-        <div style={{ display:"flex", borderBottom:"1px solid rgba(255,255,255,.06)", marginBottom:"36px" }}>
-          <button className={`tab-btn ${tab==="live"?"active":""}`} onClick={()=>setTab("live")}>
-            Live en direct
-          </button>
-          <button className={`tab-btn ${tab==="replays"?"active":""}`} onClick={()=>setTab("replays")}>
-            Replays ({replays.length})
-          </button>
-        </div>
-
-        {/* ── TAB LIVE ── */}
-        {tab === "live" && (
-          <div>
-            {/* Admin — contrôles */}
+        {!loading && tab === "live" && (
+          <>
             {isAdmin && (
-              <div style={{ padding:"20px 24px", background:"rgba(201,169,106,.05)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"6px", marginBottom:"28px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:"12px" }}>
-                <div>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".18em", textTransform:"uppercase", color:"var(--or)", marginBottom:"4px" }}>Contrôles Admin</p>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.5)" }}>
-                    {liveActif ? `Live en cours · Salle : ${roomName}` : "Aucun live actif pour le moment"}
-                  </p>
-                </div>
-                <div style={{ display:"flex", gap:"10px" }}>
-                  {!liveActif ? (
-                    <button onClick={demarrerLive} className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite" }}>
-                      Démarrer un live
-                    </button>
-                  ) : (
-                    <button onClick={terminerLive} style={{ padding:"13px 24px", background:"rgba(239,83,80,.15)", border:"1px solid rgba(239,83,80,.4)", borderRadius:"2px", color:"#ef5350", fontFamily:"var(--ff-b)", fontWeight:700, fontSize:".72rem", letterSpacing:".14em", textTransform:"uppercase", cursor:"pointer" }}>
-                      Terminer le live
-                    </button>
-                  )}
-                  {liveActif && !inSession && (
-                    <button onClick={()=>setInSession(true)} className="btn-or">
-                      Rejoindre ma salle
-                    </button>
-                  )}
-                </div>
+              <div style={{ marginBottom:"24px" }}>
+                <button className="btn-creer" onClick={() => setShowForm(!showForm)}>
+                  {showForm ? "✕ Annuler" : "+ Creer une salle"}
+                </button>
               </div>
             )}
 
-            {/* Zone Live */}
-            {liveActif && roomName ? (
-              <div>
-                <div style={{ marginBottom:"16px", display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
-                  <div className="live-badge">
-                    <div className="live-dot"/>
-                    EN DIRECT
-                  </div>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.5)" }}>
-                    Masterclass Méta'Morph'Ose · Prélia Apedo
+            {isAdmin && showForm && (
+              <form className="create-form" onSubmit={creerSalle}>
+                <h3>Nouvelle salle</h3>
+                {error && (
+                  <p style={{ background:"rgba(239,68,68,.1)", border:"1px solid rgba(239,68,68,.3)", borderRadius:"6px", padding:"10px 14px", fontSize:".78rem", color:"#f87171", marginBottom:"14px" }}>
+                    {error}
                   </p>
+                )}
+                <div className="form-group">
+                  <label className="form-label">Titre *</label>
+                  <input className="form-input" value={form.titre} onChange={e=>setForm({...form,titre:e.target.value})} placeholder="Ex : Masterclass Meta'Morph'Ose — Semaine 3" />
                 </div>
-
-                {jitsiLoaded ? (
-                  <div style={{ height:"600px", borderRadius:"6px", overflow:"hidden", border:"1px solid rgba(201,169,106,.1)" }}>
-                    {(isMembre || isAdmin) ? (
-                      <JitsiMeet
-                        roomName={roomName}
-                        displayName={user?.first_name || user?.email || "Participante"}
-                        isAdmin={isAdmin}
-                        onClose={() => { if (isAdmin) terminerLive(); else setInSession(false); }}
-                      />
-                    ) : (
-                      <div style={{ height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"16px", background:"rgba(255,255,255,.02)" }}>
-                        <p style={{ fontFamily:"var(--ff-b)", fontSize:".8rem", color:"rgba(248,245,242,.5)" }}>
-                          Connecte-toi pour participer au live
-                        </p>
-                        <Link to="/espace-membre" className="btn-p">
-                          Se connecter
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div style={{ height:"400px", display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid rgba(255,255,255,.06)", borderRadius:"6px" }}>
-                    <div style={{ textAlign:"center" }}>
-                      <div style={{ width:"36px", height:"36px", border:"3px solid rgba(201,169,106,.2)", borderTopColor:"var(--or)", borderRadius:"50%", animation:"spin .7s linear infinite", margin:"0 auto 16px" }}/>
-                      <p style={{ fontFamily:"var(--ff-b)", fontSize:".8rem", color:"rgba(248,245,242,.4)" }}>Chargement du live…</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Info enregistrement */}
-                {isAdmin && (
-                  <div style={{ marginTop:"16px", padding:"14px 20px", background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.05)", borderRadius:"4px" }}>
-                    <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".75rem", color:"rgba(248,245,242,.4)", lineHeight:1.65 }}>
-                      Pour enregistrer le live : dans l'interface Jitsi, clique sur le bouton <strong style={{color:"var(--or)"}}>Enregistrement</strong> (icône cercle rouge). L'enregistrement sera disponible en téléchargement à la fin de la session. Tu pourras ensuite l'ajouter dans <strong style={{color:"var(--or)"}}>Admin → Replays</strong>.
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              /* Pas de live actif */
-              <div style={{ textAlign:"center", padding:"80px 24px", border:"1px solid rgba(255,255,255,.05)", borderRadius:"6px", background:"rgba(255,255,255,.02)" }}>
-                <div style={{ fontSize:"3rem", marginBottom:"20px", opacity:.3 }}>📡</div>
-                <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginBottom:"12px" }}>Aucun live en cours</p>
-                <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, marginBottom:"12px", color:"rgba(248,245,242,.6)" }}>
-                  Pas de live pour le moment
-                </h2>
-                <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.35)", lineHeight:1.75, marginBottom:"28px", maxWidth:"440px", margin:"0 auto 28px" }}>
-                  Prélia organisera prochainement un live exclusif. Tu seras notifiée dès qu'un live est planifié. En attendant, consulte les replays des sessions passées.
-                </p>
-                <div style={{ display:"flex", gap:"12px", justifyContent:"center", flexWrap:"wrap" }}>
-                  <button onClick={()=>setTab("replays")} className="btn-or">
-                    Voir les replays
+                <div className="form-group">
+                  <label className="form-label">Description</label>
+                  <input className="form-input" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Description courte (optionnel)" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Mode</label>
+                  <select className="form-select" value={form.mode} onChange={e=>setForm({...form,mode:e.target.value})}>
+                    <option value="live">Live (diffusion)</option>
+                    <option value="reunion">Reunion (interactif)</option>
+                    <option value="webinaire">Webinaire</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Mot de passe (optionnel)</label>
+                  <input className="form-input" type="password" value={form.mot_de_passe} onChange={e=>setForm({...form,mot_de_passe:e.target.value})} placeholder="Laisser vide si libre d acces" />
+                </div>
+                <div className="form-row">
+                  <button type="submit" className="btn-rejoindre" disabled={creating} style={creating?{opacity:.6,pointerEvents:"none"}:{}}>
+                    {creating ? "Creation..." : "Creer et rejoindre"}
                   </button>
-                  <a href="{WHATSAPP_URL}" target="_blank" rel="noreferrer" className="btn-p">
-                    Contacter Prélia
-                  </a>
+                </div>
+              </form>
+            )}
+
+            {toutesLesSalles.length === 0 && (
+              <div className="empty-state">
+                <p style={{ fontSize:"2rem", marginBottom:"12px" }}>📡</p>
+                <p>Aucun live en cours pour le moment.</p>
+                <p style={{ fontSize:".78rem" }}>Revenez bientot ou activez les notifications pour etre prevenue.</p>
+              </div>
+            )}
+
+            {toutesLesSalles.map((salle, i) => (
+              <div className="salle-card" key={salle.id} style={{ animationDelay:`${i*0.08}s` }}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"10px" }}>
+                  <span className={`salle-badge ${salle.statut==="active"?"active":"attente"}`}>
+                    <span className="dot" />
+                    {salle.statut === "active" ? "En direct" : "En attente"}
+                  </span>
+                  <span style={{ fontSize:".68rem", color:"rgba(248,245,242,.3)" }}>
+                    {salle.mode === "webinaire" ? "Webinaire" : salle.mode === "live" ? "Live" : "Reunion"}
+                  </span>
+                </div>
+
+                <h2 className="salle-title">{salle.titre}</h2>
+                {salle.description && <p className="salle-desc">{salle.description}</p>}
+
+                <div className="salle-meta">
+                  <span>👥 {salle.participants_count ?? salle.participants ?? 0} participant{(salle.participants_count||salle.participants||0)!==1?"s":""}</span>
+                  {salle.hote_nom && <span>👑 {salle.hote_nom}</span>}
+                  {salle.started_at && <span>🕐 Demarre {formatDate(salle.started_at)}</span>}
+                  {salle.mot_de_passe && <span>🔒 Protegee</span>}
+                </div>
+
+                <div style={{ marginTop:"20px" }}>
+                  <button className="btn-rejoindre" onClick={() => rejoindre(salle.id)}>
+                    Rejoindre
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
-            )}
-          </div>
+            ))}
+          </>
         )}
 
-        {/* ── TAB REPLAYS ── */}
-        {tab === "replays" && (
-          <div>
-            {!isMembre ? (
-              <div style={{ textAlign:"center", padding:"60px 24px", border:"1px solid rgba(255,255,255,.05)", borderRadius:"6px" }}>
-                <p style={{ fontFamily:"var(--ff-b)", fontSize:".8rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>
-                  Les replays sont réservés aux membres du programme.
-                </p>
-                <Link to="/espace-membre" className="btn-p">Se connecter</Link>
-              </div>
-            ) : loadingReplays ? (
-              <div style={{ textAlign:"center", padding:"60px" }}>
-                <div style={{ width:"36px", height:"36px", border:"3px solid rgba(201,169,106,.2)", borderTopColor:"var(--or)", borderRadius:"50%", animation:"spin .7s linear infinite", margin:"0 auto" }}/>
-              </div>
-            ) : replays.length === 0 ? (
-              <div style={{ textAlign:"center", padding:"60px 24px", border:"1px solid rgba(255,255,255,.05)", borderRadius:"6px" }}>
-                <div style={{ fontSize:"2.5rem", marginBottom:"16px", opacity:.3 }}>🎬</div>
-                <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.1rem", color:"rgba(248,245,242,.4)" }}>
-                  Aucun replay disponible pour le moment.
-                </p>
-                <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.25)", marginTop:"8px" }}>
-                  Les replays des lives seront ajoutés ici après chaque session.
-                </p>
-              </div>
-            ) : (
-              <div className="replays-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:"20px" }}>
-                {replays.map((replay, i) => (
-                  <div key={replay.id} className="replay-card">
-                    {/* Thumbnail */}
-                    <div style={{ height:"160px", background:"linear-gradient(135deg,rgba(194,24,91,.12),rgba(201,169,106,.08))", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
-                      <div style={{ width:"52px", height:"52px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"2px solid rgba(194,24,91,.4)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                        <span style={{ fontSize:"1.4rem" }}>▶</span>
-                      </div>
-                      <div style={{ position:"absolute", top:"10px", left:"10px" }}>
-                        <span style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".14em", textTransform:"uppercase", padding:"4px 10px", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.3)", borderRadius:"100px", color:"var(--rose)" }}>
-                          Semaine {replay.semaine}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Contenu */}
-                    <div style={{ padding:"20px" }}>
-                      <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1rem", fontWeight:600, marginBottom:"8px", lineHeight:1.3 }}>{replay.titre}</h3>
-                      {replay.description && (
-                        <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.5)", lineHeight:1.65, marginBottom:"16px" }}>
-                          {replay.description.substring(0, 100)}…
-                        </p>
-                      )}
-                      <a href={replay.url} target="_blank" rel="noreferrer" className="btn-p" style={{ width:"100%", fontSize:".68rem", padding:"12px" }}>
-                        Regarder le replay
-                      </a>
-                    </div>
-                  </div>
-                ))}
+        {!loading && tab === "replays" && (
+          <>
+            {replays.length === 0 && (
+              <div className="empty-state">
+                <p style={{ fontSize:"2rem", marginBottom:"12px" }}>🎬</p>
+                <p>Aucun replay disponible pour le moment.</p>
+                <p style={{ fontSize:".78rem" }}>Les replays seront ajoutes apres chaque session live.</p>
               </div>
             )}
-          </div>
+
+            {replays.map((replay, i) => (
+              <div className="replay-card" key={replay.id || i} style={{ animationDelay:`${i*0.08}s` }}>
+                <div className="replay-thumb">
+                  {replay.thumbnail ? (
+                    <img src={replay.thumbnail} alt={replay.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                  ) : (
+                    <div style={{ background:"linear-gradient(135deg,rgba(194,24,91,.15),rgba(201,169,106,.1))", width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.4rem", color:"rgba(201,169,106,.4)" }}>M'O</span>
+                    </div>
+                  )}
+                  {replay.video_url && (
+                    <a href={replay.video_url} target="_blank" rel="noopener noreferrer" style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <div className="replay-play">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      </div>
+                    </a>
+                  )}
+                </div>
+                <div className="replay-info">
+                  <h3 className="replay-title">{replay.titre || "Session live"}</h3>
+                  <p className="replay-date">
+                    {replay.date ? formatDate(replay.date) : replay.created_at ? formatDate(replay.created_at) : ""}
+                    {replay.duree && ` · ${replay.duree}`}
+                  </p>
+                  {replay.description && (
+                    <p style={{ fontSize:".82rem", color:"rgba(248,245,242,.4)", marginTop:"8px", lineHeight:1.6 }}>{replay.description}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </>
         )}
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
