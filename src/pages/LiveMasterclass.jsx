@@ -250,7 +250,20 @@ export default function LiveMasterclass() {
       <div className="live-hero">
         <p className="live-hero-label">Meta'Morph'Ose</p>
         <h1>Lives & Replays</h1>
-        <p>Participez aux lives en direct de Prelia ou revoyez les sessions passees a votre rythme.</p>
+        <p style={{maxWidth:"600px",margin:"0 auto 24px",lineHeight:1.9,color:"rgba(248,245,242,.6)",fontWeight:300}}>
+          Bienvenue dans ton espace Live et Replay.
+          <br/><br/>
+          Ici, tout se passe en direct. Des sessions puissantes, des échanges authentiques
+          et des moments de transformation en temps réel.
+          <br/><br/>
+          Rejoins les lives, participe aux rencontres, et vis une expérience immersive
+          qui te rapproche chaque jour de la femme que tu veux devenir.
+        </p>
+        <div style={{display:"flex",flexDirection:"column",gap:"6px",marginBottom:"16px",textAlign:"left",maxWidth:"300px",margin:"0 auto 24px"}}>
+          {["Sois présente.","Engage-toi.","Transforme-toi."].map((t,i) => (
+            <p key={i} style={{fontFamily:"var(--ff-b,Montserrat,sans-serif)",fontSize:".82rem",color:"#C9A96A",fontWeight:500,letterSpacing:".05em"}}>— {t}</p>
+          ))}
+        </div>
       </div>
 
       <div className="live-tabs">
