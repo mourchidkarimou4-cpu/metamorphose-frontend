@@ -1073,7 +1073,7 @@ function Hero({ get }) {
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", maxWidth:"900px", width:"100%", transform:`translateY(${offset * 0.25}px)`, transition:"transform .05s linear" }}>
 
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".66rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", opacity:.8, marginBottom:"28px", animation:"revealUp .8s both" }}>
-        {get("hero_mention","Un programme créé par Prélia Apedo · Fondatrice de White & Black")}
+        {get("hero_mention","Un programme créé par Prélia AHONON · Fondatrice de White & Black")}
       </p>
 
       <h1 className="hero-title" style={{ position:"relative", fontFamily:"var(--ff-t)", fontSize:"clamp(2.2rem,8vw,6.5rem)", fontWeight:700, lineHeight:1.06, marginBottom:"24px", animation:"revealUp .9s .15s both" }}>
@@ -1360,17 +1360,17 @@ function Prelia({ get }) {
           <div className="reveal-left">
             <div style={{ position:"relative", paddingBottom:"125%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.18)", borderRadius:"4px", overflow:"hidden" }}>
               {get("photo_prelia","") ? (
-                <img src={get("photo_prelia","")} alt="Prélia Apedo"
+                <img src={get("photo_prelia","")} alt="Prélia AHONON"
                   style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
               ) : (
                 <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"12px" }}>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(201,169,106,.35)" }}>Photo Prélia Apedo</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(201,169,106,.35)" }}>Photo Prélia AHONON</p>
                 </div>
               )}
               <div style={{ position:"absolute", inset:"14px", border:"1px solid rgba(201,169,106,.08)", borderRadius:"2px", pointerEvents:"none" }}/>
             </div>
             <div style={{ marginTop:"20px", textAlign:"center" }}>
-              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo</p>
+              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"var(--or)", opacity:.85 }}>Prélia AHONON</p>
               {get("logo_white_black","") && (
                 <img src={get("logo_white_black","")} alt="White & Black"
                   style={{ height:"24px", objectFit:"contain", opacity:.6, marginTop:"8px" }}/>
@@ -1404,7 +1404,7 @@ function Prelia({ get }) {
           <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.8rem", color:"var(--or)", lineHeight:1.4 }}>
             {get("prelia_signature","Je ne crée pas des apparences. Je révèle des essences.")}
           </p>
-          <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"16px" }}>— Prélia Apedo</p>
+          <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"16px" }}>— Prélia AHONON</p>
         </div>
       </div>
     </section>
@@ -1479,16 +1479,16 @@ function PreliaTeaser({ get }) {
           <div className="reveal-left prelia-photo">
             <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.18)", borderRadius:"4px", overflow:"hidden" }}>
               {get("photo_prelia","") ? (
-                <img src={get("photo_prelia","")} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                <img src={get("photo_prelia","")} alt="Prélia AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
               ) : (
                 <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)" }}>Photo Prélia Apedo</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)" }}>Photo Prélia AHONON</p>
                 </div>
               )}
               <div style={{ position:"absolute", inset:"14px", border:"1px solid rgba(201,169,106,.08)", borderRadius:"2px", pointerEvents:"none" }}/>
             </div>
             <div style={{ textAlign:"center", marginTop:"14px" }}>
-              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)", opacity:.85 }}>Prélia Apedo</p>
+              <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)", opacity:.85 }}>Prélia AHONON</p>
               <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"4px" }}>Fondatrice · White & Black · Meta'Morph'Ose</p>
             </div>
           </div>
@@ -1523,7 +1523,7 @@ function PreliaTeaser({ get }) {
           <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.6rem", color:"var(--or)", lineHeight:1.4 }}>
             {get("prelia_signature","Je ne crée pas des apparences. Je révèle des essences.")}
           </p>
-          <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"12px" }}>— Prélia Apedo</p>
+          <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"12px" }}>— Prélia AHONON</p>
         </div>
       </div>
     </section>
@@ -1732,7 +1732,7 @@ function Ressources({ get }) {
           <div className="reveal" style={{ padding:"36px 32px", background:"rgba(194,24,91,.06)", border:"1px solid rgba(194,24,91,.15)", borderTop:"3px solid var(--rose)", borderRadius:"6px" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>Chanson</p>
             <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>{get("res_chanson_titre","Métamorphose")}</h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_chanson_artiste","Prélia Apedo")}</p>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{get("res_chanson_artiste","Prélia AHONON")}</p>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.55)", lineHeight:1.75, marginBottom:"24px" }}>
               {get("res_chanson_desc","Je ne l'ai pas écrite pour distraire... je l'ai écrite pour réveiller.")}
             </p>
@@ -2002,7 +2002,7 @@ function Footer({ get }) {
               </span>
             </div>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", color:"rgba(248,245,242,.35)", fontWeight:300, lineHeight:1.7, marginBottom:"20px" }}>
-              De l'ombre à la lumière en 60 jours. Un programme de transformation féminine par Prélia Apedo.
+              De l'ombre à la lumière en 60 jours. Un programme de transformation féminine par Prélia AHONON.
             </p>
             <div style={{ display:"flex", gap:"14px" }}>
               <Link to="/brunch" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}

@@ -250,7 +250,7 @@ export default function CarteScan() {
 
           {/* Footer */}
           <p style={{ textAlign:"center", marginTop:"20px", fontFamily:"'Montserrat'", fontWeight:300, fontSize:".7rem", color:"rgba(248,245,242,.2)" }}>
-            Meta'Morph'Ose · White & Black · Prélia Apedo
+            Meta'Morph'Ose · White & Black · Prélia AHONON
           </p>
         </div>
       </div>

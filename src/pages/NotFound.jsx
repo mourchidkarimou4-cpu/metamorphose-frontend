@@ -115,7 +115,7 @@ export default function NotFound() {
 
         {/* Citation */}
         <p style={{ position:"absolute", bottom:"24px", fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:".88rem", color:"rgba(248,245,242,.15)", animation:"fadeUp .7s .8s both" }}>
-          « Je ne crée pas des apparences. Je révèle des essences. » — Prélia Apedo
+          « Je ne crée pas des apparences. Je révèle des essences. » — Prélia AHONON
         </p>
       </div>
     </>

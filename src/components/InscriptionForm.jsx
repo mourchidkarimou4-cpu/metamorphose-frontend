@@ -394,7 +394,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
 
           {/* Mentions */}
           <p style={{ fontWeight:300, fontSize:".72rem", color:textSub, lineHeight:1.65, marginBottom:"20px" }}>
-            En soumettant ce formulaire, vous acceptez d'être contactée par Prélia Apedo concernant le programme Méta'Morph'Ose. Aucune donnée n'est partagée avec des tiers.
+            En soumettant ce formulaire, vous acceptez d'être contactée par Prélia AHONON concernant le programme Méta'Morph'Ose. Aucune donnée n'est partagée avec des tiers.
           </p>
 
           {/* Submit */}

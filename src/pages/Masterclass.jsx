@@ -464,10 +464,10 @@ export default function Masterclass() {
             <div className="prelia-grid reveal" style={{ display:"grid", gridTemplateColumns:"280px 1fr", gap:"52px", alignItems:"center", marginBottom:"64px" }}>
               <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", overflow:"hidden" }}>
                 {photoPrelia ? (
-                  <img src={photoPrelia} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                  <img src={photoPrelia} alt="Prélia AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
                 ) : (
                   <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center", padding:"16px" }}>Photo Prélia Apedo</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center", padding:"16px" }}>Photo Prélia AHONON</p>
                   </div>
                 )}
               </div>
@@ -595,7 +595,7 @@ export default function Masterclass() {
               <div>
                 <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", overflow:"hidden", marginBottom:"16px" }}>
                   {photoPrelia ? (
-                    <img src={photoPrelia} alt="Prélia Apedo" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                    <img src={photoPrelia} alt="Prélia AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
                   ) : (
                     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
                       <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center" }}>MA PHOTO</p>
@@ -603,13 +603,13 @@ export default function Masterclass() {
                   )}
                 </div>
                 <div style={{ textAlign:"center" }}>
-                  <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)" }}>Prélia Apedo</p>
+                  <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)" }}>Prélia AHONON</p>
                   <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", color:"rgba(248,245,242,.3)", marginTop:"4px" }}>Coach en Image · Fondatrice White & Black</p>
                 </div>
               </div>
               <div>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"16px" }}>
-                  Je suis <strong style={{color:"var(--blanc)"}}>Prélia Apedo</strong>, Conseillère Coach en image Certifiée par l'Institut de bien être de Marseille. Experte en transformation personnelle. Fondatrice de la marque White & Black et du programme Méta'Morph'Ose. Mariée et mère de deux enfants.
+                  Je suis <strong style={{color:"var(--blanc)"}}>Prélia AHONON</strong>, Conseillère Coach en image Certifiée par l'Institut de bien être de Marseille. Experte en transformation personnelle. Fondatrice de la marque White & Black et du programme Méta'Morph'Ose. Mariée et mère de deux enfants.
                 </p>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"24px" }}>
                   Mais avant tout… Je suis une femme qui s'est longtemps perdue. Je voulais plaire. Je voulais correspondre. Je me suis oubliée. Jusqu'au jour où j'ai compris : <strong style={{color:"var(--blanc)"}}>je devais être moi pour réussir.</strong>
@@ -752,7 +752,7 @@ export default function Masterclass() {
           <span style={{color:"var(--rose)"}}>Ose</span>
         </Link>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · White & Black · Prélia Apedo
+          © 2026 Meta'Morph'Ose · White & Black · Prélia AHONON
         </p>
       </footer>
     </>

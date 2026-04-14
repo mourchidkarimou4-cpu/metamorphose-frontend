@@ -276,7 +276,7 @@ export default function Don() {
                   <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.05rem", color:"var(--or)", lineHeight:1.7 }}>
                     « Chaque FCFA donné est une graine plantée dans la vie d'une femme. »
                   </p>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"10px" }}>— Prélia Apedo</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginTop:"10px" }}>— Prélia AHONON</p>
                 </div>
               </div>
 
@@ -410,7 +410,7 @@ export default function Don() {
           <span style={{color:"var(--rose)"}}>Ose</span>
         </Link>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · White & Black · Prélia Apedo
+          © 2026 Meta'Morph'Ose · White & Black · Prélia AHONON
         </p>
       </footer>
     </>

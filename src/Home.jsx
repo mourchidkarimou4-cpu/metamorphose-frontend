@@ -298,7 +298,7 @@ function HeroSection() {
         color: "var(--or)", opacity: 0.8,
         marginBottom: "28px",
       }}>
-        Un programme créé par Prélia Apedo · Fondatrice de White & Black
+        Un programme créé par Prélia AHONON · Fondatrice de White & Black
       </p>
 
       {/* Titre principal */}
@@ -1020,7 +1020,7 @@ function PreliaSection() {
             fontFamily: "var(--ff-accent)", fontStyle: "italic",
             fontSize: "1.1rem", color: "var(--or)", opacity: 0.8,
           }}>
-            Prélia Apedo
+            Prélia AHONON
           </div>
           <div style={{
             textAlign: "center",
@@ -1349,7 +1349,7 @@ function Footer() {
               <span style={{ color: "var(--rose)" }}>Ose</span>
             </div>
             <p style={{ fontFamily: "var(--ff-body)", fontSize: "0.85rem", color: "rgba(248,245,242,0.4)", fontWeight: 300, lineHeight: 1.7 }}>
-              De l'ombre à la lumière en 60 jours.<br />Un programme de transformation féminine créé par Prélia Apedo.
+              De l'ombre à la lumière en 60 jours.<br />Un programme de transformation féminine créé par Prélia AHONON.
             </p>
           </div>
 
@@ -1389,7 +1389,7 @@ function Footer() {
           flexWrap: "wrap", gap: "12px",
         }}>
           <p style={{ fontFamily: "var(--ff-body)", fontSize: "0.72rem", color: "rgba(248,245,242,0.2)", fontWeight: 300 }}>
-            © 2025 Méta'Morph'Ose · White & Black · Prélia Apedo. Tous droits réservés.
+            © 2025 Méta'Morph'Ose · White & Black · Prélia AHONON. Tous droits réservés.
           </p>
           <p style={{ fontFamily: "var(--ff-accent)", fontStyle: "italic", fontSize: "0.85rem", color: "rgba(201,169,106,0.3)" }}>
             Je ne crée pas des apparences. Je révèle des essences.
