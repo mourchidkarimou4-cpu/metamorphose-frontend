@@ -220,15 +220,29 @@ function ListeCours() {
         }}>MMO Learning</h1>
         <p style={{
           fontFamily:'var(--ff-b)', fontWeight:300, fontSize:'1rem',
-          color:'rgba(248,245,242,.55)', maxWidth:'520px', margin:'0 auto',
-          lineHeight:1.75, animation:'fadeUp .7s .2s both',
+          color:'rgba(248,245,242,.55)', maxWidth:'640px', margin:'0 auto',
+          lineHeight:1.9, animation:'fadeUp .7s .2s both', textAlign:'left',
         }}>
-          Des cours de coaching gratuits pour votre transformation.
-          Confiance en soi, image personnelle, passage à l'action — à votre rythme.
+          Cet espace a été conçu pour t'accompagner dans ta transformation personnelle et ton évolution.
+          <br/><br/>
+          Ici, tu trouveras des formations puissantes pour t'aider à développer ta confiance en toi,
+          améliorer ton image, affirmer ta présence et devenir une femme impactante.
+          <br/><br/>
+          Chaque contenu est une étape vers une meilleure version de toi-même.
+          <br/><br/>
+          Commence là où tu es… et avance vers celle que tu veux devenir.
         </p>
+        <div style={{ marginTop:'32px', display:'flex', gap:'14px', justifyContent:'center', flexWrap:'wrap', animation:'fadeUp .7s .3s both' }}>
+          <a href="#cours" style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', background:'#C2185B', color:'#fff', fontFamily:'var(--ff-b)', fontWeight:600, fontSize:'.75rem', letterSpacing:'.15em', textTransform:'uppercase', padding:'14px 28px', borderRadius:'3px', textDecoration:'none' }}>
+            Accéder à mes formations
+          </a>
+          <a href="/contact" style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', color:'var(--or)', border:'1px solid var(--or)', fontFamily:'var(--ff-b)', fontWeight:600, fontSize:'.75rem', letterSpacing:'.15em', textTransform:'uppercase', padding:'14px 28px', borderRadius:'3px', textDecoration:'none' }}>
+            Commencer ma métamorphose
+          </a>
+        </div>
         <div style={{
           marginTop:'28px', display:'flex', gap:'12px',
-          justifyContent:'center', flexWrap:'wrap', animation:'fadeUp .7s .3s both',
+          justifyContent:'center', flexWrap:'wrap', animation:'fadeUp .7s .4s both',
         }}>
           {[
             { label:`${cours.length} cours`, color:'var(--or)' },
