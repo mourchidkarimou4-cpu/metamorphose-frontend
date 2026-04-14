@@ -748,6 +748,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
                   <ExpRow title="Don"               desc="Soutenir le programme"              to="/don"/>
                   <ExpRow title="MMO Learning"        desc="Cours de coaching gratuits"          to="/mmo-learning"/>
                   <ExpRow title="Événements"          desc="Brunch, masterclass, ateliers"       to="/evenements"/>
+                  <ExpRow title="Actualités"          desc="Nouveautés et coulisses"             to="/actualites"/>
                 </div>
                 <Link to="/brunch" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 32px", borderTop:"1px solid rgba(255,255,255,.04)", textDecoration:"none", marginTop:"4px" }}
                   onClick={()=>setOpenMenu(null)}
@@ -854,6 +855,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
               { label:"Le Brunch",      to:"/brunch" },
               { label:"Communauté",     to:"/communaute" },
               { label:"Événements",     to:"/evenements" },
+              { label:"Actualités",     to:"/actualites" },
               { label:"Cartes Cadeaux", to:"/carte-cadeau" },
             ].map((l,i) => (
               <Link key={i} to={l.to} onClick={()=>setMenuOpen(false)}
@@ -2021,6 +2023,7 @@ function Footer({ get }) {
               ["/temoignages","/temoignages","Témoignages",true],
               ["#formules","#formules",  "Formules",     false],
               ["/faq","/faq",            "FAQ",          true],
+              ["/actualites","/actualites","Actualités",  true],
             ].map(([href,to,label,ext]) => (
               <div key={label} style={{ marginBottom:"10px" }}>
                 {ext ? (
