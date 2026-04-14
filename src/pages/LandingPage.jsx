@@ -362,10 +362,10 @@ function CalculateurFormule({ onClose }) {
       id:"budget",
       question:"Quel est votre budget pour cette transformation ?",
       options:[
-        { label:"Jusqu'à 65 000 FCFA",   value:"F1" },
-        { label:"Jusqu'à 150 000 FCFA",  value:"F2" },
-        { label:"Jusqu'à 250 000 FCFA",  value:"F3" },
-        { label:"Je veux le meilleur",   value:"F4" },
+        { label:"Éclosion — 65 000 FCFA",    value:"F1" },
+        { label:"Révélation — 150 000 FCFA", value:"F2" },
+        { label:"Ascension — 250 000 FCFA",  value:"F3" },
+        { label:"MMO Signature — 350 000 FCFA", value:"F4" },
       ]
     },
     {
@@ -397,10 +397,10 @@ function CalculateurFormule({ onClose }) {
   ];
 
   const FORMULES = {
-    F1: { label:"Live · Groupe",      prix:"65 000 FCFA",  desc:"2 séances/semaine en ligne avec un groupe bienveillant. Idéal pour démarrer.", color:"#C2185B" },
-    F2: { label:"Live · Privé",       prix:"150 000 FCFA", desc:"Accompagnement individuel en ligne avec Prélia. Suivi personnalisé et adapté.", color:"#C9A96A" },
-    F3: { label:"Présentiel · Groupe",prix:"250 000 FCFA", desc:"1 séance/semaine en présentiel avec un groupe. Immersion physique complète.",  color:"#A8C8E0" },
-    F4: { label:"Présentiel · Privé", prix:"350 000 FCFA", desc:"Accompagnement individuel en présentiel avec Prélia. L'expérience ultime.",   color:"#D8C1A0" },
+    F1: { label:"Éclosion",           prix:"65 000 FCFA",  desc:"2 séances/semaine en ligne avec un groupe bienveillant. Idéal pour démarrer.", color:"#C2185B", badge:"Startup" },
+    F2: { label:"Révélation",         prix:"150 000 FCFA", desc:"Accompagnement individuel en ligne avec Prélia AHONON. Suivi personnalisé et adapté.", color:"#C9A96A", badge:"Populaire" },
+    F3: { label:"Ascension",          prix:"250 000 FCFA", desc:"1 séance/semaine en présentiel avec un groupe. Immersion physique complète.",  color:"#A8C8E0", badge:"Ambitieux" },
+    F4: { label:"MMO Signature",      prix:"350 000 FCFA", desc:"Accompagnement individuel en présentiel avec Prélia AHONON. L'expérience ultime.", color:"#D8C1A0", badge:"Prestige" },
   };
 
   function calcResult(ans) {
@@ -713,10 +713,10 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             {openMenu==="formules" && (
               <div style={{ ...panelStyle, width:"400px", padding:"24px 32px" }} onClick={e=>e.stopPropagation()}>
                 <span style={panelLabel}>4 Formules d'accompagnement</span>
-                <FormRow code="F1" name="Live · Groupe"       prix="65 000 FCFA"  to="/#formules"/>
-                <FormRow code="F2" name="Live · Privé"        prix="150 000 FCFA" tag="Recommandé" to="/#formules"/>
-                <FormRow code="F3" name="Présentiel · Groupe" prix="250 000 FCFA" to="/#formules"/>
-                <FormRow code="F4" name="Présentiel · Privé"  prix="350 000 FCFA" to="/#formules"/>
+                <FormRow code="F1" name="Éclosion"            prix="65 000 FCFA"  tag="Startup"   to="/#formules"/>
+                <FormRow code="F2" name="Révélation"          prix="150 000 FCFA" tag="Populaire" to="/#formules"/>
+                <FormRow code="F3" name="Ascension"           prix="250 000 FCFA" tag="Ambitieux" to="/#formules"/>
+                <FormRow code="F4" name="MMO Signature"       prix="350 000 FCFA" tag="Prestige"  to="/#formules"/>
                 <div style={{ marginTop:"16px", paddingTop:"14px", borderTop:"1px solid rgba(255,255,255,.04)", textAlign:"center" }}>
                   <a href="#formules" style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".75rem", color:"rgba(201,169,106,.4)", textDecoration:"none" }} onClick={()=>setOpenMenu(null)}>
                     Trouver ma formule →
@@ -1532,10 +1532,10 @@ function PreliaTeaser({ get }) {
 
 function Formules({ get, setShowCalc }) {
   const formules = [
-    { code:"F1", label:get("f1_label","Live · Groupe"),      prix:get("f1_prix","65 000"),  color:"#C2185B", items:["2 séances de coaching par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
-    { code:"F2", label:get("f2_label","Live · Privé"),        prix:get("f2_prix","150 000"), color:"#C9A96A", items:["Accompagnement individuel","Séances personnalisées","Suivi direct avec Prélia","Exercices adaptés","7 guides PDF bonus","Club des Métamorphosées"], featured:true },
-    { code:"F3", label:get("f3_label","Présentiel · Groupe"), prix:get("f3_prix","250 000"), color:"#A8C8E0", items:["1 séance présentielle par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
-    { code:"F4", label:get("f4_label","Présentiel · Privé"),  prix:get("f4_prix","350 000"), color:"#D8C1A0", items:["Séances individuelles en présentiel","Accompagnement personnalisé","Suivi direct avec Prélia","Exercices sur mesure","7 guides PDF bonus","Club des Métamorphosées"] },
+    { code:"F1", label:get("f1_label","Éclosion"),           prix:get("f1_prix","65 000"),  color:"#C2185B", badge:"Startup",   items:["2 séances de coaching par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
+    { code:"F2", label:get("f2_label","Révélation"),          prix:get("f2_prix","150 000"), color:"#C9A96A", badge:"Populaire", items:["Accompagnement individuel","Séances personnalisées","Suivi direct avec Prélia AHONON","Exercices adaptés","7 guides PDF bonus","Club des Métamorphosées"], featured:true },
+    { code:"F3", label:get("f3_label","Ascension"),           prix:get("f3_prix","250 000"), color:"#A8C8E0", badge:"Ambitieux", items:["1 séance présentielle par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
+    { code:"F4", label:get("f4_label","MMO Signature"),       prix:get("f4_prix","350 000"), color:"#D8C1A0", badge:"Prestige",  items:["Séances individuelles en présentiel","Accompagnement personnalisé","Suivi direct avec Prélia AHONON","Exercices sur mesure","7 guides PDF bonus","Club des Métamorphosées"] },
   ];
   return (
     <section id="formules" style={{ padding:"90px 24px", background:"linear-gradient(180deg,#3a2518 0%,#6b4028 30%,#c4a882 65%,var(--beige-light) 100%)" }}>
@@ -1554,7 +1554,7 @@ function Formules({ get, setShowCalc }) {
         <div className="grid-formules" style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"20px" }}>
           {formules.map((f,i) => (
             <div key={i} className="reveal formule-card" style={{ transitionDelay:`${i*.12}s`, padding:f.featured?"44px 36px":"36px 32px", background:f.featured?"var(--noir)":"rgba(10,10,10,.75)", border:`1px solid ${f.featured?f.color:"rgba(255,255,255,.08)"}`, borderTop:`3px solid ${f.color}`, borderRadius:"4px", position:"relative", backdropFilter:"blur(10px)", cursor:"default" }}>
-              {f.featured && <div style={{ position:"absolute", top:"-1px", right:"24px", background:"var(--or)", color:"var(--noir)", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:700, letterSpacing:".2em", textTransform:"uppercase", padding:"5px 14px", borderRadius:"0 0 4px 4px" }}>Recommandé</div>}
+              {f.badge && <div style={{ position:"absolute", top:"-1px", right:"24px", background:"var(--or)", color:"var(--noir)", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:700, letterSpacing:".2em", textTransform:"uppercase", padding:"5px 14px", borderRadius:"0 0 4px 4px" }}>{f.badge}</div>}
               <div style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".25em", textTransform:"uppercase", color:f.color, marginBottom:"8px" }}>{f.label}</div>
               <div style={{ marginBottom:"24px" }}>
                 <span style={{ fontFamily:"var(--ff-t)", fontSize:"2rem", fontWeight:700, color:"var(--blanc)" }}>{f.prix}</span>
