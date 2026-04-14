@@ -1,170 +1,265 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import AuraButton from '../components/AuraButton'
-import { QRCodeSVG } from 'qrcode.react'
-import API_URL from '../config';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import API_URL from "../config";
 
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Montserrat:wght@300;400;500;600&display=swap');
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--noir:#0A0A0A;--or:#C9A96A;--rose:#C2185B;--blanc:#F8F5F2;--ff-t:'Playfair Display',serif;--ff-b:'Montserrat',sans-serif}
-  body{background:var(--noir);color:var(--blanc);font-family:var(--ff-b)}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  .ev-card{transition:all .35s cubic-bezier(.4,0,.2,1)}
-  .ev-card:hover{transform:translateY(-6px);border-color:rgba(201,169,106,.4) !important}
-  @media(max-width:768px){.ev-grid{grid-template-columns:1fr !important}}
-`
-
-function NavBar() {
-  const user = JSON.parse(localStorage.getItem('mmorphose_user')||'null')
-  return (
-    <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,background:'rgba(10,10,10,.95)',backdropFilter:'blur(20px)',borderBottom:'1px solid rgba(201,169,106,.12)',padding:'0 32px',height:'64px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-      <Link to="/" style={{textDecoration:'none'}}>
-        <span style={{fontFamily:'var(--ff-t)',fontSize:'1rem'}}>
-          <span style={{color:'#F8F5F2'}}>Méta'</span><span style={{color:'#C9A96A'}}>Morph'</span><span style={{color:'#C2185B'}}>Ose</span>
-        </span>
-      </Link>
-      <div style={{display:'flex',gap:'20px',alignItems:'center'}}>
-        <Link to="/evenements" style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',letterSpacing:'.18em',textTransform:'uppercase',color:'var(--or)',textDecoration:'none',fontWeight:600}}>Événements</Link>
-        <Link to={user?'/dashboard':'/espace-membre'} style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',letterSpacing:'.15em',textTransform:'uppercase',color:'rgba(248,245,242,.4)',textDecoration:'none'}}>{user?'Mon espace':'Se connecter'}</Link>
-      </div>
-    </nav>
-  )
-}
-
-function ModalReservation({ ev, onClose, onSuccess }) {
-  const user  = JSON.parse(localStorage.getItem('mmorphose_user')||'null')
-  const token = localStorage.getItem('mmorphose_token')
-  const [form, setForm]   = useState({nom:user?`${user.first_name||''} ${user.last_name||''}`.trim():'',email:user?.email||'',telephone:''})
-  const [loading,setLoading] = useState(false)
-  const [error,  setError]   = useState('')
-
-  async function reserver() {
-    if (!form.email){setError('Email requis');return}
-    setLoading(true);setError('')
-    try {
-      const headers={'Content-Type':'application/json'}
-      if(token) headers['Authorization']=`Bearer ${token}`
-      const res  = await fetch(`${API_URL}/api/tickets/reserver/`,{method:'POST',headers,body:JSON.stringify({evenement_id:ev.id,...form})})
-      const data = await res.json()
-      if(!res.ok){setError(data.detail||'Erreur');setLoading(false);return}
-      onSuccess(data)
-    } catch{setError('Erreur réseau');setLoading(false)}
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --noir:#0A0A0A; --or:#C9A96A; --or-light:#E8D5A8;
+    --rose:#C2185B; --blanc:#F8F5F2;
+    --ff-t:'Playfair Display',Georgia,serif;
+    --ff-b:'Montserrat',sans-serif;
+    --ff-a:'Cormorant Garamond',Georgia,serif;
   }
+  html { scroll-behavior:smooth; }
+  body { background:var(--noir); color:var(--blanc); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+  .reveal { opacity:0; transform:translateY(30px); transition:opacity .8s ease,transform .8s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  .evt-input { width:100%; padding:12px 16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:3px; color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:300; outline:none; transition:border-color .25s; }
+  .evt-input:focus { border-color:rgba(201,169,106,.4); }
+  .evt-label { font-family:'Montserrat',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(248,245,242,.4); display:block; margin-bottom:6px; }
+  @media(max-width:768px) { .form-grid-2 { grid-template-columns:1fr !important; } }
+`;
 
-  const inp={width:'100%',padding:'10px 14px',background:'rgba(255,255,255,.05)',border:'1px solid rgba(255,255,255,.08)',borderRadius:'3px',color:'var(--blanc)',fontFamily:'var(--ff-b)',fontSize:'.82rem',fontWeight:300,outline:'none'}
-  const lbl={fontFamily:'var(--ff-b)',fontSize:'.62rem',letterSpacing:'.14em',textTransform:'uppercase',color:'rgba(248,245,242,.4)',display:'block',marginBottom:'6px'}
-
-  return (
-    <div style={{position:'fixed',inset:0,zIndex:500,background:'rgba(10,10,10,.92)',backdropFilter:'blur(12px)',display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'12px',padding:'36px',width:'100%',maxWidth:'440px',animation:'fadeUp .3s both'}}>
-        <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.3rem',fontWeight:600,marginBottom:'6px'}}>Réserver ma place</h3>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'rgba(248,245,242,.4)',marginBottom:'24px'}}>{ev.nom}</p>
-        <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
-          <div><label style={lbl}>Nom complet</label><input style={inp} value={form.nom} onChange={e=>setForm(p=>({...p,nom:e.target.value}))} placeholder="Votre nom"/></div>
-          <div><label style={lbl}>Email *</label><input style={inp} type="email" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))} placeholder="votre@email.com"/></div>
-          <div><label style={lbl}>Téléphone</label><input style={inp} value={form.telephone} onChange={e=>setForm(p=>({...p,telephone:e.target.value}))} placeholder="+229..."/></div>
-          {error && <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'#ef5350'}}>{error}</p>}
-          <div style={{display:'flex',gap:'10px',marginTop:'8px'}}>
-            <button onClick={onClose} style={{flex:1,padding:'12px',background:'rgba(255,255,255,.05)',border:'1px solid rgba(255,255,255,.08)',borderRadius:'3px',color:'rgba(248,245,242,.5)',fontFamily:'var(--ff-b)',fontSize:'.72rem',letterSpacing:'.1em',textTransform:'uppercase',cursor:'pointer'}}>Annuler</button>
-            <button onClick={reserver} disabled={loading} style={{flex:2,padding:'12px',background:'var(--rose)',border:'none',borderRadius:'3px',color:'#fff',fontFamily:'var(--ff-b)',fontSize:'.72rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',cursor:'pointer',opacity:loading?.6:1}}>
-              {loading?'Réservation...':ev.prix>0?`Réserver — ${ev.prix.toLocaleString()} FCFA`:'Réserver gratuitement'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+      { threshold: 0.12 }
+    );
+    els.forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 }
 
-function ModalTicket({ ticket, onClose }) {
-  const url = `${window.location.origin}/scan?code=${ticket.code}`
-  return (
-    <div style={{position:'fixed',inset:0,zIndex:500,background:'rgba(10,10,10,.95)',backdropFilter:'blur(12px)',display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.2)',borderRadius:'12px',padding:'36px',width:'100%',maxWidth:'400px',textAlign:'center',animation:'fadeUp .3s both'}}>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.62rem',letterSpacing:'.25em',textTransform:'uppercase',color:'var(--or)',marginBottom:'12px'}}>✦ Ticket confirmé</p>
-        <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.3rem',fontWeight:600,marginBottom:'6px'}}>{ticket.evenement_nom}</h3>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'rgba(248,245,242,.4)',marginBottom:'28px'}}>{ticket.evenement_lieu&&`📍 ${ticket.evenement_lieu}`}</p>
-        <div style={{display:'flex',justifyContent:'center',marginBottom:'20px'}}>
-          <div style={{background:'#fff',padding:'16px',borderRadius:'8px'}}>
-            <QRCodeSVG value={url} size={180} level="H"/>
-          </div>
-        </div>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.68rem',color:'rgba(248,245,242,.3)',marginBottom:'8px',letterSpacing:'.08em'}}>CODE : {String(ticket.code).substring(0,8).toUpperCase()}</p>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.72rem',color:'rgba(248,245,242,.4)',marginBottom:'24px'}}>Présentez ce QR code à l'entrée.</p>
-        <button onClick={onClose} style={{padding:'12px 32px',background:'var(--or)',border:'none',borderRadius:'3px',color:'#0A0A0A',fontFamily:'var(--ff-b)',fontSize:'.72rem',fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',cursor:'pointer'}}>Fermer</button>
-      </div>
-    </div>
-  )
-}
+const EVENEMENTS = [
+  {
+    id: 1,
+    titre: "Masterclass OSER",
+    badge: "100% GRATUIT",
+    badgeColor: "#4CAF50",
+    date: "Dimanche 26 avril à 17h GMT+1",
+    lieu: "En ligne",
+    description: "Cette masterclass est conçue pour t'aider à sortir du regard des autres, reprendre confiance en toi et commencer à incarner une image alignée avec ta vraie valeur. Tu vas apprendre à dépasser la peur du jugement, t'affirmer avec plus de confiance, améliorer ton image personnelle et professionnelle, poser les bases de ton identité forte.",
+    bouton: "Je m'inscris à la masterclass OSE",
+    lien: "/masterclass",
+  },
+  {
+    id: 2,
+    titre: "Nomination des 100 Leaders du Bénin",
+    badge: "Événement",
+    badgeColor: "#C9A96A",
+    date: "Samedi 25 avril",
+    lieu: "Salle de fête LUCIDE, Godomey",
+    description: "Un moment fort et symbolique. Prélia AHONON sera officiellement nommée parmi les 100 leaders du Bénin, une reconnaissance du travail, de l'impact et de la vision portée à travers Métamorphose. Cet événement représente une étape importante dans un parcours d'engagement, de leadership et de transformation.",
+    bouton: "Voir les détails de la cérémonie",
+    lien: "/actualites",
+  },
+  {
+    id: 3,
+    titre: "Brunch Métamorphose",
+    badge: "Décembre 2026",
+    badgeColor: "#C2185B",
+    date: "Décembre 2026",
+    lieu: "À préciser — Bénin",
+    description: "Le Brunch Métamorphose est une expérience exclusive pensée pour réunir les femmes de la communauté dans un cadre élégant, intime et inspirant. C'est un moment de célébration, de connexion et de croissance. Au programme : échanges authentiques entre femmes ambitieuses, partage d'expériences de transformation, discussions autour de l'image, de la confiance et du leadership, ambiance élégante et conviviale, inspiration et networking.",
+    bouton: "Je veux participer au Brunch Métamorphose",
+    lien: "/brunch",
+  },
+];
 
 export default function Evenements() {
-  const [evenements,setEvenements] = useState([])
-  const [loading,   setLoading]    = useState(true)
-  const [modal,     setModal]      = useState(null)
+  useReveal();
+  const [form, setForm] = useState({ nom:"", prenom:"", email:"", whatsapp:"" });
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(()=>{
-    fetch(`${API_URL}/api/tickets/evenements/`)
-      .then(r=>r.json()).then(d=>{setEvenements(Array.isArray(d)?d:[]);setLoading(false)})
-      .catch(()=>setLoading(false))
-  },[])
+  function set(k, v) { setForm(p => ({ ...p, [k]: v })); }
 
-  function formatDate(d) {
-    return new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})
+  async function inscrire(e) {
+    e.preventDefault();
+    if (!form.email.trim()) { setError("L'email est requis."); return; }
+    setLoading(true); setError("");
+    try {
+      const res = await fetch(`${API_URL}/api/contenu/newsletter/abonner/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, prenom: form.prenom }),
+      });
+      if (res.ok) setDone(true);
+      else setError("Une erreur est survenue.");
+    } catch { setError("Erreur réseau."); }
+    setLoading(false);
   }
 
   return (
     <>
       <style>{STYLES}</style>
-      <NavBar/>
-      <section style={{padding:'120px 32px 72px',textAlign:'center',background:'linear-gradient(180deg,#0f0a06 0%,var(--noir) 100%)',position:'relative',overflow:'hidden'}}>
-        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,169,106,.07),transparent)',pointerEvents:'none'}}/>
-        <p style={{fontFamily:'var(--ff-b)',fontSize:'.62rem',letterSpacing:'.3em',textTransform:'uppercase',color:'var(--or)',marginBottom:'16px',animation:'fadeUp .6s both'}}>Méta'Morph'Ose · Événements</p>
-        <h1 style={{fontFamily:'var(--ff-t)',fontSize:'clamp(2rem,5vw,3.2rem)',fontWeight:700,lineHeight:1.1,marginBottom:'20px',animation:'fadeUp .7s .1s both'}}>Nos prochains événements</h1>
-        <p style={{fontFamily:'var(--ff-b)',fontWeight:300,fontSize:'1rem',color:'rgba(248,245,242,.55)',maxWidth:'480px',margin:'0 auto',lineHeight:1.75,animation:'fadeUp .7s .2s both'}}>Brunch, masterclass, ateliers — rejoignez la communauté en présentiel.</p>
-      </section>
+      <div style={{ background:"#0A0A0A", color:"#F8F5F2", minHeight:"100vh" }}>
 
-      <main style={{maxWidth:'1100px',margin:'0 auto',padding:'48px 32px 80px'}}>
-        {loading ? (
-          <p style={{textAlign:'center',fontFamily:'var(--ff-b)',fontSize:'.85rem',color:'rgba(248,245,242,.3)',padding:'80px'}}>Chargement...</p>
-        ) : evenements.length===0 ? (
-          <div style={{textAlign:'center',padding:'80px',background:'rgba(255,255,255,.02)',border:'1px solid rgba(255,255,255,.05)',borderRadius:'8px'}}>
-            <p style={{fontFamily:'var(--ff-t)',fontStyle:'italic',fontSize:'1.3rem',color:'rgba(248,245,242,.3)',marginBottom:'12px'}}>Aucun événement à venir</p>
-            <p style={{fontFamily:'var(--ff-b)',fontWeight:300,fontSize:'.85rem',color:'rgba(248,245,242,.25)'}}>Revenez bientôt.</p>
+        {/* Nav */}
+        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.95)", backdropFilter:"blur(20px)", zIndex:100 }}>
+          <Link to="/" style={{ textDecoration:"none" }}>
+            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
+              <span style={{color:"#F8F5F2"}}>Meta'</span>
+              <span style={{color:"#C9A96A"}}>Morph'</span>
+              <span style={{color:"#C2185B"}}>Ose</span>
+            </span>
+          </Link>
+          <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
+            <Link to="/" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Accueil</Link>
+            <Link to="/contact" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", background:"#C2185B", color:"#fff", textDecoration:"none", padding:"9px 18px", borderRadius:"2px" }}>S'inscrire</Link>
           </div>
-        ) : (
-          <div className="ev-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:'24px'}}>
-            {evenements.map(ev=>(
-              <div key={ev.id} className="ev-card" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.07)',borderRadius:'8px',overflow:'hidden',display:'flex',flexDirection:'column'}}>
-                <div style={{height:'200px',background:ev.image?`url(${ev.image}) center/cover`:'linear-gradient(135deg,rgba(201,169,106,.08),rgba(194,24,91,.05))',position:'relative',flexShrink:0}}>
-                  {!ev.image&&<div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'2.5rem',opacity:.3}}>🎭</div>}
-                  {ev.complet&&<div style={{position:'absolute',top:'12px',right:'12px',background:'rgba(239,83,80,.9)',borderRadius:'100px',padding:'4px 12px',fontFamily:'var(--ff-b)',fontSize:'.6rem',fontWeight:700,color:'#fff',letterSpacing:'.1em',textTransform:'uppercase'}}>Complet</div>}
-                  {ev.prix===0&&!ev.complet&&<div style={{position:'absolute',top:'12px',left:'12px',background:'rgba(76,175,80,.9)',borderRadius:'100px',padding:'4px 12px',fontFamily:'var(--ff-b)',fontSize:'.6rem',fontWeight:700,color:'#fff',letterSpacing:'.1em',textTransform:'uppercase'}}>Gratuit</div>}
-                </div>
-                <div style={{padding:'20px',flex:1,display:'flex',flexDirection:'column',gap:'10px'}}>
-                  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.1rem',fontWeight:600,lineHeight:1.3}}>{ev.nom}</h3>
-                  <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
-                    <p style={{fontFamily:'var(--ff-b)',fontSize:'.75rem',color:'var(--or)',fontWeight:500}}>📅 {formatDate(ev.date)}</p>
-                    {ev.lieu&&<p style={{fontFamily:'var(--ff-b)',fontSize:'.75rem',color:'rgba(248,245,242,.4)',fontWeight:300}}>📍 {ev.lieu}</p>}
-                  </div>
-                  {ev.description&&<p style={{fontFamily:'var(--ff-b)',fontWeight:300,fontSize:'.8rem',color:'rgba(248,245,242,.5)',lineHeight:1.65,flex:1}}>{ev.description}</p>}
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',paddingTop:'12px',borderTop:'1px solid rgba(255,255,255,.05)',marginTop:'auto'}}>
-                    <span style={{fontFamily:'var(--ff-b)',fontSize:'.72rem',color:'rgba(248,245,242,.3)'}}>{ev.complet?'0':ev.places_restantes} place{ev.places_restantes!==1?'s':''} restante{ev.places_restantes!==1?'s':''}</span>
-                    <button onClick={()=>!ev.complet&&setModal({type:'reserver',data:ev})} disabled={ev.complet}
-                      style={{padding:'10px 20px',background:ev.complet?'rgba(255,255,255,.05)':'var(--rose)',border:'none',borderRadius:'3px',color:ev.complet?'rgba(248,245,242,.3)':'#fff',fontFamily:'var(--ff-b)',fontSize:'.68rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',cursor:ev.complet?'not-allowed':'pointer'}}>
-                      {ev.complet?'Complet':ev.prix>0?`${ev.prix.toLocaleString()} FCFA`:'Réserver'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
+        </nav>
 
-      {modal?.type==='reserver'&&<ModalReservation ev={modal.data} onClose={()=>setModal(null)} onSuccess={ticket=>setModal({type:'ticket',data:ticket})}/>}
-      {modal?.type==='ticket'&&<ModalTicket ticket={modal.data} onClose={()=>setModal(null)}/>}
-      <AuraButton/>
+        {/* Hero */}
+        <section style={{ padding:"100px 24px 72px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#110d09)", position:"relative", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 50% at 50% 60%,rgba(194,24,91,.07),transparent)", pointerEvents:"none" }}/>
+          <div style={{ position:"relative", maxWidth:"680px", margin:"0 auto" }}>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".3em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"16px", animation:"fadeUp .6s both" }}>Événements</p>
+            <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,6vw,3.5rem)", fontWeight:700, lineHeight:1.1, marginBottom:"20px", animation:"fadeUp .7s .1s both" }}>
+              Les événements Métamorphose
+            </h1>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:"1rem", color:"rgba(248,245,242,.55)", lineHeight:1.8, animation:"fadeUp .7s .2s both", marginBottom:"36px" }}>
+              Participe à des expériences puissantes conçues pour t'élever, te transformer
+              et t'aider à incarner une nouvelle version de toi-même.
+            </p>
+            <a href="#evenements" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#C2185B", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".75rem", letterSpacing:".16em", textTransform:"uppercase", padding:"15px 32px", borderRadius:"2px", textDecoration:"none", animation:"fadeUp .7s .3s both" }}>
+              Voir les événements à venir
+            </a>
+          </div>
+        </section>
+
+        <div style={{ maxWidth:"960px", margin:"0 auto", padding:"0 24px 100px" }}>
+
+          {/* Intro */}
+          <section style={{ padding:"64px 0 0", textAlign:"center" }}>
+            <p className="reveal" style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.15rem", color:"rgba(248,245,242,.65)", lineHeight:1.9, maxWidth:"640px", margin:"0 auto" }}>
+              Chaque événement Métamorphose est une opportunité de transformation.
+              Masterclass, cérémonies, rencontres et expériences live — tout est conçu
+              pour t'aider à évoluer, t'affirmer et prendre ta place.
+              Ici, tu ne fais pas que participer. Tu changes de niveau.
+            </p>
+          </section>
+
+          {/* Événements */}
+          <section id="evenements" style={{ padding:"72px 0 0" }}>
+            <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"40px" }}>
+              Événements à venir
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
+              {EVENEMENTS.map((evt, i) => (
+                <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:"1fr" }}>
+                  {/* Image placeholder */}
+                  <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badgeColor}40,transparent)` }}/>
+                  <div style={{ padding:"36px 32px" }}>
+                    <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px", marginBottom:"20px" }}>
+                      <div>
+                        <span style={{ display:"inline-block", padding:"4px 12px", background:`${evt.badgeColor}15`, border:`1px solid ${evt.badgeColor}40`, borderRadius:"100px", fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:evt.badgeColor, marginBottom:"12px" }}>
+                          {evt.badge}
+                        </span>
+                        <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, lineHeight:1.2 }}>{evt.titre}</h2>
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", gap:"24px", flexWrap:"wrap", marginBottom:"20px" }}>
+                      <div>
+                        <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginBottom:"4px" }}>Date</p>
+                        <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"#C9A96A", fontWeight:500 }}>{evt.date}</p>
+                      </div>
+                      <div>
+                        <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(248,245,242,.3)", marginBottom:"4px" }}>Lieu</p>
+                        <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", fontWeight:300 }}>{evt.lieu}</p>
+                      </div>
+                    </div>
+                    <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.55)", lineHeight:1.8, marginBottom:"24px" }}>
+                      {evt.description}
+                    </p>
+                    <Link to={evt.lien} style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"transparent", color:"#C9A96A", border:"1px solid rgba(201,169,106,.3)", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", borderRadius:"2px", textDecoration:"none" }}>
+                      {evt.bouton}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Pourquoi participer */}
+          <section style={{ padding:"72px 0 0" }}>
+            <div className="reveal" style={{ padding:"48px 40px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px" }}>
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px" }}>Pourquoi participer</p>
+              <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, marginBottom:"20px" }}>
+                Pourquoi assister aux événements Métamorphose ?
+              </h2>
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.6)", lineHeight:1.9 }}>
+                Parce que la transformation ne se fait pas seulement en ligne. Elle se vit.
+                Elle se ressent. Elle se déclenche dans l'expérience. Ces événements sont
+                des espaces où tu passes à un autre niveau : mentalement, émotionnellement
+                et dans ton identité.
+              </p>
+            </div>
+          </section>
+
+          {/* Urgence */}
+          <section style={{ padding:"72px 0 0", textAlign:"center" }}>
+            <div className="reveal">
+              <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.15rem", color:"rgba(248,245,242,.6)", lineHeight:1.9, maxWidth:"560px", margin:"0 auto 28px" }}>
+                Les places sont parfois limitées. Et certaines opportunités ne se présentent
+                qu'une seule fois. Ne regarde pas les changements — deviens-en actrice.
+              </p>
+              <a href="#inscription" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#C2185B", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".75rem", letterSpacing:".16em", textTransform:"uppercase", padding:"15px 32px", borderRadius:"2px", textDecoration:"none" }}>
+                Je rejoins les événements Métamorphose
+              </a>
+            </div>
+          </section>
+
+          {/* Inscription */}
+          <section id="inscription" style={{ padding:"72px 0 0" }}>
+            <div style={{ background:"rgba(255,255,255,.02)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px", padding:"48px 40px" }}>
+              <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"8px" }}>Inscription</p>
+              <h2 className="reveal" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, marginBottom:"32px" }}>
+                Ne manque aucun événement
+              </h2>
+
+              {done ? (
+                <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.2rem", color:"#C9A96A", textAlign:"center" }}>
+                  Inscription confirmée. Vous serez informée en priorité.
+                </p>
+              ) : (
+                <form onSubmit={inscrire}>
+                  <div className="form-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"14px", marginBottom:"14px" }}>
+                    <div>
+                      <label className="evt-label">Nom</label>
+                      <input className="evt-input" value={form.nom} onChange={e=>set("nom",e.target.value)} placeholder="Votre nom"/>
+                    </div>
+                    <div>
+                      <label className="evt-label">Prénom</label>
+                      <input className="evt-input" value={form.prenom} onChange={e=>set("prenom",e.target.value)} placeholder="Votre prénom"/>
+                    </div>
+                    <div>
+                      <label className="evt-label">Email *</label>
+                      <input className="evt-input" type="email" required value={form.email} onChange={e=>set("email",e.target.value)} placeholder="votre@email.com"/>
+                    </div>
+                    <div>
+                      <label className="evt-label">WhatsApp</label>
+                      <input className="evt-input" value={form.whatsapp} onChange={e=>set("whatsapp",e.target.value)} placeholder="+229 00 00 00 00"/>
+                    </div>
+                  </div>
+                  {error && <p style={{ background:"rgba(239,68,68,.1)", border:"1px solid rgba(239,68,68,.3)", borderRadius:"4px", padding:"10px 14px", fontSize:".78rem", color:"#f87171", marginBottom:"14px" }}>{error}</p>}
+                  <button type="submit" disabled={loading}
+                    style={{ width:"100%", padding:"15px", background:"#C9A96A", border:"none", borderRadius:"3px", color:"#0A0A0A", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".78rem", letterSpacing:".16em", textTransform:"uppercase", cursor:loading?"not-allowed":"pointer", opacity:loading?.7:1 }}>
+                    {loading ? "Inscription..." : "Recevoir les prochaines dates"}
+                  </button>
+                </form>
+              )}
+            </div>
+          </section>
+
+        </div>
+      </div>
     </>
-  )
+  );
 }
