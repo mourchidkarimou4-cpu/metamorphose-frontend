@@ -26,6 +26,7 @@ import Aura from './pages/Aura'
 import Masterclass from './pages/Masterclass'
 import MMOLearning from './pages/MMOLearning'
 import Evenements    from './pages/Evenements'
+import Actualites    from './pages/Actualites'
 import ScanTicket    from './pages/ScanTicket'
 import API_URL from './config';
 
@@ -124,6 +125,7 @@ export default function App() {
       <Route path="/mmo-learning"  element={<MMOLearning />} />
       <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
       <Route path="/evenements"           element={<Evenements />} />
+        <Route path="/actualites"           element={<Actualites />} />
       <Route path="/scan"                  element={<ScanTicket />} />
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/reset-password" element={<ResetPassword />} />
