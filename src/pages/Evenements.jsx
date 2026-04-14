@@ -35,12 +35,12 @@ function useReveal() {
   }, []);
 }
 
-const EVENEMENTS = [
+const EVENEMENTS_DEFAUT = [
   {
     id: 1,
     titre: "Masterclass OSER",
     badge: "100% GRATUIT",
-    badgeColor: "#4CAF50",
+    badge_color: "#4CAF50",
     date: "Dimanche 26 avril à 17h GMT+1",
     lieu: "En ligne",
     description: "Cette masterclass est conçue pour t'aider à sortir du regard des autres, reprendre confiance en toi et commencer à incarner une image alignée avec ta vraie valeur. Tu vas apprendre à dépasser la peur du jugement, t'affirmer avec plus de confiance, améliorer ton image personnelle et professionnelle, poser les bases de ton identité forte.",
@@ -51,7 +51,7 @@ const EVENEMENTS = [
     id: 2,
     titre: "Nomination des 100 Leaders du Bénin",
     badge: "Événement",
-    badgeColor: "#C9A96A",
+    badge_color: "#C9A96A",
     date: "Samedi 25 avril",
     lieu: "Salle de fête LUCIDE, Godomey",
     description: "Un moment fort et symbolique. Prélia APEDO AHONON sera officiellement nommée parmi les 100 leaders du Bénin, une reconnaissance du travail, de l'impact et de la vision portée à travers Métamorphose. Cet événement représente une étape importante dans un parcours d'engagement, de leadership et de transformation.",
@@ -62,7 +62,7 @@ const EVENEMENTS = [
     id: 3,
     titre: "Brunch Métamorphose",
     badge: "Décembre 2026",
-    badgeColor: "#C2185B",
+    badge_color: "#C2185B",
     date: "Décembre 2026",
     lieu: "À préciser — Bénin",
     description: "Le Brunch Métamorphose est une expérience exclusive pensée pour réunir les femmes de la communauté dans un cadre élégant, intime et inspirant. C'est un moment de célébration, de connexion et de croissance. Au programme : échanges authentiques entre femmes ambitieuses, partage d'expériences de transformation, discussions autour de l'image, de la confiance et du leadership, ambiance élégante et conviviale, inspiration et networking.",
@@ -73,6 +73,13 @@ const EVENEMENTS = [
 
 export default function Evenements() {
   useReveal();
+  const [evenements, setEvenements] = useState(EVENEMENTS_DEFAUT);
+  useEffect(() => {
+    fetch(`${API_URL}/api/evenements/`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (Array.isArray(d) && d.length > 0) setEvenements(d); })
+      .catch(() => {});
+  }, []);
   const [form, setForm] = useState({ nom:"", prenom:"", email:"", whatsapp:"" });
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -152,14 +159,19 @@ export default function Evenements() {
               Événements à venir
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
-              {EVENEMENTS.map((evt, i) => (
+              {evenements.map((evt, i) => (
                 <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:"1fr" }}>
                   {/* Image placeholder */}
-                  <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badgeColor}40,transparent)` }}/>
+                  {evt.photo && (
+                    <div style={{ width:"100%", height:"220px", overflow:"hidden" }}>
+                      <img src={evt.photo} alt={evt.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                    </div>
+                  )}
+                  {!evt.photo && <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badge_color}40,transparent)` }}/>}
                   <div style={{ padding:"36px 32px" }}>
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px", marginBottom:"20px" }}>
                       <div>
-                        <span style={{ display:"inline-block", padding:"4px 12px", background:`${evt.badgeColor}15`, border:`1px solid ${evt.badgeColor}40`, borderRadius:"100px", fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:evt.badgeColor, marginBottom:"12px" }}>
+                        <span style={{ display:"inline-block", padding:"4px 12px", background:`${evt.badge_color}15`, border:`1px solid ${evt.badge_color}40`, borderRadius:"100px", fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:evt.badge_color, marginBottom:"12px" }}>
                           {evt.badge}
                         </span>
                         <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, lineHeight:1.2 }}>{evt.titre}</h2>

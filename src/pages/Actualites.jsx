@@ -69,6 +69,13 @@ const ACTUS = [
 
 export default function Actualites() {
   useReveal();
+  const [actus, setActus] = useState(ACTUS);
+  useEffect(() => {
+    fetch(`${API_URL}/api/evenements/actualites/`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (Array.isArray(d) && d.length > 0) setActus(d); })
+      .catch(() => {});
+  }, []);
   const [form,    setForm]    = useState({ email:"", whatsapp:"" });
   const [done,    setDone]    = useState(false);
   const [loading, setLoading] = useState(false);
@@ -150,7 +157,13 @@ export default function Actualites() {
             <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
               {ACTUS.map((actu, i) => (
                 <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
-                  <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>
+                  {actu.photo ? (
+                    <div style={{ width:"100%", height:"180px", overflow:"hidden" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                    </div>
+                  ) : (
+                    <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>
+                  )}
                   <div style={{ padding:"28px 24px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"14px" }}>
                       <span style={{ padding:"3px 10px", background:`${actu.color}15`, border:`1px solid ${actu.color}30`, borderRadius:"100px", fontFamily:"'Montserrat',sans-serif", fontSize:".58rem", fontWeight:600, letterSpacing:".14em", textTransform:"uppercase", color:actu.color }}>
