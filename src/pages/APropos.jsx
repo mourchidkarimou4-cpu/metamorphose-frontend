@@ -134,7 +134,7 @@ export default function APropos() {
                 <blockquote className="reveal" style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.4rem", color:"#EFC7D3", borderLeft:`2px solid ${ROSE}`, paddingLeft:"24px", marginBottom:"36px", lineHeight:1.6 }}>
                   « {get("prelia_citation","Je sais ce que cela fait de se sentir invisible.")} »
                 </blockquote>
-                <Para>Je suis Prélia AHONON, conseillère en image, styliste certifiée, communicatrice passionnée et fondatrice de la marque White & Black, ainsi que du programme de transformation Méta'Morph'Ose.</Para>
+                <Para>Je suis Prélia APEDO AHONON, conseillère en image, styliste certifiée, communicatrice passionnée et fondatrice de la marque White & Black, ainsi que du programme de transformation Méta'Morph'Ose.</Para>
                 <Para>Depuis plusieurs années, ma mission est claire : Accompagner les femmes à se redécouvrir, à reprendre confiance en elles et à révéler la puissance qu'elles portent déjà en elles.</Para>
                 <Para>Je crois profondément que chaque femme possède une lumière unique. Mais trop souvent, cette lumière reste cachée derrière le doute, la peur du regard des autres ou une image qui ne reflète pas sa véritable valeur.</Para>
                 <Para>C'est pour cela que j'ai créé Méta'Morph'Ose — un espace où les femmes peuvent se réconcilier avec elles-mêmes, révéler leur identité et apprendre à incarner leur puissance avec élégance et authenticité.</Para>
@@ -162,16 +162,16 @@ export default function APropos() {
               <div className="reveal" style={{ position:"sticky", top:"90px" }}>
                 <div style={{ position:"relative", paddingBottom:"130%", background:`linear-gradient(135deg,rgba(194,24,91,.1),rgba(201,169,106,.08))`, border:"1px solid rgba(201,169,106,.18)", borderRadius:"4px", overflow:"hidden" }}>
                   {get("photo_prelia","") ? (
-                    <img src={get("photo_prelia","")} alt="Prélia AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                    <img src={get("photo_prelia","")} alt="Prélia APEDO AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
                   ) : (
                     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)" }}>Photo Prélia AHONON</p>
+                      <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.3)" }}>Photo Prélia APEDO AHONON</p>
                     </div>
                   )}
                   <div style={{ position:"absolute", inset:"14px", border:"1px solid rgba(201,169,106,.08)", borderRadius:"2px", pointerEvents:"none" }}/>
                 </div>
                 <div style={{ textAlign:"center", marginTop:"16px" }}>
-                  <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:OR, opacity:.85 }}>Prélia AHONON</p>
+                  <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:OR, opacity:.85 }}>Prélia APEDO AHONON</p>
                   <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginTop:"4px" }}>Fondatrice · White & Black · Méta'Morph'Ose</p>
                   {get("logo_white_black","") && <img src={get("logo_white_black","")} alt="White & Black" style={{ height:"20px", objectFit:"contain", opacity:.5, marginTop:"10px" }}/>}
                 </div>

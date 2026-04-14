@@ -42,7 +42,7 @@ const ACTUS = [
     date: "Avril 2026",
     categorie: "Reconnaissance",
     titre: "Nomination parmi les 100 Leaders du Bénin",
-    resume: "Une étape marquante dans le parcours Métamorphose. Prélia AHONON a été honorée d'être nommée parmi les 100 leaders du Bénin, une reconnaissance qui valorise l'impact, la vision et l'engagement portés à travers ce projet.",
+    resume: "Une étape marquante dans le parcours Métamorphose. Prélia APEDO AHONON a été honorée d'être nommée parmi les 100 leaders du Bénin, une reconnaissance qui valorise l'impact, la vision et l'engagement portés à travers ce projet.",
     bouton: "Lire l'histoire complète",
     lien: "/evenements",
     color: "#C9A96A",

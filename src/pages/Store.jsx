@@ -164,7 +164,7 @@ const PRODUITS_DEFAUT = [
     categorie: "replay",
     titre: "Affirmations Quotidiennes",
     sous_titre: "Audio de 21 jours",
-    description: "21 jours d'affirmations puissantes enregistrées par Prélia AHONON. Transformez votre dialogue intérieur chaque matin.",
+    description: "21 jours d'affirmations puissantes enregistrées par Prélia APEDO AHONON. Transformez votre dialogue intérieur chaque matin.",
     prix: 7500,
     badge: "Audio",
     badge_color: "#C9A96A",
@@ -534,7 +534,7 @@ export default function Store() {
           <span style={{color:"var(--rose)"}}>Ose</span>
         </Link>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · White & Black · Prélia AHONON
+          © 2026 Meta'Morph'Ose · White & Black · Prélia APEDO AHONON
         </p>
       </footer>
 

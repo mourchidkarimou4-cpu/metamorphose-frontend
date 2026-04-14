@@ -197,7 +197,7 @@ export default function Brunch() {
               <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"10px" }}>Bonus exclusif</p>
               <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.7)", lineHeight:1.8 }}>
                 Les femmes extérieures qui participent au brunch à 50 000 FCFA bénéficient d'un avantage exclusif :
-                10% de réduction sur le programme Métamorphose, un appel découverte avec Prélia AHONON
+                10% de réduction sur le programme Métamorphose, un appel découverte avec Prélia APEDO AHONON
                 d'une valeur de 100 000 FCFA, et l'accès aux 7 Bonus du programme.
               </p>
             </div>
@@ -237,7 +237,7 @@ export default function Brunch() {
 
               {done ? (
                 <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.2rem", color:"#C9A96A", textAlign:"center", padding:"32px 0" }}>
-                  Votre inscription a été reçue. Prélia AHONON vous contactera pour confirmer votre place.
+                  Votre inscription a été reçue. Prélia APEDO AHONON vous contactera pour confirmer votre place.
                 </p>
               ) : (
                 <form onSubmit={inscrire}>
@@ -275,7 +275,7 @@ export default function Brunch() {
 
                   <div style={{ marginBottom:"24px" }}>
                     <label className="brunch-label">Message (optionnel)</label>
-                    <textarea className="brunch-input" rows={3} value={form.message} onChange={e=>set("message",e.target.value)} placeholder="Un message pour Prélia AHONON..." style={{ resize:"vertical" }}/>
+                    <textarea className="brunch-input" rows={3} value={form.message} onChange={e=>set("message",e.target.value)} placeholder="Un message pour Prélia APEDO AHONON..." style={{ resize:"vertical" }}/>
                   </div>
 
                   {error && <p style={{ background:"rgba(239,68,68,.1)", border:"1px solid rgba(239,68,68,.3)", borderRadius:"4px", padding:"10px 14px", fontSize:".78rem", color:"#f87171", marginBottom:"16px" }}>{error}</p>}

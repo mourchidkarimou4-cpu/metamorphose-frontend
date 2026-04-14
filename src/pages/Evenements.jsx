@@ -54,7 +54,7 @@ const EVENEMENTS = [
     badgeColor: "#C9A96A",
     date: "Samedi 25 avril",
     lieu: "Salle de fête LUCIDE, Godomey",
-    description: "Un moment fort et symbolique. Prélia AHONON sera officiellement nommée parmi les 100 leaders du Bénin, une reconnaissance du travail, de l'impact et de la vision portée à travers Métamorphose. Cet événement représente une étape importante dans un parcours d'engagement, de leadership et de transformation.",
+    description: "Un moment fort et symbolique. Prélia APEDO AHONON sera officiellement nommée parmi les 100 leaders du Bénin, une reconnaissance du travail, de l'impact et de la vision portée à travers Métamorphose. Cet événement représente une étape importante dans un parcours d'engagement, de leadership et de transformation.",
     bouton: "Voir les détails de la cérémonie",
     lien: "/actualites",
   },

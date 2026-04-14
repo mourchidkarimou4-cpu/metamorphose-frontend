@@ -150,7 +150,7 @@ export default function FAQPage() {
             <div style={{ display:"flex", justifyContent:"center" }}>
               <a href="https://wa.me/22901961140933" target="_blank" rel="noreferrer"
                 style={{ display:"inline-flex", alignItems:"center", gap:"10px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"14px 32px", borderRadius:"3px", textDecoration:"none" }}>
-                Contacter Prélia AHONON sur WhatsApp
+                Contacter Prélia APEDO AHONON sur WhatsApp
               </a>
             </div>
           </div>

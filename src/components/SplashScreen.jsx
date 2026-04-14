@@ -108,7 +108,7 @@ export default function SplashScreen({ onDone }) {
         </p>
 
         <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".25em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", marginTop:"12px", animation:"slideUp .8s 1.6s both" }}>
-          — Prélia AHONON
+          — Prélia APEDO AHONON
         </p>
 
         {/* Point clignotant */}
