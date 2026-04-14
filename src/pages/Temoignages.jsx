@@ -83,10 +83,7 @@ export default function Temoignages() {
   const ecrits   = temos.filter(t => !t.type_temo || t.type_temo === 'texte');
   const audios   = temos.filter(t => t.type_temo === 'audio');
 
-  const transformations = [1,2,3,4,5].map(i => ({
-    avant: get(`aa_avant${i}`,""),
-    apres: get(`aa_apres${i}`,""),
-  })).filter(t => t.avant && t.apres);
+
 
   return (
     <>
@@ -205,49 +202,24 @@ export default function Temoignages() {
                   <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:"rgba(248,245,242,.75)", lineHeight:1.75, marginBottom:"20px" }}>
                     « {t.texte} »
                   </p>
-                  {/* Photos avant/après si dispo */}
-                  {(t.photo_avant || t.photo_apres) && (
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"8px", marginBottom:"16px" }}>
-                      {t.photo_avant && <div><p style={{ fontFamily:"'Montserrat'", fontSize:".55rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", marginBottom:"4px" }}>Avant</p><img src={t.photo_avant} alt="avant" style={{ width:"100%", aspectRatio:"1", objectFit:"cover", borderRadius:"3px", opacity:.8 }}/></div>}
-                      {t.photo_apres && <div><p style={{ fontFamily:"'Montserrat'", fontSize:".55rem", letterSpacing:".15em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"4px" }}>Après</p><img src={t.photo_apres} alt="après" style={{ width:"100%", aspectRatio:"1", objectFit:"cover", borderRadius:"3px" }}/></div>}
+                  <div style={{ display:"flex", alignItems:"center", gap:"14px" }}>
+                    {t.photo_avant ? (
+                      <img src={t.photo_avant} alt={t.prenom} style={{ width:"48px", height:"48px", borderRadius:"50%", objectFit:"cover", border:"2px solid rgba(201,169,106,.25)", flexShrink:0 }}/>
+                    ) : (
+                      <div style={{ width:"48px", height:"48px", borderRadius:"50%", background:"rgba(194,24,91,.1)", border:"1px solid rgba(194,24,91,.2)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Playfair Display',serif", fontSize:"1rem", color:"#C2185B", fontWeight:600, flexShrink:0 }}>{t.prenom?.[0]}</div>
+                    )}
+                    <div>
+                      <p style={{ fontFamily:"'Montserrat'", fontSize:".78rem", fontWeight:600, color:"rgba(248,245,242,.8)", marginBottom:"2px" }}>{t.prenom}</p>
+                      {t.pays && <p style={{ fontFamily:"'Montserrat'", fontSize:".65rem", color:"rgba(248,245,242,.35)", fontWeight:300 }}>{t.pays}</p>}
+                      {t.formule && <p style={{ fontFamily:"'Montserrat'", fontSize:".6rem", color:"rgba(201,169,106,.5)", letterSpacing:".1em", textTransform:"uppercase" }}>{t.formule}</p>}
                     </div>
-                  )}
-                  <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-                    <div style={{ width:"36px", height:"36px", borderRadius:"50%", background:"rgba(194,24,91,.15)", border:"1px solid rgba(194,24,91,.2)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Playfair Display',serif", fontSize:".9rem", color:"#C2185B", fontWeight:600 }}>{t.prenom[0]}</div>
-                    <p style={{ fontFamily:"'Montserrat'", fontSize:".72rem", color:"rgba(248,245,242,.4)", fontWeight:300 }}>
-                      {t.prenom}{t.pays ? ` — ${t.pays}` : ""}
-                    </p>
                   </div>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Avant / Après */}
-          {transformations.length > 0 && (
-            <section style={{ padding:"64px 0 0" }}>
-              <div style={{ marginBottom:"32px" }}>
-                <p className="reveal" style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"12px" }}>Avant / Après</p>
-                <h2 className="reveal" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.5rem,4vw,2rem)", fontWeight:600 }}>
-                  {get("aa_titre","En 8 semaines, passez de la peur à la puissance.")}
-                </h2>
-              </div>
 
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 32px 1fr", marginBottom:"12px", textAlign:"center" }}>
-                <div style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.25)", paddingBottom:"8px", borderBottom:"1px solid rgba(255,255,255,.05)" }}>Avant</div>
-                <div/>
-                <div style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"#C9A96A", paddingBottom:"8px", borderBottom:"1px solid rgba(201,169,106,.2)" }}>Après</div>
-              </div>
-
-              {transformations.map((t,i) => (
-                <div key={i} className="reveal aa-grid" style={{ transitionDelay:`${i*.07}s` }}>
-                  <div style={{ padding:"12px 16px", background:"rgba(255,255,255,.02)", borderRadius:"2px", fontFamily:"'Montserrat'", fontSize:".85rem", color:"rgba(248,245,242,.4)", fontWeight:300, fontStyle:"italic" }}>{t.avant}</div>
-                  <div className="aa-arrow" style={{ textAlign:"center", color:"#C9A96A", fontSize:".85rem" }}>→</div>
-                  <div style={{ padding:"12px 16px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"2px", fontFamily:"'Montserrat'", fontSize:".85rem", color:"rgba(248,245,242,.85)", fontWeight:400 }}>{t.apres}</div>
-                </div>
-              ))}
-            </section>
-          )}
 
           {/* CTA */}
           {/* Témoignages audio */}
