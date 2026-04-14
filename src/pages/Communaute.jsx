@@ -1,95 +1,33 @@
 import { useState, useEffect } from "react";
-import API_URL from '../config';
-import usePageBackground from "../hooks/usePageBackground";
 import { Link, useNavigate } from "react-router-dom";
-
-const WHATSAPP_COMMUNAUTE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
+import API_URL from "../config";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
     --noir:#0A0A0A; --or:#C9A96A; --or-light:#E8D5A8;
-    --rose:#C2185B; --beige:#D8C1A0; --beige-light:#F2EBE0;
-    --blanc:#F8F5F2;
+    --rose:#C2185B; --blanc:#F8F5F2; --marine:#0D1B2A;
     --ff-t:'Playfair Display',Georgia,serif;
     --ff-b:'Montserrat',sans-serif;
     --ff-a:'Cormorant Garamond',Georgia,serif;
-    --ease:cubic-bezier(0.4,0,0.2,1);
   }
   html { scroll-behavior:smooth; }
   body { background:var(--noir); color:var(--blanc); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; }
-
-  @keyframes fadeUp    { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
-  @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }
-  @keyframes orb       { 0%,100%{transform:scale(1);opacity:.1} 50%{transform:scale(1.3);opacity:.2} }
-  @keyframes pulse-rose{ 0%,100%{box-shadow:0 0 24px rgba(194,24,91,.35)} 50%{box-shadow:0 0 52px rgba(194,24,91,.65)} }
-  @keyframes float     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-  @keyframes spin      { to{transform:rotate(360deg)} }
-  @keyframes lock-shake{ 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
-
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+  @keyframes shimmerGold { 0%{background-position:-200% center} 100%{background-position:200% center} }
   .reveal { opacity:0; transform:translateY(30px); transition:opacity .8s ease,transform .8s ease; }
   .reveal.visible { opacity:1; transform:none; }
-
-  .btn-p {
-    display:inline-flex; align-items:center; justify-content:center; gap:10px;
-    background:var(--rose); color:#fff; font-family:var(--ff-b); font-weight:700;
-    font-size:.76rem; letter-spacing:.16em; text-transform:uppercase;
-    padding:17px 36px; border:none; border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s var(--ease);
-    animation:pulse-rose 3s ease-in-out infinite;
-  }
-  .btn-p:hover { background:#a01049; transform:translateY(-3px); }
-
-  .btn-or {
-    display:inline-flex; align-items:center; justify-content:center; gap:10px;
-    background:transparent; color:var(--or); font-family:var(--ff-b); font-weight:600;
-    font-size:.76rem; letter-spacing:.16em; text-transform:uppercase;
-    padding:16px 32px; border:1px solid var(--or); border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s;
-  }
-  .btn-or:hover { background:var(--or); color:var(--noir); }
-
-  .btn-wa {
-    display:inline-flex; align-items:center; justify-content:center; gap:12px;
-    background:#25D366; color:#fff; font-family:var(--ff-b); font-weight:700;
-    font-size:.76rem; letter-spacing:.14em; text-transform:uppercase;
-    padding:17px 36px; border:none; border-radius:2px; cursor:pointer;
-    text-decoration:none; transition:all .35s;
-  }
-  .btn-wa:hover { background:#1da851; transform:translateY(-3px); box-shadow:0 14px 40px rgba(37,211,102,.4); }
-
-  .avantage-card {
-    padding:28px 24px; background:rgba(255,255,255,.025);
-    border:1px solid rgba(255,255,255,.06); border-radius:6px;
-    transition:all .35s; text-align:center;
-  }
-  .avantage-card:hover { transform:translateY(-6px); border-color:rgba(201,169,106,.2); background:rgba(201,169,106,.04); }
-
-  .membre-card {
-    padding:20px; background:rgba(255,255,255,.025);
-    border:1px solid rgba(255,255,255,.06); border-radius:6px;
-    display:flex; gap:14px; align-items:center; transition:all .3s;
-  }
-  .membre-card:hover { border-color:rgba(201,169,106,.15); background:rgba(201,169,106,.03); }
-
-  .locked-overlay {
-    position:fixed; inset:0; z-index:400; background:rgba(10,10,10,.96);
-    backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center;
-    padding:24px;
-  }
-
-  @media(max-width:768px) {
-    .avantages-grid { grid-template-columns:1fr 1fr !important; }
-    .membres-grid   { grid-template-columns:1fr !important; }
-    .stats-grid     { grid-template-columns:repeat(2,1fr) !important; }
-    .btn-p, .btn-or, .btn-wa { width:100% !important; justify-content:center !important; }
-    .cta-btns { flex-direction:column !important; }
-  }
-  @media(max-width:480px) {
-    .avantages-grid { grid-template-columns:1fr !important; }
-    .stats-grid     { grid-template-columns:repeat(2,1fr) !important; }
-  }
+  .principe-card { padding:36px 32px; background:rgba(255,255,255,.018); border:1px solid rgba(255,255,255,.06); border-left:2px solid rgba(201,169,106,.35); border-radius:2px; transition:border-color .35s, background .35s; }
+  .principe-card:hover { border-left-color:#C9A96A; background:rgba(201,169,106,.03); }
+  .engagement-btn { width:100%; padding:20px 32px; background:transparent; border:1px solid rgba(201,169,106,.3); border-radius:2px; color:rgba(248,245,242,.5); font-family:'Montserrat',sans-serif; font-size:.78rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; transition:all .4s; display:flex; align-items:center; justify-content:center; gap:16px; }
+  .engagement-btn:hover { border-color:#C9A96A; color:#C9A96A; background:rgba(201,169,106,.04); }
+  .engagement-btn.engaged { border-color:#C9A96A; color:#C9A96A; background:rgba(201,169,106,.06); }
+  .checkbox-custom { width:20px; height:20px; border:1px solid rgba(201,169,106,.4); border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .3s; background:transparent; }
+  .checkbox-custom.checked { background:#C9A96A; border-color:#C9A96A; }
+  .check-mark { width:10px; height:6px; border-left:2px solid #0A0A0A; border-bottom:2px solid #0A0A0A; transform:rotate(-45deg) translateY(-2px); opacity:0; transition:opacity .2s; }
+  .check-mark.visible { opacity:1; }
+  @media(max-width:768px) { .principes-grid { grid-template-columns:1fr !important; } }
 `;
 
 function useReveal() {
@@ -97,304 +35,229 @@ function useReveal() {
     const els = document.querySelectorAll(".reveal");
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
     els.forEach(el => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 }
 
-/* ── Overlay accès refusé ───────────────────────────────────── */
-function LockedOverlay({ estMembre, estConnecte }) {
-  const navigate = useNavigate();
-  return (
-    <div className="locked-overlay">
-      <div style={{ maxWidth:"480px", width:"100%", textAlign:"center", animation:"fadeUp .5s both" }}>
-        <div style={{ fontSize:"4rem", marginBottom:"20px", animation:"lock-shake 2s ease-in-out infinite" }}>🔒</div>
-        <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>
-          Accès réservé
-        </p>
-        <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.4rem,4vw,2rem)", fontWeight:600, marginBottom:"16px", lineHeight:1.2 }}>
-          {estConnecte && !estMembre
-            ? "Tu n'es pas encore Métamorphosée"
-            : "La communauté te réserve sa lumière"
-          }
-        </h2>
-        <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.6)", lineHeight:1.8, marginBottom:"28px" }}>
-          {estConnecte && !estMembre
-            ? "La Communauté MMO est réservée exclusivement aux femmes qui ont complété le programme Méta'Morph'Ose. Rejoins le programme pour en faire partie."
-            : "Pour accéder à la Communauté MMO, tu dois d'abord rejoindre et compléter le programme Méta'Morph'Ose. Un espace sacré, réservé aux Métamorphosées."
-          }
-        </p>
-        <div style={{ display:"flex", flexDirection:"column", gap:"12px", alignItems:"center" }}>
-          <Link to="/contact" className="btn-p" style={{ width:"100%", maxWidth:"360px" }}>
-            Rejoindre le programme MMO
-          </Link>
-          {!estConnecte && (
-            <Link to="/espace-membre" className="btn-or" style={{ width:"100%", maxWidth:"360px" }}>
-              J'ai déjà un compte — Me connecter
-            </Link>
-          )}
-          <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.3)", textDecoration:"none", marginTop:"8px" }}>
-            Retour à l'accueil
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
+const PRINCIPES = [
+  {
+    num: "01",
+    titre: "Respect et bienveillance",
+    texte: "Chaque femme ici est en chemin. Aucune critique blessante, aucun jugement, aucune comparaison toxique ne sont tolérés. Nous nous parlons avec respect, douceur et intelligence.",
+    items: null,
+  },
+  {
+    num: "02",
+    titre: "Engagement et implication",
+    texte: "Cette communauté n'est pas un espace passif. Tu es invitée à participer, partager et t'impliquer dans ton évolution.",
+    items: ["Participer", "Partager", "S'impliquer dans son évolution"],
+    note: "Plus tu t'engages, plus tu évolues.",
+  },
+  {
+    num: "03",
+    titre: "Authenticité",
+    texte: "Sois vraie. Sois toi. Cet espace est un lieu sécurisé où tu peux t'exprimer sans masque, sans pression, sans peur du regard des autres.",
+    items: null,
+  },
+  {
+    num: "04",
+    titre: "Aucune promotion personnelle",
+    texte: "Pour préserver la qualité de l'expérience, les éléments suivants ne sont pas autorisés sans validation préalable.",
+    items: ["Publicité", "Vente", "Spam"],
+    note: null,
+  },
+  {
+    num: "05",
+    titre: "Confidentialité absolue",
+    texte: "Ce qui est partagé ici reste ici. Chaque membre doit se sentir en sécurité pour s'exprimer librement.",
+    items: null,
+  },
+  {
+    num: "06",
+    titre: "Esprit de croissance",
+    texte: "Ici, nous ne stagnons pas. Nous sommes des femmes qui apprennent, évoluent, se challengent et deviennent meilleures chaque jour.",
+    items: ["Apprendre", "Évoluer", "Se challenger", "Devenir meilleure chaque jour"],
+    note: null,
+  },
+  {
+    num: "07",
+    titre: "Responsabilité personnelle",
+    texte: "Ta transformation t'appartient. La communauté est un soutien — mais c'est ton engagement qui fera la différence.",
+    items: null,
+  },
+];
 
-/* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Communaute() {
-  usePageBackground("communaute");
-  const [user]          = useState(() => JSON.parse(localStorage.getItem("mmorphose_user") || "null"));
-  const [token]         = useState(() => localStorage.getItem("mmorphose_token"));
-  const [userData,      setUserData]      = useState(null);
-  const [loadingUser,   setLoadingUser]   = useState(true);
   useReveal();
+  const navigate = useNavigate();
+  const [engaged,  setEngaged]  = useState(false);
+  const [saving,   setSaving]   = useState(false);
+  const [saved,    setSaved]    = useState(false);
 
-  // Vérifier si le membre est actif (a complété le programme)
+  const user  = JSON.parse(localStorage.getItem("mmorphose_user")  || "null");
+  const token = localStorage.getItem("mmorphose_token");
+
   useEffect(() => {
-    if (!token) { setLoadingUser(false); return; }
-    fetch(`${API_URL}/api/auth/me/`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    })
-    .then(r => r.ok ? r.json() : null)
-    .then(data => { setUserData(data); setLoadingUser(false); })
-    .catch(() => setLoadingUser(false));
-  }, [token]);
+    if (!user || !token) { navigate("/espace-membre"); }
+  }, []);
 
-  const estConnecte = !!token && !!user;
-  const estMembre   = userData?.actif === true;
-
-  // Affichage pendant le chargement
-  if (loadingUser) {
-    return (
-      <div style={{ background:"var(--noir)", minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
-        <style>{STYLES}</style>
-        <div style={{ width:"40px", height:"40px", border:"3px solid rgba(201,169,106,.2)", borderTopColor:"var(--or)", borderRadius:"50%", animation:"spin .7s linear infinite" }}/>
-      </div>
-    );
+  async function sEngager() {
+    if (engaged) return;
+    setEngaged(true);
+    setSaving(true);
+    try {
+      await fetch(`${API_URL}/api/auth/engagement-communaute/`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ engagement: true }),
+      });
+      setSaved(true);
+    } catch { /* silencieux — l'état local suffit */ }
+    setSaving(false);
   }
-
-  const AVANTAGES = [
-    { icone:"💬", titre:"Espace d'échange", desc:"Un groupe privé pour partager, s'encourager et grandir ensemble entre Métamorphosées." },
-    { icone:"🎙️", titre:"Lives exclusifs", desc:"Accès aux lives privés de Prélia réservés uniquement à la communauté." },
-    { icone:"📚", titre:"Ressources premium", desc:"Bibliothèque de guides, replays et contenus exclusifs non disponibles ailleurs." },
-    { icone:"🤝", titre:"Réseau international", desc:"Connecte-toi avec des femmes inspirantes de plusieurs pays partageant les mêmes valeurs." },
-    { icone:"🏆", titre:"Défis & Challenges", desc:"Défis mensuels pour maintenir ta transformation et te dépasser continuellement." },
-    { icone:"🎁", titre:"Avantages exclusifs", desc:"Réductions sur le Store, accès prioritaire aux nouvelles vagues et événements spéciaux." },
-  ];
-
-  const MEMBRES_EXEMPLES = [
-    { prenom:"Aïcha", pays:"Bénin", formule:"F2", initiale:"A", color:"#C2185B" },
-    { prenom:"Marie-Claire", pays:"Côte d'Ivoire", formule:"F1", initiale:"M", color:"#C9A96A" },
-    { prenom:"Fatou", pays:"Sénégal", formule:"F3", initiale:"F", color:"#A8C8E0" },
-    { prenom:"Olivia", pays:"France", formule:"F2", initiale:"O", color:"#C2185B" },
-    { prenom:"Daniella", pays:"Cameroun", formule:"F4", initiale:"D", color:"#C9A96A" },
-    { prenom:"Aminata", pays:"Mali", formule:"F1", initiale:"A", color:"#A8C8E0" },
-  ];
-
-  const FORMULES_LABELS = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
 
   return (
     <>
       <style>{STYLES}</style>
+      <div style={{ background:"#0A0A0A", color:"#F8F5F2", minHeight:"100vh" }}>
 
-      {/* Overlay si non membre */}
-      {(!estConnecte || !estMembre) && (
-        <LockedOverlay estMembre={estMembre} estConnecte={estConnecte} />
-      )}
-
-      {/* ── NAVBAR ── */}
-      <nav style={{ padding:"16px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.96)", backdropFilter:"blur(20px)", zIndex:200 }}>
-        <Link to="/" style={{ textDecoration:"none" }}>
-          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{color:"var(--blanc)"}}>Meta'</span>
-            <span style={{color:"var(--or)"}}>Morph'</span>
-            <span style={{color:"var(--rose)"}}>Ose</span>
-          </span>
-        </Link>
-        <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
-          <Link to="/dashboard" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>
-            Mon espace
+        {/* Nav */}
+        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.97)", backdropFilter:"blur(20px)", zIndex:100 }}>
+          <Link to="/" style={{ textDecoration:"none" }}>
+            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
+              <span style={{color:"#F8F5F2"}}>Meta'</span>
+              <span style={{color:"#C9A96A"}}>Morph'</span>
+              <span style={{color:"#C2185B"}}>Ose</span>
+            </span>
           </Link>
-          <button onClick={() => { localStorage.removeItem("mmorphose_token"); localStorage.removeItem("mmorphose_user"); window.location.href = "/"; }} style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", background:"none", border:"1px solid rgba(255,255,255,.1)", borderRadius:"3px", color:"rgba(248,245,242,.35)", padding:"8px 14px", cursor:"pointer" }}>
-            Déconnexion
-          </button>
-        </div>
-      </nav>
+          <Link to="/dashboard" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Mon espace</Link>
+        </nav>
 
-      <main>
-
-        {/* ── HERO ── */}
-        <section style={{ padding:"80px 24px 60px", background:"linear-gradient(135deg,#0A0A0A 0%,#1a0a0f 40%,#110d09 100%)", textAlign:"center", position:"relative", overflow:"hidden", minHeight:"60vh", display:"flex", alignItems:"center" }}>
-          <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
-            <div style={{ position:"absolute", top:"-10%", left:"-5%", width:"500px", height:"500px", borderRadius:"50%", background:"radial-gradient(circle,rgba(194,24,91,.1),transparent 70%)", animation:"orb 10s ease-in-out infinite" }}/>
-            <div style={{ position:"absolute", bottom:"10%", right:"-5%", width:"400px", height:"400px", borderRadius:"50%", background:"radial-gradient(circle,rgba(201,169,106,.07),transparent 70%)", animation:"orb 12s ease-in-out infinite 2s" }}/>
-          </div>
-          <div style={{ position:"relative", zIndex:1, maxWidth:"780px", margin:"0 auto", width:"100%" }}>
-            {/* Badge membre */}
-            <div style={{ marginBottom:"20px", display:"inline-flex", alignItems:"center", gap:"10px", background:"rgba(201,169,106,.1)", border:"1px solid rgba(201,169,106,.25)", borderRadius:"100px", padding:"8px 20px" }}>
-              <span style={{ fontSize:"1rem" }}>✨</span>
-              <span style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".18em", textTransform:"uppercase", color:"var(--or)", fontWeight:600 }}>
-                Bienvenue, {userData?.first_name || user?.first_name || "Métamorphosée"}
-              </span>
-            </div>
-
-            <h1 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(2rem,6vw,3.8rem)", fontWeight:700, lineHeight:1.05, marginBottom:"20px", animation:"fadeUp .8s both" }}>
-              <em style={{ fontStyle:"italic", fontWeight:400, background:"linear-gradient(135deg,var(--or),var(--or-light),var(--or))", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmer 4s linear infinite", display:"block" }}>
-                Communauté
+        {/* Hero */}
+        <section style={{ padding:"120px 24px 80px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A 0%,#0D1020 100%)", position:"relative", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 70% 50% at 50% 70%,rgba(201,169,106,.05),transparent)", pointerEvents:"none" }}/>
+          <div style={{ position:"relative", maxWidth:"680px", margin:"0 auto" }}>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".35em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"20px", animation:"fadeUp .6s both" }}>
+              Cercle privé — Réservé aux Métamorphosées
+            </p>
+            <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,6vw,3.8rem)", fontWeight:400, lineHeight:1.08, marginBottom:"32px", animation:"fadeUp .7s .1s both", letterSpacing:"-.01em" }}>
+              Bienvenue dans<br/>
+              <em style={{ fontStyle:"italic", fontWeight:300, background:"linear-gradient(135deg,#C9A96A,#E8D5A8,#C9A96A)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerGold 4s linear infinite" }}>
+                un espace d'exception.
               </em>
-              Méta'Morph'Ose
             </h1>
-            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:"clamp(.9rem,2.5vw,1.05rem)", color:"rgba(248,245,242,.6)", lineHeight:1.8, marginBottom:"12px", animation:"fadeUp .8s .1s both", maxWidth:"580px", margin:"0 auto 12px" }}>
-              Un espace sacré et exclusif où les Métamorphosées se retrouvent, s'élèvent et brillent ensemble.
+            <div style={{ width:"40px", height:"1px", background:"rgba(201,169,106,.4)", margin:"0 auto 32px", animation:"fadeUp .7s .2s both" }}/>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:"clamp(.88rem,2vw,1rem)", color:"rgba(248,245,242,.55)", lineHeight:1.9, animation:"fadeUp .7s .25s both" }}>
+              Cette communauté est un cercle privé, réservé exclusivement aux femmes
+              ayant suivi le programme Métamorphose. Ici, nous cultivons la croissance,
+              l'élégance, le respect et l'élévation.
             </p>
-            <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"var(--or)", marginBottom:"36px", animation:"fadeUp .8s .2s both" }}>
-              « Tu n'es plus seule dans ta transformation. »
+            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:"rgba(201,169,106,.6)", marginTop:"24px", animation:"fadeUp .7s .3s both" }}>
+              Pour préserver la qualité et l'énergie de cet espace, chaque membre
+              s'engage à respecter les principes suivants.
             </p>
-
-            {/* Stats */}
-            <div className="stats-grid" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"16px", maxWidth:"680px", margin:"0 auto 36px" }}>
-              {[
-                { val:"+100", label:"Métamorphosées" },
-                { val:"8",    label:"Pays" },
-                { val:"4",    label:"Promotions" },
-                { val:"∞",    label:"Sororité" },
-              ].map((s,i) => (
-                <div key={i} style={{ textAlign:"center", padding:"16px 8px", background:"rgba(255,255,255,.025)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"4px" }}>
-                  <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.6rem", fontWeight:700, color:"var(--or)", lineHeight:1 }}>{s.val}</p>
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".14em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", marginTop:"6px" }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA principal */}
-            <div className="cta-btns" style={{ display:"flex", gap:"14px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href={WHATSAPP_COMMUNAUTE} target="_blank" rel="noreferrer" className="btn-wa">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Rejoindre le groupe WhatsApp
-              </a>
-              <Link to="/dashboard" className="btn-or">
-                Mon espace membre
-              </Link>
-            </div>
           </div>
         </section>
 
-        {/* ── AVANTAGES ── */}
-        <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#110d09,#18100d)" }}>
-          <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
-            <div style={{ textAlign:"center", marginBottom:"48px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Tes privilèges</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>
-                Ce que la communauté t'offre
-              </h2>
-            </div>
-            <div className="avantages-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"20px" }}>
-              {AVANTAGES.map((a, i) => (
-                <div key={i} className="avantage-card reveal" style={{ transitionDelay:`${(i%3)*.1}s` }}>
-                  <div style={{ fontSize:"2.2rem", marginBottom:"14px" }}>{a.icone}</div>
-                  <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.05rem", fontWeight:600, marginBottom:"8px" }}>{a.titre}</h3>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.55)", lineHeight:1.7 }}>{a.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <div style={{ maxWidth:"1000px", margin:"0 auto", padding:"0 24px 120px" }}>
 
-        {/* ── MÉTAMORPHOSÉES ── */}
-        <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#18100d,#2e1e14)" }}>
-          <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
-            <div style={{ textAlign:"center", marginBottom:"48px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>La famille</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>
-                Quelques Métamorphosées
-              </h2>
-            </div>
-            <div className="membres-grid" style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"14px", marginBottom:"40px" }}>
-              {MEMBRES_EXEMPLES.map((m, i) => (
-                <div key={i} className="membre-card reveal" style={{ transitionDelay:`${(i%2)*.1}s` }}>
-                  <div style={{ width:"44px", height:"44px", borderRadius:"50%", background:`${m.color}25`, border:`2px solid ${m.color}50`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                    <span style={{ fontFamily:"var(--ff-t)", fontSize:"1.1rem", fontWeight:700, color:m.color }}>{m.initiale}</span>
+          {/* Séparateur */}
+          <div style={{ display:"flex", alignItems:"center", gap:"24px", padding:"48px 0" }}>
+            <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,transparent,rgba(201,169,106,.2))" }}/>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".3em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", whiteSpace:"nowrap" }}>Les 7 principes</p>
+            <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,rgba(201,169,106,.2),transparent)" }}/>
+          </div>
+
+          {/* Principes */}
+          <div className="principes-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px" }}>
+            {PRINCIPES.map((p, i) => (
+              <div key={i} className={`principe-card reveal`} style={{ transitionDelay:`${i*.07}s`, gridColumn: i === 6 ? "1 / -1" : "auto" }}>
+                <div style={{ display:"flex", alignItems:"baseline", gap:"16px", marginBottom:"16px" }}>
+                  <span style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.4rem", color:"rgba(201,169,106,.3)", lineHeight:1, flexShrink:0 }}>{p.num}</span>
+                  <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem", fontWeight:600, color:"rgba(248,245,242,.9)", lineHeight:1.3 }}>{p.titre}</h3>
+                </div>
+                <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.55)", lineHeight:1.8, marginBottom:p.items ? "14px" : "0" }}>
+                  {p.texte}
+                </p>
+                {p.items && (
+                  <div style={{ display:"flex", flexDirection:"column", gap:"6px", marginBottom:p.note ? "14px" : "0" }}>
+                    {p.items.map((item, j) => (
+                      <div key={j} style={{ display:"flex", gap:"12px", alignItems:"center" }}>
+                        <div style={{ width:"3px", height:"3px", borderRadius:"50%", background:"rgba(201,169,106,.5)", flexShrink:0 }}/>
+                        <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.6)", fontWeight:300 }}>{item}</p>
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <p style={{ fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".85rem", marginBottom:"2px" }}>{m.prenom}</p>
-                    <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".72rem", color:"rgba(248,245,242,.4)" }}>{m.pays} · {FORMULES_LABELS[m.formule]}</p>
-                  </div>
-                  <div style={{ marginLeft:"auto" }}>
-                    <span style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".12em", textTransform:"uppercase", padding:"4px 10px", background:"rgba(194,24,91,.12)", border:"1px solid rgba(194,24,91,.25)", borderRadius:"100px", color:"var(--rose)" }}>Métamorphosée</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="reveal" style={{ textAlign:"center", fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.3)", fontStyle:"italic" }}>
-              +{100 - MEMBRES_EXEMPLES.length} autres Métamorphosées dans la communauté
+                )}
+                {p.note && (
+                  <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:".9rem", color:"rgba(201,169,106,.6)", marginTop:"8px" }}>
+                    {p.note}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Séparateur */}
+          <div style={{ display:"flex", alignItems:"center", gap:"24px", padding:"64px 0 48px" }}>
+            <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,transparent,rgba(201,169,106,.2))" }}/>
+            <div style={{ width:"5px", height:"5px", borderRadius:"50%", background:"rgba(201,169,106,.4)" }}/>
+            <div style={{ flex:1, height:"1px", background:"linear-gradient(90deg,rgba(201,169,106,.2),transparent)" }}/>
+          </div>
+
+          {/* Rappel final */}
+          <section className="reveal" style={{ maxWidth:"680px", margin:"0 auto", textAlign:"center", marginBottom:"72px" }}>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".3em", textTransform:"uppercase", color:"rgba(201,169,106,.4)", marginBottom:"20px" }}>
+              Rappel final
             </p>
-          </div>
-        </section>
-
-        {/* ── RÈGLES COMMUNAUTÉ ── */}
-        <section style={{ padding:"60px 24px", background:"linear-gradient(180deg,#2e1e14,#3a2518)" }}>
-          <div style={{ maxWidth:"700px", margin:"0 auto" }}>
-            <div style={{ textAlign:"center", marginBottom:"36px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Notre charte</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.4rem,3.5vw,2rem)", fontWeight:600 }}>
-                Les valeurs de notre espace
-              </h2>
-            </div>
-            <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
-              {[
-                { icone:"🤍", regle:"Bienveillance absolue — Nous nous soutenons sans jugement." },
-                { icone:"🔒", regle:"Confidentialité — Ce qui se dit ici reste ici." },
-                { icone:"✨", regle:"Authenticité — Nous célébrons qui nous sommes vraiment." },
-                { icone:"🌱", regle:"Croissance — Nous nous encourageons mutuellement à grandir." },
-                { icone:"🤝", regle:"Sororité — Nous sommes des alliées, pas des concurrentes." },
-              ].map((item, i) => (
-                <div key={i} className="reveal" style={{ transitionDelay:`${i*.06}s`, display:"flex", gap:"14px", alignItems:"flex-start", padding:"16px 20px", background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.05)", borderRadius:"4px" }}>
-                  <span style={{ fontSize:"1.1rem", flexShrink:0 }}>{item.icone}</span>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.75)", lineHeight:1.6 }}>{item.regle}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── CTA FINAL ── */}
-        <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#3a2518,var(--beige-light))", textAlign:"center" }}>
-          <div style={{ maxWidth:"600px", margin:"0 auto" }}>
-            <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,4vw,2.4rem)", fontWeight:600, color:"var(--noir)", marginBottom:"16px" }}>
-              Tu es à ta place ici.
-            </h2>
-            <p className="reveal" style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(10,10,10,.6)", lineHeight:1.75, marginBottom:"32px" }}>
-              « La force d'une femme s'amplifie quand elle est entourée d'autres femmes qui croient en elle. »
+            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"clamp(1.1rem,3vw,1.4rem)", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"24px" }}>
+              Tu n'es pas ici par hasard. Tu fais partie d'un cercle de femmes qui ont
+              décidé de se choisir, de s'élever et de devenir une référence dans leur
+              vie personnelle et professionnelle.
             </p>
-            <div className="reveal cta-btns" style={{ display:"flex", gap:"14px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href={WHATSAPP_COMMUNAUTE} target="_blank" rel="noreferrer" className="btn-wa">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Accéder au groupe WhatsApp
-              </a>
-              <Link to="/dashboard" className="btn-or" style={{ color:"rgba(10,10,10,.7)", borderColor:"rgba(10,10,10,.3)" }}>
-                Mon espace membre
-              </Link>
-            </div>
-          </div>
-        </section>
+            <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1rem,2.5vw,1.15rem)", color:"rgba(248,245,242,.85)", lineHeight:1.75 }}>
+              Honore cet espace. Honore ton engagement.<br/>
+              Et surtout — honore la femme que tu deviens.
+            </p>
+          </section>
 
-      </main>
+          {/* Engagement */}
+          <section className="reveal" style={{ maxWidth:"640px", margin:"0 auto" }}>
+            {saved && (
+              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".72rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.7)", textAlign:"center", marginBottom:"16px" }}>
+                Engagement enregistré
+              </p>
+            )}
+            <button
+              className={`engagement-btn ${engaged ? "engaged" : ""}`}
+              onClick={sEngager}
+              disabled={engaged || saving}
+            >
+              <div className={`checkbox-custom ${engaged ? "checked" : ""}`}>
+                <div className={`check-mark ${engaged ? "visible" : ""}`}/>
+              </div>
+              <span style={{ letterSpacing:".12em" }}>
+                {saving ? "Enregistrement..." : "Je m'engage à respecter ces règles et à évoluer pleinement"}
+              </span>
+            </button>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ padding:"32px 24px", background:"var(--noir)", borderTop:"1px solid rgba(201,169,106,.1)", textAlign:"center" }}>
-        <Link to="/" style={{ fontFamily:"var(--ff-t)", fontSize:".95rem", textDecoration:"none" }}>
-          <span style={{color:"var(--blanc)"}}>Meta'</span>
-          <span style={{color:"var(--or)"}}>Morph'</span>
-          <span style={{color:"var(--rose)"}}>Ose</span>
-        </Link>
-        <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · Espace réservé aux Métamorphosées
-        </p>
-      </footer>
+            {engaged && (
+              <div style={{ marginTop:"32px", textAlign:"center", animation:"fadeUp .6s both" }}>
+                <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(201,169,106,.65)", lineHeight:1.75, marginBottom:"28px" }}>
+                  Ton engagement est acté. Bienvenue pleinement dans la communauté.
+                </p>
+                <Link to="/dashboard" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"transparent", color:"#C9A96A", border:"1px solid rgba(201,169,106,.3)", fontFamily:"'Montserrat',sans-serif", fontWeight:500, fontSize:".72rem", letterSpacing:".14em", textTransform:"uppercase", padding:"13px 28px", borderRadius:"2px", textDecoration:"none" }}>
+                  Accéder à mon espace
+                </Link>
+              </div>
+            )}
+          </section>
+
+        </div>
+      </div>
     </>
   );
 }
