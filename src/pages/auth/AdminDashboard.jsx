@@ -2496,7 +2496,7 @@ function CommunauteAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`${API_URL}/api/communaute/admin/cles/`, {
+    fetch(`${API_URL}/api/acces/admin/cles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setCles(Array.isArray(d)?d:[]); setLoading(false) })
@@ -2508,7 +2508,7 @@ function CommunauteAdminView({ api, toast }) {
     if (!email.trim()) { toast('Email requis', 'error'); return }
     setGenerating(true)
     try {
-      const res = await fetch(`${API_URL}/api/communaute/admin/cles/generer/`, {
+      const res = await fetch(`${API_URL}/api/acces/admin/generer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -2524,7 +2524,7 @@ function CommunauteAdminView({ api, toast }) {
   }
 
   async function toggleCle(id) {
-    await fetch(`${API_URL}/api/communaute/admin/cles/${id}/toggle/`, {
+    await fetch(`${API_URL}/api/acces/admin/cles/${id}/toggle/`, {
       method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }
     })
     load()
