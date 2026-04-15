@@ -139,10 +139,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
     setApiError("");
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/contact/`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({
+      await contactAPI.envoyer({
           prenom:    fields.prenom,
           nom:       fields.nom,
           email:     fields.email,
@@ -150,14 +147,9 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
           pays:      fields.pays,
           formule:   fields.formule,
           message:   fields.message,
-        }),
       });
-
-      if (res.ok) {
-        setStatus("success");
-        if (onSuccess) onSuccess(fields);
-      } else {
-        const data = await res.json().catch(()=>({}));
+      setStatus("success");
+      if (onSuccess) onSuccess(fields);
         setApiError(data.detail || "Une erreur est survenue. Réessayez.");
         setStatus("error");
       }
