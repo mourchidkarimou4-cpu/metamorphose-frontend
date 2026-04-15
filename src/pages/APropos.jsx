@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AuraButton from "../components/AuraButton";
+import SectionCadeaux from '../components/SectionCadeaux';
 import API_URL from '../config';
 
 const STYLES = `
@@ -307,6 +308,7 @@ export default function APropos() {
 
         </div>
       </div>
+      <SectionCadeaux />
       <AuraButton />
     </>
   );
