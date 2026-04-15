@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API_URL from "../config";
+import { communauteAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -209,10 +209,7 @@ function Feed() {
     const url = filtre === "pour_coach"
       ? `${API_URL}/api/communaute/publications/?pour_coach=1`
       : `${API_URL}/api/communaute/publications/`;
-    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(d => { setPubs(Array.isArray(d) ? d : []); setLoading(false); })
-      .catch(() => setLoading(false));
+    communauteAPI.publications().then(r => { setPubs(Array.isArray(r.data) ? r.data : []); setLoading(false); }).catch(() => setLoading(false));
   }
 
   useEffect(() => { chargerPubs(); }, [filtre]);
@@ -423,9 +420,7 @@ export default function CommunautePortail() {
 
   useEffect(() => {
     if (!token) { navigate("/espace-membre"); return; }
-    fetch(`${API_URL}/api/communaute/verifier-acces/`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    }).then(r => r.json())
+    communauteAPI.verifierCle
       .then(d => {
         if (d.acces) setPhase(d.premiere_connexion ? "onboarding" : "feed");
         else setPhase("portail");

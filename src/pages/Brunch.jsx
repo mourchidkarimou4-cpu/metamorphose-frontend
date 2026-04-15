@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import API_URL from "../config";
+import { newsletterAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -56,13 +56,8 @@ export default function Brunch() {
     if (!form.email.trim()) { setError("L'email est requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/contenu/newsletter/abonner/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, prenom: form.prenom }),
-      });
-      if (res.ok) setDone(true);
-      else setError("Une erreur est survenue.");
+      await newsletterAPI.abonner({ email: form.email, prenom: form.prenom });
+      setDone(true);
     } catch { setError("Erreur réseau."); }
     setLoading(false);
   }

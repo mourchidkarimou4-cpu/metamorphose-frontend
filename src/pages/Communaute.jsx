@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import API_URL from "../config";
+import { communauteAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -109,19 +109,11 @@ function ModalAuth({ onClose, onSuccess }) {
     if (!email.trim() || !cle.trim()) { setError("Tous les champs sont requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/acces/verifier/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { "Authorization": `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ email: email.trim(), cle: cle.trim().toUpperCase() }),
-      });
-      const data = await res.json();
-      if (res.ok && data.acces) {
+      const res = await communauteAPI.verifierCle({ email: email.trim(), cle: cle.trim().toUpperCase() });
+      if (res.data.acces) {
         onSuccess(false);
       } else {
-        setError(data.detail || "Identifiants invalides. Vérifiez votre email et votre clé d'accès.");
+        setError(res.data.detail || "Identifiants invalides.");
       }
     } catch { setError("Erreur réseau. Veuillez réessayer."); }
     setLoading(false);
