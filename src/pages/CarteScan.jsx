@@ -2,6 +2,7 @@ import API_URL from '../config.js'
 import { useState, useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
 import { useParams, Link } from "react-router-dom";
+import api from '../services/api';
 
 /* ================================================================
    PAGE SCAN QR CODE — /carte/:code
@@ -46,8 +47,8 @@ export default function CarteScan() {
     setIsAdmin(user?.is_staff || false);
 
     // Charger les infos de la carte
-    fetch(`${API_URL}/api/cadeaux/verifier/${code}/`)
-      .then(r => r.json())
+    fetch(`/api/cadeaux/verifier/${code}/`)
+      .then(r => r.data)
       .then(data => {
         setCarte(data);
         setLoading(false);
@@ -71,7 +72,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`${API_URL}/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
+      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -98,7 +99,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`${API_URL}/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
+      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ email: carteAdmin.destinataire_email })

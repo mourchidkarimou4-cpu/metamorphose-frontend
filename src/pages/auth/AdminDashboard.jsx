@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
-import API_URL from '../../config';
 import { learningAPI } from '../../services/api';
 
 /* ================================================================
@@ -171,7 +170,7 @@ function useAdminAPI() {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`${API_URL}/api/admin${path}`, opts);
+    const res = await fetch(`/api/admin${path}`, opts);
     if (res.status === 401) { navigate("/espace-membre"); return null; }
     if (res.status === 204) return true;
     return res.json();
@@ -917,7 +916,7 @@ function ImagesView({ api, toast }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch(`${API_URL}/api/admin/images/upload/`, {
+        const res = await fetch(`/api/admin/images/upload/`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,
@@ -1082,7 +1081,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch(`${API_URL}/api/cadeaux/admin/liste/`, {
+    fetch(`/api/cadeaux/admin/liste/`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
@@ -1091,7 +1090,7 @@ function CartesView({ api, toast }) {
   }, []);
 
   async function activer(c) {
-    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/activer/`, {
+    const res = await fetch(`/api/cadeaux/admin/${c.id}/activer/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1103,7 +1102,7 @@ function CartesView({ api, toast }) {
   }
 
   async function marquerUtilisee(c) {
-    const res = await fetch(`${API_URL}/api/cadeaux/admin/${c.id}/utiliser/`, {
+    const res = await fetch(`/api/cadeaux/admin/${c.id}/utiliser/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1277,10 +1276,10 @@ function TemoignagesView({ api, toast }) {
 
   function fetchTemos() {
     setLoading(true);
-    fetch(`${API_URL}/api/avis/admin/?statut=${filter}`, {
+    fetch(`/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(r => r.json())
+    .then(r => r.data)
     .then(d => { setTemos(Array.isArray(d) ? d : Array.isArray(d?.results) ? d.results : []); setLoading(false); })
     .catch(() => setLoading(false));
   }
@@ -1321,7 +1320,7 @@ function TemoignagesView({ api, toast }) {
     if (audioFichier) data.append("audio_fichier",  audioFichier);
 
     try {
-      const url    = modal === "add" ? `${API_URL}/api/avis/admin/ajouter/` : `${API_URL}/api/avis/admin/${selected.id}/modifier/`;
+      const url    = modal === "add" ? `/api/avis/admin/ajouter/` : `/api/avis/admin/${selected.id}/modifier/`;
       const method = modal === "add" ? "POST" : "PATCH";
       const res    = await fetch(url, {
         method,
@@ -1340,7 +1339,7 @@ function TemoignagesView({ api, toast }) {
   }
 
   async function action(id, type) {
-    const res = await fetch(`${API_URL}/api/avis/admin/${id}/${type}/`, {
+    const res = await fetch(`/api/avis/admin/${id}/${type}/`, {
       method:"POST", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.ok) { fetchTemos(); setModal(null); toast(type==="approuver"?"Approuvé":"Refusé", type==="approuver"?"success":"error"); }
@@ -1348,7 +1347,7 @@ function TemoignagesView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce témoignage ?")) return;
-    const res = await fetch(`${API_URL}/api/avis/admin/${id}/supprimer/`, {
+    const res = await fetch(`/api/avis/admin/${id}/supprimer/`, {
       method:"DELETE", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.status === 204) { fetchTemos(); setModal(null); toast("Supprimé", "error"); }
@@ -1652,7 +1651,7 @@ function RessourcesAdminView({ api, toast }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch(`${API_URL}/api/admin/images/upload/`, {
+      const res = await fetch(`/api/admin/images/upload/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -1767,7 +1766,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token");
 
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
+    fetch(`/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -1775,7 +1774,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch(`${API_URL}/api/admin/liste-attente/notifier/`, {
+    const res = await fetch(`/api/admin/liste-attente/notifier/`, {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -1829,7 +1828,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch(`${API_URL}/api/admin/newsletter/`, {
+      const res = await fetch(`/api/admin/newsletter/`, {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -1945,7 +1944,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch(`${API_URL}/api/admin/maintenance/`, {
+    await fetch(`/api/admin/maintenance/`, {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })
@@ -2011,7 +2010,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/update-profile/`, {
+      const res = await fetch(`/api/auth/update-profile/`, {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -2027,7 +2026,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/change-password/`, {
+      const res = await fetch(`/api/auth/change-password/`, {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });
@@ -2084,9 +2083,9 @@ function LiveAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`${API_URL}/api/live/mes-salles/`, {
+    fetch(`/api/live/mes-salles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json())
+    }).then(r => r.data)
       .then(d => { setSalles(Array.isArray(d) ? d : []); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2096,7 +2095,7 @@ function LiveAdminView({ api, toast }) {
     if (!form.titre.trim()) { toast('Titre requis', 'error'); return }
     setCreating(true)
     try {
-      const res = await fetch(`${API_URL}/api/live/creer/`, {
+      const res = await fetch(`/api/live/creer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -2113,7 +2112,7 @@ function LiveAdminView({ api, toast }) {
 
   async function terminer(id) {
     if (!confirm('Terminer cette réunion ?')) return
-    await fetch(`${API_URL}/api/live/${id}/terminer/`, {
+    await fetch(`/api/live/${id}/terminer/`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -2220,9 +2219,9 @@ function EvenementsAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`${API_URL}/api/evenements/admin/`, {
+    fetch(`/api/evenements/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json())
+    }).then(r => r.data)
       .then(d => { setEvts(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2255,7 +2254,7 @@ function EvenementsAdminView({ api, toast }) {
     if (!form.titre) { toast('Titre requis', 'error'); return }
     const fd = new FormData()
     Object.entries(form).forEach(([k,v]) => { if (v !== null && v !== undefined) fd.append(k, v) })
-    const url = editing ? `${API_URL}/api/evenements/admin/${editing.id}/` : `${API_URL}/api/evenements/admin/`
+    const url = editing ? `/api/evenements/admin/${editing.id}/` : `/api/evenements/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
       const res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
@@ -2266,7 +2265,7 @@ function EvenementsAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cet événement ?')) return
-    await fetch(`${API_URL}/api/evenements/admin/${id}/`, {
+    await fetch(`/api/evenements/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()
@@ -2365,9 +2364,9 @@ function ActualitesAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`${API_URL}/api/evenements/actualites/admin/`, {
+    fetch(`/api/evenements/actualites/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json())
+    }).then(r => r.data)
       .then(d => { setActus(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2400,7 +2399,7 @@ function ActualitesAdminView({ api, toast }) {
     if (!form.titre) { toast('Titre requis', 'error'); return }
     const fd = new FormData()
     Object.entries(form).forEach(([k,v]) => { if (v !== null && v !== undefined) fd.append(k, v) })
-    const url = editing ? `${API_URL}/api/evenements/actualites/admin/${editing.id}/` : `${API_URL}/api/evenements/actualites/admin/`
+    const url = editing ? `/api/evenements/actualites/admin/${editing.id}/` : `/api/evenements/actualites/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
       const res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
@@ -2411,7 +2410,7 @@ function ActualitesAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cette actualité ?')) return
-    await fetch(`${API_URL}/api/evenements/actualites/admin/${id}/`, {
+    await fetch(`/api/evenements/actualites/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()
@@ -2498,9 +2497,9 @@ function CommunauteAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`${API_URL}/api/acces/admin/cles/`, {
+    fetch(`/api/acces/admin/cles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json())
+    }).then(r => r.data)
       .then(d => { setCles(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2510,7 +2509,7 @@ function CommunauteAdminView({ api, toast }) {
     if (!email.trim()) { toast('Email requis', 'error'); return }
     setGenerating(true)
     try {
-      const res = await fetch(`${API_URL}/api/acces/admin/generer/`, {
+      const res = await fetch(`/api/acces/admin/generer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -2526,7 +2525,7 @@ function CommunauteAdminView({ api, toast }) {
   }
 
   async function toggleCle(id) {
-    await fetch(`${API_URL}/api/acces/admin/cles/${id}/toggle/`, {
+    await fetch(`/api/acces/admin/cles/${id}/toggle/`, {
       method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }
     })
     load()
@@ -2809,7 +2808,7 @@ function LearningView({ api, toast }) {
   function apiL(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`${API_URL}/api/learning/admin${path}`, opts).then(r => {
+    return fetch(`/api/learning/admin${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })
@@ -3021,7 +3020,7 @@ function PartenairesView({ api, toast }) {
   function apiP(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`${API_URL}/api/admin/partenaires${path}`, opts).then(r => {
+    return fetch(`/api/admin/partenaires${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })
@@ -3205,7 +3204,7 @@ function TicketsView({ api, toast }) {
   function apiT(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`${API_URL}/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
+    return fetch(`/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
   }
 
   function loadEvenements() {
@@ -3414,13 +3413,13 @@ function AbonnesView({ api, toast }) {
   function apiA(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`${API_URL}/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
+    return fetch(`/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
   }
 
   function load() {
     setLoading(true)
     // Charger les abonnés newsletter via l'export CSV admin
-    fetch(`${API_URL}/api/admin/export/abonnes/`, {
+    fetch(`/api/admin/export/abonnes/`, {
       headers:{'Authorization':`Bearer ${token}`}
     })
     .then(r => r.ok ? r.text() : Promise.reject())
@@ -3701,7 +3700,7 @@ function MonTemoignageView({ api, toast }) {
     if (!form.texte.trim()) { toast('Veuillez écrire votre témoignage','error'); return }
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch(`${API_URL}/api/avis/soumettre/`, {
+    const res = await fetch(`/api/avis/soumettre/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3772,7 +3771,7 @@ function MonProfilView({ api, toast }) {
 
   async function sauvegarder() {
     setLoading(true)
-    const res = await fetch(`${API_URL}/api/auth/update-profile/`, {
+    const res = await fetch(`/api/auth/update-profile/`, {
       method:'PATCH',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3784,7 +3783,7 @@ function MonProfilView({ api, toast }) {
 
   async function changerMdp() {
     if (!mdp.old_password || !mdp.new_password) { toast('Remplissez les deux champs','error'); return }
-    const res = await fetch(`${API_URL}/api/auth/change-password/`, {
+    const res = await fetch(`/api/auth/change-password/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(mdp)
@@ -3840,7 +3839,7 @@ function MonCertificatView({ toast }) {
   async function telecharger() {
     setLoading(true)
     try {
-      const res = await fetch(`${API_URL}/api/auth/certificat/`, {
+      const res = await fetch(`/api/auth/certificat/`, {
         headers:{'Authorization':`Bearer ${token}`}
       })
       if (!res.ok) { toast('Erreur génération certificat','error'); setLoading(false); return }
