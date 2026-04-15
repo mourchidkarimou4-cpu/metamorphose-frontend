@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../../services/api';
+import api, { authAPI, avisAPI, learningAPI } from '../../services/api';
 
 const FORMULES = { F1:'Live · Groupe', F2:'Live · Privé', F3:'Présentiel · Groupe', F4:'Présentiel · Privé' }
 

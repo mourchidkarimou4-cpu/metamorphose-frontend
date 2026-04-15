@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import api from '../services/api';
+import { masterclassAPI, configAPI } from '../services/api';
 
 const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
 const BACKEND = API_URL;
@@ -288,8 +288,8 @@ function TicketQR({ inscrit }) {
 export default function Masterclass() {
   const [photoPrelia, setPhotoPrelia] = useState("");
   useEffect(() => {
-    fetch(`/api/admin/config/public/`)
-      .then(r => r.ok ? r.json() : [])
+    configAPI.public()
+      .then(r => r.data)
       .then(data => {
         const map = {};
         if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
