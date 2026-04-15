@@ -93,10 +93,10 @@ export default function Programme() {
   ];
 
   const formats = [
-    { code:"F1", label:"Live · Groupe",      prix:"65 000",  color:"#C2185B", detail:"2 séances par semaine en ligne avec un groupe bienveillant. Groupe WhatsApp privé inclus." },
-    { code:"F2", label:"Live · Privé",        prix:"150 000", color:"#C9A96A", detail:"Séances individuelles en ligne avec Prélia. Suivi 100% adapté à votre situation.", featured:true },
-    { code:"F3", label:"Présentiel · Groupe", prix:"250 000", color:"#A8C8E0", detail:"1 séance par semaine en présentiel avec un groupe. Immersion physique et collective." },
-    { code:"F4", label:"Présentiel · Privé",  prix:"350 000", color:"#D8C1A0", detail:"Séances individuelles en présentiel avec Prélia. L'expérience la plus complète." },
+    { code:"F1", label:"Éclosion",            prix:"65 000",  color:"#C2185B", badge:"Startup",   detail:"2 séances par semaine en ligne avec un groupe bienveillant. Groupe WhatsApp privé inclus." },
+    { code:"F2", label:"Révélation",          prix:"150 000", color:"#C9A96A", badge:"Populaire", detail:"Séances individuelles en ligne avec Prélia APEDO AHONON. Suivi 100% adapté à votre situation.", featured:true },
+    { code:"F3", label:"Ascension",           prix:"250 000", color:"#A8C8E0", badge:"Ambitieux", detail:"1 séance par semaine en présentiel avec un groupe. Immersion physique et collective." },
+    { code:"F4", label:"MMO Signature",       prix:"350 000", color:"#D8C1A0", badge:"Prestige",  detail:"Séances individuelles en présentiel avec Prélia APEDO AHONON. L'expérience la plus complète." },
   ];
 
   return (
@@ -213,7 +213,7 @@ export default function Programme() {
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:"16px" }}>
               {formats.map((f,i) => (
                 <div key={i} className="reveal" style={{ transitionDelay:`${i*.1}s`, padding:"28px 24px", background:f.featured?"rgba(10,10,10,.9)":"rgba(255,255,255,.025)", border:`1px solid ${f.featured?f.color:"rgba(255,255,255,.07)"}`, borderTop:`3px solid ${f.color}`, borderRadius:"4px", position:"relative" }}>
-                  {f.featured && <div style={{ position:"absolute", top:"-1px", right:"16px", background:"#C9A96A", color:"#0A0A0A", fontFamily:"'Montserrat'", fontSize:".58rem", fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", padding:"4px 10px", borderRadius:"0 0 3px 3px" }}>Recommandé</div>}
+                  {f.badge && <div style={{ position:"absolute", top:"-1px", right:"16px", background:"#C9A96A", color:"#0A0A0A", fontFamily:"'Montserrat'", fontSize:".58rem", fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", padding:"4px 10px", borderRadius:"0 0 3px 3px" }}>{f.badge}</div>}
                   <p style={{ fontFamily:"'Montserrat'", fontSize:".62rem", fontWeight:600, letterSpacing:".2em", textTransform:"uppercase", color:f.color, marginBottom:"8px" }}>{f.label}</p>
                   <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.6rem", fontWeight:700, marginBottom:"12px" }}>{f.prix} <span style={{ fontFamily:"'Montserrat'", fontSize:".75rem", color:"rgba(248,245,242,.4)" }}>FCFA</span></p>
                   <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.55)", lineHeight:1.7, marginBottom:"20px" }}>{f.detail}</p>
