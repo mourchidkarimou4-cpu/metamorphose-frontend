@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API_URL from "../config";
+import api from '../services/api';
 
 /* ── STYLES ─────────────────────────────────────────────────── */
 const STYLES = `
@@ -196,8 +196,8 @@ export default function LiveMasterclass() {
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
     Promise.all([
-      fetch(`${API_URL}/api/live/${isAdmin ? 'mes-salles' : 'salles-actives'}/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_URL}/api/contenu/replays/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch(`/api/live/${isAdmin ? 'mes-salles' : 'salles-actives'}/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch(`/api/contenu/replays/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
     ]).then(([sallesData, replaysData]) => {
       setSalles(Array.isArray(sallesData) ? sallesData : []);
       setReplays(Array.isArray(replaysData) ? replaysData : []);
@@ -211,7 +211,7 @@ export default function LiveMasterclass() {
     setCreating(true);
     setError("");
     try {
-      const res = await fetch(`${API_URL}/api/live/creer/`, {
+      const res = await fetch(`/api/live/creer/`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(form),

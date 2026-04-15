@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import API_URL from '../config';
+import api from '../services/api';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -50,7 +50,7 @@ export default function PaiementPage() {
       const f = FORMULES.find(x => x.id === formule);
 
       // Récupérer la clé publique et le mode sandbox depuis le backend
-      const initRes = await fetch(`${API_URL}/api/paiement/initier/?formule=${formule}`, {
+      const initRes = await fetch(`/api/paiement/initier/?formule=${formule}`, {
         headers: { "Authorization": `Bearer ${token}` },
       });
       if (!initRes.ok) {
@@ -76,7 +76,7 @@ export default function PaiementPage() {
       listenerRef.current = async (response) => {
         setStep("processing");
         try {
-          const res = await fetch(`${API_URL}/api/paiement/confirmer/`, {
+          const res = await fetch(`/api/paiement/confirmer/`, {
             method:  "POST",
             headers: {
               "Authorization": `Bearer ${token}`,

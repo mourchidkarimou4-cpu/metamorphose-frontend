@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import API_URL from "../config";
+import api from '../services/api';
 
 const ZEGO_APP_ID = Number(import.meta.env.VITE_ZEGO_APP_ID);
 const ZEGO_SERVER_SECRET = import.meta.env.VITE_ZEGO_SERVER_SECRET;
@@ -22,7 +22,7 @@ export default function LiveMeeting() {
 
   /* ── Charger infos salle ── */
   useEffect(() => {
-    fetch(`${API_URL}/api/live/${roomId}/`)
+    fetch(`/api/live/${roomId}/`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setRoomInfo(d); else setError("Salle introuvable."); })
       .catch(() => setError("Impossible de joindre la salle."));
@@ -50,7 +50,7 @@ export default function LiveMeeting() {
       const headers = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
-      const res = await fetch(`${API_URL}/api/live/${roomId}/rejoindre/`, {
+      const res = await fetch(`/api/live/${roomId}/rejoindre/`, {
         method: "POST",
         headers,
         body: JSON.stringify({ nom: myName, mot_de_passe: password }),
@@ -123,7 +123,7 @@ export default function LiveMeeting() {
         const h = { "Content-Type": "application/json" };
         if (tk) h["Authorization"] = `Bearer ${tk}`;
         if (isHost) {
-          fetch(`${API_URL}/api/live/${roomId}/terminer/`, {
+          fetch(`/api/live/${roomId}/terminer/`, {
             method: "POST", headers: h,
           }).catch(() => {});
         }

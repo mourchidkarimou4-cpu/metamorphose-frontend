@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import AuthModal from "../components/AuthModal";
 import AuraButton from "../components/AuraButton";
-import API_URL from '../config';
+import api from '../services/api';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap');
@@ -171,7 +171,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch(`${API_URL}/api/admin/config/public/`)
+      fetch(`/api/admin/config/public/`)
         .then(r => {
           if (!r.ok) throw new Error("API indisponible");
           return r.json();
@@ -1625,7 +1625,7 @@ function ListeAttente({ get }) {
     if (!email.trim()) { setError("Veuillez entrer votre email."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/liste-attente/`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
+      const res = await fetch(`/api/liste-attente/`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,prenom}) });
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue.");
     } catch { setError("Serveur inaccessible."); }
@@ -1931,7 +1931,7 @@ function NewsletterWidget() {
     if (!email.trim()) return;
     setStatus("loading");
     try {
-      const res  = await fetch(`${API_URL}/api/contenu/newsletter/abonner/`, {
+      const res  = await fetch(`/api/contenu/newsletter/abonner/`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ email: email.trim(), prenom: prenom.trim() }),
@@ -1983,7 +1983,7 @@ function NewsletterWidget() {
 function Footer({ get }) {
   const [partenaires, setPartenaires] = useState([]);
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/partenaires/public/`)
+    fetch(`/api/admin/partenaires/public/`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setPartenaires(Array.isArray(data) ? data : []))
       .catch(() => {});
