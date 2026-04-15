@@ -1689,7 +1689,7 @@ function PartagerSection() {
           </a>
         ))}
         <button onClick={copier} style={{ padding:"10px 20px", background:copied?"rgba(76,175,80,.2)":"rgba(255,255,255,.07)", color:copied?"#4CAF50":"rgba(248,245,242,.5)", border:`1px solid ${copied?"rgba(76,175,80,.3)":"rgba(255,255,255,.1)"}`, borderRadius:"3px", fontFamily:"var(--ff-b)", fontWeight:600, fontSize:".68rem", letterSpacing:".1em", textTransform:"uppercase", cursor:"pointer" }}>
-          {copied ? "Lien copié !" : "Copier le lien"}
+          {copied ? "Lien copié !" : "Lien MMO"}
         </button>
       </div>
     </div>
