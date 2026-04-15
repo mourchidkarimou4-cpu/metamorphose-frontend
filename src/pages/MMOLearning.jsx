@@ -392,7 +392,7 @@ function DetailCours() {
 
   useEffect(() => {
     learningAPI.detailCours(slug)
-      .then(r => { if (!r.ok) throw new Error(); return r.json() })
+      .then(r => r.data)
       .then(data => { setCours(data); setLoading(false) })
       .catch(() => { setLoading(false); navigate('/mmo-learning') })
   }, [slug])
