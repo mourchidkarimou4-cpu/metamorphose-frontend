@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import API_URL from "../config";
+import { donAPI } from "../services/api";
 
 const MONTANTS = [10000, 25000, 42000, 65000, 150000, 350000];
 
@@ -61,11 +61,8 @@ export default function Don() {
     if (!montantFinal || montantFinal < 1000) { setError("Veuillez choisir un montant valide."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/contenu/don/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, montant: montantFinal }),
-      });
+      const res = await donAPI.soumettre({ ...form, montant: montantFinal });
+      res.ok = res.status < 300;
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue. Veuillez réessayer.");
     } catch { setError("Erreur réseau. Veuillez réessayer."); }

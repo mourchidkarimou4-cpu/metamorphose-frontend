@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import API_URL from "../config";
+import { evenementsAPI, newsletterAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -71,10 +71,7 @@ export default function Actualites() {
   useReveal();
   const [actus, setActus] = useState(ACTUS);
   useEffect(() => {
-    fetch(`${API_URL}/api/evenements/actualites/`)
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (Array.isArray(d) && d.length > 0) setActus(d); })
-      .catch(() => {});
+    evenementsAPI.actualites().then(r => { if (Array.isArray(r.data) && r.data.length > 0) setActus(r.data); }).catch(() => {});
   }, []);
   const [form,    setForm]    = useState({ email:"", whatsapp:"" });
   const [done,    setDone]    = useState(false);
@@ -88,13 +85,8 @@ export default function Actualites() {
     if (!form.email.trim()) { setError("L'email est requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/contenu/newsletter/abonner/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email }),
-      });
-      if (res.ok) setDone(true);
-      else setError("Une erreur est survenue.");
+      await newsletterAPI.abonner({ email: form.email });
+      setDone(true);
     } catch { setError("Erreur réseau."); }
     setLoading(false);
   }

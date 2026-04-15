@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import API_URL from "../config";
+import { contactAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -64,11 +64,8 @@ export default function Contact() {
     if (!form.email.trim() || !form.message.trim()) { setError("L'email et le message sont requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/contenu/contact/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await contactAPI.envoyer(form);
+      res.ok = res.status < 300;
       if (res.ok) setDone(true);
       else setError("Une erreur est survenue. Veuillez réessayer.");
     } catch { setError("Erreur réseau. Veuillez réessayer."); }
