@@ -17,7 +17,8 @@ import ResetPassword  from './pages/ResetPassword'
 import NotFound       from './pages/NotFound'
 import PaiementPage   from './pages/Paiement'
 import SplashScreen   from './components/SplashScreen'
-import Communaute     from './pages/Communaute'
+import Communaute        from './pages/Communaute'
+import CommunautePortail from './pages/CommunautePortail'
 import Don            from './pages/Don'
 import Store          from './pages/Store'
 import LiveMasterclass from './pages/LiveMasterclass'
@@ -116,6 +117,7 @@ export default function App() {
       <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
       <Route path="/contact"       element={<Contact />} />
       <Route path="/communaute"    element={<Communaute />} />
+        <Route path="/communaute/portail" element={<CommunautePortail />} />
       <Route path="/don"           element={<Don />} />
       <Route path="/store"      element={<Store />} />
       <Route path="/live"          element={<LiveMasterclass />} />
