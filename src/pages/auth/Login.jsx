@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import API_URL from '../../config';
+import { authAPI } from '../../services/api';
 
 export default function Login() {
   const [email,    setEmail]    = useState('')
@@ -13,22 +13,12 @@ export default function Login() {
     e.preventDefault()
     setLoading(true); setError('')
     try {
-      const res  = await fetch(`${API_URL}/api/auth/login/`, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        // CORRECTION 1 : setItem ciblés au lieu de localStorage.clear()
-        // CORRECTION 2 : refresh token stocké (renouvellement automatique)
-        localStorage.setItem('mmorphose_token',  data.access)
-        localStorage.setItem('mmorphose_refresh', data.refresh)
-        localStorage.setItem('mmorphose_user',   JSON.stringify(data.user))
-        // CORRECTION 3 : navigate() + replace:true au lieu de window.location.href
-        navigate(data.user.is_staff ? '/admin' : '/dashboard', { replace: true })
-      } else {
-        setError(data.detail || 'Identifiants incorrects.')
-      }
+      const res  = await authAPI.login({ email, password })
+      const data = res.data
+      localStorage.setItem('mmorphose_token',  data.access)
+      localStorage.setItem('mmorphose_refresh', data.refresh)
+      localStorage.setItem('mmorphose_user',   JSON.stringify(data.user))
+      navigate(data.user.is_staff ? '/admin' : '/dashboard', { replace: true })
     } catch {
       setError('Serveur inaccessible.')
     }

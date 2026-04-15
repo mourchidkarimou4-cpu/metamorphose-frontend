@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InscriptionForm from "./InscriptionForm";
-import API_URL from '../config';
+import { authAPI } from '../services/api';
 
 /* ================================================================
    AuthModal — Modale combinée Inscription + Login
@@ -44,21 +44,13 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
     setLoading(true);
     setError("");
     try {
-      const res  = await fetch(`${API_URL}/api/auth/login/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem("mmorphose_token",   data.access);
-        localStorage.setItem("mmorphose_refresh",  data.refresh);
-        localStorage.setItem("mmorphose_user",     JSON.stringify(data.user));
-        onClose();
-        navigate("/dashboard");
-      } else {
-        setError(data.detail || "Identifiants incorrects.");
-      }
+      const res = await authAPI.login({ email, password });
+      const data = res.data;
+      localStorage.setItem("mmorphose_token",   data.access);
+      localStorage.setItem("mmorphose_refresh",  data.refresh);
+      localStorage.setItem("mmorphose_user",     JSON.stringify(data.user));
+      onClose();
+      navigate("/dashboard");
     } catch {
       setError("Serveur inaccessible. Réessayez.");
     }
