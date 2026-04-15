@@ -109,19 +109,19 @@ function ModalAuth({ onClose, onSuccess }) {
     if (!email.trim() || !cle.trim()) { setError("Tous les champs sont requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_URL}/api/communaute/valider-cle/`, {
+      const res = await fetch(`${API_URL}/api/acces/verifier/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ cle: cle.trim(), email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), cle: cle.trim().toUpperCase() }),
       });
       const data = await res.json();
       if (res.ok && data.acces) {
-        onSuccess(data.premiere_connexion);
+        onSuccess(false);
       } else {
-        setError(data.detail || "Clé ou email invalide.");
+        setError(data.detail || "Identifiants invalides. Vérifiez votre email et votre clé d'accès.");
       }
     } catch { setError("Erreur réseau. Veuillez réessayer."); }
     setLoading(false);
