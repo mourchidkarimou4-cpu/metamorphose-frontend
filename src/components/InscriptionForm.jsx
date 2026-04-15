@@ -1,4 +1,4 @@
-import API_URL from '../config.js'
+import { authAPI, contactAPI } from '../services/api';
 import { useState } from "react";
 
 /* ================================================================
