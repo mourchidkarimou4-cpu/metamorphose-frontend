@@ -3,7 +3,7 @@ import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 import AuraButton from "../components/AuraButton";
 import SectionCadeaux from '../components/SectionCadeaux';
-import API_URL from '../config';
+import { configAPI } from '../services/api';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -50,7 +50,7 @@ function useSiteContent() {
   useEffect(() => {
     let cancelled = false;
     function fetchContent() {
-      fetch(`${API_URL}/api/admin/config/public/`)
+      configAPI.public()
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
           if (cancelled) return;
