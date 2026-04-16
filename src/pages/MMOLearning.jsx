@@ -102,6 +102,24 @@ function CarteCours({ cours }) {
               fontSize:'.58rem', fontWeight:700, color:'#fff',
             }}>★ Vedette</div>
           )}
+          {cours.a_acces && (
+            <div style={{
+              position:'absolute', bottom:'12px', right:'12px',
+              background:'rgba(37,211,102,.15)', border:'1px solid rgba(37,211,102,.4)',
+              borderRadius:'100px', padding:'3px 10px',
+              fontFamily:'var(--ff-b)', fontSize:'.55rem', fontWeight:600,
+              color:'#25D366', letterSpacing:'.08em', textTransform:'uppercase',
+            }}>Débloqué</div>
+          )}
+          {!cours.a_acces && cours.prix > 0 && (
+            <div style={{
+              position:'absolute', bottom:'12px', right:'12px',
+              background:'rgba(10,10,10,.7)', border:'1px solid rgba(201,169,106,.2)',
+              borderRadius:'100px', padding:'3px 10px',
+              fontFamily:'var(--ff-b)', fontSize:'.55rem', fontWeight:600,
+              color:'rgba(201,169,106,.6)', letterSpacing:'.08em', textTransform:'uppercase',
+            }}>Accès requis</div>
+          )}
         </div>
         <div style={{ padding:'20px', flex:1, display:'flex', flexDirection:'column', gap:'10px' }}>
           <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' }}>
@@ -484,7 +502,55 @@ function DetailCours() {
 
         <div style={{ height:'1px', background:'linear-gradient(90deg,transparent,rgba(201,169,106,.25),transparent)', marginBottom:'40px' }}/>
 
-        {cours.video_url && (
+        {/* Gate accès — contenu protégé */}
+        {!cours.a_acces && (cours.prix > 0) && (
+          <div style={{
+            padding:'40px 32px', background:'rgba(201,169,106,.04)',
+            border:'1px solid rgba(201,169,106,.15)', borderRadius:'8px',
+            textAlign:'center', marginBottom:'40px', animation:'fadeUp .5s both',
+          }}>
+            <div style={{
+              width:'52px', height:'52px', borderRadius:'50%',
+              background:'rgba(201,169,106,.1)', border:'1px solid rgba(201,169,106,.3)',
+              display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px',
+            }}>
+              <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
+                <rect x="2" y="10" width="16" height="11" rx="2" fill="rgba(201,169,106,.8)"/>
+                <path d="M6 10V7a4 4 0 018 0v3" stroke="rgba(201,169,106,.8)" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p style={{ fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.22em', textTransform:'uppercase', color:'var(--or)', marginBottom:'10px' }}>
+              Contenu réservé
+            </p>
+            <h3 style={{ fontFamily:'var(--ff-t)', fontSize:'1.3rem', fontWeight:600, marginBottom:'12px' }}>
+              Accès requis pour ce cours
+            </h3>
+            <p style={{ fontFamily:'var(--ff-b)', fontWeight:300, fontSize:'.85rem', color:'rgba(248,245,242,.5)', lineHeight:1.8, marginBottom:'24px', maxWidth:'480px', margin:'0 auto 24px' }}>
+              Ce contenu est disponible après achat. Rendez-vous sur le Store pour débloquer l'accès.
+            </p>
+            <div style={{ display:'flex', gap:'12px', justifyContent:'center', flexWrap:'wrap' }}>
+              <Link to="/store" style={{
+                display:'inline-flex', alignItems:'center', justifyContent:'center',
+                background:'var(--rose)', color:'#fff', fontFamily:'var(--ff-b)', fontWeight:700,
+                fontSize:'.72rem', letterSpacing:'.15em', textTransform:'uppercase',
+                padding:'13px 28px', borderRadius:'3px', textDecoration:'none',
+              }}>
+                Accéder au Store
+              </Link>
+              <a href="https://wa.me/message/DI23LCDIMS5SF1" target="_blank" rel="noreferrer" style={{
+                display:'inline-flex', alignItems:'center', justifyContent:'center',
+                background:'transparent', color:'var(--or)', border:'1px solid var(--or)',
+                fontFamily:'var(--ff-b)', fontWeight:600, fontSize:'.72rem',
+                letterSpacing:'.15em', textTransform:'uppercase',
+                padding:'13px 28px', borderRadius:'3px', textDecoration:'none',
+              }}>
+                Contacter Coach Prélia APEDO AHONON
+              </a>
+            </div>
+          </div>
+        )}
+
+        {cours.a_acces && cours.video_url && (
           <div style={{ marginBottom:'40px' }}>
             <p style={{
               fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.22em',
@@ -500,7 +566,7 @@ function DetailCours() {
           </div>
         )}
 
-        {cours.audio_url && (
+        {cours.a_acces && cours.audio_url && (
           <div style={{
             marginBottom:'40px', padding:'24px',
             background:'rgba(194,24,91,.04)', border:'1px solid rgba(194,24,91,.15)', borderRadius:'6px',
@@ -513,7 +579,7 @@ function DetailCours() {
           </div>
         )}
 
-        {cours.pdf_url && (
+        {cours.a_acces && cours.pdf_url && (
           <div style={{ marginBottom:'40px' }}>
             <p style={{
               fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.22em',
@@ -529,7 +595,7 @@ function DetailCours() {
           </div>
         )}
 
-        {cours.contenu && (
+        {cours.a_acces && cours.contenu && (
           <div className="contenu-cours" dangerouslySetInnerHTML={{ __html: cours.contenu }}/>
         )}
 
