@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import api from '../services/api';
@@ -8,8 +9,8 @@ export default function ScanTicket() {
   const [result,  setResult]  = useState(null)
   const [loading, setLoading] = useState(false)
   const [scanning,setScanning]= useState(false)
-  const token = localStorage.getItem('mmorphose_token')
-  const user  = JSON.parse(localStorage.getItem('mmorphose_user')||'null')
+  const { token } = useAuth()
+  const { user } = useAuth()
 
   useEffect(()=>{ if(code) verifier(code) },[code])
 

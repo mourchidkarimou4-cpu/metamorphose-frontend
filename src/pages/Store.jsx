@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import usePageBackground from "../hooks/usePageBackground";
 import AuraButton from '../components/AuraButton';
 import { Link, useNavigate } from "react-router-dom";
@@ -112,8 +113,7 @@ const NIVEAU_LABELS = { debutant:'Débutant', intermediaire:'Intermédiaire', av
 /* ── Modal détail cours ────────────────────────────────────── */
 function ModalCours({ cours, onClose }) {
   const navigate = useNavigate();
-  const token = localStorage.getItem("mmorphose_token");
-  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user } = useAuth();
 
   if (!cours) return null;
 
@@ -214,8 +214,7 @@ export default function Store() {
   const [categorie, setCategorie] = useState("tout");
   const [selectionne, setSelectionne] = useState(null);
 
-  const token = localStorage.getItem("mmorphose_token");
-  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user } = useAuth();
 
   useEffect(() => {
     chargerCours();

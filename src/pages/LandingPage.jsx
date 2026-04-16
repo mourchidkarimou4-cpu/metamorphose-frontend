@@ -553,7 +553,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
   const [openMenu,  setOpenMenu]  = useState(null); // 'programme'|'formules'|'explorer'|null
-  const user   = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { user } = useAuth();
   const isDark = Math.round(scrollProgress * 100) < 55;
 
   useEffect(() => {

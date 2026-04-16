@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from '../services/api';
@@ -187,8 +188,7 @@ export default function LiveMasterclass() {
     titre: "", description: "", mode: "live", mot_de_passe: "", max_participants: 100
   });
 
-  const token   = localStorage.getItem("mmorphose_token");
-  const user    = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user } = useAuth();
   const isAdmin = user?.is_staff === true;
 
   useEffect(() => {

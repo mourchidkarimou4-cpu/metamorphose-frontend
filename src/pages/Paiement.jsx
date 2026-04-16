@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const STYLES = `
@@ -23,8 +24,7 @@ export default function PaiementPage() {
   const [loading,      setLoading]  = useState(true);
   const [error,        setError]    = useState("");
 
-  const token = localStorage.getItem("mmorphose_token");
-  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user } = useAuth();
 
   useEffect(() => {
     if (!token || !user) { navigate("/espace-membre"); return; }

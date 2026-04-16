@@ -1,4 +1,5 @@
 import API_URL from '../config.js'
+import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
 import { useParams, Link } from "react-router-dom";
@@ -43,7 +44,7 @@ export default function CarteScan() {
 
   useEffect(() => {
     // Vérifier si l'utilisateur est admin
-    const user = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+    const { user } = useAuth();
     setIsAdmin(user?.is_staff || false);
 
     // Charger les infos de la carte
@@ -62,7 +63,7 @@ export default function CarteScan() {
   async function activer() {
     if (!confirm("Confirmer l'activation de cette carte (paiement reçu) ?")) return;
     setActionLoading(true);
-    const token = localStorage.getItem("mmorphose_token");
+    const { token } = useAuth();
     try {
       // D'abord récupérer l'ID de la carte
       const res = await fetch(API_URL + '/api/cadeaux/admin/liste/', {
@@ -90,7 +91,7 @@ export default function CarteScan() {
   async function utiliser() {
     if (!confirm(`Confirmer l'utilisation de cette carte par ${carte?.destinataire_nom} ?`)) return;
     setActionLoading(true);
-    const token = localStorage.getItem("mmorphose_token");
+    const { token } = useAuth();
     try {
       const res = await fetch(API_URL + '/api/cadeaux/admin/liste/', {
         headers: { "Authorization": `Bearer ${token}` }

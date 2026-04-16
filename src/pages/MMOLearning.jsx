@@ -1,3 +1,4 @@
+import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import AuraButton from '../components/AuraButton'
@@ -34,7 +35,7 @@ const NIVEAU_COLORS = { debutant:'#4CAF50', intermediaire:'#C9A96A', avance:'#C2
 const NIVEAU_LABELS = { debutant:'Débutant', intermediaire:'Intermédiaire', avance:'Avancé' }
 
 function NavBar() {
-  const user = JSON.parse(localStorage.getItem('mmorphose_user') || 'null')
+  const { user } = useAuth()
   return (
     <nav style={{
       position:'fixed', top:0, left:0, right:0, zIndex:100,

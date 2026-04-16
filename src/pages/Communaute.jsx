@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { communauteAPI } from "../services/api";
 
@@ -106,7 +107,7 @@ function ModalAuth({ onClose, onSuccess }) {
   const [cle,     setCle]     = useState("");
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState("");
-  const token = localStorage.getItem("mmorphose_token");
+  const { token } = useAuth();
 
   async function valider(e) {
     e.preventDefault();

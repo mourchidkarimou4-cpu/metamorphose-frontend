@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
@@ -23,7 +24,7 @@ export default function LiveMeeting() {
   /* ── Charger infos salle ── */
   useEffect(() => {
     api.get(`/api/live/${roomId}/`).then(r => { setRoomInfo(r.data); }).catch(() => setError("Impossible de joindre la salle."));
-    const user = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+    const { user: authUser } = useAuth(); const user = authUser;
     if (user?.prenom || user?.first_name) setMyName(user.prenom || user.first_name || user.email || "");
   }, [roomId]);
 
@@ -43,7 +44,7 @@ export default function LiveMeeting() {
     setError("");
 
     try {
-      const token = localStorage.getItem("mmorphose_token");
+      const { token } = useAuth();
       const headers = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
@@ -116,7 +117,7 @@ export default function LiveMeeting() {
       ],
       onLeave: () => {
         /* Notifier le backend */
-        const tk = localStorage.getItem("mmorphose_token");
+        const tk = localStorage.getItem("mmorphose_token"); // via storage direct (dans callback)
         const h = { "Content-Type": "application/json" };
         if (tk) h["Authorization"] = `Bearer ${tk}`;
         if (isHost) {

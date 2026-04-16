@@ -162,7 +162,7 @@ const SECTIONS_CONFIG = [
 /* ── API helper ─────────────────────────────────────────────── */
 function useAdminAPI() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("mmorphose_token");
+  const { token, user, logout } = useAuth();
 
   const call = useCallback(async (method, path, body = null) => {
     const opts = {
@@ -289,7 +289,7 @@ function Sidebar({ active, setActive, counts }) {
         <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"var(--text-sub)", textDecoration:"none", display:"block", marginBottom:"10px" }}>
            Voir le site
         </Link>
-        <button onClick={() => { localStorage.removeItem("mmorphose_token"); localStorage.removeItem("mmorphose_user"); localStorage.removeItem("mmorphose_refresh"); window.location.href="/espace-membre"; }}
+        <button onClick={() => { logout(); window.location.href="/espace-membre"; }}
           style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(239,83,80,.5)", transition:"color .3s" }}
           onMouseEnter={e=>e.target.style.color="#ef5350"}
           onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.5)"}>
@@ -911,7 +911,7 @@ function ImagesView({ api, toast }) {
       setPreviews(p => ({ ...p, [cle]: base64 }));
 
       // Envoyer au backend via FormData
-      const token = localStorage.getItem("mmorphose_token");
+      const token = localStorage.getItem("mmorphose_token")
       const formData = new FormData();
       formData.append("fichier", file);
       formData.append("cle", cle);
@@ -1270,7 +1270,7 @@ function TemoignagesView({ api, toast }) {
   const [photoApres,    setPhotoApres]    = useState(null);
   const [videoFichier,  setVideoFichier]  = useState(null);
   const [audioFichier,  setAudioFichier]  = useState(null);
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   const FORMULES = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
   const TYPES    = { texte:"Texte", video:"Vidéo", audio:"Audio" };
@@ -1621,7 +1621,7 @@ function RessourcesAdminView({ api, toast }) {
   const [loading,   setLoading]   = useState(true);
   const [saving,    setSaving]    = useState({});
   const [uploading, setUploading] = useState({});
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
     api("GET", "/config/").then(d => {
@@ -1765,7 +1765,7 @@ function ListeAttenteView({ api, toast }) {
   const [liste,    setListe]   = useState([]);
   const [loading,  setLoading] = useState(true);
   const [notifying,setNotifying]=useState(false);
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
     fetch(`/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
@@ -1823,7 +1823,7 @@ function NewsletterView({ api, toast }) {
   const [message,setMessage]= useState("");
   const [cible,  setCible]  = useState("tous");
   const [sending,setSending]= useState(false);
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   async function envoyer() {
     if(!sujet.trim()||!message.trim()){toast("Sujet et message requis","error");return;}
@@ -1879,7 +1879,7 @@ function NewsletterView({ api, toast }) {
 
 /* ── EXPORT CSV ─────────────────────────────────────────────── */
 function ExportView({ toast }) {
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   function telecharger(url, nom) {
     fetch(url, { headers:{"Authorization":`Bearer ${token}`} })
@@ -1928,7 +1928,7 @@ function MaintenanceView({ api, toast }) {
   const [actif,   setActif]   = useState(false);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("Le site est en maintenance. Revenez bientôt.");
-  const token = localStorage.getItem("mmorphose_token");
+  const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
     api("GET", "/config/").then(d => {
@@ -1995,8 +1995,7 @@ function MaintenanceView({ api, toast }) {
 
 /* ── MON COMPTE ADMIN ──────────────────────────────────────── */
 function MonCompteView({ toast }) {
-  const token = localStorage.getItem("mmorphose_token");
-  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user, updateUser } = useAuth();
   const [email,       setEmail]       = useState(user?.email      || "");
   const [firstName,   setFirstName]   = useState(user?.first_name || "");
   const [lastName,    setLastName]    = useState(user?.last_name  || "");
@@ -2016,7 +2015,7 @@ function MonCompteView({ toast }) {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
-      if (res.ok) { const d=await res.json(); localStorage.setItem("mmorphose_user",JSON.stringify({...user,...d})); toast("Informations mises à jour","success"); }
+      if (res.ok) { const d=await res.json(); updateUser({...user,...d}); toast("Informations mises à jour","success"); }
       else { const d=await res.json(); toast(d.detail||"Erreur","error"); }
     } catch { toast("Erreur serveur","error"); }
     setSavingInfo(false);
@@ -2735,7 +2734,7 @@ export default function AdminDashboard() {
   const api = useAdminAPI();
 
   useEffect(() => {
-    const token = localStorage.getItem("mmorphose_token");
+    const token = localStorage.getItem("mmorphose_token")
     const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
     if (!token || !user) { navigate("/espace-membre"); return; }
     if (!user.is_staff)  { navigate("/dashboard"); return; }

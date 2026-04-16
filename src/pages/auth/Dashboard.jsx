@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '../../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import api, { authAPI, avisAPI, learningAPI } from '../../services/api';
 
@@ -44,7 +45,7 @@ function FormulaireTeomo({ user, onSuccess }) {
     if (!form.texte.trim()) { setError("Veuillez écrire votre témoignage."); return; }
     setLoading(true); setError("");
 
-    const token = localStorage.getItem("mmorphose_token");
+    const { token } = useAuth();
     const data  = new FormData();
     Object.entries(form).forEach(([k,v]) => data.append(k, v));
     if (photoAvant) data.append("photo_avant", photoAvant);
@@ -168,7 +169,7 @@ function FormulaireProfil({ user }) {
   async function save(e) {
     e.preventDefault()
     setSaving(true); setMsg('')
-    const token = localStorage.getItem('mmorphose_token')
+    const { token } = useAuth()
     try {
       const res = await fetch(`/api/auth/update-profile/`, {
         method:'PATCH',
@@ -177,8 +178,7 @@ function FormulaireProfil({ user }) {
       })
       if (res.ok) {
         const d = await res.json()
-        const saved = JSON.parse(localStorage.getItem('mmorphose_user') || '{}')
-        localStorage.setItem('mmorphose_user', JSON.stringify({...saved,...d}))
+        updateUser({...user, ...d})
         setMsg('success')
       } else {
         const d = await res.json()
@@ -243,7 +243,7 @@ function FormulaireMotDePasse() {
     if (newPwd.length < 8)  { setMsg('8 caractères minimum'); return }
     if (newPwd !== confirm) { setMsg('Les mots de passe ne correspondent pas'); return }
     setSaving(true); setMsg('')
-    const token = localStorage.getItem('mmorphose_token')
+    const { token } = useAuth()
     try {
       const res = await fetch(`/api/auth/change-password/`, {
         method:'POST',
@@ -308,9 +308,9 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem('mmorphose_token')
+    const { token } = useAuth()
     if (!token) { navigate('/espace-membre'); return }
-    const saved = localStorage.getItem('mmorphose_user')
+    const saved = JSON.stringify(user)
     if (saved) setUser(JSON.parse(saved))
 
     async function load() {
@@ -328,7 +328,7 @@ export default function Dashboard() {
         setUser(u); setGuides(g); setReplays(r)
         setMesTemos(Array.isArray(t) ? t : [])
         setMesTickets(Array.isArray(tk) ? tk : [])
-        localStorage.setItem('mmorphose_user', JSON.stringify(u))
+        updateUser(u)
       } catch {}
       setLoading(false)
     }
@@ -336,8 +336,8 @@ export default function Dashboard() {
   }, [])
 
   function logout() {
-    localStorage.removeItem('mmorphose_token')
-    localStorage.removeItem('mmorphose_user')
+    const { logout } = useAuth()
+    logout()
     navigate('/espace-membre')
   }
 
@@ -594,7 +594,7 @@ export default function Dashboard() {
             ))}
             <div style={{ marginTop:'28px', display:'flex', gap:'12px', flexWrap:'wrap' }}>
               <button onClick={async () => {
-                const token = localStorage.getItem('mmorphose_token');
+                const { token } = useAuth();
                 const res = await fetch(`/api/auth/certificat/`, { headers:{'Authorization':`Bearer ${token}`} });
                 if(res.ok) {
                   const blob = await res.blob();

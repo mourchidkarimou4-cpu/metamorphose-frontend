@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { communauteAPI } from "../services/api";
@@ -62,7 +63,7 @@ function Portail({ onAcces }) {
   const [cle,     setCle]     = useState("");
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState("");
-  const token = localStorage.getItem("mmorphose_token");
+  const { token } = useAuth();
 
   async function valider(e) {
     e.preventDefault();
@@ -146,7 +147,7 @@ function Portail({ onAcces }) {
 
 // ── MODAL ONBOARDING ─────────────────────────────────────────────
 function ModalOnboarding({ onClose }) {
-  const token = localStorage.getItem("mmorphose_token");
+  const { token } = useAuth();
 
   async function confirmer() {
     try {
@@ -190,8 +191,7 @@ function ModalOnboarding({ onClose }) {
 
 // ── FEED ─────────────────────────────────────────────────────────
 function Feed() {
-  const token    = localStorage.getItem("mmorphose_token");
-  const user     = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const { token, user } = useAuth();
   const isCoach  = user?.is_staff || user?.is_superuser;
 
   const [pubs,       setPubs]       = useState([]);
@@ -414,7 +414,7 @@ function Feed() {
 // ── COMPOSANT PRINCIPAL ───────────────────────────────────────────
 export default function CommunautePortail() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("mmorphose_token");
+  const { token } = useAuth();
 
   const [phase,    setPhase]    = useState("check"); // check | portail | onboarding | feed
   const [loading,  setLoading]  = useState(true);
