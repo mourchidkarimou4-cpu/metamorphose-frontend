@@ -150,9 +150,6 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
       });
       setStatus("success");
       if (onSuccess) onSuccess(fields);
-        setApiError(data.detail || "Une erreur est survenue. Réessayez.");
-        setStatus("error");
-      }
     } catch {
       // Backend non disponible — simulation succès en dev
       if (import.meta.env.DEV) {

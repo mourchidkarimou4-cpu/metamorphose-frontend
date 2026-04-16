@@ -29,7 +29,7 @@ import MMOLearning from './pages/MMOLearning'
 import Evenements    from './pages/Evenements'
 import Actualites    from './pages/Actualites'
 import ScanTicket    from './pages/ScanTicket'
-import api from '../services/api';
+import api from './services/api';
 
 /* ── Refresh token automatique ────────────────────────────── */
 async function tryRefresh() {
