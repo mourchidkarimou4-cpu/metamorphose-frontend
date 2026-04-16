@@ -236,6 +236,7 @@ function Sidebar({ active, setActive, counts }) {
     { id:"comm_admin",    label:"Communauté" },
     { id:"store_admin",   label:"Store / Accès" },
     { id:"masterclass_admin", label:"Masterclasses" },
+    { id:"liens_paiement",   label:"Liens de paiement" },
   ];
 
   return (
@@ -2781,6 +2782,7 @@ export default function AdminDashboard() {
           {active === "comm_admin"      && <CommunauteAdminView {...viewProps} />}
           {active === "store_admin"     && <StoreAdminView {...viewProps} />}
           {active === "masterclass_admin" && <MasterclassAdminView {...viewProps} />}
+          {active === "liens_paiement"   && <ConfigView {...viewProps} sectionFilter="paiement" />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
           {active === "mes_guides"      && <MesGuidesView {...viewProps} />}
           {active === "mon_temoignage"  && <MonTemoignageView {...viewProps} />}
