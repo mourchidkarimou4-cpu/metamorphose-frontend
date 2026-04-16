@@ -17,10 +17,12 @@ const STYLES = `
   @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
   .reveal { opacity:0; transform:translateY(30px); transition:opacity .8s ease,transform .8s ease; }
   .reveal.visible { opacity:1; transform:none; }
+  @media(max-width:768px) {
+    .form-grid-2 { grid-template-columns:1fr !important; }
+  }
   .evt-input { width:100%; padding:12px 16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:3px; color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:300; outline:none; transition:border-color .25s; }
   .evt-input:focus { border-color:rgba(201,169,106,.4); }
   .evt-label { font-family:'Montserrat',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(248,245,242,.4); display:block; margin-bottom:6px; }
-  @media(max-width:768px) { .form-grid-2 { grid-template-columns:1fr !important; } }
 `;
 
 function useReveal() {
@@ -193,7 +195,7 @@ export default function Evenements() {
 
           {/* Pourquoi participer */}
           <section style={{ padding:"72px 0 0" }}>
-            <div className="reveal" style={{ padding:"48px 40px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px" }}>
+            <div className="reveal" style={{ padding:"48px 24px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px" }}>
               <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px" }}>Pourquoi participer</p>
               <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, marginBottom:"20px" }}>
                 Pourquoi assister aux événements Métamorphose ?
@@ -222,7 +224,7 @@ export default function Evenements() {
 
           {/* Inscription */}
           <section id="inscription" style={{ padding:"72px 0 0" }}>
-            <div style={{ background:"rgba(255,255,255,.02)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px", padding:"48px 40px" }}>
+            <div style={{ background:"rgba(255,255,255,.02)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px", padding:"48px 24px" }}>
               <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"8px" }}>Inscription</p>
               <h2 className="reveal" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:600, marginBottom:"32px" }}>
                 Ne manque aucun événement

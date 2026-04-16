@@ -35,13 +35,17 @@ const STYLES = `
   .check-mark.visible { opacity:1; }
   .overlay { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:500; display:flex; align-items:center; justify-content:center; padding:24px; animation:fadeIn .3s both; backdrop-filter:blur(8px); }
   .modal-vip { background:linear-gradient(135deg,#080808,#0D1020); border:1px solid rgba(201,169,106,.2); border-radius:4px; max-width:480px; width:100%; padding:48px 40px; animation:fadeUp .4s both; position:relative; }
+  @media(max-width:768px) {
+    .modal-vip { padding:32px 20px !important; }
+    .welcome-card { padding:32px 20px !important; }
+    .principes-grid { grid-template-columns:1fr !important; }
+  }
   .modal-vip::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#C9A96A,transparent); }
   .c-input { width:100%; padding:13px 16px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:2px; color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:300; outline:none; transition:border-color .25s; letter-spacing:.03em; }
   .c-input:focus { border-color:rgba(201,169,106,.4); background:rgba(201,169,106,.02); }
   .c-label { font-family:'Montserrat',sans-serif; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(248,245,242,.35); display:block; margin-bottom:8px; }
   .welcome-card { background:linear-gradient(135deg,#080808,#0D1020); border:1px solid rgba(201,169,106,.2); border-radius:4px; max-width:640px; margin:0 auto; padding:48px 40px; position:relative; }
   .welcome-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#C9A96A,transparent); }
-  @media(max-width:768px) { .principes-grid { grid-template-columns:1fr !important; } .modal-vip { padding:36px 24px; } .welcome-card { padding:36px 24px; } .btns-hero { flex-direction:column !important; align-items:stretch !important; } .btns-hero button, .btns-hero a { text-align:center; } }
 `;
 
 function useReveal() {

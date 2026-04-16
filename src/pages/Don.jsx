@@ -20,13 +20,16 @@ const STYLES = `
   @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
   .reveal { opacity:0; transform:translateY(30px); transition:opacity .8s ease,transform .8s ease; }
   .reveal.visible { opacity:1; transform:none; }
+  @media(max-width:768px) {
+    .form-grid { grid-template-columns:1fr !important; }
+    .impact-grid { grid-template-columns:1fr !important; }
+  }
   .montant-btn { padding:14px 20px; border:1px solid rgba(201,169,106,.2); border-radius:3px; background:transparent; color:rgba(248,245,242,.7); font-family:'Montserrat',sans-serif; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .25s; text-align:center; }
   .montant-btn:hover { border-color:rgba(201,169,106,.5); color:#C9A96A; background:rgba(201,169,106,.04); }
   .montant-btn.selected { border-color:#C9A96A; color:#C9A96A; background:rgba(201,169,106,.08); }
   .don-input { width:100%; padding:12px 16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:3px; color:var(--blanc); font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:300; outline:none; transition:border-color .25s; }
   .don-input:focus { border-color:rgba(201,169,106,.4); }
   .don-label { font-family:'Montserrat',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(248,245,242,.4); display:block; margin-bottom:6px; }
-  @media(max-width:768px) { .impact-grid { grid-template-columns:1fr !important; } .form-grid { grid-template-columns:1fr !important; } }
 `;
 
 function useReveal() {
@@ -145,7 +148,7 @@ export default function Don() {
 
           {/* Formulaire */}
           <section id="formulaire" style={{ padding:"72px 0 0" }}>
-            <div style={{ background:"rgba(255,255,255,.02)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px", padding:"48px 40px" }}>
+            <div style={{ background:"rgba(255,255,255,.02)", border:"1px solid rgba(201,169,106,.12)", borderRadius:"6px", padding:"48px 24px" }}>
               <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"8px" }}>Choisissez votre contribution</p>
               <h2 className="reveal" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.4rem,3vw,2rem)", fontWeight:600, marginBottom:"32px" }}>
                 Faire un don
