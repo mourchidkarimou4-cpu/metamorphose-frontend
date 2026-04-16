@@ -188,8 +188,7 @@ export default function LiveMasterclass() {
             {salles.length === 0 ? (
               <div style={{ textAlign:'center', padding:'60px 24px' }}>
                 <p style={{ fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1.1rem', color:'rgba(248,245,242,.3)', marginBottom:'16px' }}>Aucun live en cours pour le moment.</p>
-                <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:'.78rem', color:'rgba(248,245,242,.25)', lineHeight:1.7 }}>Coach Prélia APEDO AHONON lancera le prochain live bientôt. Rejoins la communauté WhatsApp pour être notifiée.</p>
-                <a href="https://chat.whatsapp.com/K0yWRhfTnIzCTT3ilGoQw4" target="_blank" rel="noreferrer" className="btn-or" style={{ marginTop:'20px', display:'inline-flex' }}>Rejoindre la communauté</a>
+                <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:'.78rem', color:'rgba(248,245,242,.25)', lineHeight:1.7 }}>Coach Prélia APEDO AHONON lancera le prochain live bientôt. Reste connectée pour ne rien manquer.</p>
               </div>
             ) : salles.map(s => (
               <div key={s.id} className="card" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'16px' }}>
