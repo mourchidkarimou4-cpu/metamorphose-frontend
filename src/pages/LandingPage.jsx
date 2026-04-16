@@ -247,7 +247,7 @@ function StatCard({ valeur, label, delay="0s" }) {
       <p style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(2.2rem,5vw,3.5rem)", fontWeight:700, lineHeight:1, marginBottom:"10px", background:"linear-gradient(135deg,#C9A96A,#E8D5A8,#C9A96A)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerGold 3s linear infinite" }}>
         {started ? count : 0}{suffix}
       </p>
-      <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.4)", fontWeight:500 }}>{label}</p>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".58rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(248,245,242,.4)", fontWeight:500, wordBreak:"break-word", lineHeight:1.5 }}>{label}</p>
     </div>
   );
 }
@@ -263,7 +263,7 @@ function StatsSection({ get }) {
     <section style={{ padding:"80px 24px" }}>
       <div style={{ maxWidth:"900px", margin:"0 auto" }}>
         <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", textAlign:"center", marginBottom:"40px" }}>En chiffres</p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:"16px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:"16px" }}>
           {stats.map((s,i) => <StatCard key={i} valeur={s.valeur} label={s.label} delay={`${i*.12}s`}/>)}
         </div>
       </div>
