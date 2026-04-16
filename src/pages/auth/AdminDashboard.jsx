@@ -3014,7 +3014,7 @@ function LearningView({ api, toast }) {
               <div><label style={lbl}>Contenu texte (HTML accepté)</label><textarea style={{...inp,minHeight:'140px',resize:'vertical',fontFamily:'monospace',fontSize:'.78rem'}} value={form.contenu||''} onChange={e=>set('contenu',e.target.value)} placeholder="<p>Votre contenu...</p>"/></div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
                 <div><label style={lbl}>Prix (FCFA) — 0 = gratuit</label><input style={inp} type="number" min="0" value={form.prix||0} onChange={e=>set('prix',parseInt(e.target.value)||0)} placeholder="ex: 25000"/></div>
-                <div><label style={lbl}>Lien de paiement externe</label><input style={inp} value={form.lien_achat||''} onChange={e=>set('lien_achat',e.target.value)} placeholder="https://pay.kkiapay.me/..."/></div>
+                <div><label style={lbl}>Lien de paiement externe</label><input style={inp} value={form.lien_achat||''} onChange={e=>set('lien_achat',e.target.value)} placeholder="https://lien-paiement.com/..."/></div>
               </div>
               <div style={{display:'flex',gap:'16px'}}>
                 <label style={{display:'flex',alignItems:'center',gap:'8px',cursor:'pointer'}}><input type="checkbox" checked={!!form.actif} onChange={e=>set('actif',e.target.checked)}/><span style={{fontFamily:'var(--ff-b)',fontSize:'.78rem',color:'var(--text-sub)'}}>Actif (visible)</span></label>
