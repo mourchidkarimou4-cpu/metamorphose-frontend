@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://metamorphose-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/media/:path*",
+      "destination": "https://metamorphose-backend.onrender.com/media/:path*"
+    },
+    {
       "source": "/((?!api|media).*)",
       "destination": "/index.html"
     }

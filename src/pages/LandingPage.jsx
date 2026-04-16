@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from '../context/AuthContext';
 import { Link } from "react-router-dom";
 import AuthModal from "../components/AuthModal";
 import AuraButton from "../components/AuraButton";
