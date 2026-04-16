@@ -146,8 +146,6 @@ export default function App() {
       <Route path="/admin" element={
         <AdminRoute><AdminDashboard /></AdminRoute>
       } />
-      <Route path="/super-admin" element={
-      } />
 
       {/* ── 404 ────────────────────────────────────────────── */}
       <Route path="*" element={<NotFound />} />
