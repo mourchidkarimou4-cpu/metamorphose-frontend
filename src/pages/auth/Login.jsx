@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { authAPI } from '../../services/api';
 
@@ -8,6 +9,7 @@ export default function Login() {
   const [error,    setError]    = useState('')
   const [loading,  setLoading]  = useState(false)
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   async function handle(e) {
     e.preventDefault()
@@ -15,9 +17,8 @@ export default function Login() {
     try {
       const res  = await authAPI.login({ email, password })
       const data = res.data
-      localStorage.setItem('mmorphose_token',  data.access)
+      login(data.access, data.user)
       localStorage.setItem('mmorphose_refresh', data.refresh)
-      localStorage.setItem('mmorphose_user',   JSON.stringify(data.user))
       navigate(data.user.is_staff ? '/admin' : '/dashboard', { replace: true })
     } catch {
       setError('Serveur inaccessible.')
