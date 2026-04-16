@@ -22,10 +22,7 @@ export default function LiveMeeting() {
 
   /* ── Charger infos salle ── */
   useEffect(() => {
-    fetch(`/api/live/${roomId}/`)
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setRoomInfo(d); else setError("Salle introuvable."); })
-      .catch(() => setError("Impossible de joindre la salle."));
+    api.get(`/api/live/${roomId}/`).then(r => { setRoomInfo(r.data); }).catch(() => setError("Impossible de joindre la salle."));
     const user = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
     if (user?.prenom || user?.first_name) setMyName(user.prenom || user.first_name || user.email || "");
   }, [roomId]);
