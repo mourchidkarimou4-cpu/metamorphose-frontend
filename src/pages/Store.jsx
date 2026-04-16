@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
-import AuraButton from '../components/AuraButton'
+import AuraButton from '../components/AuraButton';
 import { Link, useNavigate } from "react-router-dom";
-
-const KKIAPAY_PUBLIC_KEY = "VOTRE_CLE_PUBLIQUE_KKIAPAY"; // À remplacer
-const BACKEND = "";
+import { learningAPI } from '../services/api';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
     --noir:#0A0A0A; --or:#C9A96A; --or-light:#E8D5A8;
-    --rose:#C2185B; --beige:#D8C1A0; --beige-light:#F2EBE0;
-    --blanc:#F8F5F2; --blanc-pur:#FFFFFF;
+    --rose:#C2185B; --beige:#D8C1A0; --blanc:#F8F5F2;
     --ff-t:'Playfair Display',Georgia,serif;
     --ff-b:'Montserrat',sans-serif;
     --ff-a:'Cormorant Garamond',Georgia,serif;
@@ -48,131 +45,53 @@ const STYLES = `
   }
   .btn-or:hover { background:var(--or); color:var(--noir); }
 
-  .product-card {
-    background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.06);
-    border-radius:6px; overflow:hidden; transition:all .35s var(--ease);
-    display:flex; flex-direction:column;
+  .btn-green {
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    background:rgba(37,211,102,.12); color:#25D366; font-family:var(--ff-b); font-weight:700;
+    font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+    padding:12px 24px; border:1px solid rgba(37,211,102,.3); border-radius:2px; cursor:pointer;
+    text-decoration:none; transition:all .35s;
   }
-  .product-card:hover { transform:translateY(-8px); border-color:rgba(201,169,106,.2); box-shadow:0 20px 60px rgba(0,0,0,.4); }
+  .btn-green:hover { background:rgba(37,211,102,.2); }
 
   .cat-btn {
-    padding:10px 22px; background:transparent; border:1px solid rgba(255,255,255,.08);
-    border-radius:100px; color:rgba(248,245,242,.5); font-family:var(--ff-b);
-    font-size:.65rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
-    cursor:pointer; transition:all .3s;
+    padding:9px 20px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+    border-radius:100px; color:rgba(248,245,242,.5); font-family:var(--ff-b); font-size:.65rem;
+    letter-spacing:.12em; text-transform:uppercase; cursor:pointer; transition:all .25s;
   }
-  .cat-btn.active { background:var(--rose); border-color:var(--rose); color:#fff; }
-  .cat-btn:hover:not(.active) { border-color:rgba(201,169,106,.3); color:var(--or); }
+  .cat-btn.active, .cat-btn:hover {
+    background:rgba(201,169,106,.12); border-color:rgba(201,169,106,.4); color:var(--or);
+  }
 
-  .badge {
-    display:inline-block; padding:4px 10px; border-radius:100px;
-    font-family:var(--ff-b); font-size:.58rem; font-weight:600;
-    letter-spacing:.14em; text-transform:uppercase;
+  .product-card {
+    background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06);
+    border-radius:8px; overflow:hidden; display:flex; flex-direction:column;
+    transition:all .35s var(--ease);
+  }
+  .product-card:hover { border-color:rgba(201,169,106,.3); transform:translateY(-6px); box-shadow:0 24px 60px rgba(0,0,0,.4); }
+
+  .verrou-overlay {
+    position:absolute; inset:0; background:rgba(10,10,10,.7);
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(2px);
   }
 
   .modal-overlay {
-    position:fixed; inset:0; z-index:500; background:rgba(10,10,10,.92);
-    backdrop-filter:blur(14px); display:flex; align-items:center; justify-content:center;
-    padding:20px; animation:fadeUp .3s both;
+    position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:500;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter:blur(8px);
   }
   .modal-box {
-    background:#141414; border:1px solid rgba(201,169,106,.15); border-radius:8px;
-    padding:40px 32px; max-width:480px; width:100%; position:relative;
-    max-height:90vh; overflow-y:auto;
+    background:#111; border:1px solid rgba(201,169,106,.2); border-radius:8px;
+    padding:36px 32px; width:100%; max-width:480px; position:relative;
+    max-height:90vh; overflow-y:auto; animation:fadeUp .3s both;
   }
 
   @media(max-width:768px) {
     .products-grid { grid-template-columns:1fr !important; }
-    .store-hero-grid { grid-template-columns:1fr !important; }
-  }
-  @media(max-width:480px) {
-    .products-grid { grid-template-columns:1fr !important; }
-    .modal-box { padding:28px 20px !important; }
-    .btn-p, .btn-or { width:100% !important; justify-content:center !important; }
+    .modal-box { padding:24px 18px; }
   }
 `;
-
-const PRODUITS_DEFAUT = [
-  {
-    id: 1,
-    categorie: "guide",
-    titre: "Guide Méthode Eisenhower",
-    sous_titre: "Pour les femmes ambitieuses",
-    description: "Apprenez à prioriser ce qui compte vraiment, sortir de la procrastination et passer à l'action avec discipline. Un guide complet et actionnable.",
-    prix: 2500,
-    gratuit: true,
-    badge: "Gratuit",
-    badge_color: "#25D366",
-    inclus: ["PDF téléchargeable", "Exercices pratiques", "Tableau de priorisation", "Accès immédiat"],
-    image_bg: "linear-gradient(135deg,rgba(201,169,106,.15),rgba(201,169,106,.05))",
-    image_icon: "📋",
-  },
-  {
-    id: 2,
-    categorie: "guide",
-    titre: "Guide Confiance en Soi",
-    sous_titre: "Révèle ta lumière intérieure",
-    description: "Un guide complet pour reconstruire une estime solide, identifier tes blocages et développer une confiance authentique et durable.",
-    prix: 5000,
-    badge: "Nouveau",
-    badge_color: "var(--rose)",
-    inclus: ["PDF 30 pages", "Exercices guidés", "Affirmations quotidiennes", "Accès immédiat"],
-    image_bg: "linear-gradient(135deg,rgba(194,24,91,.15),rgba(194,24,91,.05))",
-    image_icon: "✨",
-  },
-  {
-    id: 3,
-    categorie: "formation",
-    titre: "Formation Image Authentique",
-    sous_titre: "Aligne ton image à ton identité",
-    description: "Une formation complète sur la morphologie, la colorimétrie et la construction d'une identité visuelle qui te ressemble vraiment.",
-    prix: 25000,
-    badge: "Bestseller",
-    badge_color: "var(--or)",
-    inclus: ["5 modules vidéo", "Workbook PDF", "Accès à vie", "Support WhatsApp", "Certificat"],
-    image_bg: "linear-gradient(135deg,rgba(168,200,224,.15),rgba(168,200,224,.05))",
-    image_icon: "🎓",
-  },
-  {
-    id: 4,
-    categorie: "formation",
-    titre: "Masterclass OSEZ",
-    sous_titre: "Embrasse ton image authentique",
-    description: "L'enregistrement complet de la Masterclass OSEZ — 3 secrets pour te libérer du regard des autres et attirer les opportunités.",
-    prix: 10000,
-    badge: "Replay",
-    badge_color: "#A8C8E0",
-    inclus: ["Replay vidéo HD", "Audio MP3", "PDF résumé", "Accès immédiat"],
-    image_bg: "linear-gradient(135deg,rgba(168,200,224,.12),rgba(201,169,106,.08))",
-    image_icon: "🎬",
-  },
-  {
-    id: 5,
-    categorie: "replay",
-    titre: "Pack Replays MMO — Vague 1",
-    sous_titre: "8 semaines de transformation",
-    description: "Accédez à tous les replays de la première vague Méta'Morph'Ose. 8 semaines de contenu premium pour votre transformation.",
-    prix: 35000,
-    badge: "Pack",
-    badge_color: "var(--rose)",
-    inclus: ["16 replays vidéo", "Audio MP3 de chaque session", "Guides PDF bonus", "Accès 6 mois"],
-    image_bg: "linear-gradient(135deg,rgba(194,24,91,.12),rgba(201,169,106,.08))",
-    image_icon: "📹",
-  },
-  {
-    id: 6,
-    categorie: "replay",
-    titre: "Affirmations Quotidiennes",
-    sous_titre: "Audio de 21 jours",
-    description: "21 jours d'affirmations puissantes enregistrées par Prélia APEDO AHONON. Transformez votre dialogue intérieur chaque matin.",
-    prix: 7500,
-    badge: "Audio",
-    badge_color: "#C9A96A",
-    inclus: ["21 fichiers audio", "Guide d'utilisation", "Calendrier 21 jours", "Accès immédiat"],
-    image_bg: "linear-gradient(135deg,rgba(201,169,106,.15),rgba(194,24,91,.05))",
-    image_icon: "🎵",
-  },
-];
 
 function useReveal() {
   useEffect(() => {
@@ -186,43 +105,26 @@ function useReveal() {
   }, []);
 }
 
-/* ── Modal Achat ────────────────────────────────────────────── */
-function ModalAchat({ produit, onClose }) {
-  const [step, setStep] = useState("details"); // details | form | success
-  const [nom, setNom] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+const FORMAT_LABELS = { texte:'Article', video:'Vidéo', audio:'Audio', pdf:'PDF' };
+const NIVEAU_COLORS = { debutant:'#4CAF50', intermediaire:'#C9A96A', avance:'#C2185B' };
+const NIVEAU_LABELS = { debutant:'Débutant', intermediaire:'Intermédiaire', avance:'Avancé' };
+
+/* ── Modal détail cours ────────────────────────────────────── */
+function ModalCours({ cours, onClose }) {
   const navigate = useNavigate();
-
   const token = localStorage.getItem("mmorphose_token");
-  const user = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
 
-  function lancerPaiement() {
-    if (!nom.trim() || !email.trim()) return;
-    setLoading(true);
+  if (!cours) return null;
 
-    // Intégration KKiaPay
-    if (window.openKkiapayWidget) {
-      window.openKkiapayWidget({
-        amount: produit.prix,
-        api_key: KKIAPAY_PUBLIC_KEY,
-        sandbox: true, // Mettre false en production
-        email: email,
-        name: nom,
-        callback: `${window.location.origin}/store/confirmation`,
-        theme: "#C2185B",
-      });
+  const gratuit    = !cours.prix || cours.prix === 0;
+  const aAcces     = cours.a_acces;
+  const lienAchat  = cours.lien_achat;
 
-      window.addSuccessListener(response => {
-        setStep("success");
-        setLoading(false);
-      });
-    } else {
-      // KKiaPay pas encore chargé — simulation
-      setTimeout(() => {
-        setStep("success");
-        setLoading(false);
-      }, 1500);
+  function handleAcheter() {
+    if (!token) { navigate("/espace-membre"); return; }
+    if (lienAchat) {
+      window.open(lienAchat, "_blank", "noopener,noreferrer");
     }
   }
 
@@ -233,112 +135,68 @@ function ModalAchat({ produit, onClose }) {
           Fermer
         </button>
 
-        {step === "details" && (
-          <div style={{ animation:"fadeUp .4s both" }}>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--or)", marginBottom:"8px" }}>{produit.categorie}</p>
-            <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.4rem", fontWeight:600, marginBottom:"6px" }}>{produit.titre}</h2>
-            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.5)", marginBottom:"20px" }}>{produit.description}</p>
-
-            <div style={{ marginBottom:"20px" }}>
-              <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(248,245,242,.4)", marginBottom:"10px" }}>Ce que vous recevez :</p>
-              {produit.inclus.map((item, i) => (
-                <div key={i} style={{ display:"flex", gap:"10px", marginBottom:"8px" }}>
-                  <span style={{ color:"#25D366", flexShrink:0 }}>✓</span>
-                  <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.75)" }}>{item}</p>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"16px 20px", background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.06)", borderRadius:"4px", marginBottom:"20px" }}>
-              <span style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"rgba(248,245,242,.5)" }}>Prix total</span>
-              <span style={{ fontFamily:"var(--ff-t)", fontSize:"1.4rem", fontWeight:700, color: produit.gratuit ? "#25D366" : "var(--or)" }}>
-                {produit.gratuit ? "Gratuit" : `${produit.prix.toLocaleString("fr-FR")} FCFA`}
+        {/* En-tête */}
+        <div style={{ marginBottom:"20px" }}>
+          <div style={{ display:"flex", gap:"8px", flexWrap:"wrap", marginBottom:"10px" }}>
+            {cours.format && (
+              <span style={{ padding:"3px 10px", borderRadius:"100px", background:"rgba(201,169,106,.1)", border:"1px solid rgba(201,169,106,.25)", fontFamily:"var(--ff-b)", fontSize:".58rem", color:"var(--or)", letterSpacing:".1em", textTransform:"uppercase" }}>
+                {FORMAT_LABELS[cours.format] || cours.format}
               </span>
-            </div>
-
-            {produit.gratuit ? (
-              <button onClick={() => setStep("form")} className="btn-p" style={{ width:"100%" }}>
-                Obtenir gratuitement
-              </button>
-            ) : (
-              <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
-                {token ? (
-                  <button onClick={() => setStep("form")} className="btn-p" style={{ width:"100%", animation:"pulse-rose 3s ease-in-out infinite" }}>
-                    Acheter maintenant
-                  </button>
-                ) : (
-                  <>
-                    <button onClick={() => setStep("form")} className="btn-p" style={{ width:"100%" }}>
-                      Continuer sans compte
-                    </button>
-                    <Link to="/espace-membre" onClick={onClose} className="btn-or" style={{ width:"100%", textAlign:"center" }}>
-                      Se connecter pour acheter
-                    </Link>
-                  </>
-                )}
-              </div>
+            )}
+            {cours.niveau && (
+              <span style={{ padding:"3px 10px", borderRadius:"100px", background:`${NIVEAU_COLORS[cours.niveau]}18`, border:`1px solid ${NIVEAU_COLORS[cours.niveau]}40`, fontFamily:"var(--ff-b)", fontSize:".58rem", color:NIVEAU_COLORS[cours.niveau], letterSpacing:".1em", textTransform:"uppercase" }}>
+                {NIVEAU_LABELS[cours.niveau] || cours.niveau}
+              </span>
+            )}
+            {aAcces && (
+              <span style={{ padding:"3px 10px", borderRadius:"100px", background:"rgba(37,211,102,.12)", border:"1px solid rgba(37,211,102,.3)", fontFamily:"var(--ff-b)", fontSize:".58rem", color:"#25D366", letterSpacing:".1em", textTransform:"uppercase" }}>
+                Accès actif
+              </span>
             )}
           </div>
-        )}
+          <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.4rem", fontWeight:600, marginBottom:"10px", lineHeight:1.3 }}>{cours.titre}</h2>
+          <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.6)", lineHeight:1.8 }}>{cours.description}</p>
+        </div>
 
-        {step === "form" && (
-          <div style={{ animation:"fadeUp .4s both" }}>
-            <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>
-              {produit.gratuit ? "Recevoir le guide" : "Finaliser l'achat"}
-            </h2>
-            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.4)", marginBottom:"24px" }}>
-              {produit.gratuit ? "Entrez votre email pour recevoir le guide." : "Vos informations de facturation"}
-            </p>
+        {/* Prix */}
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"16px 20px", background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.06)", borderRadius:"4px", marginBottom:"24px" }}>
+          <span style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)" }}>Prix</span>
+          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1.5rem", fontWeight:700, color: gratuit ? "#25D366" : "var(--or)" }}>
+            {gratuit ? "Gratuit" : `${cours.prix.toLocaleString("fr-FR")} FCFA`}
+          </span>
+        </div>
 
-            <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginBottom:"20px" }}>
-              <input
-                value={nom} onChange={e=>setNom(e.target.value)}
-                placeholder="Votre prénom *"
-                style={{ width:"100%", padding:"13px 16px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".88rem", fontWeight:300, outline:"none", fontSize:"16px" }}
-              />
-              <input
-                type="email" value={email} onChange={e=>setEmail(e.target.value)}
-                placeholder="Votre email *"
-                style={{ width:"100%", padding:"13px 16px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--blanc)", fontFamily:"var(--ff-b)", fontSize:".88rem", fontWeight:300, outline:"none", fontSize:"16px" }}
-              />
-            </div>
-
-            {produit.gratuit ? (
-              <button onClick={() => setStep("success")} className="btn-p" style={{ width:"100%" }} disabled={!nom || !email}>
-                Recevoir mon guide gratuit
-              </button>
-            ) : (
-              <button onClick={lancerPaiement} className="btn-p" style={{ width:"100%", animation:"pulse-rose 3s ease-in-out infinite" }} disabled={loading || !nom || !email}>
-                {loading ? (
-                  <><div style={{ width:"16px", height:"16px", border:"2px solid rgba(255,255,255,.3)", borderTopColor:"#fff", borderRadius:"50%", animation:"spin .7s linear infinite" }}/> Traitement…</>
-                ) : `Payer ${produit.prix.toLocaleString("fr-FR")} FCFA`}
-              </button>
-            )}
-
-            <p style={{ marginTop:"12px", fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.25)", textAlign:"center", lineHeight:1.6 }}>
-              {produit.gratuit ? "Aucune carte bancaire requise · 100% gratuit" : "Paiement sécurisé via KKiaPay · Mobile Money · Carte bancaire"}
+        {/* CTA */}
+        {aAcces ? (
+          <Link to="/mmo-learning" className="btn-green" style={{ width:"100%", textAlign:"center" }}>
+            Accéder au cours
+          </Link>
+        ) : !token ? (
+          <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
+            <Link to="/espace-membre" onClick={onClose} className="btn-p" style={{ width:"100%", textAlign:"center" }}>
+              Se connecter pour acheter
+            </Link>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.3)", textAlign:"center" }}>
+              Un compte est nécessaire pour recevoir ton accès après paiement.
             </p>
           </div>
-        )}
-
-        {step === "success" && (
-          <div style={{ textAlign:"center", animation:"fadeUp .4s both" }}>
-            <div style={{ width:"64px", height:"64px", borderRadius:"50%", background:"rgba(37,211,102,.12)", border:"2px solid rgba(37,211,102,.4)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px", fontSize:"1.8rem" }}>✓</div>
-            <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".22em", textTransform:"uppercase", color:"#25D366", marginBottom:"10px" }}>
-              {produit.gratuit ? "Guide envoyé" : "Paiement confirmé"}
-            </p>
-            <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.4rem", fontWeight:600, marginBottom:"14px" }}>
-              {produit.gratuit ? "Vérifie ta boîte mail !" : "Merci pour ton achat !"}
-            </h3>
-            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.6)", lineHeight:1.8, marginBottom:"24px" }}>
-              {produit.gratuit
-                ? `${nom}, ton guide a été envoyé à ${email}. Pense à vérifier tes spams si tu ne le vois pas.`
-                : `${nom}, tu vas recevoir un email de confirmation à ${email} avec ton accès au produit.`
-              }
-            </p>
-            <button onClick={onClose} className="btn-or" style={{ cursor:"pointer" }}>
-              Continuer mes achats
+        ) : lienAchat ? (
+          <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
+            <button onClick={handleAcheter} className="btn-p" style={{ width:"100%", animation:"pulse-rose 3s ease-in-out infinite" }}>
+              {gratuit ? "Obtenir gratuitement" : `Acheter — ${cours.prix?.toLocaleString("fr-FR")} FCFA`}
             </button>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.25)", textAlign:"center", lineHeight:1.6 }}>
+              Tu seras redirigée vers la page de paiement sécurisée. Ton accès sera activé sous 24h par Coach Prélia APEDO AHONON.
+            </p>
+          </div>
+        ) : (
+          <div style={{ padding:"16px", background:"rgba(201,169,106,.05)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", textAlign:"center" }}>
+            <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"rgba(248,245,242,.5)", lineHeight:1.7 }}>
+              Contacte Coach Prélia APEDO AHONON sur WhatsApp pour obtenir ce cours.
+            </p>
+            <a href="https://wa.me/message/DI23LCDIMS5SF1" target="_blank" rel="noreferrer" className="btn-or" style={{ marginTop:"14px", display:"inline-flex" }}>
+              Contacter sur WhatsApp
+            </a>
           </div>
         )}
       </div>
@@ -349,54 +207,90 @@ function ModalAchat({ produit, onClose }) {
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
 export default function Store() {
   usePageBackground("store");
-  const [categorie, setCategorie] = useState("tout");
-  const [produitSelectionne, setProduitSelectionne] = useState(null);
   useReveal();
 
-  // Charger KKiaPay
+  const [cours, setCours]       = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [categorie, setCategorie] = useState("tout");
+  const [selectionne, setSelectionne] = useState(null);
+
+  const token = localStorage.getItem("mmorphose_token");
+  const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+
   useEffect(() => {
-    if (!document.getElementById("kkiapay-script")) {
-      const script = document.createElement("script");
-      script.id = "kkiapay-script";
-      script.src = "https://cdn.kkiapay.me/k.js";
-      script.async = true;
-      document.head.appendChild(script);
-    }
+    chargerCours();
   }, []);
+
+  async function chargerCours() {
+    setLoading(true);
+    try {
+      // Si connecté, charger mes-cours pour avoir a_acces, sinon liste publique
+      const endpoint = token ? '/api/learning/mes-cours/' : '/api/learning/';
+      const res = await fetch(endpoint, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+
+      if (token) {
+        // mes-cours retourne les cours avec accès — on charge aussi la liste publique
+        const resPublic = await fetch('/api/learning/');
+        const dataPublic = await resPublic.json();
+        const idsAvecAcces = new Set((Array.isArray(data) ? data : []).map(c => c.id));
+        const merged = (Array.isArray(dataPublic) ? dataPublic : []).map(c => ({
+          ...c,
+          a_acces: idsAvecAcces.has(c.id)
+        }));
+        setCours(merged);
+      } else {
+        setCours(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      setCours([]);
+    }
+    setLoading(false);
+  }
 
   const categories = [
     { id:"tout",      label:"Tout" },
-    { id:"guide",     label:"Guides PDF" },
-    { id:"formation", label:"Formations" },
-    { id:"replay",    label:"Replays & Audio" },
+    { id:"texte",     label:"Articles" },
+    { id:"video",     label:"Vidéos" },
+    { id:"audio",     label:"Audio" },
+    { id:"pdf",       label:"PDF" },
   ];
 
-  const produitsFiltres = categorie === "tout"
-    ? PRODUITS_DEFAUT
-    : PRODUITS_DEFAUT.filter(p => p.categorie === categorie);
+  const coursFiltres = categorie === "tout"
+    ? cours
+    : cours.filter(c => c.format === categorie);
 
   return (
     <>
       <style>{STYLES}</style>
 
-      {/* ── NAVBAR ── */}
+      {/* NAVBAR */}
       <nav style={{ padding:"16px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.96)", backdropFilter:"blur(20px)", zIndex:200 }}>
         <Link to="/" style={{ textDecoration:"none" }}>
           <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{color:"var(--blanc)"}}>Meta'</span>
+            <span style={{color:"var(--blanc)"}}>Méta'</span>
             <span style={{color:"var(--or)"}}>Morph'</span>
             <span style={{color:"var(--rose)"}}>Ose</span>
           </span>
         </Link>
         <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
-          <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Accueil</Link>
+          {user ? (
+            <Link to="/dashboard" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", textDecoration:"none" }}>
+              Mon espace
+            </Link>
+          ) : (
+            <Link to="/espace-membre" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>
+              Se connecter
+            </Link>
+          )}
           <Link to="/contact" className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem" }}>S'inscrire</Link>
         </div>
       </nav>
 
       <main>
-
-        {/* ── HERO ── */}
+        {/* HERO */}
         <section style={{ padding:"80px 24px 60px", background:"linear-gradient(135deg,#0A0A0A 0%,#1a0a0f 40%,#0A0A0A 100%)", textAlign:"center", position:"relative", overflow:"hidden" }}>
           <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
             <div style={{ position:"absolute", top:"-10%", left:"-5%", width:"400px", height:"400px", borderRadius:"50%", background:"radial-gradient(circle,rgba(201,169,106,.08),transparent 70%)" }}/>
@@ -412,21 +306,17 @@ export default function Store() {
               </em>
             </h1>
             <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:"clamp(.9rem,2.5vw,1.05rem)", color:"rgba(248,245,242,.6)", lineHeight:1.8, animation:"fadeUp .8s .2s both" }}>
-              Guides, formations et replays premium pour accompagner chaque étape de ta révélation.
+              Formations et contenus premium de Coach Prélia APEDO AHONON pour chaque étape de ta révélation.
             </p>
           </div>
         </section>
 
-        {/* ── FILTRES ── */}
+        {/* FILTRES */}
         <section style={{ padding:"40px 24px 0", background:"var(--noir)" }}>
           <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
             <div style={{ display:"flex", gap:"10px", flexWrap:"wrap", justifyContent:"center" }}>
               {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  className={`cat-btn ${categorie === cat.id ? "active" : ""}`}
-                  onClick={() => setCategorie(cat.id)}
-                >
+                <button key={cat.id} className={`cat-btn ${categorie === cat.id ? "active" : ""}`} onClick={() => setCategorie(cat.id)}>
                   {cat.label}
                 </button>
               ))}
@@ -434,76 +324,106 @@ export default function Store() {
           </div>
         </section>
 
-        {/* ── PRODUITS ── */}
+        {/* COURS */}
         <section style={{ padding:"48px 24px 80px", background:"var(--noir)" }}>
           <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
-            <div className="products-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:"24px" }}>
-              {produitsFiltres.map((produit, i) => (
-                <div key={produit.id} className="product-card reveal" style={{ transitionDelay:`${(i%3)*.1}s` }}>
 
-                  {/* Image / Icône */}
-                  <div style={{ height:"180px", background:produit.image_bg, display:"flex", alignItems:"center", justifyContent:"center", position:"relative", overflow:"hidden" }}>
-                    <span style={{ fontSize:"4rem" }}>{produit.image_icon}</span>
-                    {/* Badge */}
-                    <div style={{ position:"absolute", top:"14px", left:"14px" }}>
-                      <span className="badge" style={{ background:`${produit.badge_color}20`, border:`1px solid ${produit.badge_color}50`, color:produit.badge_color }}>
-                        {produit.badge}
-                      </span>
-                    </div>
-                    {/* Catégorie */}
-                    <div style={{ position:"absolute", top:"14px", right:"14px" }}>
-                      <span style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".14em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", fontWeight:500 }}>
-                        {produit.categorie === "guide" ? "Guide PDF" : produit.categorie === "formation" ? "Formation" : "Replay"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Contenu */}
-                  <div style={{ padding:"24px 22px", flex:1, display:"flex", flexDirection:"column" }}>
-                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".14em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", marginBottom:"6px", fontWeight:500 }}>
-                      {produit.sous_titre}
-                    </p>
-                    <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.1rem", fontWeight:600, marginBottom:"10px", lineHeight:1.3 }}>{produit.titre}</h3>
-                    <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.55)", lineHeight:1.7, marginBottom:"16px", flex:1 }}>
-                      {produit.description.substring(0, 100)}…
-                    </p>
-
-                    {/* Inclus (3 premiers) */}
-                    <div style={{ marginBottom:"20px" }}>
-                      {produit.inclus.slice(0,3).map((item,j) => (
-                        <div key={j} style={{ display:"flex", gap:"8px", marginBottom:"5px" }}>
-                          <span style={{ color:"var(--or)", fontSize:".75rem", flexShrink:0 }}>✓</span>
-                          <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:300, color:"rgba(248,245,242,.6)" }}>{item}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Prix + bouton */}
-                    <div style={{ borderTop:"1px solid rgba(255,255,255,.05)", paddingTop:"16px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px" }}>
-                      <div>
-                        <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:700, color: produit.gratuit ? "#25D366" : "var(--or)", lineHeight:1 }}>
-                          {produit.gratuit ? "Gratuit" : `${produit.prix.toLocaleString("fr-FR")} FCFA`}
-                        </p>
-                      </div>
-                      <button onClick={() => setProduitSelectionne(produit)} className="btn-p" style={{ padding:"11px 20px", fontSize:".66rem", flexShrink:0 }}>
-                        {produit.gratuit ? "Obtenir" : "Acheter"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Message si vide */}
-            {produitsFiltres.length === 0 && (
+            {loading ? (
               <div style={{ textAlign:"center", padding:"80px 24px" }}>
-                <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.2rem", color:"rgba(248,245,242,.3)" }}>Aucun produit dans cette catégorie pour le moment.</p>
+                <div style={{ width:"32px", height:"32px", border:"2px solid rgba(201,169,106,.2)", borderTopColor:"var(--or)", borderRadius:"50%", animation:"spin .8s linear infinite", margin:"0 auto 16px" }}/>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"rgba(248,245,242,.3)" }}>Chargement des formations...</p>
+              </div>
+            ) : coursFiltres.length === 0 ? (
+              <div style={{ textAlign:"center", padding:"80px 24px" }}>
+                <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.2rem", color:"rgba(248,245,242,.3)" }}>Aucune formation dans cette catégorie pour le moment.</p>
+              </div>
+            ) : (
+              <div className="products-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:"24px" }}>
+                {coursFiltres.map((c, i) => {
+                  const gratuit = !c.prix || c.prix === 0;
+                  const aAcces  = c.a_acces;
+                  return (
+                    <div key={c.id || i} className="product-card reveal" style={{ transitionDelay:`${(i%3)*.1}s` }}>
+
+                      {/* Image */}
+                      <div style={{ height:"180px", background: c.image ? `url(${c.image}) center/cover` : "linear-gradient(135deg,rgba(201,169,106,.1),rgba(194,24,91,.06))", position:"relative", overflow:"hidden" }}>
+                        {!c.image && (
+                          <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                            <span style={{ fontFamily:"var(--ff-t)", fontSize:"2.5rem", color:"rgba(201,169,106,.2)", fontStyle:"italic" }}>MMO</span>
+                          </div>
+                        )}
+                        {/* Badge format */}
+                        <div style={{ position:"absolute", top:"14px", left:"14px" }}>
+                          <span style={{ padding:"3px 10px", borderRadius:"100px", background:"rgba(10,10,10,.8)", border:"1px solid rgba(201,169,106,.3)", fontFamily:"var(--ff-b)", fontSize:".55rem", color:"var(--or)", letterSpacing:".1em", textTransform:"uppercase" }}>
+                            {FORMAT_LABELS[c.format] || c.format}
+                          </span>
+                        </div>
+                        {/* Badge accès */}
+                        {aAcces && (
+                          <div style={{ position:"absolute", top:"14px", right:"14px" }}>
+                            <span style={{ padding:"3px 10px", borderRadius:"100px", background:"rgba(37,211,102,.15)", border:"1px solid rgba(37,211,102,.4)", fontFamily:"var(--ff-b)", fontSize:".55rem", color:"#25D366", letterSpacing:".1em", textTransform:"uppercase" }}>
+                              Débloqué
+                            </span>
+                          </div>
+                        )}
+                        {/* Verrou */}
+                        {!aAcces && !gratuit && (
+                          <div className="verrou-overlay">
+                            <div style={{ textAlign:"center" }}>
+                              <div style={{ width:"36px", height:"36px", borderRadius:"50%", background:"rgba(201,169,106,.15)", border:"1px solid rgba(201,169,106,.3)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 8px" }}>
+                                <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+                                  <rect x="2" y="7" width="10" height="8" rx="2" fill="rgba(201,169,106,.8)"/>
+                                  <path d="M4 7V5a3 3 0 016 0v2" stroke="rgba(201,169,106,.8)" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                              </div>
+                              <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", color:"rgba(201,169,106,.7)", letterSpacing:".1em", textTransform:"uppercase" }}>Accès requis</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Contenu */}
+                      <div style={{ padding:"22px 20px", flex:1, display:"flex", flexDirection:"column" }}>
+                        <div style={{ display:"flex", gap:"6px", marginBottom:"8px", flexWrap:"wrap" }}>
+                          {c.niveau && (
+                            <span style={{ padding:"2px 8px", borderRadius:"100px", background:`${NIVEAU_COLORS[c.niveau]}15`, border:`1px solid ${NIVEAU_COLORS[c.niveau]}30`, fontFamily:"var(--ff-b)", fontSize:".55rem", color:NIVEAU_COLORS[c.niveau], letterSpacing:".08em", textTransform:"uppercase" }}>
+                              {NIVEAU_LABELS[c.niveau]}
+                            </span>
+                          )}
+                          {c.duree && (
+                            <span style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", color:"rgba(248,245,242,.3)" }}>{c.duree}</span>
+                          )}
+                        </div>
+                        <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"1.05rem", fontWeight:600, marginBottom:"8px", lineHeight:1.3 }}>{c.titre}</h3>
+                        <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.5)", lineHeight:1.7, marginBottom:"16px", flex:1 }}>
+                          {c.description?.substring(0,100)}{c.description?.length > 100 ? "…" : ""}
+                        </p>
+
+                        {/* Prix + CTA */}
+                        <div style={{ borderTop:"1px solid rgba(255,255,255,.05)", paddingTop:"16px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px" }}>
+                          <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.2rem", fontWeight:700, color: gratuit ? "#25D366" : "var(--or)", lineHeight:1 }}>
+                            {gratuit ? "Gratuit" : `${c.prix?.toLocaleString("fr-FR")} FCFA`}
+                          </p>
+                          {aAcces ? (
+                            <Link to="/mmo-learning" className="btn-green" style={{ padding:"10px 18px", fontSize:".63rem", flexShrink:0 }}>
+                              Accéder
+                            </Link>
+                          ) : (
+                            <button onClick={() => setSelectionne(c)} className="btn-p" style={{ padding:"10px 18px", fontSize:".63rem", flexShrink:0 }}>
+                              {gratuit ? "Obtenir" : "Acheter"}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
         </section>
 
-        {/* ── BANNIÈRE PROGRAMME ── */}
+        {/* BANNIERE */}
         <section style={{ padding:"80px 24px", background:"linear-gradient(135deg,#2e1e14,#3a2518)", textAlign:"center" }}>
           <div style={{ maxWidth:"680px", margin:"0 auto" }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Tu veux aller plus loin ?</p>
@@ -523,28 +443,25 @@ export default function Store() {
             </div>
           </div>
         </section>
-
       </main>
 
-      {/* ── FOOTER ── */}
+      {/* FOOTER */}
       <footer style={{ padding:"32px 24px", background:"var(--noir)", borderTop:"1px solid rgba(201,169,106,.1)", textAlign:"center" }}>
         <Link to="/" style={{ fontFamily:"var(--ff-t)", fontSize:".95rem", textDecoration:"none" }}>
-          <span style={{color:"var(--blanc)"}}>Meta'</span>
+          <span style={{color:"var(--blanc)"}}>Méta'</span>
           <span style={{color:"var(--or)"}}>Morph'</span>
           <span style={{color:"var(--rose)"}}>Ose</span>
         </Link>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · White & Black · Prélia APEDO AHONON
+          © 2026 Méta'Morph'Ose · White & Black · Prélia APEDO AHONON
         </p>
       </footer>
 
-      {/* ── MODAL ACHAT ── */}
-      {produitSelectionne && (
-        <ModalAchat
-          produit={produitSelectionne}
-          onClose={() => setProduitSelectionne(null)}
-        />
+      {/* MODAL */}
+      {selectionne && (
+        <ModalCours cours={selectionne} onClose={() => setSelectionne(null)} />
       )}
+
       <AuraButton />
     </>
   );
