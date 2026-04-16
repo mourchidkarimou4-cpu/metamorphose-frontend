@@ -8,6 +8,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor:   ['react','react-dom','react-router-dom'],
+          zego:     ['@zegocloud/zego-uikit-prebuilt'],
           axios:    ['axios'],
         }
       }

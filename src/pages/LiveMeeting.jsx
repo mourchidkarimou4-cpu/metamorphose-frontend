@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import api from '../services/api';
 
 const ZEGO_APP_ID = Number(import.meta.env.VITE_ZEGO_APP_ID);
@@ -66,11 +67,10 @@ export default function LiveMeeting() {
   }
 
   /* ── Demarrer ZegoCloud ── */
-  async function startZegoMeeting(userRole) {
+  function startZegoMeeting(userRole) {
     if (!meetingRef.current) return;
 
     const userID = Math.random().toString(36).substring(2, 10);
-    const { ZegoUIKitPrebuilt } = await import("@zegocloud/zego-uikit-prebuilt");
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       ZEGO_APP_ID,
       ZEGO_SERVER_SECRET,

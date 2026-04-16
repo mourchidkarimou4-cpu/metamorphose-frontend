@@ -11,6 +11,7 @@ import Contact        from './pages/Contact'
 import Login          from './pages/auth/Login'
 import Dashboard      from './pages/auth/Dashboard'
 import AdminDashboard from './pages/auth/AdminDashboard'
+import SuperAdmin     from './pages/auth/SuperAdmin'
 import CarteScan      from './pages/CarteScan'
 import ResetPassword  from './pages/ResetPassword'
 import NotFound       from './pages/NotFound'
@@ -145,6 +146,9 @@ export default function App() {
       {/* ── Espace admin ───────────────────────────────────── */}
       <Route path="/admin" element={
         <AdminRoute><AdminDashboard /></AdminRoute>
+      } />
+      <Route path="/super-admin" element={
+        <AdminRoute><SuperAdmin /></AdminRoute>
       } />
 
       {/* ── 404 ────────────────────────────────────────────── */}
