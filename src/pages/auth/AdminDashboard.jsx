@@ -209,35 +209,35 @@ function Sidebar({ active, setActive, counts }) {
     { id:"demandes", label:"Demandes",       icon:"", count: counts.non_traites, urgent: true },
     { id:"replays",  label:"Replays",        icon:"",  count: counts.replays },
     { id:"guides",   label:"Guides PDF",     icon:"", count: counts.guides },
-    { id:"config",   label:"Contenu du site" },
-    { id:"stats_site", label:"Stats du site" },
-    { id:"vague",    label:"Vague & Places" },
-    { id:"images",   label:"Photos et Logos" },
-    { id:"cartes",   label:"Cartes Cadeaux" },
-    { id:"temoignages", label:"Témoignages", urgent:true },
-    { id:"ressources", label:"Chanson et Guide PDF" },
-    { id:"liste_attente", label:"Liste d'attente" },
-    { id:"newsletter",    label:"Newsletter" },
-    { id:"export",        label:"Export CSV" },
-    { id:"maintenance",   label:"Mode Maintenance" },
-    { id:"divider_membre", label:"── MON ESPACE ──", divider:true },
-    { id:"mon_compte",    label:"Mon Compte" },
-    { id:"mes_replays",   label:"Replays" },
-    { id:"mes_guides",    label:"Guides PDF" },
-    { id:"mon_temoignage",label:"Mon Témoignage" },
-    { id:"mon_profil",    label:"Mon Profil" },
-    { id:"mon_certificat",label:"Mon Certificat" },
-    { id:"learning",      label:"MMO Learning" },
-    { id:"partenaires",   label:"Partenaires" },
-    { id:"tickets",       label:"Tickets & Événements" },
-    { id:"abonnes",       label:"Abonnés Newsletter" },
-    { id:"live_visio",    label:"Live & Visio" },
-    { id:"evt_admin",     label:"Événements" },
-    { id:"actu_admin",    label:"Actualités" },
-    { id:"comm_admin",    label:"Communauté" },
-    { id:"store_admin",   label:"Store / Accès" },
+    { id:"config",         label:"Contenu du site" },
+    { id:"vague",           label:"Vague & Places" },
+    { id:"stats_site",      label:"Stats du site" },
+    { id:"images",          label:"Photos et Logos" },
+    { id:"cartes",          label:"Cartes Cadeaux" },
+    { id:"temoignages",     label:"Témoignages", urgent:true },
     { id:"masterclass_admin", label:"Masterclasses" },
-    { id:"liens_paiement",   label:"Liens de paiement" },
+    { id:"tickets",         label:"Tickets & Événements" },
+    { id:"evt_admin",       label:"Événements" },
+    { id:"actu_admin",      label:"Actualités" },
+    { id:"live_visio",      label:"Live & Visio" },
+    { id:"learning",        label:"MMO Learning" },
+    { id:"store_admin",     label:"Store / Accès" },
+    { id:"comm_admin",      label:"Communauté" },
+    { id:"partenaires",     label:"Partenaires" },
+    { id:"ressources",      label:"Chanson et Guide PDF" },
+    { id:"liens_paiement",  label:"Liens de paiement" },
+    { id:"newsletter",      label:"Newsletter" },
+    { id:"abonnes",         label:"Abonnés Newsletter" },
+    { id:"liste_attente",   label:"Liste d'attente" },
+    { id:"export",          label:"Export CSV" },
+    { id:"maintenance",     label:"Mode Maintenance" },
+    { id:"divider_membre", label:"── MON ESPACE ──", divider:true },
+    { id:"mon_compte",      label:"Mon Compte" },
+    { id:"mes_replays",     label:"Mes Replays" },
+    { id:"mes_guides",      label:"Mes Guides PDF" },
+    { id:"mon_temoignage",  label:"Mon Témoignage" },
+    { id:"mon_profil",      label:"Mon Profil" },
+    { id:"mon_certificat",  label:"Mon Certificat" },
   ];
 
   return (
@@ -2527,7 +2527,7 @@ function CommunauteAdminView({ api, toast }) {
   }
 
   async function toggleCle(id) {
-    await fetch(`/api/acces/admin/cles/${id}/toggle/`, {
+    await fetch(`/api/communaute/admin/cles/${id}/toggle/`, {
       method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }
     })
     load()
@@ -3544,7 +3544,11 @@ function MesReplaysView({ api, toast }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(()=>{
-    api('GET','/replays/').then(d=>{ setReplays(Array.isArray(d)?d:[]); setLoading(false) })
+    const token = localStorage.getItem('mmorphose_token')
+    fetch('/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => { setReplays(Array.isArray(d)?d:[]); setLoading(false) })
+      .catch(() => setLoading(false))
   },[])
 
   return (
@@ -3585,7 +3589,11 @@ function MesGuidesView({ api, toast }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(()=>{
-    api('GET','/guides/').then(d=>{ setGuides(Array.isArray(d)?d:[]); setLoading(false) })
+    const token = localStorage.getItem('mmorphose_token')
+    fetch('/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => { setGuides(Array.isArray(d)?d:[]); setLoading(false) })
+      .catch(() => setLoading(false))
   },[])
 
   return (
