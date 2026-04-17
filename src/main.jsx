@@ -18,7 +18,7 @@ if ('serviceWorker' in navigator) {
 (function keepAlive() {
   const INTERVAL = 14 * 60 * 1000; // 14 minutes
   function ping() {
-    fetch(`${API_BASE}/api/admin/config/public/', { method: 'GET' })
+    fetch(`${API_BASE}/api/admin/config/public/`, { method: 'GET' })
       .catch(() => {}); // silencieux — on s'en fout du résultat
   }
   // Premier ping après 2 minutes (laisser le temps au site de charger)
