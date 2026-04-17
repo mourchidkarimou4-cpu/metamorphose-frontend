@@ -33,6 +33,7 @@ import { MonCompteView, MesReplaysView,
 import { NotificationsView, MessageriView,
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
          VaguesView, ProgressionView,
          SatisfactionView, AgendaView } from './views/Nouvelles';
 
