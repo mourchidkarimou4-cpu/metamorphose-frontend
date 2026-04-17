@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { FORMULES } from '../constants';
 function CartesView({ api, toast }) {
   const [cartes,   setCartes]   = useState([]);
   const [loading,  setLoading]  = useState(true);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FORMULES } from '../constants';
 function StatsView({ stats }) {
   const PRIX = { F1:65000, F2:150000, F3:250000, F4:350000 };
 
