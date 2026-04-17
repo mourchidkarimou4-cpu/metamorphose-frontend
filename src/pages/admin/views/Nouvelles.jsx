@@ -9,7 +9,7 @@ function NotificationsView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch(`${API_BASE}/api/admin/notifications/?limit=50', {
+    fetch(`${API_BASE}/api/admin/notifications/?limit=50`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => {
       setNotifs(Array.isArray(d.results) ? d.results : [])
@@ -18,7 +18,7 @@ function NotificationsView({ api, toast }) {
   }
 
   async function marquerTousLus() {
-    await fetch(`${API_BASE}/api/admin/notifications/lu/', {
+    await fetch(`${API_BASE}/api/admin/notifications/lu/`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
     })
     charger()
@@ -98,7 +98,7 @@ function MessageriView({ api, toast }) {
   useEffect(() => { if (selected) chargerMessages(selected.id) }, [selected])
 
   function chargerConvs() {
-    fetch(`${API_BASE}/api/admin/conversations/', {
+    fetch(`${API_BASE}/api/admin/conversations/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => { setConvs(Array.isArray(d)?d:[]); setLoading(false) })
     .catch(() => setLoading(false))
@@ -200,7 +200,7 @@ function VaguesView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch(`${API_BASE}/api/admin/vagues/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/vagues/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setVagues(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -211,7 +211,7 @@ function VaguesView({ api, toast }) {
   }
 
   async function creer() {
-    const res = await fetch(`${API_BASE}/api/admin/vagues/', {
+    const res = await fetch(`${API_BASE}/api/admin/vagues/`, {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(form)
     })
@@ -366,7 +366,7 @@ function ProgressionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch(`${API_BASE}/api/admin/progression/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/progression/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setMembres(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -466,13 +466,13 @@ function SatisfactionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch(`${API_BASE}/api/admin/satisfactions/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/satisfactions/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setData(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
 
   async function envoyer() {
-    const res = await fetch(`${API_BASE}/api/admin/satisfaction/envoyer/', {
+    const res = await fetch(`${API_BASE}/api/admin/satisfaction/envoyer/`, {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(emailEnvoi.trim() ? { email: emailEnvoi.trim() } : {})
     })
@@ -565,7 +565,7 @@ function AgendaView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch(`${API_BASE}/api/agenda/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/agenda/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setSessions(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -575,7 +575,7 @@ function AgendaView({ api, toast }) {
       ...form,
       membres_invites: form.membres_invites.split(',').map(e=>e.trim()).filter(Boolean)
     }
-    const res = await fetch(`${API_BASE}/api/agenda/', {
+    const res = await fetch(`${API_BASE}/api/agenda/`, {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     })

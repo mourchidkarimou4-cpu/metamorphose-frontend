@@ -234,7 +234,7 @@ export default function Store() {
 
       if (token) {
         // mes-cours retourne les cours avec accès — on charge aussi la liste publique
-        const resPublic = await fetch(`${API_BASE}/api/learning/');
+        const resPublic = await fetch(`${API_BASE}/api/learning/`);
         const dataPublic = await resPublic.json();
         const idsAvecAcces = new Set((Array.isArray(data) ? data : []).map(c => c.id));
         const merged = (Array.isArray(dataPublic) ? dataPublic : []).map(c => ({

@@ -22,7 +22,7 @@ function MasterclassAdminView({ api, toast }) {
   async function charger() {
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch(`${API_BASE}/api/masterclass/admin/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    const res = await fetch(`${API_BASE}/api/masterclass/admin/`, { headers:{ 'Authorization':`Bearer ${token}` } })
     const data = await res.json()
     setMasterclasses(Array.isArray(data) ? data : [])
     setLoading(false)
@@ -80,7 +80,7 @@ function MasterclassAdminView({ api, toast }) {
       toast('Masterclass modifiée ✓', 'success')
     } else {
       const tkn2 = localStorage.getItem('mmorphose_token')
-      await fetch(`${API_BASE}/api/masterclass/admin/', { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`${API_BASE}/api/masterclass/admin/`, { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass créée ✓', 'success')
     }
     setSaving(false)

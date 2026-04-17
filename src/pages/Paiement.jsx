@@ -36,7 +36,7 @@ export default function PaiementPage() {
   async function chargerLiens() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/admin/config/public/');
+      const res = await fetch(`${API_BASE}/api/admin/config/public/`);
       const data = await res.json();
       if (Array.isArray(data)) {
         const l = {};

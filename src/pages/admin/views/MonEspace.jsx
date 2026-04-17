@@ -88,7 +88,7 @@ function MesReplaysView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch(`${API_BASE}/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/replays/`, { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setReplays(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
@@ -133,7 +133,7 @@ function MesGuidesView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch(`${API_BASE}/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/guides/`, { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setGuides(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
