@@ -21,11 +21,12 @@ export default function LiveMeeting() {
   const meetingRef = useRef(null);
   const zpRef = useRef(null);
 
+  const { user: authUser } = useAuth();
+
   /* ── Charger infos salle ── */
   useEffect(() => {
     api.get(`/api/live/${roomId}/`).then(r => { setRoomInfo(r.data); }).catch(() => setError("Impossible de joindre la salle."));
-    const { user: authUser } = useAuth(); const user = authUser;
-    if (user?.prenom || user?.first_name) setMyName(user.prenom || user.first_name || user.email || "");
+    if (authUser?.prenom || authUser?.first_name) setMyName(authUser.prenom || authUser.first_name || authUser.email || "");
   }, [roomId]);
 
   /* ── Cleanup ── */
@@ -44,9 +45,9 @@ export default function LiveMeeting() {
     setError("");
 
     try {
-      const { token } = useAuth();
+      const savedToken = localStorage.getItem("mmorphose_token");
       const headers = { "Content-Type": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
+      if (savedToken) headers["Authorization"] = `Bearer ${savedToken}`;
 
       const res = await fetch(`/api/live/${roomId}/rejoindre/`, {
         method: "POST",
