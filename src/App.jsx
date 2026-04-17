@@ -71,11 +71,24 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(isLandingRef.current);
 
   useEffect(() => {
+    // Vérifier d'abord le cache localStorage
+    try {
+      const cached = localStorage.getItem('mmo_site_config');
+      if (cached) {
+        const map = JSON.parse(cached);
+        if (map.maintenance_active === '1') setMaintenance(true);
+      }
+    } catch {}
+    // Puis vérifier le backend en arrière-plan
     fetch('/api/admin/config/public/')
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
-        const m = Array.isArray(data) && data.find(c => c.cle === 'maintenance_active');
-        if (m?.valeur === '1') setMaintenance(true);
+        if (!Array.isArray(data)) return;
+        const map = {};
+        data.forEach(c => { map[c.cle] = c.valeur; });
+        try { localStorage.setItem('mmo_site_config', JSON.stringify(map)); } catch {}
+        if (map.maintenance_active === '1') setMaintenance(true);
+        else setMaintenance(false);
       })
       .catch(() => {});
   }, []);

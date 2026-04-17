@@ -165,14 +165,25 @@ function useScrollTheme() {
   return progress;
 }
 
+const CACHE_KEY = 'mmo_site_config';
+
 function useSiteContent() {
-  const [content, setContent] = useState({});
-  const [loaded,  setLoaded]  = useState(false);
+  // Charger depuis le cache localStorage immédiatement — pas d'attente réseau
+  const [content, setContent] = useState(() => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      return cached ? JSON.parse(cached) : {};
+    } catch { return {}; }
+  });
+  const [loaded, setLoaded] = useState(() => {
+    try { return !!localStorage.getItem(CACHE_KEY); } catch { return false; }
+  });
 
   useEffect(() => {
     let cancelled = false;
     let attempts  = 0;
-    const MAX_ATTEMPTS = 5;
+    const MAX_ATTEMPTS = 8;
+
     function fetchContent() {
       fetch(`/api/admin/config/public/`)
         .then(r => {
@@ -183,6 +194,8 @@ function useSiteContent() {
           if (cancelled) return;
           const map = {};
           if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
+          // Sauvegarder en cache localStorage pour la prochaine visite
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify(map)); } catch {}
           setContent(map);
           setLoaded(true);
         })
@@ -190,14 +203,15 @@ function useSiteContent() {
           if (cancelled) return;
           attempts++;
           if (attempts < MAX_ATTEMPTS) {
-            setTimeout(fetchContent, 6000);
+            // Retry exponentiel : 3s, 6s, 12s, 24s...
+            setTimeout(fetchContent, Math.min(3000 * Math.pow(1.5, attempts), 30000));
           }
-          // Après 5 tentatives (~30s) on arrête — le site reste fonctionnel avec les valeurs par défaut
         });
     }
     fetchContent();
     return () => { cancelled = true; };
   }, []);
+
   const get = (cle, defaut = "") => content[cle] || defaut;
 
   // Appliquer le favicon dynamiquement
