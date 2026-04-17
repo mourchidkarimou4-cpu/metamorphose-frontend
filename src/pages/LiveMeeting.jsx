@@ -150,7 +150,7 @@ export default function LiveMeeting() {
 
       // Fallback : URL Daily sans token (participant anonyme)
       const roomName = roomId.replace(/-/g, '');
-      setMeetingUrl(`https://metamorphose.daily.co/${roomName}`);
+      setMeetingUrl(`https://masterclass-ose-live.daily.co/${roomName}`);
       setPhase("meeting");
     } catch (err) {
       setError("Erreur réseau. Réessayez.");
