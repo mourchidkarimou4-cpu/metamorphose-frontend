@@ -1,26 +1,16 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://metamorphose-backend.onrender.com/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://metamorphose-backend.onrender.com/api/$1"
     },
     {
-      "source": "/media/:path*",
-      "destination": "https://metamorphose-backend.onrender.com/media/:path*"
+      "src": "/media/(.*)",
+      "dest": "https://metamorphose-backend.onrender.com/media/$1"
     },
     {
-      "source": "/((?!api|media).*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,PATCH,DELETE,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Authorization,Content-Type,Accept" }
-      ]
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
