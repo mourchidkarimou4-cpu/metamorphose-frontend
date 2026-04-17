@@ -423,6 +423,3 @@ export default function AdminDashboard() {
     </>
   );
 }
-
-/* ================================================================
-   MMO LEARNING VIEW — Gestion des cours et catégories
