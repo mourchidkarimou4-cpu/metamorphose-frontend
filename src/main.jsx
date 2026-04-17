@@ -14,6 +14,20 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Garder le backend Render éveillé — ping toutes les 14 minutes
+(function keepAlive() {
+  const INTERVAL = 14 * 60 * 1000; // 14 minutes
+  function ping() {
+    fetch('/api/admin/config/public/', { method: 'GET' })
+      .catch(() => {}); // silencieux — on s'en fout du résultat
+  }
+  // Premier ping après 2 minutes (laisser le temps au site de charger)
+  setTimeout(() => {
+    ping();
+    setInterval(ping, INTERVAL);
+  }, 2 * 60 * 1000);
+})();
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
