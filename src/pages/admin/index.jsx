@@ -365,7 +365,7 @@ export default function AdminDashboard() {
     if (!savedToken || !user) { navigate("/espace-membre"); return; }
     if (!user.is_staff)       { navigate("/dashboard"); return; }
     // Charger les stats puis afficher le dashboard
-    fetch(`${API_BASE}/api/admin/stats/", {
+    fetch(`${API_BASE}/api/admin/stats/`, {
       headers: { "Authorization": `Bearer ${savedToken}` }
     })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })

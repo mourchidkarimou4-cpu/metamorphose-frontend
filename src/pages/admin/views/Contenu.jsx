@@ -201,7 +201,7 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch(`${API_BASE}/api/admin/config/", {
+    fetch(`${API_BASE}/api/admin/config/`, {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
     })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })

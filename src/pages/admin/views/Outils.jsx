@@ -10,7 +10,7 @@ function RessourcesAdminView({ api, toast, refreshKey = 0 }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch(`${API_BASE}/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/config/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : [])
       .then(d => {
       if (d) {
@@ -320,7 +320,7 @@ function MaintenanceView({ api, toast }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch(`${API_BASE}/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/config/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : [])
       .then(d => {
       if(d) {
