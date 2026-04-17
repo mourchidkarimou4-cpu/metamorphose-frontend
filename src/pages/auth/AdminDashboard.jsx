@@ -4,6 +4,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
 import { learningAPI } from '../../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
    Sections : Stats · Membres · Demandes · Replays · Guides · Config
@@ -171,7 +173,7 @@ function useAdminAPI() {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`/api/admin${path}`, opts);
+    const res = await fetch(`${API_BASE}/api/admin${path}`, opts);
     if (res.status === 401) { navigate("/espace-membre"); return null; }
     if (res.status === 204) return true;
     return res.json();
@@ -982,7 +984,7 @@ function ImagesView({ api, toast }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch(`/api/admin/images/upload/`, {
+        const res = await fetch(`${API_BASE}/api/admin/images/upload/`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,
@@ -1147,7 +1149,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch(`/api/cadeaux/admin/liste/`, {
+    fetch(`${API_BASE}/api/cadeaux/admin/liste/`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
@@ -1156,7 +1158,7 @@ function CartesView({ api, toast }) {
   }, []);
 
   async function activer(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/activer/`, {
+    const res = await fetch(`${API_BASE}/api/cadeaux/admin/${c.id}/activer/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1168,7 +1170,7 @@ function CartesView({ api, toast }) {
   }
 
   async function marquerUtilisee(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/utiliser/`, {
+    const res = await fetch(`${API_BASE}/api/cadeaux/admin/${c.id}/utiliser/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -1342,7 +1344,7 @@ function TemoignagesView({ api, toast }) {
 
   function fetchTemos() {
     setLoading(true);
-    fetch(`/api/avis/admin/?statut=${filter}`, {
+    fetch(`${API_BASE}/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.json())
@@ -1405,7 +1407,7 @@ function TemoignagesView({ api, toast }) {
   }
 
   async function action(id, type) {
-    const res = await fetch(`/api/avis/admin/${id}/${type}/`, {
+    const res = await fetch(`${API_BASE}/api/avis/admin/${id}/${type}/`, {
       method:"POST", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.ok) { fetchTemos(); setModal(null); toast(type==="approuver"?"Approuvé":"Refusé", type==="approuver"?"success":"error"); }
@@ -1413,7 +1415,7 @@ function TemoignagesView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce témoignage ?")) return;
-    const res = await fetch(`/api/avis/admin/${id}/supprimer/`, {
+    const res = await fetch(`${API_BASE}/api/avis/admin/${id}/supprimer/`, {
       method:"DELETE", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.status === 204) { fetchTemos(); setModal(null); toast("Supprimé", "error"); }
@@ -1717,7 +1719,7 @@ function RessourcesAdminView({ api, toast }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch(`/api/admin/images/upload/`, {
+      const res = await fetch(`${API_BASE}/api/admin/images/upload/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -1832,7 +1834,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
-    fetch(`/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
+    fetch(`${API_BASE}/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -1840,7 +1842,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch(`/api/admin/liste-attente/notifier/`, {
+    const res = await fetch(`${API_BASE}/api/admin/liste-attente/notifier/`, {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -1894,7 +1896,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch(`/api/admin/newsletter/`, {
+      const res = await fetch(`${API_BASE}/api/admin/newsletter/`, {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -2010,7 +2012,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch(`/api/admin/maintenance/`, {
+    await fetch(`${API_BASE}/api/admin/maintenance/`, {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })
@@ -2075,7 +2077,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch(`/api/auth/update-profile/`, {
+      const res = await fetch(`${API_BASE}/api/auth/update-profile/`, {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -2091,7 +2093,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch(`/api/auth/change-password/`, {
+      const res = await fetch(`${API_BASE}/api/auth/change-password/`, {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });
@@ -2148,7 +2150,7 @@ function LiveAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/live/mes-salles/`, {
+    fetch(`${API_BASE}/api/live/mes-salles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setSalles(Array.isArray(d) ? d : []); setLoading(false) })
@@ -2160,7 +2162,7 @@ function LiveAdminView({ api, toast }) {
     if (!form.titre.trim()) { toast('Titre requis', 'error'); return }
     setCreating(true)
     try {
-      const res = await fetch(`/api/live/creer/`, {
+      const res = await fetch(`${API_BASE}/api/live/creer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -2177,7 +2179,7 @@ function LiveAdminView({ api, toast }) {
 
   async function terminer(id) {
     if (!confirm('Terminer cette réunion ?')) return
-    await fetch(`/api/live/${id}/terminer/`, {
+    await fetch(`${API_BASE}/api/live/${id}/terminer/`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -2284,7 +2286,7 @@ function EvenementsAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/evenements/admin/`, {
+    fetch(`${API_BASE}/api/evenements/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setEvts(Array.isArray(d)?d:[]); setLoading(false) })
@@ -2330,7 +2332,7 @@ function EvenementsAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cet événement ?')) return
-    await fetch(`/api/evenements/admin/${id}/`, {
+    await fetch(`${API_BASE}/api/evenements/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()
@@ -2429,7 +2431,7 @@ function ActualitesAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/evenements/actualites/admin/`, {
+    fetch(`${API_BASE}/api/evenements/actualites/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setActus(Array.isArray(d)?d:[]); setLoading(false) })
@@ -2475,7 +2477,7 @@ function ActualitesAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cette actualité ?')) return
-    await fetch(`/api/evenements/actualites/admin/${id}/`, {
+    await fetch(`${API_BASE}/api/evenements/actualites/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()
@@ -2562,7 +2564,7 @@ function CommunauteAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/communaute/admin/cles/`, {
+    fetch(`${API_BASE}/api/communaute/admin/cles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setCles(Array.isArray(d)?d:[]); setLoading(false) })
@@ -2574,7 +2576,7 @@ function CommunauteAdminView({ api, toast }) {
     if (!email.trim()) { toast('Email requis', 'error'); return }
     setGenerating(true)
     try {
-      const res = await fetch(`/api/communaute/admin/cles/generer/`, {
+      const res = await fetch(`${API_BASE}/api/communaute/admin/cles/generer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -2590,7 +2592,7 @@ function CommunauteAdminView({ api, toast }) {
   }
 
   async function toggleCle(id) {
-    await fetch(`/api/communaute/admin/cles/${id}/toggle/`, {
+    await fetch(`${API_BASE}/api/communaute/admin/cles/${id}/toggle/`, {
       method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }
     })
     load()
@@ -2895,7 +2897,7 @@ function LearningView({ api, toast }) {
   function apiL(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/learning/admin${path}`, opts).then(r => {
+    return fetch(`${API_BASE}/api/learning/admin${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })
@@ -3142,7 +3144,7 @@ function PartenairesView({ api, toast }) {
   function apiP(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/admin/partenaires${path}`, opts).then(r => {
+    return fetch(`${API_BASE}/api/admin/partenaires${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })
@@ -3326,7 +3328,7 @@ function TicketsView({ api, toast }) {
   function apiT(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
+    return fetch(`${API_BASE}/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
   }
 
   function loadEvenements() {
@@ -3535,13 +3537,13 @@ function AbonnesView({ api, toast }) {
   function apiA(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
+    return fetch(`${API_BASE}/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
   }
 
   function load() {
     setLoading(true)
     // Charger les abonnés newsletter via l'export CSV admin
-    fetch(`/api/admin/export/abonnes/`, {
+    fetch(`${API_BASE}/api/admin/export/abonnes/`, {
       headers:{'Authorization':`Bearer ${token}`}
     })
     .then(r => r.ok ? r.text() : Promise.reject())
@@ -3614,7 +3616,7 @@ function MesReplaysView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch('/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setReplays(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
@@ -3659,7 +3661,7 @@ function MesGuidesView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch('/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setGuides(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
@@ -3706,7 +3708,7 @@ function MonTemoignageView({ api, toast }) {
     if (!form.texte.trim()) { toast('Veuillez écrire votre témoignage','error'); return }
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch(`/api/avis/soumettre/`, {
+    const res = await fetch(`${API_BASE}/api/avis/soumettre/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3777,7 +3779,7 @@ function MonProfilView({ api, toast }) {
 
   async function sauvegarder() {
     setLoading(true)
-    const res = await fetch(`/api/auth/update-profile/`, {
+    const res = await fetch(`${API_BASE}/api/auth/update-profile/`, {
       method:'PATCH',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -3789,7 +3791,7 @@ function MonProfilView({ api, toast }) {
 
   async function changerMdp() {
     if (!mdp.old_password || !mdp.new_password) { toast('Remplissez les deux champs','error'); return }
-    const res = await fetch(`/api/auth/change-password/`, {
+    const res = await fetch(`${API_BASE}/api/auth/change-password/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(mdp)
@@ -3845,7 +3847,7 @@ function MonCertificatView({ toast }) {
   async function telecharger() {
     setLoading(true)
     try {
-      const res = await fetch(`/api/auth/certificat/`, {
+      const res = await fetch(`${API_BASE}/api/auth/certificat/`, {
         headers:{'Authorization':`Bearer ${token}`}
       })
       if (!res.ok) { toast('Erreur génération certificat','error'); setLoading(false); return }
@@ -3907,7 +3909,7 @@ function MasterclassAdminView({ api, toast }) {
   async function charger() {
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch('/api/masterclass/admin/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    const res = await fetch(`${API_BASE}/api/masterclass/admin/', { headers:{ 'Authorization':`Bearer ${token}` } })
     const data = await res.json()
     setMasterclasses(Array.isArray(data) ? data : [])
     setLoading(false)
@@ -3915,7 +3917,7 @@ function MasterclassAdminView({ api, toast }) {
 
   async function chargerReservations(id) {
     const token2 = localStorage.getItem('mmorphose_token')
-    const res2 = await fetch(`/api/masterclass/admin/${id}/reservations/`, { headers:{ 'Authorization':`Bearer ${token2}` } })
+    const res2 = await fetch(`${API_BASE}/api/masterclass/admin/${id}/reservations/`, { headers:{ 'Authorization':`Bearer ${token2}` } })
     const data = await res2.json()
     setReservations(Array.isArray(data) ? data : [])
   }
@@ -3961,11 +3963,11 @@ function MasterclassAdminView({ api, toast }) {
     const payload = { titre:form.titre, description:form.description, date:form.date, lieu:form.lieu, places_max:parseInt(form.places_max)||50, est_active:form.est_active, gratuite:form.gratuite, lien_live:form.lien_live, image:image_url }
     if (selected) {
       const tkn = localStorage.getItem('mmorphose_token')
-      await fetch(`/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`${API_BASE}/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass modifiée ✓', 'success')
     } else {
       const tkn2 = localStorage.getItem('mmorphose_token')
-      await fetch('/api/masterclass/admin/', { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`${API_BASE}/api/masterclass/admin/', { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass créée ✓', 'success')
     }
     setSaving(false)
@@ -3977,7 +3979,7 @@ function MasterclassAdminView({ api, toast }) {
   async function supprimer(id) {
     if (!window.confirm('Supprimer cette masterclass ?')) return
     const tknd = localStorage.getItem('mmorphose_token')
-    await fetch(`/api/masterclass/admin/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${tknd}` } })
+    await fetch(`${API_BASE}/api/masterclass/admin/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${tknd}` } })
     toast('Supprimée ✓', 'success')
     charger()
   }
@@ -4190,7 +4192,7 @@ function NotificationsView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/notifications/?limit=50', {
+    fetch(`${API_BASE}/api/admin/notifications/?limit=50', {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => {
       setNotifs(Array.isArray(d.results) ? d.results : [])
@@ -4199,7 +4201,7 @@ function NotificationsView({ api, toast }) {
   }
 
   async function marquerTousLus() {
-    await fetch('/api/admin/notifications/lu/', {
+    await fetch(`${API_BASE}/api/admin/notifications/lu/', {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
     })
     charger()
@@ -4207,7 +4209,7 @@ function NotificationsView({ api, toast }) {
   }
 
   async function marquerLu(id) {
-    await fetch(`/api/admin/notifications/${id}/lu/`, {
+    await fetch(`${API_BASE}/api/admin/notifications/${id}/lu/`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
     })
     setNotifs(prev => prev.map(n => n.id === id ? {...n, lu: true} : n))
@@ -4279,21 +4281,21 @@ function MessageriView({ api, toast }) {
   useEffect(() => { if (selected) chargerMessages(selected.id) }, [selected])
 
   function chargerConvs() {
-    fetch('/api/admin/conversations/', {
+    fetch(`${API_BASE}/api/admin/conversations/', {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => { setConvs(Array.isArray(d)?d:[]); setLoading(false) })
     .catch(() => setLoading(false))
   }
 
   function chargerMessages(membreId) {
-    fetch(`/api/messages/${membreId}/`, {
+    fetch(`${API_BASE}/api/messages/${membreId}/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => { setMessages(Array.isArray(d)?d:[]) })
   }
 
   async function envoyer() {
     if (!input.trim() || !selected) return
-    const res = await fetch(`/api/messages/${selected.id}/`, {
+    const res = await fetch(`${API_BASE}/api/messages/${selected.id}/`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ contenu: input.trim() })
@@ -4381,18 +4383,18 @@ function VaguesView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/vagues/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/vagues/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setVagues(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
 
   function ouvrirDetail(v) {
-    fetch(`/api/admin/vagues/${v.id}/`, { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/vagues/${v.id}/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setSelected(d); setModal('detail') })
   }
 
   async function creer() {
-    const res = await fetch('/api/admin/vagues/', {
+    const res = await fetch(`${API_BASE}/api/admin/vagues/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(form)
     })
@@ -4401,7 +4403,7 @@ function VaguesView({ api, toast }) {
   }
 
   async function changerStatut(id, statut) {
-    await fetch(`/api/admin/vagues/${id}/`, {
+    await fetch(`${API_BASE}/api/admin/vagues/${id}/`, {
       method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({ statut })
     })
@@ -4412,7 +4414,7 @@ function VaguesView({ api, toast }) {
 
   async function ajouterMembre() {
     if (!emailAdd.trim() || !selected) return
-    const res = await fetch(`/api/admin/vagues/${selected.id}/membres/`, {
+    const res = await fetch(`${API_BASE}/api/admin/vagues/${selected.id}/membres/`, {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({ email: emailAdd.trim() })
     })
@@ -4422,7 +4424,7 @@ function VaguesView({ api, toast }) {
   }
 
   async function retirerMembre(membreId) {
-    await fetch(`/api/admin/vagues/${selected.id}/membres/${membreId}/`, {
+    await fetch(`${API_BASE}/api/admin/vagues/${selected.id}/membres/${membreId}/`, {
       method:'DELETE', headers:{'Authorization':`Bearer ${token}`}
     })
     ouvrirDetail(selected)
@@ -4547,7 +4549,7 @@ function ProgressionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/progression/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/progression/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setMembres(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -4560,12 +4562,12 @@ function ProgressionView({ api, toast }) {
   async function sauvegarder() {
     const membreId = membres.find(m=>m.membre_email===selected.membre_email)?.id
     // On cherche l'ID via l'email
-    const usersRes = await fetch(`/api/membres/?search=${selected.membre_email}`, { headers:{ 'Authorization':`Bearer ${token}` } })
+    const usersRes = await fetch(`${API_BASE}/api/membres/?search=${selected.membre_email}`, { headers:{ 'Authorization':`Bearer ${token}` } })
     const users    = await usersRes.json()
     const user     = Array.isArray(users) ? users[0] : users?.results?.[0]
     if (!user) { toast('Membre introuvable','error'); return }
 
-    const res = await fetch(`/api/admin/progression/${user.id}/`, {
+    const res = await fetch(`${API_BASE}/api/admin/progression/${user.id}/`, {
       method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(form)
     })
@@ -4647,13 +4649,13 @@ function SatisfactionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/satisfactions/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/satisfactions/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setData(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
 
   async function envoyer() {
-    const res = await fetch('/api/admin/satisfaction/envoyer/', {
+    const res = await fetch(`${API_BASE}/api/admin/satisfaction/envoyer/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(emailEnvoi.trim() ? { email: emailEnvoi.trim() } : {})
     })
@@ -4746,7 +4748,7 @@ function AgendaView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/agenda/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/agenda/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setSessions(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -4756,7 +4758,7 @@ function AgendaView({ api, toast }) {
       ...form,
       membres_invites: form.membres_invites.split(',').map(e=>e.trim()).filter(Boolean)
     }
-    const res = await fetch('/api/agenda/', {
+    const res = await fetch(`${API_BASE}/api/agenda/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     })
@@ -4766,13 +4768,13 @@ function AgendaView({ api, toast }) {
 
   async function supprimerSession(id) {
     if (!window.confirm('Supprimer cette session ?')) return
-    await fetch(`/api/agenda/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` } })
+    await fetch(`${API_BASE}/api/agenda/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` } })
     charger()
     toast('Session supprimée','success')
   }
 
   async function envoyerRappel(id) {
-    const res = await fetch(`/api/agenda/${id}/rappel/`, {
+    const res = await fetch(`${API_BASE}/api/agenda/${id}/rappel/`, {
       method:'POST', headers:{ 'Authorization':`Bearer ${token}` }
     })
     const d = await res.json()

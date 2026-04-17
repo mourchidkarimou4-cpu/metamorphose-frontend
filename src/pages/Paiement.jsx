@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -34,7 +36,7 @@ export default function PaiementPage() {
   async function chargerLiens() {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/config/public/');
+      const res = await fetch(`${API_BASE}/api/admin/config/public/');
       const data = await res.json();
       if (Array.isArray(data)) {
         const l = {};

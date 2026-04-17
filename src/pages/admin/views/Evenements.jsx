@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function EvenementsAdminView({ api, toast }) {
   const [evts,    setEvts]    = useState([])
   const [loading, setLoading] = useState(true)
@@ -10,7 +12,7 @@ function EvenementsAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/evenements/admin/`, {
+    fetch(`${API_BASE}/api/evenements/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setEvts(Array.isArray(d)?d:[]); setLoading(false) })
@@ -56,7 +58,7 @@ function EvenementsAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cet événement ?')) return
-    await fetch(`/api/evenements/admin/${id}/`, {
+    await fetch(`${API_BASE}/api/evenements/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()
@@ -155,7 +157,7 @@ function ActualitesAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/evenements/actualites/admin/`, {
+    fetch(`${API_BASE}/api/evenements/actualites/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setActus(Array.isArray(d)?d:[]); setLoading(false) })
@@ -201,7 +203,7 @@ function ActualitesAdminView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm('Supprimer cette actualité ?')) return
-    await fetch(`/api/evenements/actualites/admin/${id}/`, {
+    await fetch(`${API_BASE}/api/evenements/actualites/admin/${id}/`, {
       method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` }
     })
     toast('Supprimé', 'success'); load()

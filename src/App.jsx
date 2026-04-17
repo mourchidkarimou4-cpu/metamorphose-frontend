@@ -31,6 +31,8 @@ import Actualites      from './pages/Actualites'
 import ScanTicket      from './pages/ScanTicket'
 import Logout          from './pages/Logout'
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 /* ── Route protégée membre (clientes) ─────────────────────── */
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
@@ -80,7 +82,7 @@ export default function App() {
         if (map.maintenance_active === '1') setMaintenance(true);
       }
     } catch {}
-    fetch('/api/admin/config/public/')
+    fetch(`${API_BASE}/api/admin/config/public/')
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
         if (!Array.isArray(data)) return;

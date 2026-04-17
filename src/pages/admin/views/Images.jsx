@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function ImagesView({ api, toast, refreshKey = 0 }) {
   const [uploading, setUploading] = useState({});
   const [previews,  setPreviews]  = useState({});
@@ -6,7 +8,7 @@ function ImagesView({ api, toast, refreshKey = 0 }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : [])
       .then(d => {
       if (d) {
@@ -63,7 +65,7 @@ function ImagesView({ api, toast, refreshKey = 0 }) {
       formData.append("section", cle.startsWith("slide_") ? "slides" : "images");
 
       try {
-        const res = await fetch(`/api/admin/images/upload/`, {
+        const res = await fetch(`${API_BASE}/api/admin/images/upload/`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,

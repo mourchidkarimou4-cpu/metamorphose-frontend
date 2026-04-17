@@ -5,6 +5,8 @@ import AuraButton from '../components/AuraButton';
 import { Link, useNavigate } from "react-router-dom";
 import { learningAPI } from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -232,7 +234,7 @@ export default function Store() {
 
       if (token) {
         // mes-cours retourne les cours avec accès — on charge aussi la liste publique
-        const resPublic = await fetch('/api/learning/');
+        const resPublic = await fetch(`${API_BASE}/api/learning/');
         const dataPublic = await resPublic.json();
         const idsAvecAcces = new Set((Array.isArray(data) ? data : []).map(c => c.id));
         const merged = (Array.isArray(dataPublic) ? dataPublic : []).map(c => ({

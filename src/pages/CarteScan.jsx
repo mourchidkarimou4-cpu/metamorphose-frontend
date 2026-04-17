@@ -5,6 +5,8 @@ import usePageBackground from "../hooks/usePageBackground";
 import { useParams, Link } from "react-router-dom";
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 /* ================================================================
    PAGE SCAN QR CODE — /carte/:code
    Accessible depuis le QR code sur la carte cadeau
@@ -44,7 +46,7 @@ export default function CarteScan() {
   const isAdmin = user?.is_staff || false;
 
   useEffect(() => {
-    fetch(`/api/cadeaux/verifier/${code}/`)
+    fetch(`${API_BASE}/api/cadeaux/verifier/${code}/`)
       .then(r => r.json())
       .then(data => {
         setCarte(data);
@@ -68,7 +70,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
+      const res2 = await fetch(`${API_BASE}/api/cadeaux/admin/${carteAdmin.id}/activer/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -94,7 +96,7 @@ export default function CarteScan() {
       const carteAdmin = cartes.find(c => c.code === code);
       if (!carteAdmin) { setActionMsg("Carte introuvable."); return; }
 
-      const res2 = await fetch(`/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
+      const res2 = await fetch(`${API_BASE}/api/cadeaux/admin/${carteAdmin.id}/utiliser/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ email: carteAdmin.destinataire_email })

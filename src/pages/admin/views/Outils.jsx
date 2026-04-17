@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function RessourcesAdminView({ api, toast, refreshKey = 0 }) {
   const [configs,   setConfigs]   = useState({});
   const [loading,   setLoading]   = useState(true);
@@ -8,7 +10,7 @@ function RessourcesAdminView({ api, toast, refreshKey = 0 }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : [])
       .then(d => {
       if (d) {
@@ -39,7 +41,7 @@ function RessourcesAdminView({ api, toast, refreshKey = 0 }) {
     formData.append("section", "ressources");
 
     try {
-      const res = await fetch(`/api/admin/images/upload/`, {
+      const res = await fetch(`${API_BASE}/api/admin/images/upload/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
@@ -154,7 +156,7 @@ function ListeAttenteView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
-    fetch(`/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
+    fetch(`${API_BASE}/api/admin/liste-attente/`, { headers:{"Authorization":`Bearer ${token}`} })
     .then(r=>r.json()).then(d=>{ setListe(Array.isArray(d)?d:[]); setLoading(false); })
     .catch(()=>setLoading(false));
   }, []);
@@ -162,7 +164,7 @@ function ListeAttenteView({ api, toast }) {
   async function notifier() {
     if(!confirm(`Envoyer un email d'ouverture à ${liste.filter(p=>!p.notifie).length} personnes ?`)) return;
     setNotifying(true);
-    const res = await fetch(`/api/admin/liste-attente/notifier/`, {
+    const res = await fetch(`${API_BASE}/api/admin/liste-attente/notifier/`, {
       method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ url: window.location.origin })
     });
@@ -216,7 +218,7 @@ function NewsletterView({ api, toast }) {
     if(!confirm(`Envoyer cet email à tous les membres (${cible}) ?`)) return;
     setSending(true);
     try {
-      const res = await fetch(`/api/admin/newsletter/`, {
+      const res = await fetch(`${API_BASE}/api/admin/newsletter/`, {
         method:"POST",
         headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ sujet, message, cible })
@@ -318,7 +320,7 @@ function MaintenanceView({ api, toast }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : [])
       .then(d => {
       if(d) {
@@ -335,7 +337,7 @@ function MaintenanceView({ api, toast }) {
     const nouvelEtat = !actif;
     if(nouvelEtat && !confirm("Activer le mode maintenance va rendre le site inaccessible aux visiteurs. Confirmer ?")) return;
     setActif(nouvelEtat);
-    await fetch(`/api/admin/maintenance/`, {
+    await fetch(`${API_BASE}/api/admin/maintenance/`, {
       method:"POST",
       headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
       body: JSON.stringify({ actif: nouvelEtat })

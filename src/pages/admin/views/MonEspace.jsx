@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function MonCompteView({ toast }) {
   const { token, user, updateUser } = useAuth();
   const [email,       setEmail]       = useState(user?.email      || "");
@@ -16,7 +18,7 @@ function MonCompteView({ toast }) {
     e.preventDefault();
     setSavingInfo(true);
     try {
-      const res = await fetch(`/api/auth/update-profile/`, {
+      const res = await fetch(`${API_BASE}/api/auth/update-profile/`, {
         method:"PATCH", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ email, first_name:firstName, last_name:lastName, whatsapp }),
       });
@@ -32,7 +34,7 @@ function MonCompteView({ toast }) {
     if (newPassword !== confirmPass)  { toast("Mots de passe différents","error"); return; }
     setSavingPass(true);
     try {
-      const res = await fetch(`/api/auth/change-password/`, {
+      const res = await fetch(`${API_BASE}/api/auth/change-password/`, {
         method:"POST", headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
         body: JSON.stringify({ old_password:oldPassword, new_password:newPassword }),
       });
@@ -86,7 +88,7 @@ function MesReplaysView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch('/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/replays/', { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setReplays(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
@@ -131,7 +133,7 @@ function MesGuidesView({ api, toast }) {
 
   useEffect(()=>{
     const token = localStorage.getItem('mmorphose_token')
-    fetch('/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/contenu/guides/', { headers:{ 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { setGuides(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
@@ -178,7 +180,7 @@ function MonTemoignageView({ api, toast }) {
     if (!form.texte.trim()) { toast('Veuillez écrire votre témoignage','error'); return }
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch(`/api/avis/soumettre/`, {
+    const res = await fetch(`${API_BASE}/api/avis/soumettre/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -249,7 +251,7 @@ function MonProfilView({ api, toast }) {
 
   async function sauvegarder() {
     setLoading(true)
-    const res = await fetch(`/api/auth/update-profile/`, {
+    const res = await fetch(`${API_BASE}/api/auth/update-profile/`, {
       method:'PATCH',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(form)
@@ -261,7 +263,7 @@ function MonProfilView({ api, toast }) {
 
   async function changerMdp() {
     if (!mdp.old_password || !mdp.new_password) { toast('Remplissez les deux champs','error'); return }
-    const res = await fetch(`/api/auth/change-password/`, {
+    const res = await fetch(`${API_BASE}/api/auth/change-password/`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify(mdp)
@@ -317,7 +319,7 @@ function MonCertificatView({ toast }) {
   async function telecharger() {
     setLoading(true)
     try {
-      const res = await fetch(`/api/auth/certificat/`, {
+      const res = await fetch(`${API_BASE}/api/auth/certificat/`, {
         headers:{'Authorization':`Bearer ${token}`}
       })
       if (!res.ok) { toast('Erreur génération certificat','error'); setLoading(false); return }

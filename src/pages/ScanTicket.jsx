@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 export default function ScanTicket() {
   const [params]  = useSearchParams()
   const code      = params.get('code')
@@ -17,7 +19,7 @@ export default function ScanTicket() {
   async function verifier(c) {
     setLoading(true);setResult(null)
     try {
-      const res  = await fetch(`/api/tickets/verifier/${c}/`)
+      const res  = await fetch(`${API_BASE}/api/tickets/verifier/${c}/`)
       const data = await res.json()
       setResult({...data,code:c})
     } catch { setResult({valide:false,detail:'Erreur réseau'}) }
@@ -28,7 +30,7 @@ export default function ScanTicket() {
     if(!result?.code) return
     setScanning(true)
     try {
-      const res  = await fetch(`/api/tickets/scanner/${result.code}/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}})
+      const res  = await fetch(`${API_BASE}/api/tickets/scanner/${result.code}/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}})
       const data = await res.json()
       setResult(prev=>({...prev,...data,scanned:true}))
     } catch { setResult(prev=>({...prev,detail:'Erreur lors du scan'})) }

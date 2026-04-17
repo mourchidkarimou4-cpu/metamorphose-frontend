@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function TicketsView({ api, toast }) {
   const [onglet,     setOnglet]     = useState('evenements')
   const [evenements, setEvenements] = useState([])
@@ -14,7 +16,7 @@ function TicketsView({ api, toast }) {
   function apiT(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
+    return fetch(`${API_BASE}/api/tickets${path}`, opts).then(r => r.status===204 ? true : r.json())
   }
 
   function loadEvenements() {

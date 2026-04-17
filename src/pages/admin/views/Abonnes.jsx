@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function AbonnesView({ api, toast }) {
   const [abonnes,  setAbonnes]  = useState([])
   const [loading,  setLoading]  = useState(true)
@@ -8,13 +10,13 @@ function AbonnesView({ api, toast }) {
   function apiA(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
+    return fetch(`${API_BASE}/api/contenu/newsletter${path}`, opts).then(r => r.status===204?true:r.json())
   }
 
   function load() {
     setLoading(true)
     // Charger les abonnés newsletter via l'export CSV admin
-    fetch(`/api/admin/export/abonnes/`, {
+    fetch(`${API_BASE}/api/admin/export/abonnes/`, {
       headers:{'Authorization':`Bearer ${token}`}
     })
     .then(r => r.ok ? r.text() : Promise.reject())

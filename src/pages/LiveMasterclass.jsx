@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 /* ── STYLES ─────────────────────────────────────────────────── */
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
@@ -196,8 +198,8 @@ export default function LiveMasterclass() {
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
     Promise.all([
-      fetch(`/api/live/${isAdmin ? 'mes-salles' : 'salles-actives'}/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`/api/contenu/replays/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch(`${API_BASE}/api/live/${isAdmin ? 'mes-salles' : 'salles-actives'}/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch(`${API_BASE}/api/contenu/replays/`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
     ]).then(([sallesData, replaysData]) => {
       setSalles(Array.isArray(sallesData) ? sallesData : []);
       setReplays(Array.isArray(replaysData) ? replaysData : []);
@@ -211,7 +213,7 @@ export default function LiveMasterclass() {
     setCreating(true);
     setError("");
     try {
-      const res = await fetch(`/api/live/creer/`, {
+      const res = await fetch(`${API_BASE}/api/live/creer/`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(form),

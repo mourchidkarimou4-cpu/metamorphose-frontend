@@ -31,6 +31,8 @@ import { MonCompteView, MesReplaysView,
 
 // ── Vues Nouvelles fonctionnalités ───────────────────────────────
 import { NotificationsView, MessageriView,
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
          VaguesView, ProgressionView,
          SatisfactionView, AgendaView } from './views/Nouvelles';
 
@@ -204,7 +206,7 @@ function useAdminAPI() {
     };
     if (body) opts.body = JSON.stringify(body);
     try {
-      const res = await fetch(`/api/admin${path}`, opts);
+      const res = await fetch(`${API_BASE}/api/admin${path}`, opts);
       if (res.status === 401) { navigate("/espace-membre"); return null; }
       if (res.status === 204) return true;
       if (!res.ok) { console.warn(`API ${method} /api/admin${path} → ${res.status}`); return null; }
@@ -363,7 +365,7 @@ export default function AdminDashboard() {
     if (!savedToken || !user) { navigate("/espace-membre"); return; }
     if (!user.is_staff)       { navigate("/dashboard"); return; }
     // Charger les stats puis afficher le dashboard
-    fetch("/api/admin/stats/", {
+    fetch(`${API_BASE}/api/admin/stats/", {
       headers: { "Authorization": `Bearer ${savedToken}` }
     })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })

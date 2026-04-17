@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const ZEGO_APP_ID = Number(import.meta.env.VITE_ZEGO_APP_ID);
 const ZEGO_SERVER_SECRET = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
@@ -49,7 +51,7 @@ export default function LiveMeeting() {
       const headers = { "Content-Type": "application/json" };
       if (savedToken) headers["Authorization"] = `Bearer ${savedToken}`;
 
-      const res = await fetch(`/api/live/${roomId}/rejoindre/`, {
+      const res = await fetch(`${API_BASE}/api/live/${roomId}/rejoindre/`, {
         method: "POST",
         headers,
         body: JSON.stringify({ nom: myName, mot_de_passe: password }),
@@ -122,7 +124,7 @@ export default function LiveMeeting() {
         const h = { "Content-Type": "application/json" };
         if (tk) h["Authorization"] = `Bearer ${tk}`;
         if (isHost) {
-          fetch(`/api/live/${roomId}/terminer/`, {
+          fetch(`${API_BASE}/api/live/${roomId}/terminer/`, {
             method: "POST", headers: h,
           }).catch(() => {});
         }

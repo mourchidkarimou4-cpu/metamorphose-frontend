@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function NotificationsView({ api, toast }) {
   const [notifs,  setNotifs]  = useState([])
   const [loading, setLoading] = useState(true)
@@ -7,7 +9,7 @@ function NotificationsView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/notifications/?limit=50', {
+    fetch(`${API_BASE}/api/admin/notifications/?limit=50', {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => {
       setNotifs(Array.isArray(d.results) ? d.results : [])
@@ -16,7 +18,7 @@ function NotificationsView({ api, toast }) {
   }
 
   async function marquerTousLus() {
-    await fetch('/api/admin/notifications/lu/', {
+    await fetch(`${API_BASE}/api/admin/notifications/lu/', {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
     })
     charger()
@@ -24,7 +26,7 @@ function NotificationsView({ api, toast }) {
   }
 
   async function marquerLu(id) {
-    await fetch(`/api/admin/notifications/${id}/lu/`, {
+    await fetch(`${API_BASE}/api/admin/notifications/${id}/lu/`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
     })
     setNotifs(prev => prev.map(n => n.id === id ? {...n, lu: true} : n))
@@ -96,21 +98,21 @@ function MessageriView({ api, toast }) {
   useEffect(() => { if (selected) chargerMessages(selected.id) }, [selected])
 
   function chargerConvs() {
-    fetch('/api/admin/conversations/', {
+    fetch(`${API_BASE}/api/admin/conversations/', {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => { setConvs(Array.isArray(d)?d:[]); setLoading(false) })
     .catch(() => setLoading(false))
   }
 
   function chargerMessages(membreId) {
-    fetch(`/api/messages/${membreId}/`, {
+    fetch(`${API_BASE}/api/messages/${membreId}/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json()).then(d => { setMessages(Array.isArray(d)?d:[]) })
   }
 
   async function envoyer() {
     if (!input.trim() || !selected) return
-    const res = await fetch(`/api/messages/${selected.id}/`, {
+    const res = await fetch(`${API_BASE}/api/messages/${selected.id}/`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ contenu: input.trim() })
@@ -198,18 +200,18 @@ function VaguesView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/vagues/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/vagues/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setVagues(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
 
   function ouvrirDetail(v) {
-    fetch(`/api/admin/vagues/${v.id}/`, { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/vagues/${v.id}/`, { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setSelected(d); setModal('detail') })
   }
 
   async function creer() {
-    const res = await fetch('/api/admin/vagues/', {
+    const res = await fetch(`${API_BASE}/api/admin/vagues/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(form)
     })
@@ -218,7 +220,7 @@ function VaguesView({ api, toast }) {
   }
 
   async function changerStatut(id, statut) {
-    await fetch(`/api/admin/vagues/${id}/`, {
+    await fetch(`${API_BASE}/api/admin/vagues/${id}/`, {
       method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({ statut })
     })
@@ -229,7 +231,7 @@ function VaguesView({ api, toast }) {
 
   async function ajouterMembre() {
     if (!emailAdd.trim() || !selected) return
-    const res = await fetch(`/api/admin/vagues/${selected.id}/membres/`, {
+    const res = await fetch(`${API_BASE}/api/admin/vagues/${selected.id}/membres/`, {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({ email: emailAdd.trim() })
     })
@@ -239,7 +241,7 @@ function VaguesView({ api, toast }) {
   }
 
   async function retirerMembre(membreId) {
-    await fetch(`/api/admin/vagues/${selected.id}/membres/${membreId}/`, {
+    await fetch(`${API_BASE}/api/admin/vagues/${selected.id}/membres/${membreId}/`, {
       method:'DELETE', headers:{'Authorization':`Bearer ${token}`}
     })
     ouvrirDetail(selected)
@@ -364,7 +366,7 @@ function ProgressionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/progression/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/progression/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setMembres(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -377,12 +379,12 @@ function ProgressionView({ api, toast }) {
   async function sauvegarder() {
     const membreId = membres.find(m=>m.membre_email===selected.membre_email)?.id
     // On cherche l'ID via l'email
-    const usersRes = await fetch(`/api/membres/?search=${selected.membre_email}`, { headers:{ 'Authorization':`Bearer ${token}` } })
+    const usersRes = await fetch(`${API_BASE}/api/membres/?search=${selected.membre_email}`, { headers:{ 'Authorization':`Bearer ${token}` } })
     const users    = await usersRes.json()
     const user     = Array.isArray(users) ? users[0] : users?.results?.[0]
     if (!user) { toast('Membre introuvable','error'); return }
 
-    const res = await fetch(`/api/admin/progression/${user.id}/`, {
+    const res = await fetch(`${API_BASE}/api/admin/progression/${user.id}/`, {
       method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(form)
     })
@@ -464,13 +466,13 @@ function SatisfactionView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/admin/satisfactions/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/admin/satisfactions/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setData(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
 
   async function envoyer() {
-    const res = await fetch('/api/admin/satisfaction/envoyer/', {
+    const res = await fetch(`${API_BASE}/api/admin/satisfaction/envoyer/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(emailEnvoi.trim() ? { email: emailEnvoi.trim() } : {})
     })
@@ -563,7 +565,7 @@ function AgendaView({ api, toast }) {
   useEffect(() => { charger() }, [])
 
   function charger() {
-    fetch('/api/agenda/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/agenda/', { headers:{ 'Authorization':`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>{ setSessions(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(()=>setLoading(false))
   }
@@ -573,7 +575,7 @@ function AgendaView({ api, toast }) {
       ...form,
       membres_invites: form.membres_invites.split(',').map(e=>e.trim()).filter(Boolean)
     }
-    const res = await fetch('/api/agenda/', {
+    const res = await fetch(`${API_BASE}/api/agenda/', {
       method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     })
@@ -583,13 +585,13 @@ function AgendaView({ api, toast }) {
 
   async function supprimerSession(id) {
     if (!window.confirm('Supprimer cette session ?')) return
-    await fetch(`/api/agenda/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` } })
+    await fetch(`${API_BASE}/api/agenda/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${token}` } })
     charger()
     toast('Session supprimée','success')
   }
 
   async function envoyerRappel(id) {
-    const res = await fetch(`/api/agenda/${id}/rappel/`, {
+    const res = await fetch(`${API_BASE}/api/agenda/${id}/rappel/`, {
       method:'POST', headers:{ 'Authorization':`Bearer ${token}` }
     })
     const d = await res.json()

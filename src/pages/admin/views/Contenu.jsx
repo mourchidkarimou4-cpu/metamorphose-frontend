@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FORMULES, SECTIONS_CONFIG } from '../constants';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function ReplaysView({ api, toast, refreshKey = 0 }) {
   const [replays, setReplays] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -199,7 +201,7 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
 
   useEffect(() => {
     const token = localStorage.getItem("mmorphose_token");
-    fetch("/api/admin/config/", {
+    fetch(`${API_BASE}/api/admin/config/", {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
     })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })

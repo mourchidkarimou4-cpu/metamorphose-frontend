@@ -3,6 +3,8 @@ import { useAuth } from '../../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import api, { authAPI, avisAPI, learningAPI } from '../../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const FORMULES = { F1:'Live · Groupe', F2:'Live · Privé', F3:'Présentiel · Groupe', F4:'Présentiel · Privé' }
 
 function Etoiles({ note, onSelect }) {
@@ -52,7 +54,7 @@ function FormulaireTeomo({ user, onSuccess }) {
     if (photoApres) data.append("photo_apres", photoApres);
 
     try {
-      const res = await fetch(`/api/avis/soumettre/`, {
+      const res = await fetch(`${API_BASE}/api/avis/soumettre/`, {
         method:"POST",
         headers:{ "Authorization": `Bearer ${token}` },
         body: data,
@@ -171,7 +173,7 @@ function FormulaireProfil({ user }) {
     setSaving(true); setMsg('')
     const token = localStorage.getItem("mmorphose_token")
     try {
-      const res = await fetch(`/api/auth/update-profile/`, {
+      const res = await fetch(`${API_BASE}/api/auth/update-profile/`, {
         method:'PATCH',
         headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
         body: JSON.stringify({ email, first_name:prenom, last_name:nom, whatsapp, pays }),
@@ -245,7 +247,7 @@ function FormulaireMotDePasse() {
     setSaving(true); setMsg('')
     const token = localStorage.getItem("mmorphose_token")
     try {
-      const res = await fetch(`/api/auth/change-password/`, {
+      const res = await fetch(`${API_BASE}/api/auth/change-password/`, {
         method:'POST',
         headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
         body: JSON.stringify({ old_password:oldPwd, new_password:newPwd }),
@@ -319,11 +321,11 @@ export default function Dashboard() {
       const headers = { 'Authorization': 'Bearer ' + token }
       try {
         const [uRes, gRes, rRes, tRes, tkRes] = await Promise.all([
-          fetch(`/api/auth/me/`,              { headers }),
-          fetch(`/api/contenu/guides/`,       { headers }),
-          fetch(`/api/contenu/replays/`,      { headers }),
-          fetch(`/api/avis/mes-temoignages/`, { headers }),
-          fetch(`/api/tickets/mes-tickets/`,  { headers }),
+          fetch(`${API_BASE}/api/auth/me/`,              { headers }),
+          fetch(`${API_BASE}/api/contenu/guides/`,       { headers }),
+          fetch(`${API_BASE}/api/contenu/replays/`,      { headers }),
+          fetch(`${API_BASE}/api/avis/mes-temoignages/`, { headers }),
+          fetch(`${API_BASE}/api/tickets/mes-tickets/`,  { headers }),
         ])
         if (uRes.status === 401) { navigate('/espace-membre'); return }
         const [u, g, r, t, tk] = await Promise.all([
@@ -600,7 +602,7 @@ export default function Dashboard() {
             <div style={{ marginTop:'28px', display:'flex', gap:'12px', flexWrap:'wrap' }}>
               <button onClick={async () => {
                 const token = localStorage.getItem("mmorphose_token");
-                const res = await fetch(`/api/auth/certificat/`, { headers:{'Authorization':`Bearer ${token}`} });
+                const res = await fetch(`${API_BASE}/api/auth/certificat/`, { headers:{'Authorization':`Bearer ${token}`} });
                 if(res.ok) {
                   const blob = await res.blob();
                   const a = document.createElement('a');

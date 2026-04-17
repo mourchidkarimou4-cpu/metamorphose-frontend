@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function PartenairesView({ api, toast }) {
   const [partenaires, setPartenaires] = useState([])
   const [loading,     setLoading]     = useState(true)
@@ -10,7 +12,7 @@ function PartenairesView({ api, toast }) {
   function apiP(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/admin/partenaires${path}`, opts).then(r => {
+    return fetch(`${API_BASE}/api/admin/partenaires${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })

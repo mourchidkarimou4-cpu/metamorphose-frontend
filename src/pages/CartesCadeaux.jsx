@@ -7,6 +7,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 /* ================================================================
    CARTES CADEAUX — Page complète
    1. Formulaire de commande avec aperçu temps réel
@@ -214,7 +216,7 @@ function VerificateurCode() {
     if (!code.trim()) return;
     setLoading(true); setError(""); setResult(null);
     try {
-      const res  = await fetch(`/api/cadeaux/verifier/${code.trim().toUpperCase()}/`);
+      const res  = await fetch(`${API_BASE}/api/cadeaux/verifier/${code.trim().toUpperCase()}/`);
       const data = await res.json();
       if (res.ok) setResult(data);
       else setError(data.detail || "Code invalide.");

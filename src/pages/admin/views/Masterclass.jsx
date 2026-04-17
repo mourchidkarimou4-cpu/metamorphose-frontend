@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function MasterclassAdminView({ api, toast }) {
   const [onglet, setOnglet] = useState('liste')
   const [masterclasses, setMasterclasses] = useState([])
@@ -20,7 +22,7 @@ function MasterclassAdminView({ api, toast }) {
   async function charger() {
     setLoading(true)
     const token = localStorage.getItem('mmorphose_token')
-    const res = await fetch('/api/masterclass/admin/', { headers:{ 'Authorization':`Bearer ${token}` } })
+    const res = await fetch(`${API_BASE}/api/masterclass/admin/', { headers:{ 'Authorization':`Bearer ${token}` } })
     const data = await res.json()
     setMasterclasses(Array.isArray(data) ? data : [])
     setLoading(false)
@@ -28,7 +30,7 @@ function MasterclassAdminView({ api, toast }) {
 
   async function chargerReservations(id) {
     const token2 = localStorage.getItem('mmorphose_token')
-    const res2 = await fetch(`/api/masterclass/admin/${id}/reservations/`, { headers:{ 'Authorization':`Bearer ${token2}` } })
+    const res2 = await fetch(`${API_BASE}/api/masterclass/admin/${id}/reservations/`, { headers:{ 'Authorization':`Bearer ${token2}` } })
     const data = await res2.json()
     setReservations(Array.isArray(data) ? data : [])
   }
@@ -74,11 +76,11 @@ function MasterclassAdminView({ api, toast }) {
     const payload = { titre:form.titre, description:form.description, date:form.date, lieu:form.lieu, places_max:parseInt(form.places_max)||50, est_active:form.est_active, gratuite:form.gratuite, lien_live:form.lien_live, image:image_url }
     if (selected) {
       const tkn = localStorage.getItem('mmorphose_token')
-      await fetch(`/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`${API_BASE}/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass modifiée ✓', 'success')
     } else {
       const tkn2 = localStorage.getItem('mmorphose_token')
-      await fetch('/api/masterclass/admin/', { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`${API_BASE}/api/masterclass/admin/', { method:'POST', headers:{ 'Authorization':`Bearer ${tkn2}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass créée ✓', 'success')
     }
     setSaving(false)
@@ -90,7 +92,7 @@ function MasterclassAdminView({ api, toast }) {
   async function supprimer(id) {
     if (!window.confirm('Supprimer cette masterclass ?')) return
     const tknd = localStorage.getItem('mmorphose_token')
-    await fetch(`/api/masterclass/admin/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${tknd}` } })
+    await fetch(`${API_BASE}/api/masterclass/admin/${id}/`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${tknd}` } })
     toast('Supprimée ✓', 'success')
     charger()
   }

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { learningAPI } from '../../../services/api';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function LearningView({ api, toast }) {
   const [onglet,     setOnglet]     = useState('cours')
   const [cours,      setCours]      = useState([])
@@ -27,7 +29,7 @@ function LearningView({ api, toast }) {
   function apiL(method, path, body=null) {
     const opts = { method, headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
     if (body) opts.body = JSON.stringify(body)
-    return fetch(`/api/learning/admin${path}`, opts).then(r => {
+    return fetch(`${API_BASE}/api/learning/admin${path}`, opts).then(r => {
       if (r.status === 401) { window.location.href = '/espace-membre'; return null; }
       return r.status === 204 ? true : r.json()
     })

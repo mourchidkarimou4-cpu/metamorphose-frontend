@@ -5,6 +5,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { masterclassAPI, configAPI } from '../services/api';
 import API_URL from '../config';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
 const BACKEND = API_URL;
 const DATE_MASTERCLASS = "2026-04-26T17:00:00Z";
@@ -195,7 +197,7 @@ function FormulaireInscription({ onSuccess }) {
     setLoading(true); setError("");
     try {
       // Récupérer la masterclass active puis réserver
-      const listRes = await fetch(`/api/masterclass/`);
+      const listRes = await fetch(`${API_BASE}/api/masterclass/`);
       const liste   = await listRes.json();
       const mc      = Array.isArray(liste) ? liste[0] : null;
       const url     = mc ? `/api/masterclass/${mc.id}/reserver/` : null;

@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { communauteAPI } from "../services/api";
 import api from '../services/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -70,7 +72,7 @@ function Portail({ onAcces }) {
     if (!cle.trim()) { setError("Veuillez saisir votre clé d'accès."); return; }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`/api/communaute/valider-cle/`, {
+      const res = await fetch(`${API_BASE}/api/communaute/valider-cle/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ cle: cle.trim() }),
@@ -151,7 +153,7 @@ function ModalOnboarding({ onClose }) {
 
   async function confirmer() {
     try {
-      await fetch(`/api/communaute/profil/`, {
+      await fetch(`${API_BASE}/api/communaute/profil/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ onboarding_fait: true }),
@@ -227,7 +229,7 @@ function Feed() {
       fd.append("type_media", mediaFile.type.startsWith("video") ? "video" : "photo");
     }
     try {
-      const res = await fetch(`/api/communaute/publications/`, {
+      const res = await fetch(`${API_BASE}/api/communaute/publications/`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: fd,
@@ -241,7 +243,7 @@ function Feed() {
   }
 
   async function chargerComs(pubId) {
-    const res = await fetch(`/api/communaute/publications/${pubId}/commentaires/`, {
+    const res = await fetch(`${API_BASE}/api/communaute/publications/${pubId}/commentaires/`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
     const data = await res.json();
@@ -256,7 +258,7 @@ function Feed() {
   async function commenter(pubId) {
     const txt = comInput[pubId]?.trim();
     if (!txt) return;
-    await fetch(`/api/communaute/publications/${pubId}/commentaires/`, {
+    await fetch(`${API_BASE}/api/communaute/publications/${pubId}/commentaires/`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ contenu: txt }),
@@ -267,14 +269,14 @@ function Feed() {
 
   async function supprimerPub(id) {
     if (!confirm("Supprimer cette publication ?")) return;
-    await fetch(`/api/communaute/publications/${id}/supprimer/`, {
+    await fetch(`${API_BASE}/api/communaute/publications/${id}/supprimer/`, {
       method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
     });
     chargerPubs();
   }
 
   async function epinglerPub(id) {
-    await fetch(`/api/communaute/publications/${id}/epingler/`, {
+    await fetch(`${API_BASE}/api/communaute/publications/${id}/epingler/`, {
       method: "PATCH", headers: { "Authorization": `Bearer ${token}` }
     });
     chargerPubs();

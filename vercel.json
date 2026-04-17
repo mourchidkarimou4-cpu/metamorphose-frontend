@@ -1,15 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://metamorphose-backend.onrender.com/api/:path*"
-    },
-    {
-      "source": "/media/:path*",
-      "destination": "https://metamorphose-backend.onrender.com/media/:path*"
-    },
-    {
-      "source": "/((?!api|media|assets|icons|sw.js|manifest.json|favicon|metamorphose).*)",
+      "source": "/((?!assets|icons|sw.js|manifest.json|favicon|metamorphose|guide).*)",
       "destination": "/index.html"
     }
   ]

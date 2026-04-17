@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function LiveAdminView({ api, toast }) {
   const [salles,  setSalles]  = useState([])
   const [loading, setLoading] = useState(true)
@@ -8,7 +10,7 @@ function LiveAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/live/mes-salles/`, {
+    fetch(`${API_BASE}/api/live/mes-salles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then(r => r.json())
       .then(d => { setSalles(Array.isArray(d) ? d : []); setLoading(false) })
@@ -20,7 +22,7 @@ function LiveAdminView({ api, toast }) {
     if (!form.titre.trim()) { toast('Titre requis', 'error'); return }
     setCreating(true)
     try {
-      const res = await fetch(`/api/live/creer/`, {
+      const res = await fetch(`${API_BASE}/api/live/creer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -37,7 +39,7 @@ function LiveAdminView({ api, toast }) {
 
   async function terminer(id) {
     if (!confirm('Terminer cette réunion ?')) return
-    await fetch(`/api/live/${id}/terminer/`, {
+    await fetch(`${API_BASE}/api/live/${id}/terminer/`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     })

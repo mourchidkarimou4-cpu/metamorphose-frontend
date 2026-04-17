@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { FORMULES } from '../constants';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function CartesView({ api, toast }) {
   const [cartes,   setCartes]   = useState([]);
   const [loading,  setLoading]  = useState(true);
@@ -8,7 +10,7 @@ function CartesView({ api, toast }) {
   const [filter,   setFilter]   = useState("tout");
 
   useEffect(() => {
-    fetch(`/api/cadeaux/admin/liste/`, {
+    fetch(`${API_BASE}/api/cadeaux/admin/liste/`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` }
     })
     .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
@@ -17,7 +19,7 @@ function CartesView({ api, toast }) {
   }, []);
 
   async function activer(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/activer/`, {
+    const res = await fetch(`${API_BASE}/api/cadeaux/admin/${c.id}/activer/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });
@@ -29,7 +31,7 @@ function CartesView({ api, toast }) {
   }
 
   async function marquerUtilisee(c) {
-    const res = await fetch(`/api/cadeaux/admin/${c.id}/utiliser/`, {
+    const res = await fetch(`${API_BASE}/api/cadeaux/admin/${c.id}/utiliser/`, {
       method:"POST",
       headers:{ "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}`, "Content-Type":"application/json" }
     });

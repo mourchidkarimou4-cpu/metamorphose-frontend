@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FORMULES } from '../constants';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 function TemoignagesView({ api, toast }) {
   const [temos,    setTemos]    = useState([]);
   const [loading,  setLoading]  = useState(true);
@@ -21,7 +23,7 @@ function TemoignagesView({ api, toast }) {
 
   function fetchTemos() {
     setLoading(true);
-    fetch(`/api/avis/admin/?statut=${filter}`, {
+    fetch(`${API_BASE}/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(r => r.json())
@@ -84,7 +86,7 @@ function TemoignagesView({ api, toast }) {
   }
 
   async function action(id, type) {
-    const res = await fetch(`/api/avis/admin/${id}/${type}/`, {
+    const res = await fetch(`${API_BASE}/api/avis/admin/${id}/${type}/`, {
       method:"POST", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.ok) { fetchTemos(); setModal(null); toast(type==="approuver"?"Approuvé":"Refusé", type==="approuver"?"success":"error"); }
@@ -92,7 +94,7 @@ function TemoignagesView({ api, toast }) {
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce témoignage ?")) return;
-    const res = await fetch(`/api/avis/admin/${id}/supprimer/`, {
+    const res = await fetch(`${API_BASE}/api/avis/admin/${id}/supprimer/`, {
       method:"DELETE", headers:{ "Authorization": `Bearer ${token}` }
     });
     if (res.status === 204) { fetchTemos(); setModal(null); toast("Supprimé", "error"); }
