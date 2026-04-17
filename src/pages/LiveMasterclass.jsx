@@ -215,7 +215,7 @@ export default function LiveMasterclass() {
     try {
       const res = await fetch(`${API_BASE}/api/live/creer/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("mmorphose_token") || token}` },
         body: JSON.stringify(form),
       });
       const data = await res.json();
