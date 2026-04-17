@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { QRCodeSVG } from 'qrcode.react';
+import { learningAPI } from '../../services/api';
 
-// Vues — Gestion
+// ── Vues Gestion ─────────────────────────────────────────────────
 import { StatsView }                            from './views/Stats';
 import { MembresView }                          from './views/Membres';
 import { DemandesView }                         from './views/Demandes';
@@ -12,10 +14,10 @@ import { CartesView }                           from './views/Cartes';
 import { TemoignagesView }                      from './views/Temoignages';
 import { RessourcesAdminView, ListeAttenteView,
          NewsletterView, ExportView,
-         MaintenanceView }                      from './views/Outils';
+         MaintenanceView }}                      from './views/Outils';
 import { LiveAdminView }                        from './views/Live';
 import { EvenementsAdminView,
-         ActualitesAdminView }                  from './views/Evenements';
+         ActualitesAdminView }}                  from './views/Evenements';
 import { CommunauteAdminView }                  from './views/Communaute';
 import { StoreAdminView }                       from './views/Store';
 import { LearningView }                         from './views/Learning';
@@ -24,24 +26,15 @@ import { TicketsView }                          from './views/Tickets';
 import { AbonnesView }                          from './views/Abonnes';
 import { MasterclassAdminView }                 from './views/Masterclass';
 
-// Vues — Mon Espace
+// ── Vues Mon Espace ───────────────────────────────────────────────
 import { MonCompteView, MesReplaysView,
          MesGuidesView, MonTemoignageView,
-         MonProfilView, MonCertificatView }     from './views/MonEspace';
+         MonProfilView, MonCertificatView }}     from './views/MonEspace';
 
-// Vues — Nouvelles fonctionnalités
+// ── Vues Nouvelles fonctionnalités ───────────────────────────────
 import { NotificationsView, MessageriView,
          VaguesView, ProgressionView,
-         SatisfactionView, AgendaView }         from './views/Nouvelles';
-
-/* ================================================================
-   STYLES GLOBAUX
-   ================================================================ */
-import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { QRCodeSVG } from "qrcode.react";
-import { useNavigate, Link } from "react-router-dom";
-import { learningAPI } from '../../services/api';
+         SatisfactionView, AgendaView }}         from './views/Nouvelles';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
@@ -346,8 +339,6 @@ function Sidebar({ active, setActive, counts }) {
   );
 }
 
-/* ── STATS ──────────────────────────────────────────────────── */
-function StatsView({ stats }) {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
