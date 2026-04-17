@@ -50,7 +50,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
       localStorage.setItem("mmorphose_refresh",  data.refresh);
       localStorage.setItem("mmorphose_user",     JSON.stringify(data.user));
       onClose();
-      navigate("/dashboard");
+      navigate(data?.user?.is_staff ? "/admin" : "/dashboard");
     } catch {
       setError("Serveur inaccessible. Réessayez.");
     }

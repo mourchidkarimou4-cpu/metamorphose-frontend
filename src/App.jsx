@@ -31,19 +31,22 @@ import Actualites      from './pages/Actualites'
 import ScanTicket      from './pages/ScanTicket'
 import Logout          from './pages/Logout'
 
-/* ── Route protégée membre ─────────────────────────────────── */
+/* ── Route protégée membre (clientes) ─────────────────────── */
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
   const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
   if (!token || !user) return <Navigate to="/espace-membre" replace />;
+  // Si staff → redirige vers /admin (pas le dashboard membre)
+  if (user.is_staff)   return <Navigate to="/admin" replace />;
   return children;
 }
 
-/* ── Route protégée admin ──────────────────────────────────── */
+/* ── Route protégée admin (Prélia + toi) ──────────────────── */
 function AdminRoute({ children }) {
   const token = localStorage.getItem("mmorphose_token");
   const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
   if (!token || !user) return <Navigate to="/espace-membre" replace />;
+  // Si pas staff → redirige vers /dashboard membre
   if (!user.is_staff)  return <Navigate to="/dashboard" replace />;
   return children;
 }
@@ -66,12 +69,10 @@ function MaintenancePage() {
 
 export default function App() {
   const [maintenance, setMaintenance] = useState(false);
-  // useRef pour calculer isLanding UNE SEULE FOIS au montage, stable entre les re-renders
   const isLandingRef = useRef(window.location.pathname === "/");
   const [showSplash, setShowSplash] = useState(isLandingRef.current);
 
   useEffect(() => {
-    // Vérifier d'abord le cache localStorage
     try {
       const cached = localStorage.getItem('mmo_site_config');
       if (cached) {
@@ -79,7 +80,6 @@ export default function App() {
         if (map.maintenance_active === '1') setMaintenance(true);
       }
     } catch {}
-    // Puis vérifier le backend en arrière-plan
     fetch('/api/admin/config/public/')
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
@@ -94,10 +94,7 @@ export default function App() {
   }, []);
 
   if (maintenance) return <MaintenancePage />;
-
-  if (showSplash) {
-    return <SplashScreen onDone={() => setShowSplash(false)} />;
-  }
+  if (showSplash)  return <SplashScreen onDone={() => setShowSplash(false)} />;
 
   return (
     <ErrorBoundary>
@@ -126,20 +123,18 @@ export default function App() {
         <Route path="/scan"          element={<ScanTicket />} />
         <Route path="/carte/:code"   element={<CarteScan />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path="/logout"        element={<Logout />} />
+        <Route path="/paiement"      element={<PaiementPage />} />
 
         {/* ── Authentification ───────────────────────────────── */}
         <Route path="/espace-membre" element={<Login />} />
 
-        {/* ── Espace membre (privé) ──────────────────────────── */}
+        {/* ── Dashboard clientes (is_staff=false) ────────────── */}
         <Route path="/dashboard" element={
           <PrivateRoute><Dashboard /></PrivateRoute>
         } />
-        <Route path="/paiement" element={
-          <PrivateRoute><PaiementPage /></PrivateRoute>
-        } />
 
-        {/* ── Espace admin ───────────────────────────────────── */}
+        {/* ── Dashboard admin — Prélia + toi (is_staff=true) ─── */}
         <Route path="/admin" element={
           <AdminRoute><AdminDashboard /></AdminRoute>
         } />
