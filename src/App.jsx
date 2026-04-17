@@ -29,6 +29,7 @@ import MMOLearning     from './pages/MMOLearning'
 import Evenements      from './pages/Evenements'
 import Actualites      from './pages/Actualites'
 import ScanTicket      from './pages/ScanTicket'
+import Logout          from './pages/Logout'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -112,6 +113,7 @@ export default function App() {
         <Route path="/scan"          element={<ScanTicket />} />
         <Route path="/carte/:code"   element={<CarteScan />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/logout" element={<Logout />} />
 
         {/* ── Authentification ───────────────────────────────── */}
         <Route path="/espace-membre" element={<Login />} />
