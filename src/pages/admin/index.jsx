@@ -196,15 +196,26 @@ function useAdminAPI() {
   const { token, user, logout } = useAuth();
 
   const call = useCallback(async (method, path, body = null) => {
+    // Toujours lire le token depuis localStorage — plus fiable que le contexte au premier render
+    const t = token || localStorage.getItem("mmorphose_token");
     const opts = {
       method,
-      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: { "Authorization": `Bearer ${t}`, "Content-Type": "application/json" },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`/api/admin${path}`, opts);
-    if (res.status === 401) { navigate("/espace-membre"); return null; }
-    if (res.status === 204) return true;
-    return res.json();
+    try {
+      const res = await fetch(`/api/admin${path}`, opts);
+      if (res.status === 401) { navigate("/espace-membre"); return null; }
+      if (res.status === 204) return true;
+      if (!res.ok) { console.warn(`API ${method} /api/admin${path} → ${res.status}`); return null; }
+      const text = await res.text();
+      if (!text) return null;
+      try { return JSON.parse(text); }
+      catch { console.warn("Réponse non-JSON:", text.slice(0, 80)); return null; }
+    } catch (err) {
+      console.warn(`Erreur réseau ${path}:`, err.message);
+      return null;
+    }
   }, [token, navigate]);
 
   return call;
@@ -340,17 +351,25 @@ function Sidebar({ active, setActive, counts }) {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [active,  setActive]  = useState("stats");
-  const [stats,   setStats]   = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});
-  const [toasts,  setToasts]  = useState([]);
+  const [active,   setActive]   = useState("stats");
+  const [stats,    setStats]    = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});
+  const [toasts,   setToasts]   = useState([]);
+  const [ready,    setReady]    = useState(false);
   const api = useAdminAPI();
 
   useEffect(() => {
-    const token = localStorage.getItem("mmorphose_token")
-    const user  = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
-    if (!token || !user) { navigate("/espace-membre"); return; }
-    if (!user.is_staff)  { navigate("/dashboard"); return; }
-    api("GET", "/stats/").then(d => { if(d) setStats(d); });
+    const savedToken = localStorage.getItem("mmorphose_token");
+    const user = JSON.parse(localStorage.getItem("mmorphose_user") || "null");
+    if (!savedToken || !user) { navigate("/espace-membre"); return; }
+    if (!user.is_staff)       { navigate("/dashboard"); return; }
+    // Charger les stats puis afficher le dashboard
+    fetch("/api/admin/stats/", {
+      headers: { "Authorization": `Bearer ${savedToken}` }
+    })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => { setStats(d); })
+      .catch(err => console.warn("Stats non chargées:", err.message))
+      .finally(() => setReady(true));
   }, []);
 
   function toast(msg, type="success") {
@@ -360,6 +379,18 @@ export default function AdminDashboard() {
   }
 
   const viewProps = { api, toast };
+
+  if (!ready) return (
+    <>
+      <style>{STYLES}</style>
+      <div style={{ minHeight:"100vh", background:"#0A0A0A", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"16px" }}>
+        <div className="spinner" style={{ width:"32px", height:"32px", borderWidth:"3px" }}/>
+        <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"rgba(201,169,106,.6)", letterSpacing:".15em", textTransform:"uppercase" }}>
+          Chargement du dashboard…
+        </p>
+      </div>
+    </>
+  );
 
   return (
     <>
