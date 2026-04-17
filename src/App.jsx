@@ -1,33 +1,34 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import LandingPage    from './pages/LandingPage'
-import Programme      from './pages/Programme'
-import APropos        from './pages/APropos'
-import Temoignages    from './pages/Temoignages'
-import FAQPage        from './pages/FAQ'
-import Brunch         from './pages/Brunch'
-import CartesCadeaux  from './pages/CartesCadeaux'
-import Contact        from './pages/Contact'
-import Login          from './pages/auth/Login'
-import Dashboard      from './pages/auth/Dashboard'
-import AdminDashboard from './pages/auth/AdminDashboard'
-import CarteScan      from './pages/CarteScan'
-import ResetPassword  from './pages/ResetPassword'
-import NotFound       from './pages/NotFound'
-import PaiementPage   from './pages/Paiement'
-import SplashScreen   from './components/SplashScreen'
+import { useEffect, useState, useRef } from 'react'
+import ErrorBoundary   from './components/ErrorBoundary'
+import LandingPage     from './pages/LandingPage'
+import Programme       from './pages/Programme'
+import APropos         from './pages/APropos'
+import Temoignages     from './pages/Temoignages'
+import FAQPage         from './pages/FAQ'
+import Brunch          from './pages/Brunch'
+import CartesCadeaux   from './pages/CartesCadeaux'
+import Contact         from './pages/Contact'
+import Login           from './pages/auth/Login'
+import Dashboard       from './pages/auth/Dashboard'
+import AdminDashboard  from './pages/auth/AdminDashboard'
+import CarteScan       from './pages/CarteScan'
+import ResetPassword   from './pages/ResetPassword'
+import NotFound        from './pages/NotFound'
+import PaiementPage    from './pages/Paiement'
+import SplashScreen    from './components/SplashScreen'
 import Communaute        from './pages/Communaute'
 import CommunautePortail from './pages/CommunautePortail'
-import Don            from './pages/Don'
-import Store          from './pages/Store'
+import Don             from './pages/Don'
+import Store           from './pages/Store'
 import LiveMasterclass from './pages/LiveMasterclass'
-import LiveMeeting from './pages/LiveMeeting'
-import Aura from './pages/Aura'
-import Masterclass from './pages/Masterclass'
-import MMOLearning from './pages/MMOLearning'
-import Evenements    from './pages/Evenements'
-import Actualites    from './pages/Actualites'
-import ScanTicket    from './pages/ScanTicket'
+import LiveMeeting     from './pages/LiveMeeting'
+import Aura            from './pages/Aura'
+import Masterclass     from './pages/Masterclass'
+import MMOLearning     from './pages/MMOLearning'
+import Evenements      from './pages/Evenements'
+import Actualites      from './pages/Actualites'
+import ScanTicket      from './pages/ScanTicket'
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -63,69 +64,74 @@ function MaintenancePage() {
 }
 
 export default function App() {
-  /* ── Tous les hooks au niveau racine (règle des Hooks) ── */
   const [maintenance, setMaintenance] = useState(false);
-  const isLanding = window.location.pathname === "/";
-  const [showSplash, setShowSplash] = useState(isLanding);
+  // useRef pour calculer isLanding UNE SEULE FOIS au montage, stable entre les re-renders
+  const isLandingRef = useRef(window.location.pathname === "/");
+  const [showSplash, setShowSplash] = useState(isLandingRef.current);
 
   useEffect(() => {
-    fetch(`/api/admin/config/public/`)
-      .then(r => r.json())           // fix: r.json() et non r.data
+    fetch('/api/admin/config/public/')
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
-        const m = data.find?.(c => c.cle === 'maintenance_active');
+        const m = Array.isArray(data) && data.find(c => c.cle === 'maintenance_active');
         if (m?.valeur === '1') setMaintenance(true);
       })
       .catch(() => {});
   }, []);
 
   if (maintenance) return <MaintenancePage />;
-  if (showSplash)  return <SplashScreen onDone={() => setShowSplash(false)} />;
+
+  if (showSplash) {
+    return <SplashScreen onDone={() => setShowSplash(false)} />;
+  }
 
   return (
-    <Routes>
-      {/* ── Pages publiques ────────────────────────────────── */}
-      <Route path="/"              element={<LandingPage />} />
-      <Route path="/programme"     element={<Programme />} />
-      <Route path="/a-propos"      element={<APropos />} />
-      <Route path="/temoignages"   element={<Temoignages />} />
-      <Route path="/faq"           element={<FAQPage />} />
-      <Route path="/brunch"        element={<Brunch />} />
-      <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
-      <Route path="/contact"       element={<Contact />} />
-      <Route path="/communaute"    element={<Communaute />} />
-      <Route path="/communaute/portail" element={<CommunautePortail />} />
-      <Route path="/don"           element={<Don />} />
-      <Route path="/store"         element={<Store />} />
-      <Route path="/live"          element={<LiveMasterclass />} />
-      <Route path="/meeting/:roomId" element={<LiveMeeting />} />
-      <Route path="/masterclass"   element={<Masterclass />} />
-      <Route path="/aura"          element={<Aura />} />
-      <Route path="/mmo-learning"  element={<MMOLearning />} />
-      <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
-      <Route path="/evenements"    element={<Evenements />} />
-      <Route path="/actualites"    element={<Actualites />} />
-      <Route path="/scan"          element={<ScanTicket />} />
-      <Route path="/carte/:code"   element={<CarteScan />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
+    <ErrorBoundary>
+      <Routes>
+        {/* ── Pages publiques ────────────────────────────────── */}
+        <Route path="/"              element={<LandingPage />} />
+        <Route path="/programme"     element={<Programme />} />
+        <Route path="/a-propos"      element={<APropos />} />
+        <Route path="/temoignages"   element={<Temoignages />} />
+        <Route path="/faq"           element={<FAQPage />} />
+        <Route path="/brunch"        element={<Brunch />} />
+        <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
+        <Route path="/contact"       element={<Contact />} />
+        <Route path="/communaute"    element={<Communaute />} />
+        <Route path="/communaute/portail" element={<CommunautePortail />} />
+        <Route path="/don"           element={<Don />} />
+        <Route path="/store"         element={<Store />} />
+        <Route path="/live"          element={<LiveMasterclass />} />
+        <Route path="/meeting/:roomId" element={<LiveMeeting />} />
+        <Route path="/masterclass"   element={<Masterclass />} />
+        <Route path="/aura"          element={<Aura />} />
+        <Route path="/mmo-learning"  element={<MMOLearning />} />
+        <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
+        <Route path="/evenements"    element={<Evenements />} />
+        <Route path="/actualites"    element={<Actualites />} />
+        <Route path="/scan"          element={<ScanTicket />} />
+        <Route path="/carte/:code"   element={<CarteScan />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* ── Authentification ───────────────────────────────── */}
-      <Route path="/espace-membre" element={<Login />} />
+        {/* ── Authentification ───────────────────────────────── */}
+        <Route path="/espace-membre" element={<Login />} />
 
-      {/* ── Espace membre (privé) ──────────────────────────── */}
-      <Route path="/dashboard" element={
-        <PrivateRoute><Dashboard /></PrivateRoute>
-      } />
-      <Route path="/paiement" element={
-        <PrivateRoute><PaiementPage /></PrivateRoute>
-      } />
+        {/* ── Espace membre (privé) ──────────────────────────── */}
+        <Route path="/dashboard" element={
+          <PrivateRoute><Dashboard /></PrivateRoute>
+        } />
+        <Route path="/paiement" element={
+          <PrivateRoute><PaiementPage /></PrivateRoute>
+        } />
 
-      {/* ── Espace admin ───────────────────────────────────── */}
-      <Route path="/admin" element={
-        <AdminRoute><AdminDashboard /></AdminRoute>
-      } />
+        {/* ── Espace admin ───────────────────────────────────── */}
+        <Route path="/admin" element={
+          <AdminRoute><AdminDashboard /></AdminRoute>
+        } />
 
-      {/* ── 404 ────────────────────────────────────────────── */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* ── 404 ────────────────────────────────────────────── */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </ErrorBoundary>
   );
 }
