@@ -54,7 +54,7 @@ export default function LiveMeeting() {
       const res = await fetch(`${API_BASE}/api/live/${roomId}/rejoindre/`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ nom: myName, mot_de_passe: password }),
+        body: JSON.stringify({ nom: myName, code_acces: password }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.detail || "Erreur"); return; }
