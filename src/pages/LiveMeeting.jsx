@@ -1,191 +1,239 @@
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import api from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
-const ZEGO_APP_ID = Number(import.meta.env.VITE_ZEGO_APP_ID);
-const ZEGO_SERVER_SECRET = import.meta.env.VITE_ZEGO_SERVER_SECRET;
+const STYLES = `
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#0A0A0A; color:#F8F5F2; font-family:'Montserrat',sans-serif; }
+  .meeting-page { min-height:100vh; background:#0A0A0A; display:flex; flex-direction:column; }
+  .meeting-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; background:#111;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .meeting-title { font-family:'Playfair Display',serif; font-size:1.1rem; color:#F8F5F2; }
+  .meeting-badge {
+    padding:4px 12px; border-radius:100px; font-size:.65rem;
+    font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  }
+  .badge-attente { background:rgba(201,169,106,.1); color:#C9A96A; border:1px solid rgba(201,169,106,.2); }
+  .badge-active  { background:rgba(76,175,80,.1); color:#4CAF50; border:1px solid rgba(76,175,80,.2); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+  .lobby {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:40px 24px;
+  }
+  .lobby-box {
+    background:#111; border:1px solid rgba(255,255,255,.08);
+    border-radius:8px; padding:40px; max-width:420px; width:100%;
+  }
+  .lobby-title {
+    font-family:'Playfair Display',serif; font-size:1.5rem;
+    font-weight:600; margin-bottom:8px; text-align:center;
+  }
+  .lobby-sub {
+    font-size:.78rem; color:rgba(248,245,242,.45);
+    text-align:center; margin-bottom:32px; line-height:1.6;
+  }
+  .field { margin-bottom:16px; }
+  .field label {
+    display:block; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:rgba(248,245,242,.45); margin-bottom:6px;
+  }
+  .field input {
+    width:100%; padding:12px 16px; background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08); border-radius:4px;
+    color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.85rem;
+    outline:none; transition:border .2s;
+  }
+  .field input:focus { border-color:rgba(194,24,91,.4); }
+  .btn-join {
+    width:100%; padding:14px; background:#C2185B; border:none;
+    border-radius:4px; color:#fff; font-family:'Montserrat',sans-serif;
+    font-size:.78rem; font-weight:600; letter-spacing:.12em;
+    text-transform:uppercase; cursor:pointer; transition:all .2s; margin-top:8px;
+  }
+  .btn-join:hover { background:#a01049; }
+  .btn-join:disabled { opacity:.5; cursor:not-allowed; }
+  .error-msg {
+    background:rgba(239,83,80,.1); border:1px solid rgba(239,83,80,.2);
+    border-radius:4px; padding:10px 14px; font-size:.78rem; color:#ef5350;
+    margin-bottom:16px; text-align:center;
+  }
+  .meeting-frame { flex:1; width:100%; border:none; min-height:calc(100vh - 65px); }
+  .btn-leave {
+    padding:8px 20px; background:rgba(239,83,80,.1); border:1px solid rgba(239,83,80,.2);
+    border-radius:4px; color:#ef5350; font-family:'Montserrat',sans-serif;
+    font-size:.68rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+  }
+  .btn-leave:hover { background:rgba(239,83,80,.2); }
+  .spinner { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.2); border-top-color:#C9A96A; animation:spin .7s linear infinite; margin:0 auto; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+`;
 
 export default function LiveMeeting() {
   const { roomId } = useParams();
-  const navigate = useNavigate();
-
-  const [phase, setPhase] = useState("lobby");
-  const [roomInfo, setRoomInfo] = useState(null);
-  const [myName, setMyName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [role, setRole] = useState("participant");
-
-  const meetingRef = useRef(null);
-  const zpRef = useRef(null);
-
+  const navigate   = useNavigate();
   const { user: authUser } = useAuth();
 
-  /* ── Charger infos salle ── */
+  const [phase,    setPhase]    = useState("lobby");
+  const [roomInfo, setRoomInfo] = useState(null);
+  const [myName,   setMyName]   = useState("");
+  const [password, setPassword] = useState("");
+  const [error,    setError]    = useState("");
+  const [loading,  setLoading]  = useState(false);
+  const [meetingUrl, setMeetingUrl] = useState("");
+  const iframeRef = useRef(null);
+
   useEffect(() => {
-    api.get(`/api/live/${roomId}/`).then(r => { setRoomInfo(r.data); }).catch(() => setError("Impossible de joindre la salle."));
-    if (authUser?.prenom || authUser?.first_name) setMyName(authUser.prenom || authUser.first_name || authUser.email || "");
+    // Charger infos salle
+    const token = localStorage.getItem("mmorphose_token");
+    fetch(`${API_BASE}/api/live/${roomId}/`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setRoomInfo(d); })
+      .catch(() => {});
+
+    // Pré-remplir le nom si connecté
+    if (authUser?.first_name) setMyName(authUser.first_name);
+    else if (authUser?.email)  setMyName(authUser.email.split('@')[0]);
   }, [roomId]);
 
-  /* ── Cleanup ── */
-  useEffect(() => {
-    return () => {
-      if (zpRef.current) {
-        zpRef.current.destroy();
-        zpRef.current = null;
-      }
-    };
-  }, []);
-
-  /* ── Rejoindre ── */
   async function rejoindre() {
-    if (!myName.trim()) { setError("Entrez votre prenom."); return; }
+    if (!myName.trim()) { setError("Votre prénom est requis."); return; }
+    setLoading(true);
     setError("");
 
-    try {
-      const savedToken = localStorage.getItem("mmorphose_token");
-      const headers = { "Content-Type": "application/json" };
-      if (savedToken) headers["Authorization"] = `Bearer ${savedToken}`;
+    const token = localStorage.getItem("mmorphose_token");
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
 
+    try {
+      // 1. Rejoindre la salle (vérif code_acces)
       const res = await fetch(`${API_BASE}/api/live/${roomId}/rejoindre/`, {
         method: "POST",
         headers,
         body: JSON.stringify({ nom: myName, code_acces: password }),
       });
-      const data = await res.json();
-      if (!res.ok) { setError(data.detail || "Erreur"); return; }
 
-      setRole(data.role);
-      setPhase("meeting");
+      if (!res.ok) {
+        const d = await res.json();
+        setError(d.detail || "Erreur d'accès à la salle.");
+        setLoading(false);
+        return;
+      }
 
-      /* Attendre que le DOM soit pret */
-      setTimeout(() => startZegoMeeting(data.role), 300);
-    } catch {
-      setError("Erreur reseau.");
-    }
-  }
+      // 2. Obtenir token Daily.co
+      if (token) {
+        const tokenRes = await fetch(`${API_BASE}/api/live/${roomId}/daily-token/`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ nom: myName }),
+        });
 
-  /* ── Demarrer ZegoCloud ── */
-  function startZegoMeeting(userRole) {
-    if (!meetingRef.current) return;
-
-    const userID = Math.random().toString(36).substring(2, 10);
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-      ZEGO_APP_ID,
-      ZEGO_SERVER_SECRET,
-      roomId.replace(/-/g, ""),
-      userID,
-      myName
-    );
-
-    const zp = ZegoUIKitPrebuilt.create(kitToken);
-    zpRef.current = zp;
-
-    const isHost = userRole === "hote";
-
-    zp.joinRoom({
-      container: meetingRef.current,
-      scenario: {
-        mode: isHost
-          ? ZegoUIKitPrebuilt.VideoConference
-          : ZegoUIKitPrebuilt.VideoConference,
-      },
-      maxUsers: 1000,
-      turnOnMicrophoneWhenJoining: isHost,
-      turnOnCameraWhenJoining: isHost,
-      showMyCameraToggleButton: true,
-      showMyMicrophoneToggleButton: true,
-      showAudioVideoSettingsButton: true,
-      showScreenSharingButton: true,
-      showTextChat: true,
-      showUserList: true,
-      showRoomDetailsButton: true,
-      showLayoutButton: true,
-      showNonVideoUser: true,
-      showRoomTimer: true,
-      showLeavingView: false,
-      layout: "Auto",
-      branding: {
-        logoURL: "",
-      },
-      sharedLinks: [
-        {
-          name: "Lien de la reunion",
-          url: `${window.location.origin}/meeting/${roomId}`,
-        },
-      ],
-      onLeave: () => {
-        /* Notifier le backend */
-        const tk = localStorage.getItem("mmorphose_token"); // via storage direct (dans callback)
-        const h = { "Content-Type": "application/json" };
-        if (tk) h["Authorization"] = `Bearer ${tk}`;
-        if (isHost) {
-          fetch(`${API_BASE}/api/live/${roomId}/terminer/`, {
-            method: "POST", headers: h,
-          }).catch(() => {});
+        if (tokenRes.ok) {
+          const tokenData = await tokenRes.json();
+          // URL Daily avec token pour modération complète
+          const url = `${tokenData.room_url}?t=${tokenData.token}`;
+          setMeetingUrl(url);
+          setPhase("meeting");
+          setLoading(false);
+          return;
         }
-        zpRef.current = null;
-        navigate("/live");
-      },
-    });
+      }
+
+      // Fallback : URL Daily sans token (participant anonyme)
+      const roomName = roomId.replace(/-/g, '');
+      setMeetingUrl(`https://metamorphose.daily.co/${roomName}`);
+      setPhase("meeting");
+    } catch (err) {
+      setError("Erreur réseau. Réessayez.");
+    }
+    setLoading(false);
   }
 
-  const s = {
-    body: { minHeight: "100vh", background: "#0A0A0A", color: "#F8F5F2", fontFamily: "Montserrat,sans-serif" },
-    inp: { width: "100%", padding: "11px 14px", background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.1)", borderRadius: "6px", color: "#F8F5F2", fontFamily: "Montserrat,sans-serif", fontSize: ".88rem", outline: "none" },
-    btn: { padding: "14px", background: "#C2185B", border: "none", borderRadius: "6px", color: "#fff", fontFamily: "Montserrat,sans-serif", fontWeight: 600, fontSize: ".82rem", letterSpacing: ".12em", textTransform: "uppercase", cursor: "pointer", width: "100%" },
-  };
+  function quitter() {
+    navigate("/live");
+  }
 
-  /* ══════ LOBBY ══════ */
-  if (phase === "lobby") return (
-    <div style={s.body}>
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#0A0A0A,#1a0a0f)", padding: "24px" }}>
-        <div style={{ maxWidth: "440px", width: "100%", background: "#111", border: "1px solid rgba(201,169,106,.15)", borderRadius: "12px", padding: "40px 32px" }}>
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <p style={{ fontFamily: "Montserrat,sans-serif", fontSize: ".62rem", letterSpacing: ".25em", textTransform: "uppercase", color: "#C9A96A", marginBottom: "8px" }}>
-              {roomInfo?.mode === "webinaire" ? "Webinaire" : roomInfo?.mode === "live" ? "Live" : "Reunion"}
-            </p>
-            <h1 style={{ fontFamily: "Playfair Display,serif", fontSize: "1.6rem", fontWeight: 600, marginBottom: "8px" }}>
-              {roomInfo?.titre || "Chargement..."}
-            </h1>
+  return (
+    <>
+      <style>{STYLES}</style>
+      <div className="meeting-page">
+        <div className="meeting-header">
+          <span className="meeting-title">
+            {roomInfo?.titre || "Méta'Morph'Ose — Live"}
+          </span>
+          <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
             {roomInfo && (
-              <p style={{ fontSize: ".78rem", color: "rgba(248,245,242,.45)" }}>
-                {roomInfo.participants} participant{roomInfo.participants !== 1 ? "s" : ""}
-              </p>
+              <span className={`meeting-badge ${roomInfo.statut === "active" ? "badge-active" : "badge-attente"}`}>
+                {roomInfo.statut === "active" ? "En direct" : "En attente"}
+              </span>
             )}
-          </div>
-          {error && (
-            <p style={{ background: "rgba(239,68,68,.1)", border: "1px solid rgba(239,68,68,.3)", borderRadius: "6px", padding: "10px 14px", fontSize: ".78rem", color: "#f87171", marginBottom: "16px" }}>
-              {error}
-            </p>
-          )}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div>
-              <label style={{ fontSize: ".62rem", letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(248,245,242,.45)", display: "block", marginBottom: "6px" }}>Votre prenom *</label>
-              <input value={myName} onChange={e => setMyName(e.target.value)} placeholder="Prenom" style={s.inp} onKeyDown={e => e.key === "Enter" && rejoindre()} />
-            </div>
-            {roomInfo?.protege && (
-              <div>
-                <label style={{ fontSize: ".62rem", letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(248,245,242,.45)", display: "block", marginBottom: "6px" }}>Mot de passe</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={s.inp} />
-              </div>
+            {phase === "meeting" && (
+              <button className="btn-leave" onClick={quitter}>Quitter</button>
             )}
-            <button onClick={rejoindre} style={s.btn}>Rejoindre la reunion</button>
-            <button onClick={() => navigate(-1)} style={{ ...s.btn, background: "transparent", border: "1px solid rgba(255,255,255,.1)", color: "rgba(248,245,242,.45)" }}>Retour</button>
           </div>
         </div>
-      </div>
-    </div>
-  );
 
-  /* ══════ MEETING (ZegoCloud prend le relais) ══════ */
-  return (
-    <div style={{ width: "100vw", height: "100vh", background: "#0A0A0A" }}>
-      <div ref={meetingRef} style={{ width: "100%", height: "100%" }} />
-    </div>
+        {phase === "lobby" && (
+          <div className="lobby">
+            <div className="lobby-box">
+              <h1 className="lobby-title">Rejoindre le live</h1>
+              <p className="lobby-sub">
+                {roomInfo?.titre || "Session Méta'Morph'Ose"}
+                {roomInfo?.hote && ` · Animé par ${roomInfo.hote}`}
+              </p>
+
+              {error && <div className="error-msg">{error}</div>}
+
+              <div className="field">
+                <label>Votre prénom</label>
+                <input
+                  value={myName}
+                  onChange={e => setMyName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && rejoindre()}
+                  placeholder="Entrez votre prénom"
+                  autoFocus
+                />
+              </div>
+
+              {roomInfo?.protege && (
+                <div className="field">
+                  <label>Code d'accès</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && rejoindre()}
+                    placeholder="Code fourni par Coach Prélia"
+                  />
+                </div>
+              )}
+
+              <button className="btn-join" onClick={rejoindre} disabled={loading}>
+                {loading ? <div className="spinner" /> : "Rejoindre la session"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {phase === "meeting" && meetingUrl && (
+          <iframe
+            ref={iframeRef}
+            className="meeting-frame"
+            src={meetingUrl}
+            allow="camera; microphone; fullscreen; speaker; display-capture; autoplay"
+            title="Session Live"
+          />
+        )}
+      </div>
+    </>
   );
 }
