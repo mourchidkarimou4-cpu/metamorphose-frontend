@@ -170,6 +170,8 @@ function useSiteContent() {
 
   useEffect(() => {
     let cancelled = false;
+    let attempts  = 0;
+    const MAX_ATTEMPTS = 5;
     function fetchContent() {
       fetch(`/api/admin/config/public/`)
         .then(r => {
@@ -185,7 +187,11 @@ function useSiteContent() {
         })
         .catch(() => {
           if (cancelled) return;
-          setTimeout(fetchContent, 6000);
+          attempts++;
+          if (attempts < MAX_ATTEMPTS) {
+            setTimeout(fetchContent, 6000);
+          }
+          // Après 5 tentatives (~30s) on arrête — le site reste fonctionnel avec les valeurs par défaut
         });
     }
     fetchContent();
