@@ -5,12 +5,10 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import './responsive.css'
 
-// Enregistrer le Service Worker pour le cache offline
+// Service Worker désactivé — désinstallation propre
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(() => console.log('SW enregistré'))
-      .catch(err => console.warn('SW échoué:', err));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
   });
 }
 
