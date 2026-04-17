@@ -32,10 +32,11 @@ import { MonCompteView, MesReplaysView,
 // ── Vues Nouvelles fonctionnalités ───────────────────────────────
 import { NotificationsView, MessageriView,
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
          VaguesView, ProgressionView,
          SatisfactionView, AgendaView } from './views/Nouvelles';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
