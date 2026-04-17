@@ -33,23 +33,19 @@ const STATUT_CONFIG = {
 
 export default function CarteScan() {
   usePageBackground("carte");
-  const { code }     = useParams();
-  const [carte,      setCarte]      = useState(null);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState("");
+  const { code }        = useParams();
+  const { user, token } = useAuth();
+  const [carte,         setCarte]      = useState(null);
+  const [loading,       setLoading]    = useState(true);
+  const [error,         setError]      = useState("");
   const [actionLoading, setActionLoading] = useState(false);
   const [actionDone,    setActionDone]    = useState(false);
   const [actionMsg,     setActionMsg]     = useState("");
-  const [isAdmin,       setIsAdmin]       = useState(false);
+  const isAdmin = user?.is_staff || false;
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est admin
-    const { user } = useAuth();
-    setIsAdmin(user?.is_staff || false);
-
-    // Charger les infos de la carte
     fetch(`/api/cadeaux/verifier/${code}/`)
-      .then(r => r.data)
+      .then(r => r.json())
       .then(data => {
         setCarte(data);
         setLoading(false);
@@ -63,7 +59,6 @@ export default function CarteScan() {
   async function activer() {
     if (!confirm("Confirmer l'activation de cette carte (paiement reçu) ?")) return;
     setActionLoading(true);
-    const { token } = useAuth();
     try {
       // D'abord récupérer l'ID de la carte
       const res = await fetch(API_URL + '/api/cadeaux/admin/liste/', {
@@ -91,7 +86,6 @@ export default function CarteScan() {
   async function utiliser() {
     if (!confirm(`Confirmer l'utilisation de cette carte par ${carte?.destinataire_nom} ?`)) return;
     setActionLoading(true);
-    const { token } = useAuth();
     try {
       const res = await fetch(API_URL + '/api/cadeaux/admin/liste/', {
         headers: { "Authorization": `Bearer ${token}` }
@@ -233,7 +227,7 @@ export default function CarteScan() {
                     <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:".8rem", color:"rgba(248,245,242,.4)", marginBottom:"16px", lineHeight:1.65 }}>
                       Cette carte est valide. Présentez-la à Prélia pour l'utiliser.
                     </p>
-                    <a href="{WHATSAPP_URL}" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", gap:"8px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
+                    <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", gap:"8px", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
                       Contacter Prélia
                     </a>
                   </div>

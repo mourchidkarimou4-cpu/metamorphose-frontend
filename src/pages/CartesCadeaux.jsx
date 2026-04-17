@@ -565,7 +565,7 @@ export default function CartesCadeaux() {
                 </div>
 
                 <div style={{ display:"flex", gap:"12px", justifyContent:"center", flexWrap:"wrap" }}>
-                  <a href="{WHATSAPP_URL}" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
+                  <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#25D366", color:"#fff", fontFamily:"'Montserrat'", fontWeight:600, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"13px 24px", borderRadius:"3px", textDecoration:"none" }}>
                     Contacter Prélia
                   </a>
                   <Link to="/" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"transparent", color:"#C9A96A", fontFamily:"'Montserrat'", fontWeight:500, fontSize:".72rem", letterSpacing:".12em", textTransform:"uppercase", padding:"12px 24px", border:"1px solid rgba(201,169,106,.3)", borderRadius:"3px", textDecoration:"none" }}>

@@ -36,11 +36,10 @@ function useSiteContent() {
     let cancelled = false;
     function fetchContent() {
       configAPI.public()
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(data => {
+        .then(r => {
           if (cancelled) return;
           const map = {};
-          if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
+          if (Array.isArray(r.data)) r.data.forEach(i => { map[i.cle] = i.valeur; });
           setContent(map);
         })
         .catch(() => {
@@ -64,10 +63,9 @@ export default function Temoignages() {
     let cancelled = false;
     function fetchTemos() {
       avisAPI.liste()
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(data => {
+        .then(r => {
           if (cancelled) return;
-          setTemos(Array.isArray(data) ? data : []);
+          setTemos(Array.isArray(r.data) ? r.data : []);
           setLoading(false);
         })
         .catch(() => {

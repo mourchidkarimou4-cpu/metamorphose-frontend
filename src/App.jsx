@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import LandingPage    from './pages/LandingPage'
 import Programme      from './pages/Programme'
@@ -28,26 +28,6 @@ import MMOLearning from './pages/MMOLearning'
 import Evenements    from './pages/Evenements'
 import Actualites    from './pages/Actualites'
 import ScanTicket    from './pages/ScanTicket'
-import api from './services/api';
-
-/* ── Refresh token automatique ────────────────────────────── */
-async function tryRefresh() {
-  const refresh = localStorage.getItem("mmorphose_refresh");
-  if (!refresh) return false;
-  try {
-    const res  = await fetch(`/api/auth/refresh/`, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ refresh }),
-    });
-    if (!res.ok) return false;
-    const data = await res.json();
-    localStorage.setItem("mmorphose_token", data.access);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 /* ── Route protégée membre ─────────────────────────────────── */
 function PrivateRoute({ children }) {
@@ -83,11 +63,14 @@ function MaintenancePage() {
 }
 
 export default function App() {
+  /* ── Tous les hooks au niveau racine (règle des Hooks) ── */
   const [maintenance, setMaintenance] = useState(false);
+  const isLanding = window.location.pathname === "/";
+  const [showSplash, setShowSplash] = useState(isLanding);
 
   useEffect(() => {
     fetch(`/api/admin/config/public/`)
-      .then(r => r.data)
+      .then(r => r.json())           // fix: r.json() et non r.data
       .then(data => {
         const m = data.find?.(c => c.cle === 'maintenance_active');
         if (m?.valeur === '1') setMaintenance(true);
@@ -96,13 +79,7 @@ export default function App() {
   }, []);
 
   if (maintenance) return <MaintenancePage />;
-
-  const isLanding = window.location.pathname === "/";
-  const [showSplash, setShowSplash] = useState(isLanding);
-
-  if (showSplash) {
-    return <SplashScreen onDone={() => setShowSplash(false)} />;
-  }
+  if (showSplash)  return <SplashScreen onDone={() => setShowSplash(false)} />;
 
   return (
     <Routes>
@@ -116,18 +93,18 @@ export default function App() {
       <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
       <Route path="/contact"       element={<Contact />} />
       <Route path="/communaute"    element={<Communaute />} />
-        <Route path="/communaute/portail" element={<CommunautePortail />} />
+      <Route path="/communaute/portail" element={<CommunautePortail />} />
       <Route path="/don"           element={<Don />} />
-      <Route path="/store"      element={<Store />} />
+      <Route path="/store"         element={<Store />} />
       <Route path="/live"          element={<LiveMasterclass />} />
-        <Route path="/meeting/:roomId" element={<LiveMeeting />} />
+      <Route path="/meeting/:roomId" element={<LiveMeeting />} />
       <Route path="/masterclass"   element={<Masterclass />} />
-      <Route path="/aura"         element={<Aura />} />
+      <Route path="/aura"          element={<Aura />} />
       <Route path="/mmo-learning"  element={<MMOLearning />} />
       <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
-      <Route path="/evenements"           element={<Evenements />} />
-        <Route path="/actualites"           element={<Actualites />} />
-      <Route path="/scan"                  element={<ScanTicket />} />
+      <Route path="/evenements"    element={<Evenements />} />
+      <Route path="/actualites"    element={<Actualites />} />
+      <Route path="/scan"          element={<ScanTicket />} />
       <Route path="/carte/:code"   element={<CarteScan />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
@@ -146,6 +123,7 @@ export default function App() {
       <Route path="/admin" element={
         <AdminRoute><AdminDashboard /></AdminRoute>
       } />
+
       {/* ── 404 ────────────────────────────────────────────── */}
       <Route path="*" element={<NotFound />} />
     </Routes>

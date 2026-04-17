@@ -45,7 +45,7 @@ function FormulaireTeomo({ user, onSuccess }) {
     if (!form.texte.trim()) { setError("Veuillez écrire votre témoignage."); return; }
     setLoading(true); setError("");
 
-    const { token } = useAuth();
+    const token = localStorage.getItem("mmorphose_token");
     const data  = new FormData();
     Object.entries(form).forEach(([k,v]) => data.append(k, v));
     if (photoAvant) data.append("photo_avant", photoAvant);
@@ -169,7 +169,7 @@ function FormulaireProfil({ user }) {
   async function save(e) {
     e.preventDefault()
     setSaving(true); setMsg('')
-    const { token } = useAuth()
+    const token = localStorage.getItem("mmorphose_token")
     try {
       const res = await fetch(`/api/auth/update-profile/`, {
         method:'PATCH',
@@ -243,7 +243,7 @@ function FormulaireMotDePasse() {
     if (newPwd.length < 8)  { setMsg('8 caractères minimum'); return }
     if (newPwd !== confirm) { setMsg('Les mots de passe ne correspondent pas'); return }
     setSaving(true); setMsg('')
-    const { token } = useAuth()
+    const token = localStorage.getItem("mmorphose_token")
     try {
       const res = await fetch(`/api/auth/change-password/`, {
         method:'POST',
@@ -307,8 +307,10 @@ export default function Dashboard() {
   const [temoSubmitted, setTemoSubmitted] = useState(false)
   const navigate = useNavigate()
 
+  const { updateUser } = useAuth()
+
   useEffect(() => {
-    const { token } = useAuth()
+    const token = localStorage.getItem("mmorphose_token")
     if (!token) { navigate('/espace-membre'); return }
     const saved = JSON.stringify(user)
     if (saved) setUser(JSON.parse(saved))
@@ -328,7 +330,7 @@ export default function Dashboard() {
         setUser(u); setGuides(g); setReplays(r)
         setMesTemos(Array.isArray(t) ? t : [])
         setMesTickets(Array.isArray(tk) ? tk : [])
-        updateUser(u)
+        if (updateUser) updateUser(u)
       } catch {}
       setLoading(false)
     }
@@ -336,8 +338,9 @@ export default function Dashboard() {
   }, [])
 
   function logout() {
-    const { logout } = useAuth()
-    logout()
+    localStorage.removeItem("mmorphose_token")
+    localStorage.removeItem("mmorphose_refresh")
+    localStorage.removeItem("mmorphose_user")
     navigate('/espace-membre')
   }
 
@@ -594,7 +597,7 @@ export default function Dashboard() {
             ))}
             <div style={{ marginTop:'28px', display:'flex', gap:'12px', flexWrap:'wrap' }}>
               <button onClick={async () => {
-                const { token } = useAuth();
+                const token = localStorage.getItem("mmorphose_token");
                 const res = await fetch(`/api/auth/certificat/`, { headers:{'Authorization':`Bearer ${token}`} });
                 if(res.ok) {
                   const blob = await res.blob();
@@ -606,7 +609,7 @@ export default function Dashboard() {
               }} style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', color:'#fff', background:'#C2185B', border:'none', borderRadius:'3px', padding:'12px 20px', cursor:'pointer' }}>
                 Télécharger mon certificat
               </button>
-              <a href="{WHATSAPP_URL}" style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:500, letterSpacing:'.12em', textTransform:'uppercase', color:'#C9A96A', textDecoration:'none', border:'1px solid rgba(201,169,106,.25)', borderRadius:'3px', padding:'12px 20px', display:'inline-block' }}>
+              <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ fontFamily:"'Montserrat'", fontSize:'.72rem', fontWeight:500, letterSpacing:'.12em', textTransform:'uppercase', color:'#C9A96A', textDecoration:'none', border:'1px solid rgba(201,169,106,.25)', borderRadius:'3px', padding:'12px 20px', display:'inline-block' }}>
                 Contacter Prélia
               </a>
             </div>

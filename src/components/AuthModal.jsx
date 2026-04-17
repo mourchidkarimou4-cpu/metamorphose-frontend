@@ -228,7 +228,7 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
                   <p style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 300, fontSize: ".75rem", color: "rgba(248,245,242,.3)", marginBottom: "8px" }}>
                     Problème de connexion ?
                   </p>
-                  <a href="{WHATSAPP_URL}" style={{ color: "#C9A96A", fontFamily: "'Montserrat',sans-serif", fontSize: ".75rem", fontWeight: 500, textDecoration: "none" }}>
+                  <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ color: "#C9A96A", fontFamily: "'Montserrat',sans-serif", fontSize: ".75rem", fontWeight: 500, textDecoration: "none" }}>
                     Contacter Prélia sur WhatsApp
                   </a>
                 </div>

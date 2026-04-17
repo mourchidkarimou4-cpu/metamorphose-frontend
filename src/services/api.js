@@ -46,10 +46,10 @@ export const learningAPI = {
   verifierAcces:    (slug)      => api.get(`/api/learning/${slug}/acces/`),
   categories:       ()          => api.get("/api/learning/categories/"),
 
-  // Admin — Coach Prélia APEDO AHONON
-  adminListeAcces:    (cours_id) => api.get("/api/learning/admin/acces/", { params: { cours_id } }),
-  adminActiverAcces:  (data)     => api.post("/api/learning/admin/acces/activer/",    data),
-  adminDesactiverAcces:(data)    => api.post("/api/learning/admin/acces/desactiver/", data),
+  // Admin
+  adminListeAcces:     (cours_id) => api.get("/api/learning/admin/acces/", { params: { cours_id } }),
+  adminActiverAcces:   (data)     => api.post("/api/learning/admin/acces/activer/",    data),
+  adminDesactiverAcces:(data)     => api.post("/api/learning/admin/acces/desactiver/", data),
 };
 
 // ── MASTERCLASS ───────────────────────────────────────────────────
@@ -57,65 +57,67 @@ export const masterclassAPI = {
   liste:    ()          => api.get("/api/masterclass/"),
   reserver: (id, data)  => api.post(`/api/masterclass/${id}/reserver/`, data),
 
-  // Admin — Coach Prélia APEDO AHONON
-  adminListe:       ()       => api.get("/api/masterclass/admin/"),
-  adminCreer:       (data)   => api.post("/api/masterclass/admin/", data),
-  adminModifier:    (id, fd) => api.patch(`/api/masterclass/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminSupprimer:   (id)     => api.delete(`/api/masterclass/admin/${id}/`),
-  adminReservations:(id)     => api.get(`/api/masterclass/admin/${id}/reservations/`),
+  // Admin
+  adminListe:        ()       => api.get("/api/masterclass/admin/"),
+  adminCreer:        (data)   => api.post("/api/masterclass/admin/", data),
+  adminModifier:     (id, fd) => api.patch(`/api/masterclass/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminSupprimer:    (id)     => api.delete(`/api/masterclass/admin/${id}/`),
+  adminReservations: (id)     => api.get(`/api/masterclass/admin/${id}/reservations/`),
 };
 
 // ── COMMUNAUTÉ ────────────────────────────────────────────────────
 export const communauteAPI = {
-  verifierCle:  (data) => api.post("/api/acces/verifier/", data),
+  // fix: valider-cle est dans l'app communaute, verifier est dans l'app acces (clé email-only)
+  verifierCle:  (data) => api.post("/api/communaute/valider-cle/", data),
   publications: ()     => api.get("/api/communaute/publications/"),
   publier:      (fd)   => api.post("/api/communaute/publications/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
   commentaires: (id)   => api.get(`/api/communaute/publications/${id}/commentaires/`),
   commenter:    (id, data) => api.post(`/api/communaute/publications/${id}/commentaires/`, data),
 
-  // Admin — Coach Prélia APEDO AHONON
+  // Admin
   adminCles:       () => api.get("/api/communaute/admin/cles/"),
-  adminGenererCle: (data) => api.post("/api/acces/admin/generer/", data),
-  adminToggleCle:  (id)   => api.patch(`/api/acces/admin/cles/${id}/toggle/`),
+  adminGenererCle: (data) => api.post("/api/communaute/admin/cles/generer/", data),
+  adminToggleCle:  (id)   => api.patch(`/api/communaute/admin/cles/${id}/toggle/`),
 };
 
 // ── ÉVÉNEMENTS ────────────────────────────────────────────────────
 export const evenementsAPI = {
-  liste:     ()     => api.get("/api/evenements/"),
-  actualites:()     => api.get("/api/evenements/actualites/"),
+  liste:      () => api.get("/api/evenements/"),
+  actualites: () => api.get("/api/evenements/actualites/"),
 
-  // Admin — Coach Prélia APEDO AHONON
-  adminListe:          ()       => api.get("/api/evenements/admin/"),
-  adminCreer:          (fd)     => api.post("/api/evenements/admin/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminModifier:       (id, fd) => api.patch(`/api/evenements/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminSupprimer:      (id)     => api.delete(`/api/evenements/admin/${id}/`),
-  adminActualiteListe: ()       => api.get("/api/evenements/actualites/admin/"),
-  adminActualiteCreer: (fd)     => api.post("/api/evenements/actualites/admin/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminActualiteModifier:(id,fd)=> api.patch(`/api/evenements/actualites/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminActualiteSupprimer:(id)  => api.delete(`/api/evenements/actualites/admin/${id}/`),
+  // Admin
+  adminListe:             ()        => api.get("/api/evenements/admin/"),
+  adminCreer:             (fd)      => api.post("/api/evenements/admin/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminModifier:          (id, fd)  => api.patch(`/api/evenements/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminSupprimer:         (id)      => api.delete(`/api/evenements/admin/${id}/`),
+  adminActualiteListe:    ()        => api.get("/api/evenements/actualites/admin/"),
+  adminActualiteCreer:    (fd)      => api.post("/api/evenements/actualites/admin/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminActualiteModifier: (id, fd)  => api.patch(`/api/evenements/actualites/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminActualiteSupprimer:(id)      => api.delete(`/api/evenements/actualites/admin/${id}/`),
 };
 
 // ── LIVE ─────────────────────────────────────────────────────────
 export const liveAPI = {
-  mesSalles:  ()     => api.get("/api/live/mes-salles/"),
-  creer:      (data) => api.post("/api/live/creer/", data),
-  infos:      (id)   => api.get(`/api/live/${id}/`),
-  rejoindre:  (id, data) => api.post(`/api/live/${id}/rejoindre/`, data),
-  terminer:   (id)   => api.post(`/api/live/${id}/terminer/`),
+  mesSalles: ()          => api.get("/api/live/mes-salles/"),
+  creer:     (data)      => api.post("/api/live/creer/", data),
+  infos:     (id)        => api.get(`/api/live/${id}/`),
+  rejoindre: (id, data)  => api.post(`/api/live/${id}/rejoindre/`, data),
+  terminer:  (id)        => api.post(`/api/live/${id}/terminer/`),
 };
 
 // ── TÉMOIGNAGES ───────────────────────────────────────────────────
+// fix: les URLs correspondaient aux routes du backend
 export const avisAPI = {
-  liste:    ()     => api.get("/api/avis/liste/"),
-  soumettre:(data) => api.post("/api/avis/soumettre/", data),
+  liste:         ()       => api.get("/api/avis/"),
+  soumettre:     (data)   => api.post("/api/avis/soumettre/", data),
 
-  // Admin — Coach Prélia APEDO AHONON
-  adminListe:    ()       => api.get("/api/avis/admin/liste/"),
+  // Admin
+  adminListe:    ()       => api.get("/api/avis/admin/"),
   adminAjouter:  (fd)     => api.post("/api/avis/admin/ajouter/", fd, { headers:{ "Content-Type":"multipart/form-data" } }),
-  adminModifier: (id, fd) => api.patch(`/api/avis/admin/${id}/modifier/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
+  adminModifier: (id, fd) => api.patch(`/api/avis/admin/${id}/`, fd, { headers:{ "Content-Type":"multipart/form-data" } }),
   adminApprouver:(id)     => api.post(`/api/avis/admin/${id}/approuver/`),
   adminRefuser:  (id)     => api.post(`/api/avis/admin/${id}/refuser/`),
-  adminSupprimer:(id)     => api.delete(`/api/avis/admin/${id}/supprimer/`),
+  adminSupprimer:(id)     => api.delete(`/api/avis/admin/${id}/`),
 };
 
 // ── NEWSLETTER ────────────────────────────────────────────────────
@@ -125,12 +127,13 @@ export const newsletterAPI = {
 
 // ── CONTACT ───────────────────────────────────────────────────────
 export const contactAPI = {
-  envoyer: (data) => api.post("/api/contenu/contact/", data),
+  envoyer: (data) => api.post("/api/auth/contact/", data),
 };
 
 // ── DON ───────────────────────────────────────────────────────────
+// Le don est traité comme un message de contact avec type "don"
 export const donAPI = {
-  soumettre: (data) => api.post("/api/contenu/don/", data),
+  soumettre: (data) => api.post("/api/auth/contact/", { ...data, formule: "DON" }),
 };
 
 // ── PARTENAIRES ───────────────────────────────────────────────────

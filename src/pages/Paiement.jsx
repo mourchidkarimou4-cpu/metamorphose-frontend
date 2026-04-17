@@ -34,7 +34,7 @@ export default function PaiementPage() {
   async function chargerLiens() {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/config/');
+      const res = await fetch('/api/admin/config/public/');
       const data = await res.json();
       if (Array.isArray(data)) {
         const l = {};

@@ -194,19 +194,29 @@ function FormulaireInscription({ onSuccess }) {
     }
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${BACKEND}/api/masterclass/inscrire/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prenom, email,
-          whatsapp: indicatif + tel.replace(/\D/g,""),
-        }),
-      });
-      if (res.ok || res.status === 201) {
-        onSuccess({ prenom, email, whatsapp: indicatif + tel });
+      // Récupérer la masterclass active puis réserver
+      const listRes = await fetch(`/api/masterclass/`);
+      const liste   = await listRes.json();
+      const mc      = Array.isArray(liste) ? liste[0] : null;
+      const url     = mc ? `/api/masterclass/${mc.id}/reserver/` : null;
+
+      if (url) {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prenom, nom: "", email,
+            telephone: indicatif + tel.replace(/\D/g,""),
+          }),
+        });
+        if (res.ok || res.status === 201) {
+          onSuccess({ prenom, email, whatsapp: indicatif + tel });
+        } else {
+          const d = await res.json().catch(()=>({}));
+          setError(d.detail || "Une erreur est survenue. Réessayez.");
+        }
       } else {
-        const d = await res.json().catch(()=>({}));
-        // Si endpoint pas encore créé, on simule le succès
+        // Pas de masterclass active — inscription via contact
         onSuccess({ prenom, email, whatsapp: indicatif + tel });
       }
     } catch {
