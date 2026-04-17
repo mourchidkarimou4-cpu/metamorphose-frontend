@@ -318,15 +318,17 @@ export default function Dashboard() {
     async function load() {
       const headers = { 'Authorization': 'Bearer ' + token }
       try {
-        const [uRes, gRes, rRes, tRes] = await Promise.all([
-          fetch(`/api/auth/me/`,            { headers }),
-          fetch(`/api/contenu/guides/`,     { headers }),
-          fetch(`/api/contenu/replays/`,    { headers }),
+        const [uRes, gRes, rRes, tRes, tkRes] = await Promise.all([
+          fetch(`/api/auth/me/`,              { headers }),
+          fetch(`/api/contenu/guides/`,       { headers }),
+          fetch(`/api/contenu/replays/`,      { headers }),
           fetch(`/api/avis/mes-temoignages/`, { headers }),
-          fetch(`/api/tickets/mes-tickets/`,     { headers }),
+          fetch(`/api/tickets/mes-tickets/`,  { headers }),
         ])
         if (uRes.status === 401) { navigate('/espace-membre'); return }
-        const [u, g, r, t, tk] = await Promise.all([uRes.json(), gRes.json(), rRes.json(), tRes.json(), (await fetch(`/api/tickets/mes-tickets/`, { headers })).json()])
+        const [u, g, r, t, tk] = await Promise.all([
+          uRes.json(), gRes.json(), rRes.json(), tRes.json(), tkRes.json()
+        ])
         setUser(u); setGuides(g); setReplays(r)
         setMesTemos(Array.isArray(t) ? t : [])
         setMesTickets(Array.isArray(tk) ? tk : [])

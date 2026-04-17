@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
 import { learningAPI } from '../../services/api';
@@ -732,7 +733,7 @@ function GuidesView({ api, toast }) {
               </div>
               <div style={{ padding:"12px", background:"rgba(255,255,255,.03)", border:"1px solid var(--border)", borderRadius:"3px", fontSize:".78rem", color:"var(--text-sub)", fontStyle:"italic" }}>
                 Pour uploader le fichier PDF, utilisez l'interface admin Django :<br/>
-                <a href="http://127.0.0.1:8000/admin" target="_blank" rel="noreferrer" style={{color:"var(--or)"}}>http://127.0.0.1:8000/admin  Guides</a>
+                <a href="https://metamorphose-backend.onrender.com/admin" target="_blank" rel="noreferrer" style={{color:"var(--or)"}}>Accéder à l'admin Django</a>
               </div>
               <div style={{ display:"flex", gap:"10px", marginTop:"8px" }}>
                 <button className="admin-btn admin-btn-primary" onClick={save} style={{flex:1,padding:"12px"}}>{modal==="add"?"Ajouter":"Enregistrer"}</button>
@@ -1281,7 +1282,7 @@ function TemoignagesView({ api, toast }) {
     fetch(`/api/avis/admin/?statut=${filter}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(r => r.data)
+    .then(r => r.json())
     .then(d => { setTemos(Array.isArray(d) ? d : Array.isArray(d?.results) ? d.results : []); setLoading(false); })
     .catch(() => setLoading(false));
   }
@@ -2086,7 +2087,7 @@ function LiveAdminView({ api, toast }) {
     setLoading(true)
     fetch(`/api/live/mes-salles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.data)
+    }).then(r => r.json())
       .then(d => { setSalles(Array.isArray(d) ? d : []); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2222,7 +2223,7 @@ function EvenementsAdminView({ api, toast }) {
     setLoading(true)
     fetch(`/api/evenements/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.data)
+    }).then(r => r.json())
       .then(d => { setEvts(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2367,7 +2368,7 @@ function ActualitesAdminView({ api, toast }) {
     setLoading(true)
     fetch(`/api/evenements/actualites/admin/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.data)
+    }).then(r => r.json())
       .then(d => { setActus(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2498,9 +2499,9 @@ function CommunauteAdminView({ api, toast }) {
 
   function load() {
     setLoading(true)
-    fetch(`/api/acces/admin/cles/`, {
+    fetch(`/api/communaute/admin/cles/`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.data)
+    }).then(r => r.json())
       .then(d => { setCles(Array.isArray(d)?d:[]); setLoading(false) })
       .catch(() => setLoading(false))
   }
@@ -2510,7 +2511,7 @@ function CommunauteAdminView({ api, toast }) {
     if (!email.trim()) { toast('Email requis', 'error'); return }
     setGenerating(true)
     try {
-      const res = await fetch(`/api/acces/admin/generer/`, {
+      const res = await fetch(`/api/communaute/admin/cles/generer/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -2569,16 +2570,16 @@ function CommunauteAdminView({ api, toast }) {
             </p>
           </div>
           <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
-            <span style={{ padding:'3px 10px', borderRadius:'100px', background:c.active?'rgba(76,175,80,.1)':'rgba(239,68,68,.1)', border:`1px solid ${c.active?'rgba(76,175,80,.3)':'rgba(239,68,68,.3)'}`, fontFamily:'var(--ff-b)', fontSize:'.6rem', color:c.active?'#4CAF50':'#f87171', letterSpacing:'.1em', textTransform:'uppercase' }}>
-              {c.active ? 'Active' : 'Désactivée'}
+            <span style={{ padding:'3px 10px', borderRadius:'100px', background:c.is_active?'rgba(76,175,80,.1)':'rgba(239,68,68,.1)', border:`1px solid ${c.is_active?'rgba(76,175,80,.3)':'rgba(239,68,68,.3)'}`, fontFamily:'var(--ff-b)', fontSize:'.6rem', color:c.is_active?'#4CAF50':'#f87171', letterSpacing:'.1em', textTransform:'uppercase' }}>
+              {c.is_active ? 'Active' : 'Désactivée'}
             </span>
             <button onClick={()=>{ navigator.clipboard.writeText(c.cle); toast('Clé copiée ✓', 'success') }}
               style={{ padding:'7px 12px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'4px', color:'var(--or)', fontFamily:'var(--ff-b)', fontSize:'.65rem', cursor:'pointer' }}>
               Copier
             </button>
             <button onClick={()=>toggleCle(c.id)}
-              style={{ padding:'7px 12px', background:c.active?'rgba(239,68,68,.08)':'rgba(76,175,80,.08)', border:`1px solid ${c.active?'rgba(239,68,68,.2)':'rgba(76,175,80,.2)'}`, borderRadius:'4px', color:c.active?'#f87171':'#4CAF50', fontFamily:'var(--ff-b)', fontSize:'.65rem', cursor:'pointer' }}>
-              {c.active ? 'Désactiver' : 'Réactiver'}
+              style={{ padding:'7px 12px', background:c.is_active?'rgba(239,68,68,.08)':'rgba(76,175,80,.08)', border:`1px solid ${c.is_active?'rgba(239,68,68,.2)':'rgba(76,175,80,.2)'}`, borderRadius:'4px', color:c.is_active?'#f87171':'#4CAF50', fontFamily:'var(--ff-b)', fontSize:'.65rem', cursor:'pointer' }}>
+              {c.is_active ? 'Désactiver' : 'Réactiver'}
             </button>
           </div>
         </div>
@@ -3509,7 +3510,7 @@ function AbonnesView({ api, toast }) {
             {actifs} abonné{actifs!==1?'s':''} actif{actifs!==1?'s':''}
           </p>
         </div>
-        <a href="/api/admin/export/newsletter/" target="_blank"
+        <a href="/api/admin/export/abonnes/" target="_blank"
           style={{padding:'9px 18px',borderRadius:'3px',background:'rgba(201,169,106,.1)',border:'1px solid rgba(201,169,106,.25)',color:'var(--or)',fontFamily:'var(--ff-b)',fontSize:'.7rem',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none'}}>
           Exporter CSV
         </a>
@@ -3883,7 +3884,7 @@ function MasterclassAdminView({ api, toast }) {
     const payload = { titre:form.titre, description:form.description, date:form.date, lieu:form.lieu, places_max:parseInt(form.places_max)||50, est_active:form.est_active, gratuite:form.gratuite, lien_live:form.lien_live, image:image_url }
     if (selected) {
       const tkn = localStorage.getItem('mmorphose_token')
-      await fetch(`/api/masterclass/admin/${selected.id}/`, { method:'PUT', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
+      await fetch(`/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
       toast('Masterclass modifiée ✓', 'success')
     } else {
       const tkn2 = localStorage.getItem('mmorphose_token')
