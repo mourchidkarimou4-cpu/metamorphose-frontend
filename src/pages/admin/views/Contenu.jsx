@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FORMULES, SECTIONS_CONFIG } from '../constants';
-function ReplaysView({ api, toast }) {
+function ReplaysView({ api, toast, refreshKey = 0 }) {
   const [replays, setReplays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal,   setModal]   = useState(null); // null | "add" | replay obj
@@ -8,7 +8,7 @@ function ReplaysView({ api, toast }) {
 
   useEffect(() => {
     api("GET", "/replays/").then(d => { if(d) setReplays(d); setLoading(false); });
-  }, []);
+  }, [refreshKey]);
 
   function openAdd()  { setForm({ titre:"", video_url:"", semaine:1, formules:"F1,F2,F3,F4", actif:true }); setModal("add"); }
   function openEdit(r){ setForm(r); setModal(r); }
@@ -99,7 +99,7 @@ function ReplaysView({ api, toast }) {
 }
 
 /* ── GUIDES ─────────────────────────────────────────────────── */
-function GuidesView({ api, toast }) {
+function GuidesView({ api, toast, refreshKey = 0 }) {
   const [guides,  setGuides]  = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal,   setModal]   = useState(null);
@@ -107,7 +107,7 @@ function GuidesView({ api, toast }) {
 
   useEffect(() => {
     api("GET", "/guides/").then(d => { if(d) setGuides(d); setLoading(false); });
-  }, []);
+  }, [refreshKey]);
 
   async function save() {
     if (modal === "add") {
@@ -190,7 +190,7 @@ function GuidesView({ api, toast }) {
 }
 
 /* ── CONFIG SITE ────────────────────────────────────────────── */
-function ConfigView({ api, toast, sectionFilter = null }) {
+function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
   const [configs,  setConfigs]  = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [section,  setSection]  = useState("hero");
@@ -198,17 +198,25 @@ function ConfigView({ api, toast, sectionFilter = null }) {
   const [saving,   setSaving]   = useState({});
 
   useEffect(() => {
-    api("GET", "/config/").then(d => {
-      if (d) {
-        setConfigs(d);
-        // Initialiser edits
-        const e = {};
-        d.forEach(c => { e[c.cle] = c.valeur; });
-        setEdits(e);
-      }
-      setLoading(false);
-    });
-  }, []);
+    const token = localStorage.getItem("mmorphose_token");
+    fetch("/api/admin/config/", {
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+    })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => {
+        if (Array.isArray(d)) {
+          setConfigs(d);
+          const e = {};
+          d.forEach(c => { e[c.cle] = c.valeur; });
+          setEdits(e);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Config load error:", err);
+        setLoading(false);
+      });
+  }, [refreshKey]);
 
   async function saveConfig(cle, section) {
     setSaving(s => ({...s, [cle]:true}));

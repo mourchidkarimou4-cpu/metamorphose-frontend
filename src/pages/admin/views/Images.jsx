@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-function ImagesView({ api, toast }) {
+function ImagesView({ api, toast, refreshKey = 0 }) {
   const [uploading, setUploading] = useState({});
   const [previews,  setPreviews]  = useState({});
   const [configs,   setConfigs]   = useState([]);
 
   useEffect(() => {
-    api("GET", "/config/").then(d => {
+    const token = localStorage.getItem("mmorphose_token");
+    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => {
       if (d) {
         const imgs = d.filter(c => c.section === "images" || c.section === "slides");
         const prev = {};
@@ -14,7 +17,7 @@ function ImagesView({ api, toast }) {
         setPreviews(prev);
       }
     });
-  }, []);
+  }, [refreshKey]);
 
   const imageFields = [
     { cle:"photo_prelia",     label:"Photo de Prélia",        desc:"Portrait principal affiché dans la section À Propos",    ratio:"3/4" },

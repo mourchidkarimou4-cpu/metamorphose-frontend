@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-function RessourcesAdminView({ api, toast }) {
+function RessourcesAdminView({ api, toast, refreshKey = 0 }) {
   const [configs,   setConfigs]   = useState({});
   const [loading,   setLoading]   = useState(true);
   const [saving,    setSaving]    = useState({});
@@ -7,7 +7,10 @@ function RessourcesAdminView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
-    api("GET", "/config/").then(d => {
+    const token = localStorage.getItem("mmorphose_token");
+    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => {
       if (d) {
         const map = {};
         d.filter(c => c.section === "ressources").forEach(c => { map[c.cle] = c.valeur; });
@@ -15,7 +18,7 @@ function RessourcesAdminView({ api, toast }) {
       }
       setLoading(false);
     });
-  }, []);
+  }, [refreshKey]);
 
   function set(cle, val) { setConfigs(p => ({...p, [cle]: val})); }
 
@@ -314,7 +317,10 @@ function MaintenanceView({ api, toast }) {
   const token = localStorage.getItem("mmorphose_token")
 
   useEffect(() => {
-    api("GET", "/config/").then(d => {
+    const token = localStorage.getItem("mmorphose_token");
+    fetch("/api/admin/config/", { headers: { "Authorization": `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => {
       if(d) {
         const maint = d.find(c=>c.cle==="maintenance_active");
         const msg   = d.find(c=>c.cle==="maintenance_message");
