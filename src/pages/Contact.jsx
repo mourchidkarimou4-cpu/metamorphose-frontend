@@ -151,8 +151,8 @@ export default function Contact() {
               {/* Emails */}
               <div className="contact-card">
                 <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".18em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"10px" }}>Email</p>
-                <a href="mailto:{get("contact_email1", "contact@preliaapedo.com")}" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>{get("contact_email1", "contact@preliaapedo.com")}</a>
-                <a href="mailto:{get("contact_email2", "whiteblackdress22@gmail.com")}" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>{get("contact_email2", "whiteblackdress22@gmail.com")}</a>
+                <a href={`mailto:${get("contact_email1", "contact@preliaapedo.com")}`} style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>{get("contact_email1", "contact@preliaapedo.com")}</a>
+                <a href={`mailto:${get("contact_email2", "whiteblackdress22@gmail.com")}`} style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>{get("contact_email2", "whiteblackdress22@gmail.com")}</a>
               </div>
 
               {/* Réseaux */}
