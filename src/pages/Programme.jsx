@@ -93,10 +93,10 @@ export default function Programme() {
   ];
 
   const formats = [
-    { code:"F1", label:"Éclosion",            prix:"65 000",  color:"#C2185B", badge:"Startup",   detail:"2 séances par semaine en ligne avec un groupe bienveillant. Groupe WhatsApp privé inclus." },
-    { code:"F2", label:"Révélation",          prix:"150 000", color:"#C9A96A", badge:"Populaire", detail:"Séances individuelles en ligne avec Prélia APEDO AHONON. Suivi 100% adapté à votre situation.", featured:true },
-    { code:"F3", label:"Ascension",           prix:"250 000", color:"#A8C8E0", badge:"Ambitieux", detail:"1 séance par semaine en présentiel avec un groupe. Immersion physique et collective." },
-    { code:"F4", label:"MMO Signature",       prix:"350 000", color:"#D8C1A0", badge:"Prestige",  detail:"Séances individuelles en présentiel avec Prélia APEDO AHONON. L'expérience la plus complète." },
+    { code:"F1", label:"ESSENTIELLE",    prix:"70 000",  color:"#C2185B", badge:"Startup",   detail:"Accompagnement de groupe en ligne. Sessions live, replay inclus, 7 bonus + appel diagnostic individuel." },
+    { code:"F2", label:"PERSONNALISÉE",  prix:"160 000", color:"#C9A96A", badge:"Populaire", detail:"Accompagnement individuel en ligne avec Coach AHONON. 3 séances immersives + analyse personnalisée.", featured:true },
+    { code:"F3", label:"IMMERSION",      prix:"267 000", color:"#A8C8E0", badge:"Ambitieux", detail:"Accompagnement de groupe en présentiel. Ateliers pratiques intensifs + 3 bonus exclusifs supplémentaires." },
+    { code:"F4", label:"VIP",            prix:"370 000", color:"#D8C1A0", badge:"Prestige",  detail:"Accompagnement individuel en présentiel. 10 bonus au total + suivi 1 mois après le programme." },
   ];
 
   return (
