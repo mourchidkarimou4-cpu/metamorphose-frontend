@@ -1091,7 +1091,7 @@ function Hero({ get }) {
   }, []);
 
   return (
-    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
+    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)", marginTop:"72px" }}>
       <HeroDiaporama get={get} />
 
       {/* Contenu au-dessus du diaporama */}
