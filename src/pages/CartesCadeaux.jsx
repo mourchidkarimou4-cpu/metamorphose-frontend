@@ -5,7 +5,7 @@ import SectionCadeaux from '../components/SectionCadeaux';
 import usePageBackground from "../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
-import api from '../services/api';
+import api, { configAPI } from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
@@ -95,10 +95,10 @@ const STYLES = `
 `;
 
 const FORMULES = [
-  { id:"F1", label:"ESSENTIELLE",      prix:"70 000",  color:"#C2185B", desc:"2 séances/semaine en ligne" },
-  { id:"F2", label:"PERSONNALISÉE",       prix:"160 000", color:"#C9A96A", desc:"Suivi individuel en ligne",  featured:true },
-  { id:"F3", label:"IMMERSION",prix:"267 000", color:"#A8C8E0", desc:"1 séance/semaine en présentiel" },
-  { id:"F4", label:"VIP", prix:"370 000", color:"#D8C1A0", desc:"Expérience ultime en présentiel" },
+  { id:"F1", label:"Live · Groupe",      prix:"65 000",  color:"#C2185B", desc:"2 séances/semaine en ligne" },
+  { id:"F2", label:"Live · Privé",       prix:"150 000", color:"#C9A96A", desc:"Suivi individuel en ligne",  featured:true },
+  { id:"F3", label:"Présentiel · Groupe",prix:"250 000", color:"#A8C8E0", desc:"1 séance/semaine en présentiel" },
+  { id:"F4", label:"Présentiel · Privé", prix:"350 000", color:"#D8C1A0", desc:"Expérience ultime en présentiel" },
 ];
 
 const OCCASIONS = [
@@ -298,6 +298,16 @@ function VerificateurCode() {
 
 /* ── PAGE PRINCIPALE ─────────────────────────────────────────── */
 export default function CartesCadeaux() {
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setConfig(map);
+    }).catch(() => {});
+  }, []);
+  function get(cle, fallback='') { return config[cle] || fallback; }
+
   usePageBackground("carte");
   const [form, setForm] = useState({
     formule:"F2", acheteur_nom:"", acheteur_email:"", acheteur_tel:"",
@@ -370,15 +380,15 @@ export default function CartesCadeaux() {
         <section style={{ padding:"60px 24px 40px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#0d0507)", position:"relative" }}>
           <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 50% 40% at 50% 60%,rgba(194,24,91,.06),transparent 70%)" }}/>
           <div style={{ position:"relative", maxWidth:"600px", margin:"0 auto" }}>
-            <p style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px", animation:"fadeUp .7s both" }}>Offrir une transformation</p>
+            <p style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px", animation:"fadeUp .7s both" }}>{get('cartes_label', 'Offrir une transformation')}</p>
             <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.8rem,5vw,3rem)", fontWeight:700, lineHeight:1.1, marginBottom:"16px", animation:"fadeUp .8s .1s both" }}>
-              La Carte Cadeau<br/>
+              {get('cartes_titre', 'La Carte Cadeau')}<br/>
               <em style={{ fontStyle:"italic", fontWeight:400, background:"linear-gradient(135deg,#C9A96A,#E8D5A8,#C9A96A)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmer 4s linear infinite" }}>
                 Méta'Morph'Ose
               </em>
             </h1>
             <p style={{ fontFamily:"'Montserrat'", fontWeight:300, fontSize:"clamp(.85rem,2vw,.95rem)", color:"rgba(248,245,242,.5)", lineHeight:1.8, animation:"fadeUp .8s .2s both" }}>
-              Offrez à une femme que vous aimez la possibilité de se révéler, de reprendre confiance et d'oser devenir pleinement elle-même.
+              {get('cartes_intro', "Offrez à une femme que vous aimez la possibilité de se révéler, de reprendre confiance et d'oser devenir pleinement elle-même.")}
             </p>
           </div>
         </section>

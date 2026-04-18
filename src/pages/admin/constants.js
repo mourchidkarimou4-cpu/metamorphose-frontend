@@ -27,4 +27,7 @@ export const SECTIONS_CONFIG = [
   { id:"masterclass",  label:"Masterclass" },
   { id:"evenements",   label:"Événements & Brunch" },
   { id:"don",          label:"Page Don" },
+  { id:"learning",     label:"MMO Learning" },
+  { id:"cartes",       label:"Cartes Cadeaux" },
+  { id:"communaute",   label:"Communauté" },
 ];

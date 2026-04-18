@@ -180,7 +180,7 @@ function MessageBienvenue({ onClose }) {
             Message d'intégration automatique — Communauté Métamorphosées
           </p>
           <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:400, lineHeight:1.2, color:"#F8F5F2", marginBottom:"32px" }}>
-            Bienvenue dans la communauté<br/>
+            {get('comm_titre1', 'Bienvenue dans')} la communauté<br/>
             <em style={{ fontStyle:"italic", fontWeight:300, color:"#C9A96A" }}>des Métamorphosées.</em>
           </h2>
 
@@ -225,7 +225,7 @@ function MessageBienvenue({ onClose }) {
             </p>
 
             <p style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:".95rem", color:"rgba(248,245,242,.7)" }}>
-              Bienvenue dans ton nouveau cercle.
+              {get('comm_titre1', 'Bienvenue dans')} ton nouveau cercle.
             </p>
           </div>
 
@@ -242,6 +242,16 @@ function MessageBienvenue({ onClose }) {
 
 // ── PAGE PRINCIPALE ───────────────────────────────────────────────
 export default function Communaute() {
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setConfig(map);
+    }).catch(() => {});
+  }, []);
+  function get(cle, fallback='') { return config[cle] || fallback; }
+
   useReveal();
   const [modal,    setModal]    = useState(null); // null | "auth" | "bienvenue"
   const [engaged,  setEngaged]  = useState(false);
@@ -284,23 +294,23 @@ export default function Communaute() {
           <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 70% 50% at 50% 70%,rgba(201,169,106,.05),transparent)", pointerEvents:"none" }}/>
           <div style={{ position:"relative", maxWidth:"700px", margin:"0 auto" }}>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".58rem", letterSpacing:".35em", textTransform:"uppercase", color:"rgba(201,169,106,.45)", marginBottom:"20px", animation:"fadeUp .6s both" }}>
-              Cercle privé — Réservé aux Métamorphosées
+              {get('comm_label', 'Cercle privé — Réservé aux Métamorphosées')}
             </p>
             <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,6vw,3.8rem)", fontWeight:400, lineHeight:1.08, marginBottom:"28px", animation:"fadeUp .7s .1s both" }}>
-              Bienvenue dans<br/>
+              {get('comm_titre1', 'Bienvenue dans')}<br/>
               <em style={{ fontStyle:"italic", fontWeight:300, background:"linear-gradient(135deg,#C9A96A,#E8D5A8,#C9A96A)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerGold 4s linear infinite" }}>
-                un espace d'exception.
+                {get('comm_titre2', "un espace d'exception.")}
               </em>
             </h1>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:"clamp(.88rem,2vw,1rem)", color:"rgba(248,245,242,.5)", lineHeight:1.9, marginBottom:"12px", animation:"fadeUp .7s .2s both", maxWidth:"560px", margin:"0 auto 12px" }}>
-              Cette communauté est un cercle privé, réservé exclusivement aux femmes ayant suivi le programme Métamorphose. Ici, nous cultivons la croissance, l'élégance, le respect et l'élévation.
+              {get('comm_intro', "Cette communauté est un cercle privé, réservé exclusivement aux femmes ayant suivi le programme Métamorphose. Ici, nous cultivons la croissance, l'élégance, le respect et l'élévation.")}
             </p>
             <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:"rgba(201,169,106,.55)", marginBottom:"40px", animation:"fadeUp .7s .25s both" }}>
-              Pour préserver la qualité et l'énergie de cet espace, chaque membre s'engage à respecter les principes suivants.
+              {get('comm_principes_intro', "Pour préserver la qualité et l'énergie de cet espace, chaque membre s'engage à respecter les principes suivants.")}
             </p>
             <div className="btns-hero" style={{ display:"flex", gap:"14px", justifyContent:"center", flexWrap:"wrap", animation:"fadeUp .7s .3s both" }}>
               <button className="btn-primary" onClick={ouvrirAuth}>
-                Rejoindre la communauté MMO
+                {get('comm_btn', 'Rejoindre la communauté MMO')}
               </button>
               <Link to="/contact" className="btn-secondary">
                 Rejoindre le programme MMO
@@ -374,7 +384,7 @@ export default function Communaute() {
           <section className="reveal" style={{ textAlign:"center" }}>
             <div className="btns-hero" style={{ display:"flex", gap:"14px", justifyContent:"center", flexWrap:"wrap" }}>
               <button className="btn-primary" onClick={ouvrirAuth}>
-                Rejoindre la communauté MMO
+                {get('comm_btn', 'Rejoindre la communauté MMO')}
               </button>
               <Link to="/contact" className="btn-secondary">
                 Rejoindre le programme MMO

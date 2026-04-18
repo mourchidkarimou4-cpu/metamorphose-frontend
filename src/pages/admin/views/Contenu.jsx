@@ -373,6 +373,26 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"brunch_lieu",      label:"Lieu du Brunch",             type:"text",     placeholder:"Cotonou, Bénin" },
       { cle:"brunch_prix",      label:"Prix du Brunch",             type:"text",     placeholder:"15 000 FCFA" },
     ],
+    learning: [
+      { cle:"learning_label",  label:"Label au-dessus du titre",   type:"text",     placeholder:"Méta'Morph'Ose · Académie" },
+      { cle:"learning_titre",  label:"Titre MMO Learning",         type:"text",     placeholder:"MMO Learning" },
+      { cle:"learning_intro1", label:"Paragraphe d'intro 1",       type:"textarea", placeholder:"Cet espace a été conçu…" },
+      { cle:"learning_intro2", label:"Paragraphe d'intro 2",       type:"textarea", placeholder:"Ici, tu trouveras…" },
+      { cle:"learning_intro3", label:"Paragraphe d'intro 3",       type:"textarea", placeholder:"Chaque contenu est…" },
+    ],
+    cartes: [
+      { cle:"cartes_label",    label:"Label au-dessus du titre",   type:"text",     placeholder:"Offrir une transformation" },
+      { cle:"cartes_titre",    label:"Titre Cartes Cadeaux",       type:"text",     placeholder:"La Carte Cadeau" },
+      { cle:"cartes_intro",    label:"Introduction",               type:"textarea", placeholder:"Offrez à une femme…" },
+    ],
+    communaute: [
+      { cle:"comm_label",          label:"Label cercle privé",         type:"text",     placeholder:"Cercle privé — Réservé aux Métamorphosées" },
+      { cle:"comm_titre1",         label:"Titre ligne 1",              type:"text",     placeholder:"Bienvenue dans" },
+      { cle:"comm_titre2",         label:"Titre ligne 2 (italique or)", type:"text",    placeholder:"un espace d'exception." },
+      { cle:"comm_intro",          label:"Texte d'introduction",       type:"textarea", placeholder:"Cette communauté est un cercle privé…" },
+      { cle:"comm_principes_intro",label:"Intro des principes",        type:"textarea", placeholder:"Pour préserver la qualité…" },
+      { cle:"comm_btn",            label:"Texte bouton rejoindre",     type:"text",     placeholder:"Rejoindre la communauté MMO" },
+    ],
     don: [
       { cle:"don_titre",        label:"Titre page Don",             type:"text",     placeholder:"Soutenir Métamorphose" },
       { cle:"don_intro",        label:"Introduction Don",           type:"textarea", placeholder:"..." },

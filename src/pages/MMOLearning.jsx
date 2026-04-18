@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import AuraButton from '../components/AuraButton'
-import { learningAPI } from '../services/api';
+import { learningAPI, configAPI } from '../services/api';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap');
@@ -228,7 +228,7 @@ function ListeCours() {
           fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.3em',
           textTransform:'uppercase', color:'var(--or)', marginBottom:'16px',
           animation:'fadeUp .6s both',
-        }}>Méta'Morph'Ose · Académie</p>
+        }}>{get('learning_label', "Méta'Morph'Ose · Académie")}</p>
         <h1 style={{
           fontFamily:'var(--ff-t)', fontSize:'clamp(2rem,5vw,3.5rem)',
           fontWeight:700, lineHeight:1.1, marginBottom:'20px',
@@ -236,18 +236,17 @@ function ListeCours() {
           background:'linear-gradient(135deg,var(--or),var(--or-light),var(--or))',
           backgroundSize:'200% auto',
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-        }}>MMO Learning</h1>
+        }}>{get('learning_titre', 'MMO Learning')}</h1>
         <p style={{
           fontFamily:'var(--ff-b)', fontWeight:300, fontSize:'1rem',
           color:'rgba(248,245,242,.55)', maxWidth:'640px', margin:'0 auto',
           lineHeight:1.9, animation:'fadeUp .7s .2s both', textAlign:'left',
         }}>
-          Cet espace a été conçu pour t'accompagner dans ta transformation personnelle et ton évolution.
+          {get('learning_intro1', "Cet espace a été conçu pour t'accompagner dans ta transformation personnelle et ton évolution.")}
           <br/><br/>
-          Ici, tu trouveras des formations puissantes pour t'aider à développer ta confiance en toi,
-          améliorer ton image, affirmer ta présence et devenir une femme impactante.
+          {get('learning_intro2', "Ici, tu trouveras des formations puissantes pour t'aider à développer ta confiance en toi, améliorer ton image, affirmer ta présence et devenir une femme impactante.")}
           <br/><br/>
-          Chaque contenu est une étape vers une meilleure version de toi-même.
+          {get('learning_intro3', 'Chaque contenu est une étape vers une meilleure version de toi-même.')}
           <br/><br/>
           Commence là où tu es… et avance vers celle que tu veux devenir.
         </p>
@@ -622,6 +621,16 @@ function DetailCours() {
 }
 
 export default function MMOLearning() {
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setConfig(map);
+    }).catch(() => {});
+  }, []);
+  function get(cle, fallback='') { return config[cle] || fallback; }
+
   const { slug } = useParams()
   return slug ? <DetailCours /> : <ListeCours />
 }
