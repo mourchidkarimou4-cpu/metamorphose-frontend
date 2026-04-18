@@ -127,7 +127,7 @@ export default function LiveMeeting() {
 
       const token = localStorage.getItem("mmorphose_token");
       const isAdmin = authUser?.is_staff;
-      const roomName = `metamorphose-${roomId.replace(/-/g, '').substring(0, 20)}`;
+      const roomName = roomInfo?.titre ? roomInfo.titre.replace(/[^a-zA-Z0-9]/g, '-').substring(0, 50) : `metamorphose-${roomId.replace(/-/g, '').substring(0, 20)}`;
 
       apiRef.current = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, {
         roomName,
@@ -138,6 +138,7 @@ export default function LiveMeeting() {
         },
         configOverwrite: {
           prejoinPageEnabled: false,
+          disableInitialGUM: false,
           disableDeepLinking: true,
           startWithAudioMuted: !isAdmin,
           startWithVideoMuted: !isAdmin,
