@@ -31,12 +31,8 @@ import { MonCompteView, MesReplaysView,
 
 // ── Vues Nouvelles fonctionnalités ───────────────────────────────
 import { NotificationsView, MessageriView,
-
-
          VaguesView, ProgressionView,
          SatisfactionView, AgendaView } from './views/Nouvelles';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
@@ -145,30 +141,99 @@ const STYLES = `
   ::-webkit-scrollbar-track { background:var(--noir); }
   ::-webkit-scrollbar-thumb { background:var(--or); border-radius:2px; }
 
-  @media(max-width:768px) {
-    .admin-layout  { flex-direction:column !important; }
-    .admin-sidebar { width:100% !important; height:auto !important; position:relative !important; top:auto !important; }
-    .admin-nav     { display:flex !important; flex-direction:row !important; flex-wrap:wrap !important; gap:4px !important; padding:8px !important; }
-    .admin-main    { padding:20px 16px !important; }
-    .stat-grid     { grid-template-columns:repeat(2,1fr) !important; }
+  /* ── SIDEBAR COLLAPSIBLE ─────────────────────────────────────── */
+  .sidebar-group-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px; cursor:pointer; border-radius:4px;
+    transition:background .2s; user-select:none;
   }
-  @media(max-width:480px) {
-    .stat-grid { grid-template-columns:1fr 1fr !important; }
-    .admin-modal { padding:24px 20px !important; }
-    .img-grid { grid-template-columns:1fr !important; }
+  .sidebar-group-header:hover { background:rgba(255,255,255,.04); }
+  .sidebar-group-label {
+    font-size:.58rem; font-weight:600; letter-spacing:.18em;
+    text-transform:uppercase; color:rgba(248,245,242,.3);
+  }
+  .sidebar-arrow {
+    font-size:.6rem; color:rgba(248,245,242,.25);
+    transition:transform .25s; display:inline-block;
+  }
+  .sidebar-arrow.open { transform:rotate(90deg); }
+  .sidebar-group-items {
+    overflow:hidden;
+    transition:max-height .3s cubic-bezier(0.4,0,0.2,1);
+    max-height:0;
+  }
+  .sidebar-group-items.open { max-height:2000px; }
+
+  .sidebar-search {
+    margin:10px 10px 4px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:4px; padding:8px 12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .sidebar-search input {
+    background:none; border:none; outline:none;
+    color:var(--text); font-family:var(--ff-b); font-size:.75rem;
+    width:100%; font-weight:300;
+  }
+  .sidebar-search input::placeholder { color:rgba(248,245,242,.2); }
+
+  /* ── HAMBURGER ──────────────────────────────────────────────── */
+  .hamburger-btn {
+    display:none; position:fixed; top:14px; left:14px; z-index:1001;
+    width:38px; height:38px; border-radius:6px;
+    background:var(--surface); border:1px solid var(--border);
+    cursor:pointer; flex-direction:column;
+    align-items:center; justify-content:center; gap:5px;
+  }
+  .hamburger-btn span {
+    display:block; width:18px; height:1.5px;
+    background:var(--text); border-radius:2px; transition:all .3s;
+  }
+
+  /* ── OVERLAY MOBILE ─────────────────────────────────────────── */
+  .sidebar-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.7); z-index:999;
+    backdrop-filter:blur(4px);
+  }
+  .sidebar-overlay.open { display:block; }
+
+  /* ── TOPBAR MOBILE ──────────────────────────────────────────── */
+  .admin-topbar {
+    display:none; align-items:center; justify-content:space-between;
+    padding:14px 16px 14px 60px; height:56px;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:100; flex-shrink:0;
   }
 
   /* ── RESPONSIVE ─────────────────────────────────────────────── */
-  @media(max-width:900px){
-    .admin-layout{flex-direction:column !important}
-    .admin-sidebar{width:100% !important;height:auto !important;flex-direction:row !important;overflow-x:auto !important;padding:10px 8px !important;gap:4px !important;min-height:unset !important;position:relative !important}
-    .admin-sidebar .sidebar-label{display:none !important}
-    .admin-main{padding:20px 16px !important}
-    .admin-modal{width:95vw !important;max-width:95vw !important;margin:8px !important}
+  @media(max-width:900px) {
+    .hamburger-btn { display:flex; }
+    .admin-topbar { display:flex; }
+    .admin-sidebar {
+      position:fixed !important; left:0 !important; top:0 !important;
+      bottom:0 !important; height:100vh !important;
+      width:260px !important; z-index:1000;
+      transform:translateX(-100%) !important;
+      transition:transform .3s cubic-bezier(0.4,0,0.2,1) !important;
+      box-shadow:none !important;
+    }
+    .admin-sidebar.open {
+      transform:translateX(0) !important;
+      box-shadow:8px 0 40px rgba(0,0,0,.6) !important;
+    }
+    .admin-layout { flex-direction:column !important; }
+    .admin-main { padding:20px 16px !important; }
   }
-  @media(max-width:600px){
-    .row-item{flex-direction:column !important;align-items:flex-start !important}
-    .img-grid{grid-template-columns:1fr !important}
+  @media(max-width:480px) {
+    .stat-grid { grid-template-columns:1fr 1fr !important; }
+    .admin-modal { padding:24px 16px !important; width:95vw !important; max-width:95vw !important; }
+    .img-grid { grid-template-columns:1fr !important; }
+    .row-item { flex-direction:column !important; align-items:flex-start !important; }
+  }
+  @media(max-width:360px) {
+    .stat-grid { grid-template-columns:1fr !important; }
   }
 `;
 
@@ -208,7 +273,8 @@ function useAdminAPI() {
     };
     if (body) opts.body = JSON.stringify(body);
     try {
-      const res = await fetch(`${API_BASE}/api/admin${path}`, opts);
+      const BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+      const res = await fetch(`${BASE}/api/admin${path}`, opts);
       if (res.status === 401) { navigate("/espace-membre"); return null; }
       if (res.status === 204) return true;
       if (!res.ok) { console.warn(`API ${method} /api/admin${path} → ${res.status}`); return null; }
@@ -245,121 +311,274 @@ function Toast({ toasts }) {
   );
 }
 
-/* ── SIDEBAR ────────────────────────────────────────────────── */
-function Sidebar({ active, setActive, counts }) {
-  const tabs = [
-    { id:"stats",    label:"Vue d'ensemble", icon:"" },
-    { id:"notifications", label:"Notifications", icon:"🔔" },
-    { id:"divider_admin", label:"── GESTION ──", divider:true },
-    { id:"membres",  label:"Membres",        icon:"", count: counts.membres },
-    { id:"demandes", label:"Demandes",       icon:"", count: counts.non_traites, urgent: true },
-    { id:"replays",  label:"Replays",        icon:"",  count: counts.replays },
-    { id:"guides",   label:"Guides PDF",     icon:"", count: counts.guides },
-    { id:"config",         label:"Contenu du site" },
-    { id:"vague",           label:"Vague & Places" },
-    { id:"stats_site",      label:"Stats du site" },
-    { id:"images",          label:"Photos et Logos" },
-    { id:"cartes",          label:"Cartes Cadeaux" },
-    { id:"temoignages",     label:"Témoignages", urgent:true },
-    { id:"masterclass_admin", label:"Masterclasses" },
-    { id:"tickets",         label:"Tickets & Événements" },
-    { id:"evt_admin",       label:"Événements" },
-    { id:"actu_admin",      label:"Actualités" },
-    { id:"live_visio",      label:"Live & Visio" },
-    { id:"learning",        label:"MMO Learning" },
-    { id:"store_admin",     label:"Store / Accès" },
-    { id:"comm_admin",      label:"Communauté" },
-    { id:"messagerie",      label:"Messagerie" },
-    { id:"vagues",          label:"Planificateur vagues" },
-    { id:"progression",     label:"Progression membres" },
-    { id:"satisfaction",    label:"Satisfaction J+30" },
-    { id:"agenda",          label:"Agenda coach" },
-    { id:"partenaires",     label:"Partenaires" },
-    { id:"ressources",      label:"Chanson et Guide PDF" },
-    { id:"liens_paiement",  label:"Liens de paiement" },
-    { id:"newsletter",      label:"Newsletter" },
-    { id:"abonnes",         label:"Abonnés Newsletter" },
-    { id:"liste_attente",   label:"Liste d'attente" },
-    { id:"export",          label:"Export CSV" },
-    { id:"maintenance",     label:"Mode Maintenance" },
-    { id:"divider_membre", label:"── MON ESPACE ──", divider:true },
-    { id:"mon_compte",      label:"Mon Compte" },
-    { id:"mes_replays",     label:"Mes Replays" },
-    { id:"mes_guides",      label:"Mes Guides PDF" },
-    { id:"mon_temoignage",  label:"Mon Témoignage" },
-    { id:"mon_profil",      label:"Mon Profil" },
-    { id:"mon_certificat",  label:"Mon Certificat" },
+/* ── SIDEBAR COLLAPSIBLE ────────────────────────────────────── */
+function SidebarItem({ id, label, count, urgent, active, setActive, closeSidebar }) {
+  return (
+    <button
+      onClick={() => { setActive(id); closeSidebar && closeSidebar(); }}
+      style={{
+        width:"100%", display:"flex", alignItems:"center", gap:"8px",
+        padding:"8px 14px", borderRadius:"4px", border:"none", cursor:"pointer",
+        background: active===id ? "rgba(194,24,91,.1)" : "transparent",
+        color: active===id ? "var(--rose)" : "var(--text-sub)",
+        borderLeft: active===id ? "2px solid var(--rose)" : "2px solid transparent",
+        fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight: active===id ? 500 : 300,
+        letterSpacing:".02em", textAlign:"left", transition:"all .15s",
+        marginBottom:"1px",
+      }}
+      onMouseEnter={e=>{ if(active!==id) e.currentTarget.style.background="rgba(255,255,255,.04)"; e.currentTarget.style.color="var(--text)"; }}
+      onMouseLeave={e=>{ if(active!==id) { e.currentTarget.style.background="transparent"; e.currentTarget.style.color="var(--text-sub)"; }}}
+    >
+      <span style={{ flex:1 }}>{label}</span>
+      {count > 0 && (
+        <span style={{
+          background: urgent ? "var(--rose)" : "rgba(255,255,255,.08)",
+          color: urgent ? "#fff" : "var(--text-sub)",
+          padding:"1px 7px", borderRadius:"100px", fontSize:".6rem", fontWeight:600,
+          animation: urgent ? "pulse 2s infinite" : "none", flexShrink:0,
+        }}>{count}</span>
+      )}
+    </button>
+  );
+}
+
+function SidebarGroup({ label, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ marginBottom:"4px" }}>
+      <div className="sidebar-group-header" onClick={() => setOpen(o => !o)}>
+        <span className="sidebar-group-label">{label}</span>
+        <span className={`sidebar-arrow ${open ? "open" : ""}`}>›</span>
+      </div>
+      <div className={`sidebar-group-items ${open ? "open" : ""}`}>
+        <div style={{ padding:"0 0 8px" }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Sidebar({ active, setActive, counts, open, onClose, user }) {
+  const [search, setSearch] = useState("");
+
+  const GESTION = [
+    { id:"membres",          label:"Membres",             count:counts.membres },
+    { id:"demandes",         label:"Demandes",            count:counts.non_traites, urgent:true },
+    { id:"replays",          label:"Replays",             count:counts.replays },
+    { id:"guides",           label:"Guides PDF",          count:counts.guides },
+    { id:"config",           label:"Contenu du site" },
+    { id:"vague",            label:"Vague & Places" },
+    { id:"stats_site",       label:"Stats du site" },
+    { id:"images",           label:"Photos et Logos" },
+    { id:"cartes",           label:"Cartes Cadeaux" },
+    { id:"temoignages",      label:"Témoignages",         urgent:true },
+    { id:"masterclass_admin",label:"Masterclasses" },
+    { id:"tickets",          label:"Tickets & Événements" },
+    { id:"evt_admin",        label:"Événements" },
+    { id:"actu_admin",       label:"Actualités" },
+    { id:"live_visio",       label:"Live & Visio" },
+    { id:"learning",         label:"MMO Learning" },
+    { id:"store_admin",      label:"Store / Accès" },
+    { id:"comm_admin",       label:"Communauté" },
+    { id:"messagerie",       label:"Messagerie" },
+    { id:"vagues",           label:"Planificateur vagues" },
+    { id:"progression",      label:"Progression membres" },
+    { id:"satisfaction",     label:"Satisfaction J+30" },
+    { id:"agenda",           label:"Agenda coach" },
+    { id:"partenaires",      label:"Partenaires" },
+    { id:"ressources",       label:"Chanson et Guide PDF" },
+    { id:"liens_paiement",   label:"Liens de paiement" },
+    { id:"newsletter",       label:"Newsletter" },
+    { id:"abonnes",          label:"Abonnés Newsletter" },
+    { id:"liste_attente",    label:"Liste d'attente" },
+    { id:"export",           label:"Export CSV" },
+    { id:"maintenance",      label:"Mode Maintenance" },
   ];
 
+  const MON_ESPACE = [
+    { id:"mon_compte",     label:"Mon Compte" },
+    { id:"mes_replays",    label:"Mes Replays" },
+    { id:"mes_guides",     label:"Mes Guides PDF" },
+    { id:"mon_temoignage", label:"Mon Témoignage" },
+    { id:"mon_profil",     label:"Mon Profil" },
+    { id:"mon_certificat", label:"Mon Certificat" },
+  ];
+
+  const VUE_ENSEMBLE = [
+    { id:"stats",         label:"Vue d'ensemble" },
+    { id:"notifications", label:"Notifications", count:counts.notifications },
+    { id:"messagerie",    label:"Messagerie" },
+    { id:"agenda",        label:"Agenda" },
+  ];
+
+  // Filtrer selon la recherche
+  const allItems = [...VUE_ENSEMBLE, ...GESTION, ...MON_ESPACE];
+  const filtered = search.trim()
+    ? allItems.filter(i => i.label.toLowerCase().includes(search.toLowerCase()))
+    : null;
+
+  const prenom = user?.first_name || user?.email?.split("@")[0] || "Admin";
+  const initiales = prenom.substring(0, 2).toUpperCase();
+
   return (
-    <aside className="admin-sidebar" style={{ width:"220px", flexShrink:0, background:"var(--surface)", borderRight:"1px solid var(--border)", display:"flex", flexDirection:"column", height:"100vh", position:"sticky", top:0 }}>
-      {/* Logo */}
-      <div style={{ padding:"24px 20px 20px", borderBottom:"1px solid var(--border)" }}>
-        <p style={{ fontFamily:"var(--ff-t)", fontSize:".95rem" }}>
-          <span style={{color:"var(--text)"}}>Méta'</span>
-          <span style={{color:"var(--or)"}}>Morph'</span>
-          <span style={{color:"var(--rose)"}}>Ose</span>
-        </p>
-        <p style={{ fontSize:".6rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--text-sub)", marginTop:"4px" }}>
-          Admin Dashboard
-        </p>
-      </div>
+    <>
+      {/* Overlay mobile */}
+      <div className={`sidebar-overlay ${open ? "open" : ""}`} onClick={onClose} />
 
-      {/* Navigation */}
-      <nav className="admin-nav" style={{ padding:"12px 10px", flex:1 }}>
-        {tabs.map(t => {
-          if (t.divider) return (
-            <p key={t.id} style={{ fontFamily:"var(--ff-b)", fontSize:".52rem", letterSpacing:".2em", color:"rgba(248,245,242,.2)", padding:"16px 12px 4px", textTransform:"uppercase" }}>{t.label}</p>
-          );
-          return (
-          <button key={t.id} onClick={() => setActive(t.id)}
-            className="tab-btn"
-            style={{
-              width:"100%", justifyContent:"flex-start", marginBottom:"3px",
-              background: active===t.id ? "rgba(194,24,91,.12)" : "transparent",
-              color: active===t.id ? "var(--rose)" : "var(--text-sub)",
-              borderLeft: active===t.id ? "2px solid var(--rose)" : "2px solid transparent",
-              borderRadius: active===t.id ? "0 3px 3px 0" : "3px",
-            }}>
-            
-            <span style={{ flex:1, textAlign:"left" }}>{t.label}</span>
-            {t.count > 0 && (
-              <span style={{
-                background: t.urgent ? "var(--rose)" : "rgba(255,255,255,.1)",
-                color: t.urgent ? "#fff" : "var(--text-sub)",
-                padding:"2px 7px", borderRadius:"100px", fontSize:".6rem",
-                animation: t.urgent ? "pulse 2s infinite" : "none",
-              }}>{t.count}</span>
-            )}
-          </button>
-          );
-        })}
-      </nav>
+      <aside
+        className={`admin-sidebar ${open ? "open" : ""}`}
+        style={{
+          width:"240px", flexShrink:0,
+          background:"var(--surface)",
+          borderRight:"1px solid var(--border)",
+          display:"flex", flexDirection:"column",
+          height:"100vh", position:"sticky", top:0,
+          overflowY:"auto",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ padding:"22px 20px 16px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
+            <div style={{ width:"30px", height:"30px", borderRadius:"6px", background:"linear-gradient(135deg,#C9A96A,#C2185B)", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <span style={{ fontFamily:"var(--ff-t)", fontSize:"14px", color:"#fff" }}>M</span>
+            </div>
+            <div>
+              <p style={{ fontFamily:"var(--ff-t)", fontSize:".88rem", lineHeight:1.2, margin:0 }}>
+                <span style={{color:"var(--text)"}}>Méta'</span>
+                <span style={{color:"var(--or)"}}>Morph'</span>
+                <span style={{color:"var(--rose)"}}>Ose</span>
+              </p>
+              <p style={{ fontSize:".55rem", letterSpacing:".18em", textTransform:"uppercase", color:"var(--text-sub)", margin:0 }}>
+                Dashboard Admin
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* Footer sidebar */}
-      <div style={{ padding:"16px 20px", borderTop:"1px solid var(--border)" }}>
-        <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"var(--text-sub)", textDecoration:"none", display:"block", marginBottom:"10px" }}>
-           Voir le site
-        </Link>
-        <button onClick={() => { logout(); window.location.href="/espace-membre"; }}
-          style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(239,83,80,.5)", transition:"color .3s" }}
-          onMouseEnter={e=>e.target.style.color="#ef5350"}
-          onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.5)"}>
-          Déconnexion
-        </button>
-      </div>
-    </aside>
+        {/* Recherche */}
+        <div className="sidebar-search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(248,245,242,.25)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Rechercher..."
+          />
+          {search && (
+            <button onClick={() => setSearch("")} style={{ background:"none", border:"none", cursor:"pointer", color:"var(--text-sub)", fontSize:"14px", padding:"0 2px", lineHeight:1 }}>×</button>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <nav style={{ flex:1, padding:"8px 10px", overflowY:"auto" }}>
+          {filtered ? (
+            /* Mode recherche */
+            <div>
+              <p style={{ fontSize:".6rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--text-sub)", padding:"8px 14px 6px" }}>
+                {filtered.length} résultat{filtered.length !== 1 ? "s" : ""}
+              </p>
+              {filtered.map(t => (
+                <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
+              ))}
+            </div>
+          ) : (
+            /* Mode normal avec groupes */
+            <>
+              {/* Vue d'ensemble — pas de groupe, items directs */}
+              {VUE_ENSEMBLE.slice(0,1).map(t => (
+                <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
+              ))}
+              {VUE_ENSEMBLE.slice(1).map(t => (
+                <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
+              ))}
+
+              <div style={{ height:"1px", background:"var(--border)", margin:"10px 10px" }} />
+
+              {/* Gestion — collapsible, ouvert par défaut */}
+              <SidebarGroup label="Gestion" defaultOpen={true}>
+                {GESTION.map(t => (
+                  <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
+                ))}
+              </SidebarGroup>
+
+              <div style={{ height:"1px", background:"var(--border)", margin:"6px 10px" }} />
+
+              {/* Mon Espace — collapsible */}
+              <SidebarGroup label="Mon Espace" defaultOpen={false}>
+                {MON_ESPACE.map(t => (
+                  <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
+                ))}
+              </SidebarGroup>
+            </>
+          )}
+        </nav>
+
+        {/* Footer — profil + liens */}
+        <div style={{ padding:"12px 14px", borderTop:"1px solid var(--border)", flexShrink:0 }}>
+          {/* Profil */}
+          <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"12px" }}>
+            <div style={{ width:"32px", height:"32px", borderRadius:"50%", background:"rgba(194,24,91,.15)", border:"1px solid rgba(194,24,91,.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <span style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", fontWeight:600, color:"var(--rose)" }}>{initiales}</span>
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500, color:"var(--text)", margin:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{prenom}</p>
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", color:"var(--text-sub)", margin:0 }}>Administratrice</p>
+            </div>
+          </div>
+          {/* Liens */}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".1em", textTransform:"uppercase", color:"var(--text-sub)", textDecoration:"none" }}>
+              Voir le site
+            </Link>
+            <button onClick={() => { logout(); window.location.href="/espace-membre"; }}
+              style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(239,83,80,.45)" }}
+              onMouseEnter={e=>e.target.style.color="#ef5350"}
+              onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.45)"}>
+              Déconnexion
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }
 
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [active,   setActive]   = useState("stats");
-  const [stats,    setStats]    = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});
-  const [toasts,   setToasts]   = useState([]);
-  const [ready,    setReady]    = useState(false);
+  const [active,       setActive]      = useState("stats");
+  const [stats,        setStats]       = useState({membres:0,actifs:0,demandes:0,non_traites:0,replays:0,guides:0,formules:{}});
+  const [toasts,       setToasts]      = useState([]);
+  const [ready,        setReady]       = useState(false);
+  const [refreshKey,   setRefreshKey]  = useState(0);
+  const [sidebarOpen,  setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   const api = useAdminAPI();
+
+  // Recharger les stats toutes les 60 secondes
+  useEffect(() => {
+    if (!ready) return;
+    const interval = setInterval(() => {
+      const t = localStorage.getItem("mmorphose_token");
+      const ABASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+      fetch(`${ABASE}/api/admin/stats/`, { headers: { "Authorization": `Bearer ${t}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d) setStats(d); })
+        .catch(() => {});
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [ready]);
+
+  function actualiser() {
+    setRefreshKey(k => k + 1);
+    const t = localStorage.getItem("mmorphose_token");
+    const RBASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+    fetch(`${RBASE}/api/admin/stats/`, { headers: { "Authorization": `Bearer ${t}` } })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setStats(d); })
+      .catch(() => {});
+    toast("Données actualisées", "success");
+  }
 
   useEffect(() => {
     const savedToken = localStorage.getItem("mmorphose_token");
@@ -367,6 +586,7 @@ export default function AdminDashboard() {
     if (!savedToken || !user) { navigate("/espace-membre"); return; }
     if (!user.is_staff)       { navigate("/dashboard"); return; }
     // Charger les stats puis afficher le dashboard
+    const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
     fetch(`${API_BASE}/api/admin/stats/`, {
       headers: { "Authorization": `Bearer ${savedToken}` }
     })
@@ -382,7 +602,7 @@ export default function AdminDashboard() {
     setTimeout(() => setToasts(t => t.filter(x => x.id!==id)), 3500);
   }
 
-  const viewProps = { api, toast };
+  const viewProps = { api, toast, refreshKey };
 
   if (!ready) return (
     <>
@@ -399,9 +619,46 @@ export default function AdminDashboard() {
   return (
     <>
       <style>{STYLES}</style>
+
+      {/* Hamburger mobile */}
+      <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">
+        <span />
+        <span />
+        <span />
+      </button>
+
       <div className="admin-layout" style={{ display:"flex", minHeight:"100vh" }}>
-        <Sidebar active={active} setActive={setActive} counts={stats} />
-        <main className="admin-main" style={{ flex:1, overflow:"auto", padding:"40px 48px" }}>
+        <Sidebar
+          active={active}
+          setActive={setActive}
+          counts={stats}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          user={user}
+        />
+
+        <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0, overflow:"hidden" }}>
+          {/* Topbar mobile */}
+          <div className="admin-topbar">
+            <p style={{ fontFamily:"var(--ff-t)", fontSize:".9rem", margin:0 }}>
+              <span style={{color:"var(--text)"}}>Méta'</span>
+              <span style={{color:"var(--or)"}}>Morph'</span>
+              <span style={{color:"var(--rose)"}}>Ose</span>
+            </p>
+            <button onClick={actualiser} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"3px", color:"rgba(201,169,106,.6)", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:600, letterSpacing:".1em", textTransform:"uppercase", padding:"5px 12px", cursor:"pointer" }}>
+              ↻
+            </button>
+          </div>
+
+          <main className="admin-main" style={{ flex:1, overflow:"auto", padding:"32px 40px" }}>
+            {/* Bouton actualiser — desktop uniquement */}
+            <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:"16px" }}>
+              <button onClick={actualiser} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"3px", color:"rgba(201,169,106,.6)", fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", padding:"6px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:"6px", transition:"all .2s" }}
+                onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(201,169,106,.5)"; e.currentTarget.style.color="var(--or)"; }}
+                onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(201,169,106,.2)"; e.currentTarget.style.color="rgba(201,169,106,.6)"; }}>
+                ↻ Actualiser
+              </button>
+            </div>
           {active === "stats"       && <StatsView stats={stats} />}
           {active === "membres"     && <MembresView {...viewProps} />}
           {active === "demandes"    && <DemandesView {...viewProps} />}
@@ -441,7 +698,8 @@ export default function AdminDashboard() {
           {active === "progression"      && <ProgressionView {...viewProps} />}
           {active === "satisfaction"     && <SatisfactionView {...viewProps} />}
           {active === "agenda"           && <AgendaView {...viewProps} />}
-        </main>
+            </main>
+        </div>
       </div>
       <Toast toasts={toasts} />
     </>
