@@ -39,8 +39,15 @@
     <!-- Préchargement polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"/>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=optional" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;500;600&display=optional"/></noscript>
+    <style>
+      :root {
+        --ff-t: 'Playfair Display', Georgia, 'Times New Roman', serif;
+        --ff-b: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      }
+      * { font-synthesis: none; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
