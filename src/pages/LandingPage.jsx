@@ -686,7 +686,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         .cta-lux:hover { color:rgba(201,169,106,.85) !important; border-bottom-color:rgba(201,169,106,.6) !important; }
       `}</style>
 
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"0 32px":"0 32px", height:scrolled?"60px":"72px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"0 32px":"0 32px", height:"72px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
 
         {/* ── Logo ── */}
         <a href="#" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
