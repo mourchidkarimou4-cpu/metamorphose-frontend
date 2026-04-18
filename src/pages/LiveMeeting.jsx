@@ -63,7 +63,7 @@ const STYLES = `
     border-radius:4px; padding:10px 14px; font-size:.78rem; color:#ef5350;
     margin-bottom:16px; text-align:center;
   }
-  .meeting-frame { flex:1; width:100%; border:none; height:calc(100vh - 65px); }
+  .meeting-frame { flex:1; width:100%; border:none; height:calc(100vh - 65px); display:block; }
   .btn-leave {
     padding:8px 20px; background:rgba(239,83,80,.1); border:1px solid rgba(239,83,80,.2);
     border-radius:4px; color:#ef5350; font-family:'Montserrat',sans-serif;
@@ -157,7 +157,7 @@ export default function LiveMeeting() {
           DEFAULT_BACKGROUND: '#0A0A0A',
         },
         width: '100%',
-        height: '100%',
+        height: 'calc(100vh - 65px)',
       });
 
       // Quand l'utilisateur raccroche
@@ -274,7 +274,7 @@ export default function LiveMeeting() {
         )}
 
         {phase === "meeting" && (
-          <div ref={jitsiRef} className="meeting-frame" />
+          <div ref={jitsiRef} className="meeting-frame" style={{height:"calc(100vh - 65px)", width:"100%"}} />
         )}
       </div>
     </>
