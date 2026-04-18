@@ -298,6 +298,40 @@ function TicketQR({ inscrit }) {
 }
 
 /* ── COMPOSANT PRINCIPAL ────────────────────────────────────── */
+
+function FAQMasterclass() {
+  const [open, setOpen] = useState(null);
+  const faqs = [
+    { q: "À qui s'adresse le programme MÉTAMORPHOSE ?", r: "Le programme s'adresse aux femmes qui souhaitent évoluer personnellement, renforcer leur confiance en elles, améliorer leur image et clarifier leur vision de vie." },
+    { q: "Est-ce que le programme est en ligne ou en présentiel ?", r: "Le programme existe en ligne (sessions live en groupe ou individuelles) et en présentiel (groupes ou accompagnement privé)." },
+    { q: "Combien de temps dure le programme ?", r: "Le programme dure 8 semaines (60 jours) avec 2 séances par semaine et des exercices pratiques entre les sessions." },
+    { q: "Est-ce que je peux payer en plusieurs fois ?", r: "Oui. Il est possible de payer en 3 tranches pour chacune des formules. Contactez directement les coordonnées indiquées sur le site." },
+    { q: "Est-ce que je vais recevoir un accompagnement personnalisé ?", r: "Cela dépend de la formule : 70 000 FCFA (groupe), 160 000 FCFA (individuel en ligne), 267 000 FCFA (groupe présentiel), 370 000 FCFA (individuel VIP présentiel)." },
+    { q: "Est-ce que je peux accéder aux séances si je suis absente ?", r: "Oui. Toutes les séances sont enregistrées et accessibles en replay selon la formule choisie." },
+    { q: "Est-ce que le programme garantit des résultats ?", r: "Le programme fournit un cadre structuré et un accompagnement stratégique. Les résultats dépendent de votre engagement et implication personnelle." },
+    { q: "Que se passe-t-il après la fin du programme ?", r: "Vous aurez accès au club des Métamorphosés, un espace communautaire pour continuer à évoluer et rester connectée à votre chemin de transformation." },
+    { q: "Puis-je changer de formule après inscription ?", r: "Dans certains cas oui, selon les places disponibles. Contactez l'équipe pour vérifier les possibilités." },
+    { q: "Comment s'inscrire au programme ?", r: "L'inscription se fait via les canaux indiqués sur la page ou en contactant l'équipe via les coordonnées disponibles." },
+    { q: "Que faire si je rencontre des difficultés lors du paiement ?", r: "Contactez directement la Coach Prélia APEDO AHONON via le bouton WhatsApp sur le site. Elle vous guidera pas à pas pour finaliser votre inscription." },
+  ];
+  return (
+    <div>
+      {faqs.map((f, i) => (
+        <div key={i} style={{ borderBottom:"1px solid rgba(255,255,255,.06)" }}>
+          <button onClick={() => setOpen(open===i?null:i)}
+            style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", padding:"22px 0", background:"none", border:"none", cursor:"pointer", textAlign:"left", gap:"16px" }}>
+            <span style={{ fontFamily:"var(--ff-b)", fontSize:".88rem", fontWeight:500, color:open===i?"var(--or)":"rgba(248,245,242,.85)", transition:"color .3s", lineHeight:1.5 }}>{f.q}</span>
+            <span style={{ color:"var(--or)", fontSize:"1.2rem", transform:open===i?"rotate(45deg)":"none", transition:"transform .35s", flexShrink:0 }}>+</span>
+          </button>
+          <div style={{ overflow:"hidden", maxHeight:open===i?"400px":"0", transition:"max-height .45s cubic-bezier(0.4,0,0.2,1)" }}>
+            <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.5)", lineHeight:1.8, paddingBottom:"22px" }}>{f.r}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Masterclass() {
   const [photoPrelia, setPhotoPrelia] = useState("");
   useEffect(() => {
