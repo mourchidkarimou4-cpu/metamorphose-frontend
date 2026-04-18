@@ -229,7 +229,7 @@ export default function LiveMeeting() {
             ref={iframeRef}
             className="meeting-frame"
             src={meetingUrl}
-            allow="camera; microphone; fullscreen; speaker; display-capture; autoplay"
+            allow="camera; microphone; fullscreen; display-capture; autoplay"
             title="Session Live"
           />
         )}
