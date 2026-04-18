@@ -690,7 +690,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
         {/* ── Logo ── */}
         <a href="#" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
-          {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/>}
+          {get("logo_site","") ? <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/> : null}
           <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400, letterSpacing:".04em", lineHeight:1 }}>
             <span style={{ color:"#F8F5F2" }}>Méta'</span>
             <span style={{ color:"#C9A96A" }}>Morph'</span>
