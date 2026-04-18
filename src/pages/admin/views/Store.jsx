@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react';
-function StoreAdminView({ toast }) {
+const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+
+function storeAPI(method, path, body = null) {
+  const token = localStorage.getItem('mmorphose_token');
+  const opts = {
+    method,
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  return fetch(`${API_BASE}/api/learning${path}`, opts)
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null);
+}
+function StoreAdminView({ toast, refreshKey = 0 }) {
   const [acces,    setAcces]    = useState([])
   const [cours,    setCours]    = useState([])
   const [loading,  setLoading]  = useState(true)
@@ -13,11 +26,11 @@ function StoreAdminView({ toast }) {
     setLoading(true)
     try {
       const [resAcces, resCours] = await Promise.all([
-        learningAPI.adminListeAcces(filtreCours || undefined),
-        learningAPI.listeCours(),
+        storeAPI("GET", `/admin/acces/${filtreCours ? "?cours=" + filtreCours : ""}`),
+        storeAPI("GET", "/cours/"),
       ])
-      setAcces(Array.isArray(resAcces.data) ? resAcces.data : [])
-      setCours(Array.isArray(resCours.data) ? resCours.data : [])
+      setAcces(Array.isArray(resAcces) ? resAcces : [])
+      setCours(Array.isArray(resCours) ? resCours : [])
     } catch { toast("Erreur chargement", "error") }
     setLoading(false)
   }
@@ -27,7 +40,7 @@ function StoreAdminView({ toast }) {
     if (!email.trim() || !coursId) { toast("Email et cours requis", "error"); return }
     setSaving(true)
     try {
-      const res = await learningAPI.adminActiverAcces({
+      const res = await storeAPI("POST", "/admin/acces/activer/", {
         email, cours_id: parseInt(coursId),
         notes: notes || "Activation manuelle — Coach Prélia APEDO AHONON"
       })
@@ -43,7 +56,7 @@ function StoreAdminView({ toast }) {
   async function desactiver(email_u, cours_id) {
     if (!confirm(`Désactiver l'accès de ${email_u} ?`)) return
     try {
-      await learningAPI.adminDesactiverAcces({ email: email_u, cours_id })
+      await storeAPI("POST", "/admin/acces/desactiver/", { email: email_u, cours_id })
       toast("Accès désactivé", "success")
       load()
     } catch { toast("Erreur", "error") }

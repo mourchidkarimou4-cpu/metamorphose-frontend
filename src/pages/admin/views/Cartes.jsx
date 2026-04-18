@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { FORMULES } from '../constants';
-
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
-function CartesView({ api, toast }) {
+function CartesView({ api, toast, refreshKey = 0 }) {
   const [cartes,   setCartes]   = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [selected, setSelected] = useState(null);
@@ -16,7 +15,7 @@ function CartesView({ api, toast }) {
     .then(r => { if (r.status === 401) { window.location.href="/espace-membre"; return null; } return r.json(); })
     .then(d => { if(d && Array.isArray(d)) setCartes(d); setLoading(false); })
     .catch(() => setLoading(false));
-  }, []);
+  }, [refreshKey]);
 
   async function activer(c) {
     const res = await fetch(`${API_BASE}/api/cadeaux/admin/${c.id}/activer/`, {
@@ -63,7 +62,7 @@ function CartesView({ api, toast }) {
       </div>
 
       {/* Stats rapides */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px", marginBottom:"24px" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:"12px", marginBottom:"24px" }}>
         {[
           { label:"Total",       value: cartes.length,                                color:"var(--or)" },
           { label:"En attente",  value: cartes.filter(c=>c.statut==="en_attente").length, color:"var(--or)" },

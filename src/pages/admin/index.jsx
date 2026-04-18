@@ -342,8 +342,10 @@ function SidebarItem({ id, label, count, urgent, active, setActive, closeSidebar
   );
 }
 
-function SidebarGroup({ label, children, defaultOpen = false }) {
-  const [open, setOpen] = useState(defaultOpen);
+function SidebarGroup({ label, children, defaultOpen = false, hasActive = false }) {
+  const [open, setOpen] = useState(defaultOpen || hasActive);
+  // S'ouvre automatiquement si un enfant est actif
+  useEffect(() => { if (hasActive) setOpen(true); }, [hasActive]);
   return (
     <div style={{ marginBottom:"4px" }}>
       <div className="sidebar-group-header" onClick={() => setOpen(o => !o)}>
@@ -495,7 +497,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
               <div style={{ height:"1px", background:"var(--border)", margin:"10px 10px" }} />
 
               {/* Gestion — collapsible, ouvert par défaut */}
-              <SidebarGroup label="Gestion" defaultOpen={true}>
+              <SidebarGroup label="Gestion" defaultOpen={false} hasActive={GESTION.some(t => t.id === active)}>
                 {GESTION.map(t => (
                   <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
                 ))}
@@ -504,7 +506,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
               <div style={{ height:"1px", background:"var(--border)", margin:"6px 10px" }} />
 
               {/* Mon Espace — collapsible */}
-              <SidebarGroup label="Mon Espace" defaultOpen={false}>
+              <SidebarGroup label="Mon Espace" defaultOpen={false} hasActive={MON_ESPACE.some(t => t.id === active)}>
                 {MON_ESPACE.map(t => (
                   <SidebarItem key={t.id} {...t} active={active} setActive={setActive} closeSidebar={onClose} />
                 ))}

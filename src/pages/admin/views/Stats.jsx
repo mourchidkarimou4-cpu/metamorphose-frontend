@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FORMULES } from '../constants';
-function StatsView({ stats }) {
+function StatsView({ stats, refreshKey = 0 }) {
   const PRIX = { F1:65000, F2:150000, F3:250000, F4:350000 };
 
   const cards = [
@@ -23,7 +23,7 @@ function StatsView({ stats }) {
       </h2>
 
       {/* Stat cards */}
-      <div className="stat-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"14px", marginBottom:"24px" }}>
+      <div className="stat-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:"14px", marginBottom:"24px" }}>
         {cards.map((c,i) => (
           <div key={i} className="stat-card" style={{ animationDelay:`${i*.07}s`, borderTop:`3px solid ${c.color}` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"12px" }}>
@@ -60,7 +60,7 @@ function StatsView({ stats }) {
         <p style={{ fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--or)", marginBottom:"20px" }}>
           Répartition par formule
         </p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:"12px" }}>
           {Object.entries(FORMULES).map(([code, label]) => {
             const count = stats.formules?.[code] || 0;
             const revenu = count * (PRIX[code]||0);
