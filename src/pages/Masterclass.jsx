@@ -701,9 +701,9 @@ export default function Masterclass() {
 
             {!voirPlus && (
               <div style={{ textAlign:"center" }}>
-                <button onClick={()=>setVoirPlus(true)} className="btn-or" style={{ cursor:"pointer" }}>
+                <a href="/temoignages" className="btn-or" style={{ display:"inline-block" }}>
                   Voir plus de témoignages
-                </button>
+                </a>
               </div>
             )}
           </div>
