@@ -596,21 +596,22 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
   /* ── Styles partagés ── */
   const triggerStyle = {
-    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
-    fontSize:".82rem", fontWeight:300, letterSpacing:".08em",
-    color:"rgba(248,245,242,.42)", background:"none", border:"none",
+    fontFamily:"var(--ff-b)", fontStyle:"normal",
+    fontSize:".82rem", fontWeight:500, letterSpacing:".06em",
+    color:"rgba(248,245,242,.7)", background:"none", border:"none",
     cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
     gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
+    textTransform:"uppercase",
   };
-  const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.85)" };
+  const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.95)" };
 
   const ctaLinkStyle = {
-    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
-    fontSize:".82rem", fontWeight:300, letterSpacing:".08em",
-    color:"rgba(201,169,106,.55)", background:"none", border:"none",
-    borderBottom:"1px solid rgba(201,169,106,.28)", padding:"3px 0",
+    fontFamily:"var(--ff-b)", fontStyle:"normal",
+    fontSize:".82rem", fontWeight:500, letterSpacing:".06em",
+    color:"rgba(201,169,106,.8)", background:"none", border:"none",
+    borderBottom:"1px solid rgba(201,169,106,.35)", padding:"3px 0",
     cursor:"pointer", textDecoration:"none", transition:"all .3s",
-    lineHeight:1.2,
+    lineHeight:1.2, textTransform:"uppercase",
   };
 
   /* ── Panel partagé ── */
@@ -686,11 +687,11 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         .cta-lux:hover { color:rgba(201,169,106,.85) !important; border-bottom-color:rgba(201,169,106,.6) !important; }
       `}</style>
 
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"0 32px":"0 32px", height:"72px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:scrolled?"0 32px":"0 32px", height:scrolled?"60px":"72px", background:navBg, backdropFilter:scrolled?"blur(24px)":"none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
 
         {/* ── Logo ── */}
         <a href="#" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
-          {get("logo_site","") ? <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/> : null}
+          {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/>}
           <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400, letterSpacing:".04em", lineHeight:1 }}>
             <span style={{ color:"#F8F5F2" }}>Méta'</span>
             <span style={{ color:"#C9A96A" }}>Morph'</span>
@@ -830,7 +831,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"72px", zIndex:99 }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"60px", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
@@ -1091,7 +1092,7 @@ function Hero({ get }) {
   }, []);
 
   return (
-    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"172px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
+    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)", marginTop:"72px" }}>
       <HeroDiaporama get={get} />
 
       {/* Contenu au-dessus du diaporama */}
@@ -1558,7 +1559,7 @@ function PreliaTeaser({ get }) {
 function Formules({ get, setShowCalc }) {
   const formules = [
     {
-      code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"160 000", economie:"80 000",
+      code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"150 000", economie:"80 000",
       color:"#C2185B", badge:"Startup",
       sous_titre:"Accompagnement de groupe en ligne",
       cible:"Pour celles qui veulent évoluer avec un cadre structuré et une dynamique collective",
@@ -1938,7 +1939,7 @@ function ApercuTransformations({ get }) {
                   <div style={{ width:"32px", height:"32px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.4)", flexShrink:0 }}/>
                   <div>
                     <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500, color:"var(--blanc)" }}>Une Métamorphosée</p>
-                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Programme ESSENTIELLE</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Programme Live · Groupe</p>
                   </div>
                 </div>
               </div>
