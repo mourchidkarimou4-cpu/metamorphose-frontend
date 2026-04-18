@@ -1,8 +1,8 @@
 export const FORMULES = {
-  F1: "Live · Groupe",
-  F2: "Live · Privé",
-  F3: "Présentiel · Groupe",
-  F4: "Présentiel · Privé"
+  F1: "ESSENTIELLE",
+  F2: "PERSONNALISÉE",
+  F3: "IMMERSION",
+  F4: "VIP"
 };
 
 export const SECTIONS_CONFIG = [

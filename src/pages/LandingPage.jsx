@@ -385,10 +385,10 @@ function CalculateurFormule({ onClose }) {
       id:"budget",
       question:"Quel est votre budget pour cette transformation ?",
       options:[
-        { label:"Éclosion — 65 000 FCFA",    value:"F1" },
-        { label:"Révélation — 150 000 FCFA", value:"F2" },
-        { label:"Ascension — 250 000 FCFA",  value:"F3" },
-        { label:"MMO Signature — 350 000 FCFA", value:"F4" },
+        { label:"ESSENTIELLE — 70 000 FCFA",     value:"F1" },
+        { label:"PERSONNALISÉE — 160 000 FCFA",  value:"F2" },
+        { label:"IMMERSION — 267 000 FCFA",      value:"F3" },
+        { label:"VIP — 370 000 FCFA",            value:"F4" },
       ]
     },
     {
@@ -420,10 +420,10 @@ function CalculateurFormule({ onClose }) {
   ];
 
   const FORMULES = {
-    F1: { label:"Éclosion",           prix:"65 000 FCFA",  desc:"2 séances/semaine en ligne avec un groupe bienveillant. Idéal pour démarrer.", color:"#C2185B", badge:"Startup" },
-    F2: { label:"Révélation",         prix:"150 000 FCFA", desc:"Accompagnement individuel en ligne avec Prélia APEDO AHONON. Suivi personnalisé et adapté.", color:"#C9A96A", badge:"Populaire" },
-    F3: { label:"Ascension",          prix:"250 000 FCFA", desc:"1 séance/semaine en présentiel avec un groupe. Immersion physique complète.",  color:"#A8C8E0", badge:"Ambitieux" },
-    F4: { label:"MMO Signature",      prix:"350 000 FCFA", desc:"Accompagnement individuel en présentiel avec Prélia APEDO AHONON. L'expérience ultime.", color:"#D8C1A0", badge:"Prestige" },
+    F1: { label:"ESSENTIELLE",    prix:"70 000 FCFA",  desc:"Accompagnement de groupe en ligne. Idéal pour démarrer ta transformation avec un cadre structuré.", color:"#C2185B", badge:"Startup" },
+    F2: { label:"PERSONNALISÉE",  prix:"160 000 FCFA", desc:"Accompagnement individuel en ligne avec Coach AHONON. Suivi personnalisé et adapté à ta situation.", color:"#C9A96A", badge:"Populaire" },
+    F3: { label:"IMMERSION",      prix:"267 000 FCFA", desc:"Accompagnement de groupe en présentiel. Ateliers pratiques intensifs et transformation collective.", color:"#A8C8E0", badge:"Ambitieux" },
+    F4: { label:"VIP",            prix:"370 000 FCFA", desc:"Accompagnement individuel en présentiel VIP avec Coach AHONON. L'expérience de transformation ultime.", color:"#D8C1A0", badge:"Prestige" },
   };
 
   function calcResult(ans) {
@@ -736,10 +736,10 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
             {openMenu==="formules" && (
               <div style={{ ...panelStyle, width:"400px", padding:"24px 32px" }} onClick={e=>e.stopPropagation()}>
                 <span style={panelLabel}>4 Formules d'accompagnement</span>
-                <FormRow code="F1" name="Éclosion"            prix="65 000 FCFA"  tag="Startup"   to="/#formules"/>
-                <FormRow code="F2" name="Révélation"          prix="150 000 FCFA" tag="Populaire" to="/#formules"/>
-                <FormRow code="F3" name="Ascension"           prix="250 000 FCFA" tag="Ambitieux" to="/#formules"/>
-                <FormRow code="F4" name="MMO Signature"       prix="350 000 FCFA" tag="Prestige"  to="/#formules"/>
+                <FormRow code="F1" name="ESSENTIELLE"    prix="70 000 FCFA"  tag="Startup"   to="/#formules"/>
+                <FormRow code="F2" name="PERSONNALISÉE"  prix="160 000 FCFA" tag="Populaire" to="/#formules"/>
+                <FormRow code="F3" name="IMMERSION"      prix="267 000 FCFA" tag="Ambitieux" to="/#formules"/>
+                <FormRow code="F4" name="VIP"            prix="370 000 FCFA" tag="Prestige"  to="/#formules"/>
                 <div style={{ marginTop:"16px", paddingTop:"14px", borderTop:"1px solid rgba(255,255,255,.04)", textAlign:"center" }}>
                   <a href="#formules" style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".75rem", color:"rgba(201,169,106,.4)", textDecoration:"none" }} onClick={()=>setOpenMenu(null)}>
                     Trouver ma formule →
@@ -1557,10 +1557,73 @@ function PreliaTeaser({ get }) {
 
 function Formules({ get, setShowCalc }) {
   const formules = [
-    { code:"F1", label:get("f1_label","Éclosion"),           prix:get("f1_prix","65 000"),  color:"#C2185B", badge:"Startup",   items:["2 séances de coaching par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
-    { code:"F2", label:get("f2_label","Révélation"),          prix:get("f2_prix","150 000"), color:"#C9A96A", badge:"Populaire", items:["Accompagnement individuel","Séances personnalisées","Suivi direct avec Prélia APEDO AHONON","Exercices adaptés","7 guides PDF bonus","Club des Métamorphosées"], featured:true },
-    { code:"F3", label:get("f3_label","Ascension"),           prix:get("f3_prix","250 000"), color:"#A8C8E0", badge:"Ambitieux", items:["1 séance présentielle par semaine","8 semaines d'accompagnement","Exercices pratiques","Groupe WhatsApp privé","7 guides PDF bonus","Club des Métamorphosées"] },
-    { code:"F4", label:get("f4_label","MMO Signature"),       prix:get("f4_prix","350 000"), color:"#D8C1A0", badge:"Prestige",  items:["Séances individuelles en présentiel","Accompagnement personnalisé","Suivi direct avec Prélia APEDO AHONON","Exercices sur mesure","7 guides PDF bonus","Club des Métamorphosées"] },
+    {
+      code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"150 000", economie:"80 000",
+      color:"#C2185B", badge:"Startup",
+      sous_titre:"Accompagnement de groupe en ligne",
+      cible:"Pour celles qui veulent évoluer avec un cadre structuré et une dynamique collective",
+      items:[
+        "Programme complet 8 semaines",
+        "Sessions live de groupe",
+        "Accès au club communautaire",
+        "Replay de toutes les séances",
+        "Guide de gestion du temps",
+        "Guide pour trouver ta passion",
+        "Accès au club des Métamorphosés",
+        "Guide des affirmations positives",
+        "Guide se présenter avec impact",
+        "Guide SMART & vision de vie",
+        "Appel diagnostic individuel (1h)",
+      ],
+      ideal:"Démarrer ta transformation avec accompagnement guidé.",
+    },
+    {
+      code:"F2", label:"PERSONNALISÉE", prix:"160 000", valeur:"300 000", economie:"140 000",
+      color:"#C9A96A", badge:"Populaire", featured:true,
+      sous_titre:"Accompagnement individuel en ligne",
+      cible:"Pour celles qui veulent un suivi plus profond et adapté à leur situation",
+      items:[
+        "Tout le programme de base incluant les bonus",
+        "3 séances Immersives pendant le programme",
+        "Dont diagnostic individuel",
+        "Analyse personnalisée de ton évolution",
+        "Suivi plus rapproché avec Coach AHONON",
+      ],
+      ideal:"Un travail ciblé et personnalisé.",
+    },
+    {
+      code:"F3", label:"IMMERSION", prix:"267 000", valeur:"500 000", economie:"233 000",
+      color:"#A8C8E0", badge:"Ambitieux",
+      sous_titre:"Accompagnement de groupe en présentiel",
+      cible:"Pour celles qui veulent vivre une expérience forte et concrète",
+      items:[
+        "Tout le programme complet incluant les Bonus",
+        "Sessions en présentiel",
+        "Ateliers pratiques intensifs",
+        "Coaching en direct et corrections personnalisées",
+        "Expérience de transformation collective",
+        "Ebook Métamorphose",
+        "Guide comment créer une garde-robe minimaliste",
+        "Ebook comment poser des limites",
+      ],
+      ideal:"Une transformation visible et immersive.",
+    },
+    {
+      code:"F4", label:"VIP", prix:"370 000", valeur:"750 000", economie:"380 000",
+      color:"#D8C1A0", badge:"Prestige",
+      sous_titre:"Accompagnement individuel en présentiel",
+      cible:"Pour celles qui veulent une transformation profonde, exclusive et totale",
+      items:[
+        "Programme complet + 10 bonus au total",
+        "Coaching individuel en présentiel",
+        "Analyse complète de ton image et posture",
+        "Repositionnement personnel et stratégique",
+        "Suivi privilégié pendant le programme",
+        "1 Mois de suivi après le programme",
+        "Accès au cours sur l'art oratoire",
+      ],
+      ideal:"Une transformation haut niveau et sur mesure.",
+    },
   ];
   return (
     <section id="formules" style={{ padding:"90px 24px", background:"linear-gradient(180deg,#3a2518 0%,#6b4028 30%,#c4a882 65%,var(--beige-light) 100%)" }}>
@@ -1579,22 +1642,48 @@ function Formules({ get, setShowCalc }) {
         <div className="grid-formules" style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"20px" }}>
           {formules.map((f,i) => (
             <div key={i} className="reveal formule-card" style={{ transitionDelay:`${i*.12}s`, padding:f.featured?"44px 36px":"36px 32px", background:f.featured?"var(--noir)":"rgba(10,10,10,.75)", border:`1px solid ${f.featured?f.color:"rgba(255,255,255,.08)"}`, borderTop:`3px solid ${f.color}`, borderRadius:"4px", position:"relative", backdropFilter:"blur(10px)", cursor:"default" }}>
-              {f.badge && <div style={{ position:"absolute", top:"-1px", right:"24px", background:"var(--or)", color:"var(--noir)", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:700, letterSpacing:".2em", textTransform:"uppercase", padding:"5px 14px", borderRadius:"0 0 4px 4px" }}>{f.badge}</div>}
-              <div style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".25em", textTransform:"uppercase", color:f.color, marginBottom:"8px" }}>{f.label}</div>
-              <div style={{ marginBottom:"24px" }}>
-                <span style={{ fontFamily:"var(--ff-t)", fontSize:"2rem", fontWeight:700, color:"var(--blanc)" }}>{f.prix}</span>
-                <span style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)", marginLeft:"6px" }}>FCFA</span>
+              {f.badge && <div style={{ position:"absolute", top:"-1px", right:"24px", background:f.featured?"var(--or)":"rgba(255,255,255,.1)", color:f.featured?"var(--noir)":"var(--text)", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:700, letterSpacing:".2em", textTransform:"uppercase", padding:"5px 14px", borderRadius:"0 0 4px 4px" }}>{f.badge}</div>}
+
+              {/* Nom + sous-titre */}
+              <div style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".25em", textTransform:"uppercase", color:f.color, marginBottom:"4px" }}>{f.label}</div>
+              {f.sous_titre && <div style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"rgba(248,245,242,.4)", marginBottom:"16px" }}>{f.sous_titre}</div>}
+
+              {/* Prix + Promo */}
+              <div style={{ marginBottom:"16px" }}>
+                <div style={{ display:"flex", alignItems:"baseline", gap:"8px", marginBottom:"6px" }}>
+                  <span style={{ fontFamily:"var(--ff-t)", fontSize:"2rem", fontWeight:700, color:"var(--blanc)" }}>{f.prix}</span>
+                  <span style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.4)" }}>FCFA</span>
+                </div>
+                {f.valeur && (
+                  <div style={{ background:"rgba(201,169,106,.08)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", padding:"8px 12px" }}>
+                    <div style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.4)", marginBottom:"3px" }}>
+                      Valeur réelle : <span style={{ textDecoration:"line-through" }}>{f.valeur} FCFA</span>
+                    </div>
+                    <div style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", fontWeight:600, color:"var(--or)" }}>
+                      Tu économises {f.economie} FCFA
+                    </div>
+                  </div>
+                )}
               </div>
-              <ul style={{ listStyle:"none", display:"flex", flexDirection:"column", gap:"10px", marginBottom:"28px" }}>
+
+              {/* Cible */}
+              {f.cible && <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"rgba(248,245,242,.5)", marginBottom:"20px", lineHeight:1.6, fontStyle:"italic" }}>{f.cible}</p>}
+
+              {/* Items */}
+              <ul style={{ listStyle:"none", display:"flex", flexDirection:"column", gap:"8px", marginBottom:"24px" }}>
                 {f.items.map((item,j) => (
-                  <li key={j} style={{ display:"flex", gap:"10px", fontFamily:"var(--ff-b)", fontSize:".85rem", fontWeight:300, color:"rgba(248,245,242,.72)" }}>
+                  <li key={j} style={{ display:"flex", gap:"10px", fontFamily:"var(--ff-b)", fontSize:".8rem", fontWeight:300, color:"rgba(248,245,242,.72)" }}>
                     <span style={{ width:"4px", height:"4px", borderRadius:"50%", background:f.color, flexShrink:0, marginTop:"8px" }}/>{item}
                   </li>
                 ))}
               </ul>
-              <div style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.3)", marginBottom:"20px", fontStyle:"italic" }}>Places limitées · Inscriptions par vagues</div>
+
+              {/* Idéal pour */}
+              {f.ideal && <div style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:f.color, marginBottom:"20px", fontStyle:"italic" }}>Idéal pour : {f.ideal}</div>}
+
+              <div style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.25)", marginBottom:"16px" }}>Places limitées · Inscriptions par vagues</div>
               <a href="/contact" className={f.featured?"btn-p":"btn-s"} style={{ width:"100%", justifyContent:"center", fontSize:".72rem" }}>
-                Je m'inscris — {f.label}
+                Je m'inscris
               </a>
             </div>
           ))}

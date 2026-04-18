@@ -757,6 +757,21 @@ export default function Masterclass() {
 
       </main>
 
+{/* ── FAQ MASTERCLASS ── */}
+        <section style={{ padding:"80px 24px", background:"#0f0f0f", borderTop:"1px solid rgba(201,169,106,.08)" }}>
+          <div style={{ maxWidth:"760px", margin:"0 auto" }}>
+            <div style={{ textAlign:"center", marginBottom:"56px" }}>
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px" }}>
+                Questions fréquentes
+              </p>
+              <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,3vw,2.2rem)", fontWeight:600, color:"var(--blanc)" }}>
+                Tout ce que vous devez savoir
+              </h2>
+            </div>
+            <FAQMasterclass />
+          </div>
+        </section>
+
       {/* ── FOOTER MINIMAL ── */}
       <footer style={{ padding:"32px 24px", background:"var(--noir)", borderTop:"1px solid rgba(201,169,106,.1)", textAlign:"center" }}>
         <Link to="/" style={{ fontFamily:"var(--ff-t)", fontSize:".95rem", textDecoration:"none" }}>
