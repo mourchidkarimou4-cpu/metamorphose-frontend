@@ -41,9 +41,9 @@ function useSiteContent() {
     let cancelled = false;
     function fetchContent() {
       configAPI.public()
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(data => {
+        .then(res => {
           if (cancelled) return;
+          const data = res.data;
           const map = {};
           if (Array.isArray(data)) data.forEach(i => { map[i.cle] = i.valeur; });
           setContent(map);
