@@ -596,22 +596,21 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
 
   /* ── Styles partagés ── */
   const triggerStyle = {
-    fontFamily:"var(--ff-b)", fontStyle:"normal",
-    fontSize:".82rem", fontWeight:500, letterSpacing:".06em",
-    color:"rgba(248,245,242,.7)", background:"none", border:"none",
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
+    color:"rgba(248,245,242,.75)", background:"none", border:"none",
     cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
     gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
-    textTransform:"uppercase",
   };
   const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.95)" };
 
   const ctaLinkStyle = {
-    fontFamily:"var(--ff-b)", fontStyle:"normal",
-    fontSize:".82rem", fontWeight:500, letterSpacing:".06em",
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
     color:"rgba(201,169,106,.8)", background:"none", border:"none",
     borderBottom:"1px solid rgba(201,169,106,.35)", padding:"3px 0",
     cursor:"pointer", textDecoration:"none", transition:"all .3s",
-    lineHeight:1.2, textTransform:"uppercase",
+    lineHeight:1.2,
   };
 
   /* ── Panel partagé ── */
