@@ -328,8 +328,15 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"stat_label4",       label:"Label stat 4",                 type:"text", placeholder:"Pays" },
     ],
     contact: [
-      { cle:"whatsapp_numero",  label:"Numéro WhatsApp",      type:"text", placeholder:"+22901961493" },
-      { cle:"whatsapp_message", label:"Message WhatsApp auto", type:"text", placeholder:"Bonjour, je souhaite m'inscrire…" },
+      { cle:"contact_titre",     label:"Titre page Contact",        type:"text",     placeholder:"Contactez-nous" },
+      { cle:"contact_intro",     label:"Introduction Contact",      type:"textarea", placeholder:"Nous sommes à votre écoute…" },
+      { cle:"contact_delai",     label:"Délai de réponse",          type:"text",     placeholder:"Nous répondons dans 24 à 48h." },
+      { cle:"contact_email1",    label:"Email principal",           type:"text",     placeholder:"contact@preliaapedo.com" },
+      { cle:"contact_email2",    label:"Email secondaire",          type:"text",     placeholder:"whiteblackdress22@gmail.com" },
+      { cle:"contact_citation",  label:"Citation finale",           type:"textarea", placeholder:"Chaque message est important…" },
+      { cle:"contact_signature", label:"Signature finale",          type:"text",     placeholder:"Métamorphose — Révéler la femme…" },
+      { cle:"whatsapp_numero",   label:"Numéro WhatsApp",           type:"text",     placeholder:"+22901961493" },
+      { cle:"whatsapp_message",  label:"Message WhatsApp auto",     type:"text",     placeholder:"Bonjour, je souhaite m'inscrire…" },
     ],
     diagnostic: [
       { cle:"res_section_titre", label:"Titre section Ressources",  type:"text",     placeholder:"Ressources offertes" },
@@ -346,6 +353,30 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"res_guide_point3",  label:"Point 3 du guide",          type:"text",     placeholder:"..." },
       { cle:"res_pdf_url",       label:"URL du guide PDF",          type:"url",      placeholder:"https://..." },
       { cle:"res_citation_finale",label:"Citation finale",          type:"textarea", placeholder:"..." },
+    ],
+    masterclass: [
+      { cle:"mc_titre",         label:"Titre Masterclass",          type:"text",     placeholder:"Masterclass GRATUITE" },
+      { cle:"mc_sous_titre",    label:"Sous-titre",                 type:"textarea", placeholder:"..." },
+      { cle:"mc_date",          label:"Date de la masterclass",     type:"text",     placeholder:"Dimanche 26 avril · 17h GMT" },
+      { cle:"mc_places",        label:"Nombre de places",           type:"text",     placeholder:"50" },
+      { cle:"mc_btn_inscription",label:"Texte bouton inscription",  type:"text",     placeholder:"Je réserve ma place" },
+      { cle:"mc_whatsapp",      label:"Lien groupe WhatsApp",       type:"url",      placeholder:"https://chat.whatsapp.com/..." },
+      { cle:"mc_programme_titre",label:"Titre section programme",   type:"text",     placeholder:"Au programme" },
+      { cle:"mc_programme_items",label:"Points programme (séparés par |)", type:"textarea", placeholder:"Item 1|Item 2" },
+    ],
+    evenements: [
+      { cle:"evt_titre",        label:"Titre page Événements",      type:"text",     placeholder:"Nos Événements" },
+      { cle:"evt_intro",        label:"Introduction Événements",    type:"textarea", placeholder:"..." },
+      { cle:"brunch_titre",     label:"Titre Brunch",               type:"text",     placeholder:"Brunch Métamorphose" },
+      { cle:"brunch_intro",     label:"Introduction Brunch",        type:"textarea", placeholder:"..." },
+      { cle:"brunch_date",      label:"Date du Brunch",             type:"text",     placeholder:"..." },
+      { cle:"brunch_lieu",      label:"Lieu du Brunch",             type:"text",     placeholder:"Cotonou, Bénin" },
+      { cle:"brunch_prix",      label:"Prix du Brunch",             type:"text",     placeholder:"15 000 FCFA" },
+    ],
+    don: [
+      { cle:"don_titre",        label:"Titre page Don",             type:"text",     placeholder:"Soutenir Métamorphose" },
+      { cle:"don_intro",        label:"Introduction Don",           type:"textarea", placeholder:"..." },
+      { cle:"don_citation",     label:"Citation motivante",         type:"textarea", placeholder:"..." },
     ],
   };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { contactAPI } from "../services/api";
+import { contactAPI, configAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
@@ -51,6 +51,17 @@ const RESEAUX = [
 
 export default function Contact() {
   useReveal();
+
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public()
+      .then(res => {
+        const map = {};
+        if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+        setConfig(map);
+      }).catch(() => {});
+  }, []);
+  function get(cle, fallback="") { return config[cle] || fallback; }
 
   const [form,    setForm]    = useState({ nom:"", prenom:"", email:"", whatsapp:"", message:"" });
   const [done,    setDone]    = useState(false);
@@ -104,12 +115,10 @@ export default function Contact() {
           <div style={{ position:"relative", maxWidth:"640px", margin:"0 auto" }}>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".3em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"16px", animation:"fadeUp .6s both" }}>Contact</p>
             <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,6vw,3.5rem)", fontWeight:700, lineHeight:1.1, marginBottom:"20px", animation:"fadeUp .7s .1s both" }}>
-              Contactez-nous
+              {get("contact_titre", "Contactez-nous")}
             </h1>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, fontSize:"1rem", color:"rgba(248,245,242,.55)", lineHeight:1.8, animation:"fadeUp .7s .2s both" }}>
-              Nous sommes à votre écoute. Pour toute question, demande d'information,
-              collaboration ou accompagnement concernant le programme Métamorphose,
-              vous pouvez nous contacter via les différents moyens ci-dessous.
+              {get("contact_intro", "Nous sommes à votre écoute. Pour toute question, demande d'information ou accompagnement, contactez-nous via les moyens ci-dessous.")}
             </p>
           </div>
         </section>
@@ -135,15 +144,15 @@ export default function Contact() {
               {/* Téléphones */}
               <div className="contact-card">
                 <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".18em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"10px" }}>Téléphone</p>
-                <a href="tel:+22901961140" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>+229 01 96 11 40 93</a>
-                <a href="tel:+22901945858" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>+229 01 94 58 58 06</a>
+                <a href="tel:+22901961140" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>{get("footer_tel1", "+229 01 96 11 40 93")}</a>
+                <a href="tel:+22901945858" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>{get("footer_tel2", "+229 01 94 58 58 06")}</a>
               </div>
 
               {/* Emails */}
               <div className="contact-card">
                 <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".18em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"10px" }}>Email</p>
-                <a href="mailto:contact@preliaapedo.com" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>contact@preliaapedo.com</a>
-                <a href="mailto:whiteblackdress22@gmail.com" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>whiteblackdress22@gmail.com</a>
+                <a href="mailto:{get("contact_email1", "contact@preliaapedo.com")}" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", marginBottom:"6px", fontWeight:300 }}>{get("contact_email1", "contact@preliaapedo.com")}</a>
+                <a href="mailto:{get("contact_email2", "whiteblackdress22@gmail.com")}" style={{ display:"block", fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.7)", textDecoration:"none", fontWeight:300 }}>{get("contact_email2", "whiteblackdress22@gmail.com")}</a>
               </div>
 
               {/* Réseaux */}
@@ -160,8 +169,7 @@ export default function Contact() {
             {/* Délai réponse */}
             <div className="reveal" style={{ marginTop:"20px", padding:"18px 24px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"4px" }}>
               <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".82rem", color:"rgba(248,245,242,.55)", fontWeight:300, lineHeight:1.7 }}>
-                Nous répondons généralement dans un délai de 24 à 48 heures.
-                Merci pour votre patience et votre confiance.
+                {get("contact_delai", "Nous répondons généralement dans un délai de 24 à 48 heures. Merci pour votre patience et votre confiance.")}
               </p>
             </div>
           </section>
@@ -222,11 +230,10 @@ export default function Contact() {
             <div className="reveal">
               <div style={{ height:"1px", background:"linear-gradient(90deg,transparent,rgba(201,169,106,.3),transparent)", marginBottom:"40px" }}/>
               <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(248,245,242,.5)", lineHeight:1.9, maxWidth:"560px", margin:"0 auto 8px" }}>
-                Chaque message est important pour nous. N'hésitez pas à nous écrire,
-                nous serons ravis de vous accompagner dans votre transformation.
+                {get("contact_citation", "Chaque message est important pour nous. N'hésitez pas à nous écrire, nous serons ravis de vous accompagner dans votre transformation.")}
               </p>
               <p style={{ fontFamily:"'Playfair Display',serif", fontSize:".9rem", color:"#C9A96A", letterSpacing:".05em" }}>
-                Métamorphose — Révéler la femme que vous êtes appelée à devenir.
+                {get("contact_signature", "Métamorphose — Révéler la femme que vous êtes appelée à devenir.")}
               </p>
             </div>
           </section>
