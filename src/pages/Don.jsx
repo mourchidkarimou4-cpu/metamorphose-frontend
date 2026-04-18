@@ -75,9 +75,9 @@ export default function Don() {
   const IMPACT = [
     { montant:"10 000 FCFA",  desc:"Contribue au développement des contenus" },
     { montant:"42 000 FCFA",  desc:"Soutient un mois d'hébergement" },
-    { montant:"65 000 FCFA",  desc:"Participe à l'accès à une formation" },
-    { montant:"150 000 FCFA", desc:"Finance un accompagnement privé" },
-    { montant:"350 000 FCFA", desc:"Impact direct sur une transformation complète" },
+    { montant:"70 000 FCFA",  desc:"Participe à l'accès à une formation" },
+    { montant:"160 000 FCFA", desc:"Finance un accompagnement privé" },
+    { montant:"370 000 FCFA", desc:"Impact direct sur une transformation complète" },
   ];
 
   return (

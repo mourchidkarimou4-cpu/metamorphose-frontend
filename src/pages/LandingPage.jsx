@@ -1558,7 +1558,7 @@ function PreliaTeaser({ get }) {
 function Formules({ get, setShowCalc }) {
   const formules = [
     {
-      code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"150 000", economie:"80 000",
+      code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"160 000", economie:"80 000",
       color:"#C2185B", badge:"Startup",
       sous_titre:"Accompagnement de groupe en ligne",
       cible:"Pour celles qui veulent évoluer avec un cadre structuré et une dynamique collective",
@@ -1938,7 +1938,7 @@ function ApercuTransformations({ get }) {
                   <div style={{ width:"32px", height:"32px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.4)", flexShrink:0 }}/>
                   <div>
                     <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500, color:"var(--blanc)" }}>Une Métamorphosée</p>
-                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Programme Live · Groupe</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>Programme ESSENTIELLE</p>
                   </div>
                 </div>
               </div>

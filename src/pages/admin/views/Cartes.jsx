@@ -43,7 +43,7 @@ function CartesView({ api, toast, refreshKey = 0 }) {
   }
 
   const STATUT_COLORS = { en_attente:"var(--or)", payee:"var(--green)", utilisee:"rgba(248,245,242,.3)", expiree:"#ef5350" };
-  const FORMULES_LABELS = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
+  const FORMULES_LABELS = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
 
   const filtered = filter === "tout" ? cartes : cartes.filter(c => c.statut === filter);
 

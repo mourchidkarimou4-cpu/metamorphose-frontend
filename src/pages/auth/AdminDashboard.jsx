@@ -140,7 +140,7 @@ const STYLES = `
   }
 `;
 
-const FORMULES = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
+const FORMULES = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
 const SECTIONS_CONFIG = [
   { id:"hero",        label:"Hero" },
   { id:"probleme",    label:"Problème" },
@@ -1183,7 +1183,7 @@ function CartesView({ api, toast }) {
   }
 
   const STATUT_COLORS = { en_attente:"var(--or)", payee:"var(--green)", utilisee:"rgba(248,245,242,.3)", expiree:"#ef5350" };
-  const FORMULES_LABELS = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
+  const FORMULES_LABELS = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
 
   const filtered = filter === "tout" ? cartes : cartes.filter(c => c.statut === filter);
 
@@ -1338,7 +1338,7 @@ function TemoignagesView({ api, toast }) {
   const [audioFichier,  setAudioFichier]  = useState(null);
   const token = localStorage.getItem("mmorphose_token")
 
-  const FORMULES = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
+  const FORMULES = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
   const TYPES    = { texte:"Texte", video:"Vidéo", audio:"Audio" };
   const TYPE_COLORS = { texte:"var(--or)", video:"#A8C8E0", audio:"var(--rose)" };
 
@@ -1920,10 +1920,10 @@ function NewsletterView({ api, toast }) {
           <label style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", display:"block", marginBottom:"6px" }}>Destinataires</label>
           <select style={inputStyle} value={cible} onChange={e=>setCible(e.target.value)}>
             <option value="tous">Tous les membres actifs</option>
-            <option value="F1">Live · Groupe (F1)</option>
-            <option value="F2">Live · Privé (F2)</option>
-            <option value="F3">Présentiel · Groupe (F3)</option>
-            <option value="F4">Présentiel · Privé (F4)</option>
+            <option value="F1">ESSENTIELLE (F1)</option>
+            <option value="F2">PERSONNALISÉE (F2)</option>
+            <option value="F3">IMMERSION (F3)</option>
+            <option value="F4">VIP (F4)</option>
           </select>
         </div>
         <div>

@@ -242,10 +242,10 @@ function NewsletterView({ api, toast }) {
           <label style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", display:"block", marginBottom:"6px" }}>Destinataires</label>
           <select style={inputStyle} value={cible} onChange={e=>setCible(e.target.value)}>
             <option value="tous">Tous les membres actifs</option>
-            <option value="F1">Live · Groupe (F1)</option>
-            <option value="F2">Live · Privé (F2)</option>
-            <option value="F3">Présentiel · Groupe (F3)</option>
-            <option value="F4">Présentiel · Privé (F4)</option>
+            <option value="F1">ESSENTIELLE (F1)</option>
+            <option value="F2">PERSONNALISÉE (F2)</option>
+            <option value="F3">IMMERSION (F3)</option>
+            <option value="F4">VIP (F4)</option>
           </select>
         </div>
         <div>

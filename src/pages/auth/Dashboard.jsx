@@ -5,7 +5,7 @@ import api, { authAPI, avisAPI, learningAPI } from '../../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
-const FORMULES = { F1:'Live · Groupe', F2:'Live · Privé', F3:'Présentiel · Groupe', F4:'Présentiel · Privé' }
+const FORMULES = { F1:'ESSENTIELLE', F2:'PERSONNALISÉE', F3:'IMMERSION', F4:'VIP' }
 
 function Etoiles({ note, onSelect }) {
   const [hover, setHover] = useState(0);

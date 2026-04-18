@@ -17,7 +17,7 @@ function TemoignagesView({ api, toast }) {
   const [audioFichier,  setAudioFichier]  = useState(null);
   const token = localStorage.getItem("mmorphose_token")
 
-  const FORMULES = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
+  const FORMULES = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
   const TYPES    = { texte:"Texte", video:"Vidéo", audio:"Audio" };
   const TYPE_COLORS = { texte:"var(--or)", video:"#A8C8E0", audio:"var(--rose)" };
 

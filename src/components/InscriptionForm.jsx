@@ -7,10 +7,10 @@ import { useState } from "react";
    ================================================================ */
 
 const FORMULES = [
-  { id:"F1", label:"Live · Groupe",        prix:"65 000 FCFA",  color:"#C2185B" },
-  { id:"F2", label:"Live · Privé",         prix:"150 000 FCFA", color:"#C9A96A" },
-  { id:"F3", label:"Présentiel · Groupe",  prix:"250 000 FCFA", color:"#A8C8E0" },
-  { id:"F4", label:"Présentiel · Privé",   prix:"350 000 FCFA", color:"#D8C1A0" },
+  { id:"F1", label:"ESSENTIELLE",        prix:"70 000 FCFA",  color:"#C2185B" },
+  { id:"F2", label:"PERSONNALISÉE",         prix:"160 000 FCFA", color:"#C9A96A" },
+  { id:"F3", label:"IMMERSION",  prix:"267 000 FCFA", color:"#A8C8E0" },
+  { id:"F4", label:"VIP",   prix:"370 000 FCFA", color:"#D8C1A0" },
 ];
 
 const PAYS = [

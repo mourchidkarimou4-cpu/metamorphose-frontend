@@ -95,10 +95,10 @@ const STYLES = `
 `;
 
 const FORMULES = [
-  { id:"F1", label:"Live · Groupe",      prix:"65 000",  color:"#C2185B", desc:"2 séances/semaine en ligne" },
-  { id:"F2", label:"Live · Privé",       prix:"150 000", color:"#C9A96A", desc:"Suivi individuel en ligne",  featured:true },
-  { id:"F3", label:"Présentiel · Groupe",prix:"250 000", color:"#A8C8E0", desc:"1 séance/semaine en présentiel" },
-  { id:"F4", label:"Présentiel · Privé", prix:"350 000", color:"#D8C1A0", desc:"Expérience ultime en présentiel" },
+  { id:"F1", label:"ESSENTIELLE",      prix:"70 000",  color:"#C2185B", desc:"2 séances/semaine en ligne" },
+  { id:"F2", label:"PERSONNALISÉE",       prix:"160 000", color:"#C9A96A", desc:"Suivi individuel en ligne",  featured:true },
+  { id:"F3", label:"IMMERSION",prix:"267 000", color:"#A8C8E0", desc:"1 séance/semaine en présentiel" },
+  { id:"F4", label:"VIP", prix:"370 000", color:"#D8C1A0", desc:"Expérience ultime en présentiel" },
 ];
 
 const OCCASIONS = [
