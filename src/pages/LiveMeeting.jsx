@@ -1,7 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
 
@@ -13,6 +12,7 @@ const STYLES = `
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 24px; background:#111;
     border-bottom:1px solid rgba(255,255,255,.08);
+    position:sticky; top:0; z-index:100;
   }
   .meeting-title { font-family:'Playfair Display',serif; font-size:1.1rem; color:#F8F5F2; }
   .meeting-badge {
@@ -22,7 +22,6 @@ const STYLES = `
   .badge-attente { background:rgba(201,169,106,.1); color:#C9A96A; border:1px solid rgba(201,169,106,.2); }
   .badge-active  { background:rgba(76,175,80,.1); color:#4CAF50; border:1px solid rgba(76,175,80,.2); animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
-
   .lobby {
     flex:1; display:flex; align-items:center; justify-content:center;
     padding:40px 24px;
@@ -64,7 +63,7 @@ const STYLES = `
     border-radius:4px; padding:10px 14px; font-size:.78rem; color:#ef5350;
     margin-bottom:16px; text-align:center;
   }
-  .meeting-frame { flex:1; width:100%; border:none; min-height:calc(100vh - 65px); }
+  .meeting-frame { flex:1; width:100%; border:none; height:calc(100vh - 65px); }
   .btn-leave {
     padding:8px 20px; background:rgba(239,83,80,.1); border:1px solid rgba(239,83,80,.2);
     border-radius:4px; color:#ef5350; font-family:'Montserrat',sans-serif;
@@ -75,6 +74,9 @@ const STYLES = `
   .spinner { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.2); border-top-color:#C9A96A; animation:spin .7s linear infinite; margin:0 auto; }
   @keyframes spin { to{transform:rotate(360deg)} }
 `;
+
+// Domaine Jitsi — gratuit, sans compte
+const JITSI_DOMAIN = 'meet.jit.si';
 
 export default function LiveMeeting() {
   const { roomId } = useParams();
@@ -87,11 +89,10 @@ export default function LiveMeeting() {
   const [password, setPassword] = useState("");
   const [error,    setError]    = useState("");
   const [loading,  setLoading]  = useState(false);
-  const [meetingUrl, setMeetingUrl] = useState("");
-  const iframeRef = useRef(null);
+  const jitsiRef = useRef(null);
+  const apiRef   = useRef(null);
 
   useEffect(() => {
-    // Charger infos salle
     const token = localStorage.getItem("mmorphose_token");
     fetch(`${API_BASE}/api/live/${roomId}/`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -100,10 +101,79 @@ export default function LiveMeeting() {
       .then(d => { if (d) setRoomInfo(d); })
       .catch(() => {});
 
-    // Pré-remplir le nom si connecté
     if (authUser?.first_name) setMyName(authUser.first_name);
     else if (authUser?.email)  setMyName(authUser.email.split('@')[0]);
   }, [roomId]);
+
+  // Initialiser Jitsi après le passage en phase "meeting"
+  useEffect(() => {
+    if (phase !== "meeting") return;
+
+    // Charger le script Jitsi si pas déjà chargé
+    const loadJitsi = () => {
+      if (window.JitsiMeetExternalAPI) {
+        initJitsi();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = `https://${JITSI_DOMAIN}/external_api.js`;
+      script.async = true;
+      script.onload = initJitsi;
+      document.head.appendChild(script);
+    };
+
+    const initJitsi = () => {
+      if (!jitsiRef.current || apiRef.current) return;
+
+      const token = localStorage.getItem("mmorphose_token");
+      const isAdmin = authUser?.is_staff;
+      const roomName = `metamorphose-${roomId.replace(/-/g, '').substring(0, 20)}`;
+
+      apiRef.current = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, {
+        roomName,
+        parentNode: jitsiRef.current,
+        userInfo: {
+          displayName: myName,
+          email: authUser?.email || '',
+        },
+        configOverwrite: {
+          prejoinPageEnabled: false,
+          disableDeepLinking: true,
+          startWithAudioMuted: !isAdmin,
+          startWithVideoMuted: !isAdmin,
+          // Modérateur = admin/Prélia
+          moderatorEnabled: isAdmin,
+        },
+        interfaceConfigOverwrite: {
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'desktop', 'chat',
+            'raisehand', 'participants-pane', 'tileview',
+            'fullscreen', 'hangup',
+            ...(isAdmin ? ['mute-everyone', 'kick-everyone', 'security', 'recording'] : []),
+          ],
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          DEFAULT_BACKGROUND: '#0A0A0A',
+        },
+        width: '100%',
+        height: '100%',
+      });
+
+      // Quand l'utilisateur raccroche
+      apiRef.current.addEventListener('readyToClose', () => {
+        navigate('/live');
+      });
+    };
+
+    loadJitsi();
+
+    return () => {
+      if (apiRef.current) {
+        apiRef.current.dispose();
+        apiRef.current = null;
+      }
+    };
+  }, [phase]);
 
   async function rejoindre() {
     if (!myName.trim()) { setError("Votre prénom est requis."); return; }
@@ -115,7 +185,6 @@ export default function LiveMeeting() {
     if (token) headers["Authorization"] = `Bearer ${token}`;
 
     try {
-      // 1. Rejoindre la salle (vérif code_acces)
       const res = await fetch(`${API_BASE}/api/live/${roomId}/rejoindre/`, {
         method: "POST",
         headers,
@@ -124,41 +193,20 @@ export default function LiveMeeting() {
 
       if (!res.ok) {
         const d = await res.json();
-        setError(d.detail || "Erreur d'accès à la salle.");
+        setError(d.detail || "Accès refusé.");
         setLoading(false);
         return;
       }
 
-      // 2. Obtenir token Daily.co
-      if (token) {
-        const tokenRes = await fetch(`${API_BASE}/api/live/${roomId}/daily-token/`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ nom: myName }),
-        });
-
-        if (tokenRes.ok) {
-          const tokenData = await tokenRes.json();
-          // URL Daily avec token pour modération complète
-          const url = `${tokenData.room_url}?t=${tokenData.token}`;
-          setMeetingUrl(url);
-          setPhase("meeting");
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Fallback : URL Daily sans token (participant anonyme)
-      const roomName = roomId.replace(/-/g, '');
-      setMeetingUrl(`https://masterclass-ose-live.daily.co/${roomName}`);
       setPhase("meeting");
-    } catch (err) {
+    } catch {
       setError("Erreur réseau. Réessayez.");
     }
     setLoading(false);
   }
 
   function quitter() {
+    if (apiRef.current) apiRef.current.dispose();
     navigate("/live");
   }
 
@@ -224,14 +272,8 @@ export default function LiveMeeting() {
           </div>
         )}
 
-        {phase === "meeting" && meetingUrl && (
-          <iframe
-            ref={iframeRef}
-            className="meeting-frame"
-            src={meetingUrl}
-            allow="camera; microphone; fullscreen; display-capture; autoplay"
-            title="Session Live"
-          />
+        {phase === "meeting" && (
+          <div ref={jitsiRef} className="meeting-frame" />
         )}
       </div>
     </>
