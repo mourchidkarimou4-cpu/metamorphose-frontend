@@ -282,49 +282,7 @@ export default function LiveMasterclass() {
 
         {!loading && tab === "live" && (
           <>
-            {isAdmin && (
-              <div style={{ marginBottom:"24px" }}>
-                <button className="btn-creer" onClick={() => setShowForm(!showForm)}>
-                  {showForm ? "✕ Annuler" : "+ Creer une salle"}
-                </button>
-              </div>
-            )}
 
-            {isAdmin && showForm && (
-              <form className="create-form" onSubmit={creerSalle}>
-                <h3>Nouvelle salle</h3>
-                {error && (
-                  <p style={{ background:"rgba(239,68,68,.1)", border:"1px solid rgba(239,68,68,.3)", borderRadius:"6px", padding:"10px 14px", fontSize:".78rem", color:"#f87171", marginBottom:"14px" }}>
-                    {error}
-                  </p>
-                )}
-                <div className="form-group">
-                  <label className="form-label">Titre *</label>
-                  <input className="form-input" value={form.titre} onChange={e=>setForm({...form,titre:e.target.value})} placeholder="Ex : Masterclass Meta'Morph'Ose — Semaine 3" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Description</label>
-                  <input className="form-input" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Description courte (optionnel)" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Mode</label>
-                  <select className="form-select" value={form.mode} onChange={e=>setForm({...form,mode:e.target.value})}>
-                    <option value="live">Live (diffusion)</option>
-                    <option value="reunion">Reunion (interactif)</option>
-                    <option value="webinaire">Webinaire</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Mot de passe (optionnel)</label>
-                  <input className="form-input" type="password" value={form.mot_de_passe} onChange={e=>setForm({...form,mot_de_passe:e.target.value})} placeholder="Laisser vide si libre d acces" />
-                </div>
-                <div className="form-row">
-                  <button type="submit" className="btn-rejoindre" disabled={creating} style={creating?{opacity:.6,pointerEvents:"none"}:{}}>
-                    {creating ? "Creation..." : "Creer et rejoindre"}
-                  </button>
-                </div>
-              </form>
-            )}
 
             {toutesLesSalles.length === 0 && (
               <div className="empty-state">
