@@ -36,7 +36,7 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
     try {
       const res = await fetch('https://api.cloudinary.com/v1_1/dp7v6vlgs/image/upload', { method:'POST', body:fd })
       const data = await res.json()
-      if (data.secure_url) { set('photo', data.secure_url); toast('Photo uploadée ✓', 'success') }
+      if (data.secure_url) { set('photo', data.secure_url); set('photo_url', data.secure_url); set('_photoFile', file); toast('Photo uploadée ✓', 'success') }
       else toast('Erreur upload', 'error')
     } catch { toast('Erreur upload', 'error') }
     setUploading(false)
