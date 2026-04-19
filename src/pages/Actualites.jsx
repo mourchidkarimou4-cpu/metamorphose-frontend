@@ -4,6 +4,8 @@ import { evenementsAPI, newsletterAPI } from "../services/api";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
+
+import { configAPI } from '../services/api';
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
     --noir:#0A0A0A; --or:#C9A96A; --or-light:#E8D5A8;
@@ -148,10 +150,10 @@ export default function Actualites() {
             </p>
             <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
               {actus.map((actu, i) => (
-                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s`, display:"flex", flexDirection:"column" }}>
+                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
                   {actu.photo ? (
-                    <div style={{ width:"100%", height:"360px", overflow:"hidden" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center" }}/>
+                    <div style={{ width:"100%", height:"180px", overflow:"hidden" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                     </div>
                   ) : (
                     <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>
@@ -171,11 +173,6 @@ export default function Actualites() {
                       {actu.bouton} →
                     </Link>
                   </div>
-                  {actu.photo && (
-                    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", background:"#0A0A0A", padding:"12px" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"auto", objectFit:"contain", borderRadius:"4px" }}/>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
