@@ -237,7 +237,7 @@ const STYLES = `
   }
 `;
 
-const FORMULES = { F1:"ESSENTIELLE", F2:"PERSONNALISÉE", F3:"IMMERSION", F4:"VIP" };
+const FORMULES = { F1:"Live · Groupe", F2:"Live · Privé", F3:"Présentiel · Groupe", F4:"Présentiel · Privé" };
 const SECTIONS_CONFIG = [
   { id:"hero",        label:"Hero" },
   { id:"probleme",    label:"Problème" },
@@ -362,6 +362,7 @@ function SidebarGroup({ label, children, defaultOpen = false, hasActive = false 
 }
 
 function Sidebar({ active, setActive, counts, open, onClose, user }) {
+  const { logout } = useAuth();
   const [search, setSearch] = useState("");
 
   const GESTION = [
