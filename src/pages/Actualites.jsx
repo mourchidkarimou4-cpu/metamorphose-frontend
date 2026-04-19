@@ -150,8 +150,8 @@ export default function Actualites() {
               {actus.map((actu, i) => (
                 <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
                   {actu.photo ? (
-                    <div style={{ width:"100%", height:"180px", overflow:"hidden" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                    <div style={{ width:"100%", background:"#0A0A0A", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"auto", objectFit:"contain", display:"block" }}/>
                     </div>
                   ) : (
                     <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>
