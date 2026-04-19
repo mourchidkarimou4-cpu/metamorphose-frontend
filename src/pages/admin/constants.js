@@ -24,6 +24,7 @@ export const SECTIONS_CONFIG = [
   { id:"vague",       label:"Vague & Places" },
   { id:"stats_site",  label:"Stats du site" },
   { id:"contact",     label:"WhatsApp & Contact" },
+  { id:"paiement",    label:"Liens de paiement" },
   { id:"masterclass",  label:"Masterclass" },
   { id:"evenements",   label:"Événements & Brunch" },
   { id:"don",          label:"Page Don" },

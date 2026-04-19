@@ -1,16 +1,11 @@
-import { authAPI, contactAPI } from '../services/api';
-import { useState } from "react";
-
-/* ================================================================
-   InscriptionForm — Formulaire d'inscription / contact
-   Usage : <InscriptionForm theme="dark|light" defaultFormule="F1" />
-   ================================================================ */
+import { authAPI, contactAPI, configAPI } from '../services/api';
+import { useState, useEffect } from "react";
 
 const FORMULES = [
-  { id:"F1", label:"ESSENTIELLE",        prix:"70 000 FCFA",  color:"#C2185B" },
-  { id:"F2", label:"PERSONNALISÉE",         prix:"160 000 FCFA", color:"#C9A96A" },
-  { id:"F3", label:"IMMERSION",  prix:"267 000 FCFA", color:"#A8C8E0" },
-  { id:"F4", label:"VIP",   prix:"370 000 FCFA", color:"#D8C1A0" },
+  { id:"F1", label:"ESSENTIELLE",   prix:"70 000 FCFA",  color:"#C2185B" },
+  { id:"F2", label:"PERSONNALISÉE", prix:"160 000 FCFA", color:"#C9A96A" },
+  { id:"F3", label:"IMMERSION",     prix:"267 000 FCFA", color:"#A8C8E0" },
+  { id:"F4", label:"VIP",           prix:"370 000 FCFA", color:"#D8C1A0" },
 ];
 
 const PAYS = [
@@ -26,9 +21,7 @@ const STYLES = `
     from { opacity:0; transform:translateY(20px); }
     to   { opacity:1; transform:translateY(0); }
   }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes successPop {
     0%  { opacity:0; transform:scale(.9); }
     70% { transform:scale(1.04); }
@@ -41,6 +34,7 @@ const STYLES = `
     60%    { transform:translateX(-4px); }
     80%    { transform:translateX(4px); }
   }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
   .form-input {
     width:100%; padding:14px 18px;
@@ -49,13 +43,8 @@ const STYLES = `
     transition:border .25s, box-shadow .25s;
     outline:none;
   }
-  .form-input:focus {
-    box-shadow:0 0 0 3px rgba(194,24,91,.15);
-  }
-  .form-input.error {
-    border-color:#C2185B !important;
-    animation:shake .4s both;
-  }
+  .form-input:focus { box-shadow:0 0 0 3px rgba(194,24,91,.15); }
+  .form-input.error { border-color:#C2185B !important; animation:shake .4s both; }
   .form-input::placeholder { opacity:.4; }
 
   .formule-card {
@@ -78,6 +67,33 @@ const STYLES = `
   }
   .submit-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
 
+  .pay-btn {
+    width:100%; padding:18px;
+    background:linear-gradient(135deg,#C9A96A,#E8D5A8);
+    color:#0A0A0A; border:none; border-radius:3px;
+    font-family:'Montserrat',sans-serif; font-weight:700; font-size:.78rem;
+    letter-spacing:.16em; text-transform:uppercase;
+    cursor:pointer; transition:all .3s;
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    text-decoration:none;
+  }
+  .pay-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 12px 36px rgba(201,169,106,.4);
+  }
+
+  .confirm-btn {
+    width:100%; padding:14px;
+    background:rgba(76,175,80,.1); color:#4CAF50;
+    border:1px solid rgba(76,175,80,.3); border-radius:3px;
+    font-family:'Montserrat',sans-serif; font-weight:600; font-size:.72rem;
+    letter-spacing:.14em; text-transform:uppercase;
+    cursor:pointer; transition:all .3s;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:12px;
+  }
+  .confirm-btn:hover { background:rgba(76,175,80,.2); }
+
   .spinner {
     width:18px; height:18px; border-radius:50%;
     border:2px solid rgba(255,255,255,.3);
@@ -89,6 +105,15 @@ const STYLES = `
     font-family:'Montserrat',sans-serif; font-size:.7rem;
     color:#C2185B; margin-top:5px; font-weight:400;
     animation:formFadeUp .3s both;
+  }
+
+  .step-indicator {
+    display:flex; align-items:center; justify-content:center;
+    gap:8px; margin-bottom:32px;
+  }
+  .step-dot {
+    width:8px; height:8px; border-radius:50%;
+    transition:all .3s;
   }
 `;
 
@@ -118,12 +143,29 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
   const inputBorder= isDark ? "rgba(255,255,255,.09)"  : "rgba(10,10,10,.12)";
   const labelColor = isDark ? "rgba(248,245,242,.6)"   : "rgba(10,10,10,.65)";
 
+  // Liens de paiement depuis le CMS
+  const [payLinks, setPayLinks] = useState({ F1:"", F2:"", F3:"", F4:"" });
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setPayLinks({
+        F1: map["paiement_lien_f1"] || "",
+        F2: map["paiement_lien_f2"] || "",
+        F3: map["paiement_lien_f3"] || "",
+        F4: map["paiement_lien_f4"] || "",
+      });
+    }).catch(() => {});
+  }, []);
+
   const [fields, setFields] = useState({
     prenom:"", nom:"", email:"", whatsapp:"", pays:"", formule: defaultFormule || "", message:"",
   });
   const [errors,   setErrors]   = useState({});
-  const [status,   setStatus]   = useState("idle"); // idle | loading | success | error
+  const [step,     setStep]     = useState("form"); // form | payment | done
   const [apiError, setApiError] = useState("");
+  const [loading,  setLoading]  = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   function set(key, val) {
     setFields(f => ({ ...f, [key]: val }));
@@ -135,37 +177,139 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
     const errs = validate(fields);
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
-    setStatus("loading");
+    setLoading(true);
     setApiError("");
 
     try {
       await contactAPI.envoyer({
-          prenom:    fields.prenom,
-          nom:       fields.nom,
-          email:     fields.email,
-          whatsapp:  fields.whatsapp,
-          pays:      fields.pays,
-          formule:   fields.formule,
-          message:   fields.message,
+        prenom:   fields.prenom,
+        nom:      fields.nom,
+        email:    fields.email,
+        whatsapp: fields.whatsapp,
+        pays:     fields.pays,
+        formule:  fields.formule,
+        message:  fields.message,
       });
-      setStatus("success");
-      if (onSuccess) onSuccess(fields);
+      setStep("payment");
     } catch {
-      // Backend non disponible — simulation succès en dev
       if (import.meta.env.DEV) {
-        console.log(" Dev mode — simulation envoi:", fields);
-        setStatus("success");
-        if (onSuccess) onSuccess(fields);
+        setStep("payment");
       } else {
         setApiError("Impossible de contacter le serveur. Veuillez réessayer ou nous écrire sur WhatsApp.");
-        setStatus("error");
       }
     }
+    setLoading(false);
   }
 
-  // ── SUCCÈS ────────────────────────────────────────────────
-  if (status === "success") {
-    const formuleLabel = FORMULES.find(f=>f.id===fields.formule)?.label || "";
+  async function confirmerPaiement() {
+    setConfirming(true);
+    try {
+      // Notifier le backend que le paiement a été déclaré
+      await contactAPI.envoyer({
+        prenom:   fields.prenom,
+        nom:      fields.nom,
+        email:    fields.email,
+        whatsapp: fields.whatsapp,
+        pays:     fields.pays,
+        formule:  fields.formule,
+        message:  `[PAIEMENT DÉCLARÉ] ${fields.message}`,
+      });
+    } catch {}
+    setConfirming(false);
+    setStep("done");
+    if (onSuccess) onSuccess(fields);
+  }
+
+  const formule = FORMULES.find(f => f.id === fields.formule);
+  const payLink = payLinks[fields.formule] || "";
+
+  // ── ÉTAPE PAIEMENT ────────────────────────────────────────
+  if (step === "payment") {
+    return (
+      <>
+        <style>{STYLES}</style>
+        <div style={{
+          background:bg, border:`1px solid ${border}`, borderRadius:"6px",
+          padding: compact?"20px":"52px 44px",
+          fontFamily:"'Montserrat',sans-serif",
+          animation:"formFadeUp .5s both",
+        }}>
+          {/* Indicateurs d'étapes */}
+          <div className="step-indicator">
+            <div className="step-dot" style={{ background:"#4CAF50", width:"10px", height:"10px" }}/>
+            <div style={{ height:"1px", width:"40px", background:"rgba(201,169,106,.3)" }}/>
+            <div className="step-dot" style={{ background:"#C9A96A", width:"10px", height:"10px" }}/>
+            <div style={{ height:"1px", width:"40px", background:"rgba(255,255,255,.1)" }}/>
+            <div className="step-dot" style={{ background:"rgba(255,255,255,.2)", width:"8px", height:"8px" }}/>
+          </div>
+
+          <p style={{ fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"12px", textAlign:"center" }}>
+            Étape 2 · Paiement
+          </p>
+          <h3 style={{
+            fontFamily:"'Playfair Display',serif", fontSize:"1.6rem",
+            fontWeight:600, color:textMain, marginBottom:"8px", lineHeight:1.2, textAlign:"center",
+          }}>
+            Finalisez votre inscription
+          </h3>
+          <p style={{ fontWeight:300, fontSize:".88rem", color:textSub, marginBottom:"28px", textAlign:"center" }}>
+            Demande envoyée pour{" "}
+            <strong style={{ color: formule?.color || "#C2185B" }}>{formule?.label}</strong>
+            {" "}· {formule?.prix}
+          </p>
+
+          {/* Récap */}
+          <div style={{
+            padding:"16px 20px", marginBottom:"24px",
+            background: isDark?"rgba(255,255,255,.03)":"rgba(10,10,10,.03)",
+            border:`1px solid ${isDark?"rgba(255,255,255,.08)":"rgba(10,10,10,.08)"}`,
+            borderRadius:"4px",
+          }}>
+            <p style={{ fontSize:".72rem", color:textSub, marginBottom:"8px", letterSpacing:".1em", textTransform:"uppercase" }}>Récapitulatif</p>
+            <p style={{ fontSize:".88rem", color:textMain, fontWeight:500 }}>{fields.prenom} {fields.nom}</p>
+            <p style={{ fontSize:".82rem", color:textSub, fontWeight:300 }}>{fields.email}</p>
+            <p style={{ fontSize:".82rem", color:textSub, fontWeight:300 }}>{fields.whatsapp}</p>
+          </div>
+
+          {/* Bouton paiement */}
+          {payLink ? (
+            <a href={payLink} target="_blank" rel="noreferrer" className="pay-btn">
+              Procéder au paiement · {formule?.prix}
+            </a>
+          ) : (
+            <div style={{
+              padding:"20px", textAlign:"center",
+              background:"rgba(201,169,106,.05)", border:"1px dashed rgba(201,169,106,.2)",
+              borderRadius:"4px", marginBottom:"16px",
+            }}>
+              <p style={{ fontSize:".85rem", color:"#C9A96A", marginBottom:"8px", fontWeight:500 }}>
+                Lien de paiement bientôt disponible
+              </p>
+              <p style={{ fontSize:".78rem", color:textSub, fontWeight:300 }}>
+                Prélia vous contactera sous 24h pour le paiement via WhatsApp.
+              </p>
+              <a href="https://wa.me/message/DI23LCDIMS5SF1" target="_blank" rel="noreferrer"
+                style={{ display:"inline-block", marginTop:"12px", color:"#25D366", fontSize:".78rem", fontWeight:500, textDecoration:"none" }}>
+                Contacter Prélia sur WhatsApp
+              </a>
+            </div>
+          )}
+
+          {/* Bouton confirmation paiement effectué */}
+          <button className="confirm-btn" onClick={confirmerPaiement} disabled={confirming}>
+            {confirming ? "Confirmation…" : "J'ai effectué mon paiement"}
+          </button>
+
+          <p style={{ textAlign:"center", marginTop:"16px", fontSize:".72rem", color:textSub, fontWeight:300 }}>
+            En cliquant "J'ai effectué mon paiement", vous confirmez avoir réglé le montant correspondant à votre formule.
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  // ── CONFIRMATION FINALE ───────────────────────────────────
+  if (step === "done") {
     return (
       <>
         <style>{STYLES}</style>
@@ -175,31 +319,29 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
           textAlign:"center", fontFamily:"'Montserrat',sans-serif",
           animation:"successPop .6s both",
         }}>
-          {/* Icône succès */}
           <div style={{
             width:"72px", height:"72px", borderRadius:"50%",
-            background:"rgba(194,24,91,.1)", border:"2px solid #C2185B",
+            background:"rgba(76,175,80,.1)", border:"2px solid #4CAF50",
             display:"flex", alignItems:"center", justifyContent:"center",
             margin:"0 auto 24px", fontSize:"1.8rem",
-          }}></div>
+          }}>✓</div>
 
-          <p style={{ fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"12px" }}>
-            Demande reçue
+          <p style={{ fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#4CAF50", marginBottom:"12px" }}>
+            Paiement déclaré
           </p>
           <h3 style={{
             fontFamily:"'Playfair Display',serif", fontSize:"1.7rem",
             fontWeight:600, color:textMain, marginBottom:"16px", lineHeight:1.2,
           }}>
             Merci, {fields.prenom} !<br/>
-            <em style={{ color:"#C9A96A", fontStyle:"italic" }}>Votre aventure commence.</em>
+            <em style={{ color:"#C9A96A", fontStyle:"italic" }}>Votre transformation commence.</em>
           </h3>
-          <p style={{ fontWeight:300, fontSize:".9rem", color:textSub, lineHeight:1.8, maxWidth:"400px", margin:"0 auto 28px" }}>
-            Votre demande d'inscription au format{" "}
-            <strong style={{ color:"#C2185B", fontWeight:600 }}>{formuleLabel}</strong>{" "}
-            a bien été reçue. Prélia vous contactera sous 24–48h pour confirmer votre place dans la prochaine vague.
+          <p style={{ fontWeight:300, fontSize:".9rem", color:textSub, lineHeight:1.8, maxWidth:"420px", margin:"0 auto 28px" }}>
+            Votre inscription à la formule{" "}
+            <strong style={{ color: formule?.color || "#C2185B" }}>{formule?.label}</strong>{" "}
+            est confirmée. Prélia vous contactera sous 24h pour valider votre paiement et vous donner accès au programme.
           </p>
 
-          {/* Contact direct */}
           <div style={{
             padding:"20px 24px", marginBottom:"24px",
             background: isDark?"rgba(255,255,255,.025)":"rgba(10,10,10,.03)",
@@ -210,10 +352,10 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
               Pour toute question urgente :
             </p>
             <div style={{ display:"flex", gap:"16px", justifyContent:"center", flexWrap:"wrap" }}>
-              <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
+              <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ color:"#C9A96A", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
                 WhatsApp +229 01 96 11 40 93
               </a>
-              <a href="mailto:whiteblackdress22@gmail.com" style={{ color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
+              <a href="mailto:whiteblackdress22@gmail.com" style={{ color:"#C9A96A", fontSize:".8rem", fontWeight:500, textDecoration:"none" }}>
                 whiteblackdress22@gmail.com
               </a>
             </div>
@@ -237,6 +379,15 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
         fontFamily:"'Montserrat',sans-serif",
         animation:"formFadeUp .5s both",
       }}>
+        {/* Indicateurs */}
+        <div className="step-indicator">
+          <div className="step-dot" style={{ background:"#C9A96A", width:"10px", height:"10px" }}/>
+          <div style={{ height:"1px", width:"40px", background:"rgba(255,255,255,.1)" }}/>
+          <div className="step-dot" style={{ background:"rgba(255,255,255,.2)", width:"8px", height:"8px" }}/>
+          <div style={{ height:"1px", width:"40px", background:"rgba(255,255,255,.1)" }}/>
+          <div className="step-dot" style={{ background:"rgba(255,255,255,.2)", width:"8px", height:"8px" }}/>
+        </div>
+
         {/* Header */}
         <div style={{ marginBottom:"32px" }}>
           <p style={{ fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"10px" }}>
@@ -278,7 +429,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
                       display:"flex", alignItems:"center", justifyContent:"center",
                       transition:"all .25s",
                     }}>
-                      {fields.formule===f.id && <span style={{ color:"#fff", fontSize:".55rem", fontWeight:700 }}></span>}
+                      {fields.formule===f.id && <span style={{ color:"#fff", fontSize:".55rem", fontWeight:700 }}>✓</span>}
                     </div>
                   </div>
                 </div>
@@ -349,7 +500,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
             </div>
           </div>
 
-          {/* ── MESSAGE optionnel ── */}
+          {/* ── MESSAGE ── */}
           <div style={{ marginBottom:"24px" }}>
             <label style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".7rem", fontWeight:500, letterSpacing:".1em", textTransform:"uppercase", color:labelColor, display:"block", marginBottom:"7px" }}>
               Message <span style={{ opacity:.5, fontWeight:300, textTransform:"none", letterSpacing:0 }}>(optionnel)</span>
@@ -364,7 +515,7 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
           </div>
 
           {/* Erreur API */}
-          {status === "error" && (
+          {apiError && (
             <div style={{
               padding:"14px 18px", marginBottom:"20px",
               background:"rgba(194,24,91,.08)", border:"1px solid rgba(194,24,91,.3)",
@@ -372,35 +523,26 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
               color:"#C2185B", animation:"formFadeUp .4s both",
             }}>
               {apiError}
-              <div style={{ marginTop:"8px", fontSize:".78rem", color:textSub }}>
-                Contactez-nous directement :{" "}
-                <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ color:"#C9A96A" }}>WhatsApp</a>
-                {" "}ou{" "}
-                <a href="mailto:whiteblackdress22@gmail.com" style={{ color:"#C9A96A" }}>Email</a>
-              </div>
             </div>
           )}
 
-          {/* Mentions */}
           <p style={{ fontWeight:300, fontSize:".72rem", color:textSub, lineHeight:1.65, marginBottom:"20px" }}>
-            En soumettant ce formulaire, vous acceptez d'être contactée par Prélia APEDO AHONON concernant le programme Méta'Morph'Ose. Aucune donnée n'est partagée avec des tiers.
+            En soumettant ce formulaire, vous acceptez d'être contactée par Prélia APEDO AHONON concernant le programme Méta'Morph'Ose.
           </p>
 
-          {/* Submit */}
-          <button type="submit" className="submit-btn" disabled={status==="loading"}>
-            {status==="loading" ? (
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? (
               <><div className="spinner"/> Envoi en cours…</>
             ) : (
-              <>Envoyer ma demande d'inscription</>
+              <>Envoyer ma demande · Étape suivante →</>
             )}
           </button>
 
-          {/* Contact alternatif */}
           <div style={{ textAlign:"center", marginTop:"20px" }}>
             <p style={{ fontWeight:300, fontSize:".78rem", color:textSub }}>
               Préférez-vous écrire directement ?{" "}
               <a href="https://wa.me/message/DI23LCDIMS5SF1" style={{ color:"#C9A96A", textDecoration:"none", fontWeight:500 }}>
-                WhatsApp 
+                WhatsApp
               </a>
             </p>
           </div>

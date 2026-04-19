@@ -354,6 +354,12 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"res_pdf_url",       label:"URL du guide PDF",          type:"url",      placeholder:"https://..." },
       { cle:"res_citation_finale",label:"Citation finale",          type:"textarea", placeholder:"..." },
     ],
+    paiement: [
+      { cle:"paiement_lien_f1", label:"Lien paiement ESSENTIELLE (70 000 FCFA)",   type:"url", placeholder:"https://..." },
+      { cle:"paiement_lien_f2", label:"Lien paiement PERSONNALISÉE (160 000 FCFA)", type:"url", placeholder:"https://..." },
+      { cle:"paiement_lien_f3", label:"Lien paiement IMMERSION (267 000 FCFA)",     type:"url", placeholder:"https://..." },
+      { cle:"paiement_lien_f4", label:"Lien paiement VIP (370 000 FCFA)",           type:"url", placeholder:"https://..." },
+    ],
     masterclass: [
       { cle:"mc_titre",         label:"Titre Masterclass",          type:"text",     placeholder:"Masterclass GRATUITE" },
       { cle:"mc_sous_titre",    label:"Sous-titre",                 type:"textarea", placeholder:"..." },
