@@ -154,13 +154,7 @@ export default function Evenements() {
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
               {evenements.map((evt, i) => (
-                <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:"1fr" }}>
-                  {/* Image placeholder */}
-                  {evt.photo && (
-                    <div style={{ width:"100%", aspectRatio:"16/9", overflow:"hidden" }}>
-                      <img src={evt.photo} alt={evt.titre} style={{ width:"100%", height:"100%", objectFit:"contain", background:"#0A0A0A" }}/>
-                    </div>
-                  )}
+                <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:evt.photo?"1fr 1fr":"1fr" }}>
                   {!evt.photo && <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badge_color}40,transparent)` }}/>}
                   <div style={{ padding:"36px 32px" }}>
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px", marginBottom:"20px" }}>
@@ -188,6 +182,11 @@ export default function Evenements() {
                       {evt.bouton}
                     </Link>
                   </div>
+                  {evt.photo && (
+                    <div style={{ overflow:"hidden", minHeight:"300px" }}>
+                      <img src={evt.photo} alt={evt.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center" }}/>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
