@@ -147,7 +147,7 @@ export default function Actualites() {
               Dernières actualités
             </p>
             <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
-              {ACTUS.map((actu, i) => (
+              {actus.map((actu, i) => (
                 <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
                   {actu.photo ? (
                     <div style={{ width:"100%", height:"180px", overflow:"hidden" }}>
