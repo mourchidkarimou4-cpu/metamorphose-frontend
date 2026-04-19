@@ -203,16 +203,20 @@ export default function InscriptionForm({ theme="dark", defaultFormule=null, onS
 
   async function confirmerPaiement() {
     setConfirming(true);
+    const API_BASE = import.meta.env.VITE_API_URL || '';
     try {
-      // Notifier le backend que le paiement a été déclaré
-      await contactAPI.envoyer({
-        prenom:   fields.prenom,
-        nom:      fields.nom,
-        email:    fields.email,
-        whatsapp: fields.whatsapp,
-        pays:     fields.pays,
-        formule:  fields.formule,
-        message:  `[PAIEMENT DÉCLARÉ] ${fields.message}`,
+      await fetch(`${API_BASE}/api/auth/confirmer-paiement/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prenom:   fields.prenom,
+          nom:      fields.nom,
+          email:    fields.email,
+          whatsapp: fields.whatsapp,
+          pays:     fields.pays,
+          formule:  fields.formule,
+          message:  fields.message,
+        }),
       });
     } catch {}
     setConfirming(false);
