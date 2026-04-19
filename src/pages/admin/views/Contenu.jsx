@@ -403,6 +403,7 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"don_titre",        label:"Titre page Don",             type:"text",     placeholder:"Soutenir Métamorphose" },
       { cle:"don_intro",        label:"Introduction Don",           type:"textarea", placeholder:"..." },
       { cle:"don_citation",     label:"Citation motivante",         type:"textarea", placeholder:"..." },
+      { cle:"don_lien_paiement",label:"Lien de paiement pour les dons", type:"url", placeholder:"https://..." },
     ],
   };
 

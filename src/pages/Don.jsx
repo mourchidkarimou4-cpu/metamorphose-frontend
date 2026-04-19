@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { donAPI } from "../services/api";
+import { donAPI, configAPI } from "../services/api";
 
 const MONTANTS = [10000, 25000, 42000, 65000, 150000, 350000];
 
@@ -47,6 +47,25 @@ function useReveal() {
 export default function Don() {
   useReveal();
 
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setConfig(map);
+    }).catch(() => {});
+  }, []);
+  function get(cle, fallback="") { return config[cle] || fallback; }
+
+  const [step, setStep] = useState("form"); // form | payment | done
+  const [donLink, setDonLink] = useState("");
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setDonLink(map["don_lien_paiement"] || "");
+    }).catch(() => {});
+  }, []);
   const [montantSelectionne, setMontantSelectionne] = useState(65000);
   const [autreMontnant,      setAutreMontant]        = useState("");
   const [form, setForm] = useState({ nom:"", prenom:"", email:"", telephone:"", message:"", anonyme:false });
@@ -64,20 +83,30 @@ export default function Don() {
     if (!montantFinal || montantFinal < 1000) { setError("Veuillez choisir un montant valide."); return; }
     setLoading(true); setError("");
     try {
-      const res = await donAPI.soumettre({ ...form, montant: montantFinal });
-      res.ok = res.status < 300;
-      if (res.ok) setDone(true);
-      else setError("Une erreur est survenue. Veuillez réessayer.");
-    } catch { setError("Erreur réseau. Veuillez réessayer."); }
+      await donAPI.soumettre({ ...form, montant: montantFinal });
+    } catch {}
     setLoading(false);
+    setStep("payment");
+  }
+
+  async function confirmerDon() {
+    const API_BASE = import.meta.env.VITE_API_URL || "";
+    try {
+      await fetch(`${API_BASE}/api/auth/confirmer-don/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, montant: montantFinal }),
+      });
+    } catch {}
+    setStep("done");
   }
 
   const IMPACT = [
     { montant:"10 000 FCFA",  desc:"Contribue au développement des contenus" },
     { montant:"42 000 FCFA",  desc:"Soutient un mois d'hébergement" },
-    { montant:"70 000 FCFA",  desc:"Participe à l'accès à une formation" },
-    { montant:"160 000 FCFA", desc:"Finance un accompagnement privé" },
-    { montant:"370 000 FCFA", desc:"Impact direct sur une transformation complète" },
+    { montant:"65 000 FCFA",  desc:"Participe à l'accès à une formation" },
+    { montant:"150 000 FCFA", desc:"Finance un accompagnement privé" },
+    { montant:"350 000 FCFA", desc:"Impact direct sur une transformation complète" },
   ];
 
   return (
@@ -154,13 +183,50 @@ export default function Don() {
                 Faire un don
               </h2>
 
-              {done ? (
-                <div style={{ textAlign:"center", padding:"48px 24px" }}>
+              {step === "done" ? (
+                <div style={{ textAlign:"center", padding:"48px 24px", animation:"fadeUp .6s both" }}>
+                  <div style={{ width:"64px", height:"64px", borderRadius:"50%", background:"rgba(76,175,80,.1)", border:"2px solid #4CAF50", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 24px", fontSize:"28px" }}>✓</div>
                   <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.6rem", fontWeight:600, color:"#C9A96A", marginBottom:"16px" }}>Merci pour votre soutien.</p>
-                  <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, color:"rgba(248,245,242,.55)", lineHeight:1.8 }}>
-                    Votre don n'est pas simplement un montant. C'est un acte de soutien.
-                    Un acte d'amour. Un acte de transformation.
+                  <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:300, color:"rgba(248,245,242,.55)", lineHeight:1.8, marginBottom:"16px" }}>
+                    Votre don de <strong style={{ color:"#C9A96A" }}>{montantFinal.toLocaleString("fr-FR")} FCFA</strong> a bien été déclaré.
+                    Un email de confirmation vous a été envoyé à <strong style={{ color:"#F8F5F2" }}>{form.email}</strong>.
                   </p>
+                  <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:"1rem", color:"rgba(248,245,242,.4)" }}>
+                    Votre générosité ouvre des portes. Merci de faire partie de cette mission.
+                  </p>
+                </div>
+              ) : step === "payment" ? (
+                <div style={{ animation:"fadeUp .5s both" }}>
+                  <div style={{ textAlign:"center", marginBottom:"28px" }}>
+                    <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"8px" }}>Étape 2 · Paiement</p>
+                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.5rem", fontWeight:600, color:"#F8F5F2", marginBottom:"8px" }}>Finalisez votre don</h3>
+                    <p style={{ color:"rgba(248,245,242,.5)", fontSize:".88rem" }}>
+                      Montant : <strong style={{ color:"#C9A96A" }}>{montantFinal.toLocaleString("fr-FR")} FCFA</strong>
+                    </p>
+                  </div>
+                  <div style={{ background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"4px", padding:"16px 20px", marginBottom:"20px" }}>
+                    <p style={{ fontSize:".72rem", color:"rgba(248,245,242,.4)", marginBottom:"8px", letterSpacing:".1em", textTransform:"uppercase" }}>Récapitulatif</p>
+                    <p style={{ color:"#F8F5F2", fontWeight:500 }}>{form.prenom} {form.nom}</p>
+                    <p style={{ color:"rgba(248,245,242,.5)", fontSize:".85rem" }}>{form.email}</p>
+                    <p style={{ color:"#C9A96A", fontWeight:700, fontSize:"1.1rem", marginTop:"8px" }}>{montantFinal.toLocaleString("fr-FR")} FCFA</p>
+                  </div>
+                  {donLink ? (
+                    <a href={donLink} target="_blank" rel="noreferrer"
+                      style={{ display:"flex", alignItems:"center", justifyContent:"center", width:"100%", padding:"16px", background:"linear-gradient(135deg,#C9A96A,#E8D5A8)", color:"#0A0A0A", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".78rem", letterSpacing:".16em", textTransform:"uppercase", borderRadius:"3px", textDecoration:"none", marginBottom:"12px" }}>
+                      Procéder au paiement · {montantFinal.toLocaleString("fr-FR")} FCFA
+                    </a>
+                  ) : (
+                    <div style={{ padding:"20px", textAlign:"center", background:"rgba(201,169,106,.05)", border:"1px dashed rgba(201,169,106,.2)", borderRadius:"4px", marginBottom:"12px" }}>
+                      <p style={{ color:"#C9A96A", fontSize:".85rem", marginBottom:"8px" }}>Lien de paiement bientôt disponible</p>
+                      <a href="https://wa.me/message/DI23LCDIMS5SF1" target="_blank" rel="noreferrer" style={{ color:"#25D366", fontSize:".82rem", textDecoration:"none" }}>
+                        Contacter Prélia sur WhatsApp
+                      </a>
+                    </div>
+                  )}
+                  <button onClick={confirmerDon}
+                    style={{ width:"100%", padding:"14px", background:"rgba(76,175,80,.1)", color:"#4CAF50", border:"1px solid rgba(76,175,80,.3)", borderRadius:"3px", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".72rem", letterSpacing:".14em", textTransform:"uppercase", cursor:"pointer" }}>
+                    J'ai effectué mon don
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={soumettre}>
