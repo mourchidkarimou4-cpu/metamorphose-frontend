@@ -166,8 +166,8 @@ export default function Actualites() {
                     </Link>
                   </div>
                   {actu.photo && (
-                    <div style={{ overflow:"hidden", minHeight:"280px" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center" }}/>
+                    <div style={{ overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", background:"#0A0A0A" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"auto", objectFit:"contain" }}/>
                     </div>
                   )}
                 </div>
