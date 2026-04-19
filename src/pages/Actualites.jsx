@@ -148,14 +148,8 @@ export default function Actualites() {
             </p>
             <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
               {actus.map((actu, i) => (
-                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
-                  {actu.photo ? (
-                    <div style={{ width:"100%", height:"180px", overflow:"hidden" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-                    </div>
-                  ) : (
-                    <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>
-                  )}
+                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s`, display:"grid", gridTemplateColumns:actu.photo?"1fr 1fr":"1fr" }}>
+                  {!actu.photo && <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>}
                   <div style={{ padding:"28px 24px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"14px" }}>
                       <span style={{ padding:"3px 10px", background:`${actu.color}15`, border:`1px solid ${actu.color}30`, borderRadius:"100px", fontFamily:"'Montserrat',sans-serif", fontSize:".58rem", fontWeight:600, letterSpacing:".14em", textTransform:"uppercase", color:actu.color }}>
@@ -171,6 +165,11 @@ export default function Actualites() {
                       {actu.bouton} →
                     </Link>
                   </div>
+                  {actu.photo && (
+                    <div style={{ overflow:"hidden", minHeight:"280px" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center" }}/>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
