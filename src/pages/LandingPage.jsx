@@ -1555,7 +1555,7 @@ function PreliaTeaser({ get }) {
   );
 }
 
-function Formules({ get, setShowCalc }) {
+function Formules({ get, setShowCalc, setAuthTab }) {
   const formules = [
     {
       code:"F1", label:"ESSENTIELLE", prix:"70 000", valeur:"150 000", economie:"80 000",
@@ -2253,7 +2253,7 @@ export default function LandingPage() {
         <GoldDivider />
         <ApercuTransformations get={get} />
         <GoldDivider />
-        <Formules get={get} setShowCalc={setShowCalc} />
+        <Formules get={get} setShowCalc={setShowCalc} setAuthTab={setAuthTab} />
         <ListeAttente get={get} />
         <Ressources get={get} />
         <CTAFinal get={get} />
