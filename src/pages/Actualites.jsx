@@ -148,7 +148,7 @@ export default function Actualites() {
             </p>
             <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
               {actus.map((actu, i) => (
-                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s`, display:"grid", gridTemplateColumns:actu.photo?"1fr 1fr":"1fr" }}>
+                <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s`, display:"grid", gridTemplateColumns:actu.photo?"1fr 1.5fr":"1fr" }}>
                   {!actu.photo && <div style={{ height:"4px", background:`linear-gradient(90deg,${actu.color},transparent)` }}/>}
                   <div style={{ padding:"28px 24px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"14px" }}>
@@ -166,8 +166,8 @@ export default function Actualites() {
                     </Link>
                   </div>
                   {actu.photo && (
-                    <div style={{ overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", background:"#0A0A0A" }}>
-                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"auto", objectFit:"contain" }}/>
+                    <div style={{ overflow:"hidden", minHeight:"320px" }}>
+                      <img src={actu.photo} alt={actu.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center" }}/>
                     </div>
                   )}
                 </div>
