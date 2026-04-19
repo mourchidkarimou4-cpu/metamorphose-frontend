@@ -1682,9 +1682,9 @@ function Formules({ get, setShowCalc }) {
               {f.ideal && <div style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:f.color, marginBottom:"20px", fontStyle:"italic" }}>Idéal pour : {f.ideal}</div>}
 
               <div style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(248,245,242,.25)", marginBottom:"16px" }}>Places limitées · Inscriptions par vagues</div>
-              <a href="/contact" className={f.featured?"btn-p":"btn-s"} style={{ width:"100%", justifyContent:"center", fontSize:".72rem" }}>
+              <button onClick={() => setAuthTab("inscription")} className={f.featured?"btn-p":"btn-s"} style={{ width:"100%", justifyContent:"center", fontSize:".72rem", cursor:"pointer" }}>
                 Je m'inscris
-              </a>
+              </button>
             </div>
           ))}
         </div>
