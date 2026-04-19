@@ -44,12 +44,24 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
 
   async function sauvegarder() {
     if (!form.titre) { toast('Titre requis', 'error'); return }
-    const fd = new FormData()
-    Object.entries(form).forEach(([k,v]) => { if (v !== null && v !== undefined) fd.append(k, v) })
     const url = editing ? `${API_BASE}/api/evenements/admin/${editing.id}/` : `${API_BASE}/api/evenements/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
-      const res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
+      // Si photo est une URL string (pas un fichier), envoyer en JSON
+      const hasNewFile = form._photoFile instanceof File
+      let res
+      if (hasNewFile) {
+        const fd = new FormData()
+        Object.entries(form).forEach(([k,v]) => {
+          if (k === '_photoFile') fd.append('photo', v)
+          else if (k !== 'photo' && v !== null && v !== undefined) fd.append(k, v)
+        })
+        res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
+      } else {
+        const data = {...form}
+        delete data._photoFile
+        res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}`, 'Content-Type':'application/json' }, body:JSON.stringify(data) })
+      }
       if (res.ok) { toast(editing?'Mis à jour ✓':'Créé ✓', 'success'); closeModal(); load() }
       else toast('Erreur', 'error')
     } catch { toast('Erreur serveur', 'error') }
@@ -181,7 +193,7 @@ function ActualitesAdminView({ api, toast }) {
     try {
       const res = await fetch('https://api.cloudinary.com/v1_1/dp7v6vlgs/image/upload', { method:'POST', body:fd })
       const data = await res.json()
-      if (data.secure_url) { set('photo', data.secure_url); toast('Photo uploadée ✓', 'success') }
+      if (data.secure_url) { set('photo', data.secure_url); set('photo_url', data.secure_url); set('_photoFile', file); toast('Photo uploadée ✓', 'success') }
       else toast('Erreur upload', 'error')
     } catch { toast('Erreur upload', 'error') }
     setUploading(false)
@@ -189,12 +201,22 @@ function ActualitesAdminView({ api, toast }) {
 
   async function sauvegarder() {
     if (!form.titre) { toast('Titre requis', 'error'); return }
-    const fd = new FormData()
-    Object.entries(form).forEach(([k,v]) => { if (v !== null && v !== undefined) fd.append(k, v) })
-    const url = editing ? `/api/evenements/actualites/admin/${editing.id}/` : `/api/evenements/actualites/admin/`
+    const url = editing ? `${API_BASE}/api/evenements/actualites/admin/${editing.id}/` : `${API_BASE}/api/evenements/actualites/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
-      const res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
+      const hasNewFile = form._photoFile instanceof File
+      let res
+      if (hasNewFile) {
+        const fd = new FormData()
+        Object.entries(form).forEach(([k,v]) => {
+          if (k === '_photoFile') fd.append('photo', v)
+          else if (k !== 'photo' && v !== null && v !== undefined) fd.append(k, v)
+        })
+        res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
+      } else {
+        const data = {...form}; delete data._photoFile
+        res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}`, 'Content-Type':'application/json' }, body:JSON.stringify(data) })
+      }
       if (res.ok) { toast(editing?'Mis à jour ✓':'Créé ✓', 'success'); closeModal(); load() }
       else toast('Erreur', 'error')
     } catch { toast('Erreur serveur', 'error') }
