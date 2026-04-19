@@ -137,8 +137,8 @@ export default function AuthModal({ onClose, defaultTab = "inscription" }) {
                   fontSize: ".82rem", color: "rgba(248,245,242,.45)",
                   textAlign: "center", marginBottom: "20px", lineHeight: 1.65,
                 }}>
-                  Choisissez votre formule et envoyez votre demande.<br/>
-                  Prélia vous contacte sous 24–48h.
+                  Choisissez votre formule, remplissez le formulaire<br/>
+                  et procédez au paiement en ligne.
                 </p>
                 <InscriptionForm
                   theme="dark"
