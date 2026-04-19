@@ -157,8 +157,8 @@ export default function Evenements() {
                 <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:"1fr" }}>
                   {/* Image placeholder */}
                   {evt.photo && (
-                    <div style={{ width:"100%", height:"220px", overflow:"hidden" }}>
-                      <img src={evt.photo} alt={evt.titre} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                    <div style={{ width:"100%", height:"280px", overflow:"hidden" }}>
+                      <img src={evt.photo} alt={evt.titre} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
                     </div>
                   )}
                   {!evt.photo && <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badge_color}40,transparent)` }}/>}
