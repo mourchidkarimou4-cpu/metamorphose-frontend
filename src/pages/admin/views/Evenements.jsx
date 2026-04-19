@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-
 const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
-function EvenementsAdminView({ api, toast }) {
+function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
   const [evts,    setEvts]    = useState([])
   const [loading, setLoading] = useState(true)
   const [modal,   setModal]   = useState(false)
@@ -47,7 +46,7 @@ function EvenementsAdminView({ api, toast }) {
     if (!form.titre) { toast('Titre requis', 'error'); return }
     const fd = new FormData()
     Object.entries(form).forEach(([k,v]) => { if (v !== null && v !== undefined) fd.append(k, v) })
-    const url = editing ? `/api/evenements/admin/${editing.id}/` : `/api/evenements/admin/`
+    const url = editing ? `${API_BASE}/api/evenements/admin/${editing.id}/` : `${API_BASE}/api/evenements/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
       const res = await fetch(url, { method, headers:{ 'Authorization':`Bearer ${token}` }, body:fd })
