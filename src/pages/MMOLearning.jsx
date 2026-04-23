@@ -621,16 +621,6 @@ function DetailCours() {
 }
 
 export default function MMOLearning() {
-  const [config, setConfig] = useState({});
-  useEffect(() => {
-    configAPI.public().then(res => {
-      const map = {};
-      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
-      setConfig(map);
-    }).catch(() => {});
-  }, []);
-  function get(cle, fallback='') { return config[cle] || fallback; }
-
   const { slug } = useParams()
   return slug ? <DetailCours /> : <ListeCours />
 }
