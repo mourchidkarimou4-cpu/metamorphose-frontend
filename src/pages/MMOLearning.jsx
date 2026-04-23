@@ -168,6 +168,15 @@ function CarteCours({ cours }) {
 }
 
 function ListeCours() {
+  const [config, setConfig] = useState({});
+  useEffect(() => {
+    configAPI.public().then(res => {
+      const map = {};
+      if (Array.isArray(res.data)) res.data.forEach(i => { map[i.cle] = i.valeur; });
+      setConfig(map);
+    }).catch(() => {});
+  }, []);
+  function get(cle, fallback='') { return config[cle] || fallback; }
   const [cours,        setCours]        = useState([])
   const [categories,   setCategories]   = useState([])
   const [loading,      setLoading]      = useState(true)
