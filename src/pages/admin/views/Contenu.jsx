@@ -404,6 +404,12 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"comm_principes_intro",label:"Intro des principes",        type:"textarea", placeholder:"Pour préserver la qualité…" },
       { cle:"comm_btn",            label:"Texte bouton rejoindre",     type:"text",     placeholder:"Rejoindre la communauté MMO" },
     ],
+    communaute_abos: [
+      { cle:"communaute_lien_elevation",    label:"Lien paiement Abonnement Élévation",    type:"url", placeholder:"https://..." },
+      { cle:"communaute_lien_rayonnement",  label:"Lien paiement Abonnement Rayonnement",  type:"url", placeholder:"https://..." },
+      { cle:"communaute_lien_influence",    label:"Lien paiement Abonnement Influence",    type:"url", placeholder:"https://..." },
+      { cle:"communaute_lien_paiement",     label:"Lien paiement général (fallback)",      type:"url", placeholder:"https://..." },
+    ],
     don: [
       { cle:"don_titre",        label:"Titre page Don",             type:"text",     placeholder:"Soutenir Métamorphose" },
       { cle:"don_intro",        label:"Introduction Don",           type:"textarea", placeholder:"..." },

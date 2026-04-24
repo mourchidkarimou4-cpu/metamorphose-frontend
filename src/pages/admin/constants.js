@@ -31,4 +31,5 @@ export const SECTIONS_CONFIG = [
   { id:"learning",     label:"MMO Learning" },
   { id:"cartes",       label:"Cartes Cadeaux" },
   { id:"communaute",   label:"Communauté" },
+  { id:"communaute_abos", label:"Abonnements Cercle" },
 ];
