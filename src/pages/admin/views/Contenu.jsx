@@ -378,6 +378,11 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"brunch_date",      label:"Date du Brunch",             type:"text",     placeholder:"..." },
       { cle:"brunch_lieu",      label:"Lieu du Brunch",             type:"text",     placeholder:"Cotonou, Bénin" },
       { cle:"brunch_prix",      label:"Prix du Brunch",             type:"text",     placeholder:"15 000 FCFA" },
+      { cle:"brunch_lien_paiement",      label:"Lien paiement Brunch (général)",       type:"url",  placeholder:"https://..." },
+      { cle:"brunch_lien_metamorphosee",  label:"Lien paiement Pass Métamorphosée",    type:"url",  placeholder:"https://..." },
+      { cle:"brunch_lien_decouverte",     label:"Lien paiement Pass Découverte",        type:"url",  placeholder:"https://..." },
+      { cle:"brunch_lien_vip",            label:"Lien paiement Pass VIP",               type:"url",  placeholder:"https://..." },
+      { cle:"brunch_whatsapp_groupe",     label:"Lien groupe WhatsApp Brunch (SECRET)", type:"url",  placeholder:"https://chat.whatsapp.com/..." },
     ],
     learning: [
       { cle:"learning_label",  label:"Label au-dessus du titre",   type:"text",     placeholder:"Méta'Morph'Ose · Académie" },

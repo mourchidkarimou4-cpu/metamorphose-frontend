@@ -7,6 +7,7 @@ import APropos         from './pages/APropos'
 import Temoignages     from './pages/Temoignages'
 import FAQPage         from './pages/FAQ'
 import Brunch          from './pages/Brunch'
+import BrunchSuccess   from './pages/BrunchSuccess'
 import CartesCadeaux   from './pages/CartesCadeaux'
 import Contact         from './pages/Contact'
 import Login           from './pages/auth/Login'
@@ -82,7 +83,7 @@ export default function App() {
         if (map.maintenance_active === '1') setMaintenance(true);
       }
     } catch {}
-    fetch(`${API_BASE}/api/admin/config/public/`)
+    fetch(`${API_BASE}/api/admin/config/public/')
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
         if (!Array.isArray(data)) return;
@@ -108,6 +109,7 @@ export default function App() {
         <Route path="/temoignages"   element={<Temoignages />} />
         <Route path="/faq"           element={<FAQPage />} />
         <Route path="/brunch"        element={<Brunch />} />
+        <Route path="/brunch/success"  element={<BrunchSuccess />} />
         <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
         <Route path="/contact"       element={<Contact />} />
         <Route path="/communaute"    element={<Communaute />} />
