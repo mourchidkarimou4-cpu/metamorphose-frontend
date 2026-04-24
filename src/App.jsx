@@ -112,8 +112,8 @@ export default function App() {
         <Route path="/brunch/success"  element={<BrunchSuccess />} />
         <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
         <Route path="/contact"       element={<Contact />} />
-        <Route path="/communaute"    element={<Communaute />} />
-        <Route path="/communaute/portail" element={<CommunautePortail />} />
+        <Route path="/communaute"         element={<CommunautePortail />} />
+        <Route path="/communaute/ancien"   element={<Communaute />} />
         <Route path="/don"           element={<Don />} />
         <Route path="/store"         element={<Store />} />
         <Route path="/live"          element={<LiveMasterclass />} />
