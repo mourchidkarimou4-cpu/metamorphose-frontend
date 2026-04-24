@@ -86,7 +86,7 @@ export default function App() {
         if (map.maintenance_active === '1') setMaintenance(true);
       }
     } catch {}
-    fetch(`${API_BASE}/api/admin/config/public/')
+    fetch(`${API_BASE}/api/admin/config/public/`)
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
         if (!Array.isArray(data)) return;
