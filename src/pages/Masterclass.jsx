@@ -334,6 +334,7 @@ function FAQMasterclass() {
 
 export default function Masterclass() {
   const [photoPrelia, setPhotoPrelia] = useState("");
+  const [photosTemos, setPhotosTemos] = useState({});
   useEffect(() => {
     configAPI.public()
       .then(r => r.data)
@@ -341,6 +342,9 @@ export default function Masterclass() {
         const map = {};
         if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
         if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
+        const photos = {};
+        [1,2,3,4,5,6,7,8].forEach(i => { if (map[`masterclass_temo_photo_${i}`]) photos[i] = map[`masterclass_temo_photo_${i}`]; });
+        setPhotosTemos(photos);
       })
       .catch(() => {});
   }, []);
@@ -692,7 +696,13 @@ export default function Masterclass() {
                     « {t.texte} »
                   </p>
                   <div style={{ display:"flex", gap:"10px", alignItems:"center" }}>
-                    <div style={{ width:"28px", height:"28px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.3)", flexShrink:0 }}/>
+                    {photosTemos[i+1] ? (
+                      <img src={photosTemos[i+1]} alt={t.nom} style={{ width:"38px", height:"38px", borderRadius:"50%", objectFit:"cover", objectPosition:"center top", border:"1px solid rgba(194,24,91,.3)", flexShrink:0 }}/>
+                    ) : (
+                      <div style={{ width:"38px", height:"38px", borderRadius:"50%", background:"rgba(194,24,91,.2)", border:"1px solid rgba(194,24,91,.3)", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:700, color:"rgba(194,24,91,.8)" }}>{t.nom[0]}</span>
+                      </div>
+                    )}
                     <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, color:"rgba(248,245,242,.6)", textTransform:"uppercase", letterSpacing:".1em" }}>— {t.nom}</p>
                   </div>
                 </div>
