@@ -1,462 +1,599 @@
 import { useState, useEffect, useRef } from "react";
 import usePageBackground from "../hooks/usePageBackground";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+// ── STYLES ────────────────────────────────────────────────────────────────────
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@200;300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap');
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
-    --brun-fonce:#2A1506; --brun-mid:#4A2510; --brun-or:#7A4A1A;
+    --brun:#2A1506; --brun-mid:#4A2510; --brun-or:#7A4A1A;
     --or:#C9A96A; --or-light:#E8D5A8; --or-pale:#F2EBE0;
-    --rose:#C2185B; --rose-light:#EFC7D3;
-    --blanc:#F8F5F2; --blanc-pur:#FFFFFF;
-    --texte:#F2EBE0; --texte-sub:rgba(242,235,224,.6); --texte-muted:rgba(242,235,224,.35);
-    --surface:rgba(255,255,255,.06); --surface-hover:rgba(255,255,255,.1);
-    --border:rgba(201,169,106,.2); --border-hover:rgba(201,169,106,.45);
+    --rose:#C2185B; --rose-pale:rgba(194,24,91,.08);
+    --blanc:#F8F5F2;
+    --texte:#F2EBE0; --texte-sub:rgba(242,235,224,.62); --texte-muted:rgba(242,235,224,.35);
+    --surface:rgba(255,255,255,.055); --surface-h:rgba(255,255,255,.09);
+    --border:rgba(201,169,106,.18); --border-h:rgba(201,169,106,.4);
     --ff-t:'Playfair Display',Georgia,serif;
     --ff-b:'Montserrat',sans-serif;
     --ff-a:'Cormorant Garamond',Georgia,serif;
-    --ease:cubic-bezier(0.4,0,0.2,1);
+    --ease:cubic-bezier(.16,1,.3,1);
   }
   html { scroll-behavior:smooth; }
-  body {
-    background: linear-gradient(160deg, #2A1506 0%, #4A2510 35%, #7A4A1A 65%, #C9A96A 100%);
-    min-height:100vh;
-    color:var(--texte); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; -webkit-font-smoothing:antialiased;
-  }
+  body { background:linear-gradient(160deg,#2A1506 0%,#4A2510 35%,#7A4A1A 65%,#C9A96A 100%); min-height:100vh; color:var(--texte); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; }
 
-  @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
-  @keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
-  @keyframes pulse-rose { 0%,100%{box-shadow:0 0 20px rgba(194,24,91,.2)} 50%{box-shadow:0 0 40px rgba(194,24,91,.45)} }
-  @keyframes spin     { to{transform:rotate(360deg)} }
-  @keyframes orb      { 0%,100%{transform:scale(1);opacity:.06} 50%{transform:scale(1.4);opacity:.12} }
-  @keyframes msgIn    { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
-  @keyframes dot      { 0%,80%,100%{transform:scale(0);opacity:.3} 40%{transform:scale(1);opacity:1} }
-  @keyframes reveal   { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:none} }
-  @keyframes progress { from{width:0} to{width:100%} }
+  @keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+  @keyframes msgIn   { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  @keyframes dot     { 0%,80%,100%{transform:translateY(0);opacity:.3} 40%{transform:translateY(-5px);opacity:1} }
+  @keyframes pulse-or{ 0%,100%{box-shadow:0 0 0 0 rgba(201,169,106,.3)} 60%{box-shadow:0 0 0 10px rgba(201,169,106,0)} }
+  @keyframes reveal  { from{opacity:0;transform:scale(.97) translateY(8px)} to{opacity:1;transform:none} }
+  @keyframes prog    { from{width:0} to{width:100%} }
+  @keyframes spin    { to{transform:rotate(360deg)} }
+  @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
 
-  .aura-page { min-height:100vh; display:flex; flex-direction:column; position:relative; overflow:hidden; }
-
-  .orb { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:0; }
-
-  .navbar {
+  /* ── Navbar ── */
+  .av-nav {
     position:sticky; top:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
     padding:0 40px; height:64px;
-    background:rgba(42,21,6,.75); backdrop-filter:blur(20px);
-    border-bottom:1px solid rgba(201,169,106,.15);
+    background:rgba(42,21,6,.78); backdrop-filter:blur(24px);
+    border-bottom:1px solid rgba(201,169,106,.12);
   }
-  .nav-brand { font-family:var(--ff-t); font-size:1.1rem; color:var(--or-light); text-decoration:none; letter-spacing:.04em; }
-  .nav-back  { font-family:var(--ff-b); font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(248,245,242,.4); text-decoration:none; transition:color .3s; }
-  .nav-back:hover { color:var(--or); }
+  .av-brand { font-family:var(--ff-t); font-size:1.05rem; color:var(--or-light); text-decoration:none; letter-spacing:.04em; }
+  .av-back  { font-family:var(--ff-b); font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:rgba(248,245,242,.35); text-decoration:none; transition:color .3s; }
+  .av-back:hover { color:var(--or); }
 
-  .aura-header {
-    text-align:center; padding:40px 20px 24px;
-    position:relative; z-index:2;
-  }
-  .aura-avatar {
-    width:72px; height:72px; border-radius:50%;
+  /* ── Header ── */
+  .av-header { text-align:center; padding:36px 20px 20px; position:relative; z-index:2; }
+  .av-avatar {
+    width:68px; height:68px; border-radius:50%;
     background:linear-gradient(135deg,var(--brun-or),var(--or));
     display:flex; align-items:center; justify-content:center;
-    margin:0 auto 16px; font-size:1.4rem;
-    box-shadow:0 0 0 1px rgba(201,169,106,.3), 0 8px 32px rgba(201,169,106,.2);
-    animation:pulse-rose 3s ease infinite;
+    margin:0 auto 14px;
+    box-shadow:0 0 0 1px rgba(201,169,106,.28), 0 8px 28px rgba(201,169,106,.18);
+    animation:pulse-or 3.5s ease infinite;
   }
-  .aura-name { font-family:var(--ff-t); font-size:1.4rem; color:var(--or-pale); margin-bottom:4px; }
-  .aura-sub  { font-size:.65rem; letter-spacing:.22em; text-transform:uppercase; color:var(--or); opacity:.8; }
-  .aura-status { display:flex; align-items:center; gap:6px; justify-content:center; margin-top:10px; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:rgba(248,245,242,.35); }
-  .aura-dot { width:6px; height:6px; border-radius:50%; background:#4caf50; animation:pulse-rose 2s ease infinite; box-shadow:0 0 6px #4caf50; }
+  .av-name   { font-family:var(--ff-t); font-size:1.35rem; color:var(--or-pale); margin-bottom:4px; letter-spacing:.02em; }
+  .av-sub    { font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:var(--or); opacity:.75; }
+  .av-status { display:flex; align-items:center; gap:6px; justify-content:center; margin-top:10px; font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; color:rgba(248,245,242,.3); }
+  .av-dot    { width:6px; height:6px; border-radius:50%; background:#4CAF50; box-shadow:0 0 6px #4CAF50; }
 
-  .chat-wrapper { flex:1; display:flex; flex-direction:column; max-width:760px; margin:0 auto; width:100%; padding:0 16px 20px; position:relative; z-index:2; }
+  /* ── Chat wrapper ── */
+  .av-wrap { flex:1; display:flex; flex-direction:column; max-width:760px; margin:0 auto; width:100%; padding:0 16px 20px; position:relative; z-index:2; }
 
-  .messages-area {
+  .av-msgs {
     flex:1; overflow-y:auto; padding:16px 0 8px;
     display:flex; flex-direction:column; gap:14px;
-    scrollbar-width:thin; scrollbar-color:rgba(201,169,106,.15) transparent;
-    min-height:320px; max-height:calc(100vh - 320px);
+    min-height:320px; max-height:calc(100vh - 310px);
+    scrollbar-width:thin; scrollbar-color:rgba(201,169,106,.12) transparent;
   }
-  .messages-area::-webkit-scrollbar { width:3px; }
-  .messages-area::-webkit-scrollbar-thumb { background:rgba(201,169,106,.15); border-radius:2px; }
+  .av-msgs::-webkit-scrollbar { width:3px; }
+  .av-msgs::-webkit-scrollbar-thumb { background:rgba(201,169,106,.12); border-radius:2px; }
 
-  .msg { display:flex; gap:10px; animation:msgIn .4s var(--ease) both; }
-  .msg.user { flex-direction:row-reverse; }
+  /* ── Bulles ── */
+  .av-row { display:flex; gap:10px; animation:msgIn .35s var(--ease) both; }
+  .av-row.user { flex-direction:row-reverse; }
 
-  .msg-avatar {
-    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+  .av-ico {
+    width:32px; height:32px; border-radius:50%; flex-shrink:0; margin-top:3px;
     background:linear-gradient(135deg,var(--brun-or),var(--or));
     display:flex; align-items:center; justify-content:center;
-    font-size:.85rem; margin-top:2px;
   }
-  .msg.user .msg-avatar { background:rgba(201,169,106,.15); border:1px solid rgba(201,169,106,.2); }
+  .av-row.user .av-ico { background:rgba(201,169,106,.12); border:1px solid rgba(201,169,106,.2); }
 
-  .msg-bubble {
-    max-width:75%; padding:13px 17px; border-radius:18px;
-    font-size:.82rem; line-height:1.7; white-space:pre-wrap; word-break:break-word;
+  .av-bub {
+    max-width:76%; padding:13px 17px; border-radius:18px;
+    font-size:.82rem; line-height:1.72; white-space:pre-wrap; word-break:break-word;
   }
-  .msg.aura .msg-bubble {
-    background:rgba(42,21,6,.45); border:1px solid rgba(201,169,106,.18);
-    border-radius:4px 18px 18px 18px; color:var(--texte);
-    backdrop-filter:blur(8px);
-  }
-  .msg.user .msg-bubble {
-    background:var(--rose); color:#fff;
-    border-radius:18px 18px 4px 18px;
-    font-weight:400;
-  }
+  .av-bub.bot  { background:rgba(42,21,6,.5); border:1px solid rgba(201,169,106,.16); border-radius:4px 18px 18px 18px; color:var(--texte); backdrop-filter:blur(10px); }
+  .av-bub.user { background:var(--rose); color:#fff; border-radius:18px 18px 4px 18px; font-weight:400; }
 
-  .typing-indicator { display:flex; gap:5px; padding:14px 17px; background:rgba(42,21,6,.45); border:1px solid rgba(201,169,106,.18); border-radius:4px 18px 18px 18px; width:fit-content; backdrop-filter:blur(8px); }
-  .typing-dot { width:7px; height:7px; border-radius:50%; background:rgba(248,245,242,.4); animation:dot 1.2s ease infinite; }
-  .typing-dot:nth-child(2) { animation-delay:.15s; }
-  .typing-dot:nth-child(3) { animation-delay:.3s; }
+  /* ── Typing ── */
+  .av-typing { display:flex; gap:5px; padding:14px 17px; background:rgba(42,21,6,.5); border:1px solid rgba(201,169,106,.16); border-radius:4px 18px 18px 18px; width:fit-content; backdrop-filter:blur(10px); }
+  .av-typing-dot { width:7px; height:7px; border-radius:50%; background:rgba(248,245,242,.35); animation:dot 1.2s ease infinite; }
+  .av-typing-dot:nth-child(2) { animation-delay:.15s; }
+  .av-typing-dot:nth-child(3) { animation-delay:.3s; }
 
-  .quick-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; padding-left:44px; }
-  .quick-btn {
-    font-family:var(--ff-b); font-size:.68rem; font-weight:500; letter-spacing:.08em;
-    padding:8px 16px; border-radius:20px; cursor:pointer; transition:all .25s;
-    border:1px solid rgba(201,169,106,.35); background:rgba(42,21,6,.4);
+  /* ── Boutons rapides ── */
+  .av-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; padding-left:42px; }
+  .av-btn {
+    font-family:var(--ff-b); font-size:.67rem; font-weight:400; letter-spacing:.08em;
+    padding:9px 18px; border-radius:20px; cursor:pointer; transition:all .22s;
+    border:1px solid var(--border); background:rgba(42,21,6,.45);
     color:var(--or-light); white-space:nowrap; backdrop-filter:blur(6px);
   }
-  .quick-btn:hover { background:rgba(201,169,106,.15); border-color:var(--or); transform:translateY(-1px); }
-  .quick-btn.rose { border-color:rgba(194,24,91,.4); background:rgba(194,24,91,.08); color:var(--rose-light); }
-  .quick-btn.rose:hover { background:rgba(194,24,91,.18); }
+  .av-btn:hover { background:rgba(201,169,106,.12); border-color:var(--or); transform:translateY(-1px); }
+  .av-btn.rose  { border-color:rgba(194,24,91,.35); background:rgba(194,24,91,.07); color:rgba(242,200,215,.9); }
+  .av-btn.rose:hover { background:rgba(194,24,91,.16); border-color:rgba(194,24,91,.6); }
+  .av-btn.ghost { background:transparent; color:rgba(248,245,242,.35); font-size:.62rem; }
 
-  .diag-card {
-    margin:4px 0 0 44px; padding:20px; border-radius:12px;
-    background:rgba(42,21,6,.5); border:1px solid rgba(201,169,106,.2);
-    animation:reveal .4s var(--ease) both; backdrop-filter:blur(8px);
+  /* ── Diagnostic ── */
+  .av-prog-wrap { margin:8px 0 0 42px; }
+  .av-prog-label { font-size:.57rem; letter-spacing:.2em; text-transform:uppercase; color:var(--texte-muted); margin-bottom:6px; }
+  .av-prog-bar { height:2px; background:rgba(201,169,106,.1); border-radius:2px; overflow:hidden; }
+  .av-prog-fill { height:100%; background:linear-gradient(90deg,var(--rose),var(--or)); border-radius:2px; transition:width .5s var(--ease); }
+
+  .av-diag {
+    margin:10px 0 0 42px; padding:20px; border-radius:12px;
+    background:rgba(42,21,6,.52); border:1px solid rgba(201,169,106,.18);
+    animation:reveal .4s var(--ease) both; backdrop-filter:blur(10px);
   }
-  .diag-q { font-family:var(--ff-t); font-size:.95rem; color:var(--blanc); margin-bottom:14px; line-height:1.5; }
-  .diag-opts { display:flex; flex-direction:column; gap:8px; }
-  .diag-opt {
+  .av-diag-q { font-family:var(--ff-t); font-size:.95rem; color:var(--blanc); margin-bottom:14px; line-height:1.5; font-weight:400; }
+  .av-diag-opts { display:flex; flex-direction:column; gap:8px; }
+  .av-diag-opt {
     display:flex; align-items:center; gap:12px; padding:11px 15px; border-radius:8px;
-    border:1px solid rgba(201,169,106,.18); background:rgba(255,255,255,.03);
-    cursor:pointer; transition:all .25s; text-align:left;
+    border:1px solid rgba(201,169,106,.14); background:rgba(255,255,255,.025);
+    cursor:pointer; transition:all .22s; text-align:left;
     font-family:var(--ff-b); font-size:.76rem; color:var(--texte-sub);
   }
-  .diag-opt:hover { border-color:rgba(194,24,91,.4); background:rgba(194,24,91,.07); color:var(--blanc); }
-  .diag-opt-letter { width:24px; height:24px; border-radius:50%; border:1px solid rgba(201,169,106,.4); display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:600; letter-spacing:.08em; color:var(--or); flex-shrink:0; }
+  .av-diag-opt:hover { border-color:rgba(194,24,91,.4); background:rgba(194,24,91,.06); color:var(--blanc); }
+  .av-diag-letter { width:24px; height:24px; border-radius:50%; border:1px solid rgba(201,169,106,.38); display:flex; align-items:center; justify-content:center; font-size:.6rem; font-weight:600; letter-spacing:.08em; color:var(--or); flex-shrink:0; }
 
-  .diag-progress { margin:0 0 16px 44px; }
-  .diag-progress-bar { height:2px; background:rgba(201,169,106,.12); border-radius:2px; overflow:hidden; margin-top:6px; }
-  .diag-progress-fill { height:100%; background:linear-gradient(90deg,var(--rose),var(--or)); border-radius:2px; transition:width .5s var(--ease); }
-  .diag-progress-label { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--texte-muted); }
-
-  .loader-card {
-    margin:4px 0 0 44px; padding:24px; border-radius:12px;
-    background:rgba(42,21,6,.5); border:1px solid rgba(201,169,106,.2);
-    text-align:center; animation:reveal .4s var(--ease) both; backdrop-filter:blur(8px);
+  /* ── Loader ── */
+  .av-loader {
+    margin:10px 0 0 42px; padding:22px; border-radius:12px;
+    background:rgba(42,21,6,.52); border:1px solid rgba(201,169,106,.18);
+    text-align:center; backdrop-filter:blur(10px); animation:reveal .4s var(--ease) both;
   }
-  .loader-spinner { width:36px; height:36px; border:2px solid rgba(194,24,91,.2); border-top-color:var(--rose); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 14px; }
-  .loader-text { font-size:.75rem; letter-spacing:.12em; color:rgba(248,245,242,.4); }
+  .av-loader-bar { height:2px; background:rgba(201,169,106,.1); border-radius:2px; overflow:hidden; margin-bottom:12px; }
+  .av-loader-fill { height:100%; background:linear-gradient(90deg,var(--rose),var(--or),var(--rose)); background-size:200% auto; animation:prog 3.5s linear both; }
+  .av-loader-text { font-size:.65rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(248,245,242,.35); }
 
-  .profil-card {
-    margin:4px 0 0 44px; padding:24px; border-radius:12px;
-    background:rgba(42,21,6,.55); border:1px solid rgba(201,169,106,.25);
+  /* ── Profil ── */
+  .av-profil {
+    margin:10px 0 0 42px; padding:24px; border-radius:12px;
+    background:rgba(42,21,6,.58); border:1px solid rgba(201,169,106,.22);
+    animation:reveal .5s var(--ease) both; backdrop-filter:blur(10px);
+  }
+  .av-profil-tag {
+    display:inline-block; padding:4px 14px; border-radius:20px;
+    background:rgba(194,24,91,.12); border:1px solid rgba(194,24,91,.28);
+    font-size:.57rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color:rgba(242,200,215,.9); margin-bottom:12px;
+  }
+  .av-profil-titre { font-family:var(--ff-t); font-size:1.1rem; color:var(--blanc); margin-bottom:8px; font-weight:600; }
+  .av-profil-accroche { font-family:var(--ff-a); font-style:italic; font-size:.95rem; color:rgba(248,245,242,.72); line-height:1.75; margin-bottom:18px; }
+  .av-profil-bloc { padding:12px 14px; border-radius:8px; background:rgba(255,255,255,.03); border:1px solid rgba(201,169,106,.12); margin-bottom:10px; }
+  .av-profil-bloc:last-child { margin-bottom:0; }
+  .av-profil-bloc-label { font-size:.55rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(201,169,106,.55); margin-bottom:5px; }
+  .av-profil-bloc-text  { font-size:.79rem; color:rgba(248,245,242,.78); line-height:1.68; font-weight:300; }
+
+  /* ── CTA conversion ── */
+  .av-cta {
+    margin-top:12px; padding:16px 18px; border-radius:10px;
+    background:rgba(194,24,91,.07); border:1px solid rgba(194,24,91,.2);
     animation:reveal .5s var(--ease) both;
   }
-  .profil-badge { display:inline-flex; align-items:center; gap:8px; margin-bottom:14px; padding:6px 14px; border-radius:20px; background:rgba(194,24,91,.15); border:1px solid rgba(194,24,91,.3); }
-  .profil-badge-icon { font-size:1.1rem; }
-  .profil-badge-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--rose-light); font-weight:600; }
-  .profil-title { font-family:var(--ff-t); font-size:1.15rem; color:var(--blanc); margin-bottom:10px; }
-  .profil-desc { font-size:.8rem; line-height:1.75; color:rgba(248,245,242,.75); margin-bottom:16px; white-space:pre-wrap; }
-  .profil-key { display:flex; gap:10px; padding:12px; border-radius:8px; background:rgba(201,169,106,.08); border:1px solid rgba(201,169,106,.2); margin-bottom:12px; }
-  .profil-key-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .profil-key-text { font-size:.77rem; color:rgba(248,245,242,.8); line-height:1.6; }
-
-  .input-area {
-    display:flex; gap:10px; align-items:flex-end;
-    padding:14px 0 0; border-top:1px solid rgba(201,169,106,.12);
+  .av-cta-text { font-size:.79rem; color:rgba(248,245,242,.78); line-height:1.6; margin-bottom:12px; }
+  .av-cta-btn {
+    display:inline-block; padding:10px 22px; background:var(--rose); color:#fff; border:none; border-radius:20px;
+    font-family:var(--ff-b); font-size:.65rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; cursor:pointer; transition:all .25s;
   }
-  .input-field {
-    flex:1; background:rgba(42,21,6,.5); border:1px solid rgba(201,169,106,.2);
-    border-radius:24px; padding:12px 18px; color:var(--texte);
+  .av-cta-btn:hover { background:#a01049; transform:translateY(-1px); }
+
+  /* ── Input ── */
+  .av-input-area {
+    display:flex; gap:10px; align-items:flex-end;
+    padding:14px 0 0; border-top:1px solid rgba(201,169,106,.1);
+  }
+  .av-input {
+    flex:1; background:rgba(42,21,6,.52); border:1px solid rgba(201,169,106,.18);
+    border-radius:22px; padding:12px 18px; color:var(--texte);
     font-family:var(--ff-b); font-size:.82rem; resize:none; outline:none;
     transition:border-color .3s; max-height:120px; min-height:44px; line-height:1.5;
+    backdrop-filter:blur(8px);
   }
-  .input-field::placeholder { color:rgba(248,245,242,.25); }
-  .input-field:focus { border-color:rgba(201,169,106,.5); }
+  .av-input::placeholder { color:rgba(248,245,242,.22); }
+  .av-input:focus { border-color:rgba(201,169,106,.45); }
+  .av-input:disabled { opacity:.45; }
 
-  .send-btn {
-    width:44px; height:44px; border-radius:50%; border:none;
+  .av-send {
+    width:44px; height:44px; border-radius:50%; border:none; flex-shrink:0;
     background:var(--rose); color:#fff; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    transition:all .25s; flex-shrink:0; font-size:1rem;
+    transition:all .25s;
   }
-  .send-btn:hover:not(:disabled) { background:#a01049; transform:scale(1.05); }
-  .send-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .av-send:hover:not(:disabled) { background:#a01049; transform:scale(1.06); }
+  .av-send:disabled { opacity:.35; cursor:not-allowed; transform:none; }
 
-  .conv-cta { display:flex; align-items:center; gap:10px; margin-top:14px; padding:14px 16px; border-radius:10px; background:rgba(194,24,91,.08); border:1px solid rgba(194,24,91,.2); animation:reveal .5s var(--ease) both; }
-  .conv-cta-text { flex:1; font-size:.78rem; color:rgba(248,245,242,.8); line-height:1.5; }
-  .conv-cta-btn { font-family:var(--ff-b); font-size:.63rem; letter-spacing:.15em; text-transform:uppercase; padding:9px 18px; border-radius:20px; background:var(--rose); color:#fff; text-decoration:none; white-space:nowrap; transition:all .25s; border:none; cursor:pointer; }
-  .conv-cta-btn:hover { background:#a01049; }
+  .av-page { min-height:100vh; display:flex; flex-direction:column; position:relative; overflow:hidden; }
 
-  @media(max-width:600px){
-    .navbar { padding:0 20px; }
-    .msg-bubble { max-width:88%; font-size:.8rem; }
-    .diag-card, .profil-card, .loader-card { margin-left:0; }
-    .quick-btns { padding-left:0; }
-    .diag-progress { margin-left:0; }
+  @media(max-width:600px) {
+    .av-nav  { padding:0 20px; }
+    .av-bub  { max-width:90%; font-size:.8rem; }
+    .av-diag, .av-profil, .av-loader { margin-left:0; }
+    .av-btns, .av-prog-wrap { padding-left:0; }
   }
 `;
 
-// ── Données des profils ────────────────────────────────────────
-const PROFILS = {
-  A: {
-    icon: "🔥",
-    label: "La Silencieuse",
-    title: "Tu as appris à te faire petite...",
-    desc: "pas parce que tu n'as rien à dire,\nmais parce que tu as douté de la valeur de ta voix. 🌿\n\nAujourd'hui, tu ressens un blocage à t'exprimer, à prendre ta place.",
-    verite: "Ta voix n'est pas trop faible... elle a juste été trop longtemps ignorée.",
-    cle: "Commence par t'exprimer dans des espaces sécurisés — l'écriture, un audio, le miroir. Chaque expression compte.",
-    question: "Quelle est la chose que tu aurais aimé dire récemment, mais que tu as gardée pour toi ?",
-  },
-  B: {
-    icon: "🌪",
-    label: "La Comparée",
-    title: "Tu vis beaucoup à travers le regard des autres...",
-    desc: "et sans t'en rendre compte, tu te diminues. 💔\n\nTu te compares, tu doutes, tu te sens \"moins que\".",
-    verite: "Tu ne manques pas de valeur. Tu manques d'ancrage dans ta propre identité.",
-    cle: "Réduis les sources de comparaison et reconnecte-toi à toi. Chaque jour, note une chose qui te rend unique.",
-    question: "Dans quel domaine tu te compares le plus — et qu'est-ce que ça te coûte vraiment ?",
-  },
-  C: {
-    icon: "⛔",
-    label: "L'Auto-bloquée",
-    title: "Tu sais ce que tu veux...",
-    desc: "mais quelque chose t'empêche de passer à l'action.\n\nEt ça crée frustration, culpabilité et stagnation. 🌫",
-    verite: "Tu n'es pas paresseuse. Tu es freinée par la peur et le doute.",
-    cle: "Arrête de viser parfait. Vise \"fait\". Une seule petite action aujourd'hui suffit à briser le cycle.",
-    question: "Quelle est la chose que tu repousses depuis trop longtemps ?",
-  },
-  D: {
-    icon: "💔",
-    label: "La Déconnectée de son image",
-    title: "Tu as du mal à te voir avec amour...",
-    desc: "et ton regard sur toi est souvent dur, critique.\n\nTu ne te sens pas belle, pas assez, pas alignée. 🌧",
-    verite: "Ce n'est pas ton image qui est le problème... c'est le lien que tu as avec toi-même.",
-    cle: "Chaque jour, trouve UNE chose que tu apprécies chez toi. Commence par là, même si c'est petit.",
-    question: "Quand tu te regardes, qu'est-ce que tu vois en premier ?",
-  },
+// ── SCRIPTS PAR PILIER ────────────────────────────────────────────────────────
+const SCRIPTS = {
+  confidence: [
+    { val:"Ce que tu ressens est plus fréquent que tu ne le penses…\n\nMais la confiance ne se trouve pas, elle se construit.", q:"Dans quelle situation tu doutes le plus de toi en ce moment ?" },
+    { val:"Le doute que tu ressens ne veut pas dire que tu es incapable…\n\nÇa veut juste dire que tu es en train de grandir.", q:"Qu'est-ce qui te met dans cet état ?" },
+    { val:"Tu sais… beaucoup de femmes fortes doutent aussi.\n\nLa différence, c'est qu'elles avancent malgré ça.", q:"Qu'est-ce qui t'empêche d'avancer aujourd'hui ?" },
+    { val:"Et si tu n'avais pas besoin d'être sûre de toi pour commencer ?", q:"Qu'est-ce que tu pourrais faire même avec le doute ?" },
+    { val:"Tu es peut-être plus prête que tu ne le crois.", q:"Qu'est-ce qui te fait penser le contraire ?" },
+    { val:"La confiance se construit dans l'action…\n\npas dans l'attente.", q:"Quelle petite victoire pourrais-tu créer aujourd'hui ?" },
+    { val:"Tu te juges peut-être trop sévèrement.", q:"Que dirais-tu à quelqu'un dans ta situation ?" },
+    { val:"Tu n'as pas besoin d'être parfaite pour avancer.", q:"Qu'est-ce que tu ferais si tu te faisais davantage confiance ?" },
+    { val:"Le regard que tu poses sur toi influence tout.", q:"Comment te parles-tu intérieurement ?" },
+    { val:"Et si tu te faisais confiance, juste un peu plus aujourd'hui ?", q:"Qu'est-ce qui changerait dans ta vie ?" },
+  ],
+  judgment: [
+    { val:"Le regard des autres devient lourd quand il passe avant le tien…", q:"Qu'est-ce que tu n'oses pas faire à cause du regard des autres ?" },
+    { val:"Tu leur donnes peut-être plus de pouvoir qu'ils n'en ont.", q:"Qu'est-ce que tu crains exactement qu'on pense de toi ?" },
+    { val:"Tu ne peux pas contrôler le regard des autres…\n\nmais tu peux choisir le regard que tu poses sur toi.", q:"Comment te vois-tu aujourd'hui ?" },
+    { val:"Vivre pour plaire, c'est s'abandonner petit à petit.", q:"Qu'est-ce que tu fais aujourd'hui juste pour être acceptée ?" },
+    { val:"Et si tu étais libre du regard des autres…\n\nqui serais-tu vraiment ?", q:"Qu'est-ce qui te retient ?" },
+    { val:"Ce que les autres pensent, tu ne peux pas le contrôler.\n\nMais ce que toi tu penses de toi… ça change tout.", q:"Que penses-tu vraiment de toi ?" },
+    { val:"Tu te caches peut-être pour éviter d'être jugée…\n\nmais tu te prives aussi d'être vue.", q:"Est-ce que ça te parle ?" },
+    { val:"Le jugement fait peur… mais il ne définit pas qui tu es.", q:"Qu'est-ce qui te rend unique selon toi ?" },
+    { val:"Tu n'es pas faite pour plaire à tout le monde.\n\nTu es faite pour être toi.", q:"Qu'est-ce qui te bloque encore ?" },
+    { val:"Qu'est-ce que tu ferais si personne ne te regardait ?", q:"Qu'est-ce qui changerait ?" },
+  ],
+  image: [
+    { val:"La beauté commence dans le regard que tu poses sur toi.", q:"Qu'est-ce que tu vois en premier quand tu te regardes ?" },
+    { val:"Ton image extérieure est le reflet de ton monde intérieur.", q:"Comment te sens-tu vraiment à l'intérieur ?" },
+    { val:"Tu n'as pas besoin de changer ton corps…\n\nmais ta perception de toi.", q:"Quelle est la critique que tu te fais le plus ?" },
+    { val:"Et si tu apprenais à te regarder avec douceur ?\n\nComme tu regarderais quelqu'un que tu aimes…", q:"Que te dirais-tu avec bienveillance ?" },
+    { val:"Tu es peut-être plus dure avec toi-même que nécessaire.", q:"Pourquoi es-tu aussi exigeante envers toi ?" },
+    { val:"Se sentir belle, ce n'est pas une question de physique…\n\nc'est une question de perception et d'énergie.", q:"Comment veux-tu te sentir ?" },
+    { val:"Ton corps n'est pas ton ennemi.\n\nC'est ton regard qui peut l'être.", q:"Comment te réconcilies-tu avec toi ?" },
+    { val:"La beauté est une énergie… pas un standard.", q:"Quelle énergie veux-tu dégager ?" },
+    { val:"Et si tu arrêtais de chercher à ressembler…\n\npour commencer à te révéler ?", q:"Qui es-tu vraiment ?" },
+    { val:"Quelle est UNE chose que tu apprécies chez toi, même légèrement ?", q:"Commence par là." },
+  ],
+  comparison: [
+    { val:"La comparaison est un piège silencieux…\n\nelle te fait oublier qui tu es.", q:"À qui te compares-tu le plus ?" },
+    { val:"Tu vois leur résultat…\n\nmais pas leur parcours.", q:"Qu'est-ce que ça change pour toi ?" },
+    { val:"Tu n'es pas en retard…\n\ntu es sur TON chemin.", q:"Qu'est-ce qui est important pour toi sur ce chemin ?" },
+    { val:"Chaque personne avance à son rythme.\n\nLe tien est tout aussi valable.", q:"Qu'est-ce qui te définit vraiment ?" },
+    { val:"La comparaison te diminue.\n\nL'acceptation te libère.", q:"Comment peux-tu commencer à t'accepter ?" },
+    { val:"Et si tu transformais la comparaison en inspiration ?", q:"Qu'est-ce que tu admires chez les autres ?" },
+    { val:"Tu te compares peut-être parce que tu ne vois pas encore ta propre valeur.", q:"Quelles sont tes forces selon toi ?" },
+    { val:"Tu es unique… mais tu te compares à des versions idéalisées.", q:"Qu'est-ce qui te rend unique ?" },
+    { val:"Reviens à toi. Toujours.", q:"Qu'est-ce qui te définit vraiment ?" },
+    { val:"Tu es en construction…\n\net c'est précieux.", q:"Qu'est-ce que tu construis en ce moment ?" },
+  ],
+  procrastination: [
+    { val:"La procrastination cache souvent une peur…\n\npas un manque de volonté.", q:"Qu'est-ce que tu évites vraiment ?" },
+    { val:"Tu n'as pas besoin de tout faire…\n\njuste de commencer.", q:"Par quoi pourrais-tu commencer ?" },
+    { val:"Et si tu faisais juste 10% aujourd'hui ?", q:"Quelle serait cette première action ?" },
+    { val:"Tu attends peut-être le bon moment…\n\nmais il n'existe pas.", q:"Qu'est-ce qui te fait attendre ?" },
+    { val:"Le passage à l'action crée la clarté…\n\npas l'inverse.", q:"Qu'est-ce qui deviendrait plus clair si tu passais à l'action ?" },
+    { val:"Tu veux bien faire… alors tu ne fais pas.\n\nÇa te parle ?", q:"Qu'est-ce que tu repousses en ce moment ?" },
+    { val:"La peur de l'échec te bloque…\n\nmais l'inaction te bloque encore plus.", q:"Qu'est-ce qui pourrait t'arriver si tu essayais ?" },
+    { val:"Tu n'as pas besoin d'être motivée…\n\ntu as besoin d'être engagée.", q:"Envers quoi veux-tu t'engager ?" },
+    { val:"Si tu continues comme ça… où seras-tu dans 6 mois ?", q:"Et si tu commences aujourd'hui, qu'est-ce qui peut changer ?" },
+    { val:"L'action crée la motivation.\n\nPas l'inverse.", q:"Quelle petite action pourrais-tu faire maintenant ?" },
+  ],
+  confusion: [
+    { val:"Ne pas savoir par où commencer, c'est déjà une forme de conscience…\n\nça veut dire que tu cherches.", q:"Qu'est-ce qui te trouble le plus en ce moment ?" },
+    { val:"La confusion précède souvent la clarté.\n\nTu es peut-être sur le point de comprendre quelque chose d'important.", q:"Qu'est-ce qui te pèse en silence ?" },
+    { val:"Tu n'as pas besoin de tout savoir pour avancer.\n\nJuste de commencer quelque part.", q:"Si tu devais mettre des mots sur ce que tu ressens, ce serait quoi ?" },
+  ],
+  neutral: [
+    { val:"Je t'entends.\n\nChaque mot que tu poses est déjà un pas vers toi-même.", q:"Qu'est-ce qui t'amène aujourd'hui ?" },
+    { val:"Ce que tu partages mérite toute ton attention.\n\nPrends le temps de ressentir sans te juger.", q:"Qu'est-ce qui te pèse en ce moment ?" },
+    { val:"Tu n'es pas seule sur ce chemin.\n\nLa transformation commence toujours par ce moment — celui où on ose dire les choses.", q:"Qu'est-ce que tu aimerais changer ?" },
+  ],
 };
 
-// ── Questions du diagnostic ────────────────────────────────────
+// ── QUESTIONS ─────────────────────────────────────────────────────────────────
 const QUESTIONS = [
   {
-    q: "Dans quelle situation tu te sens le plus en difficulté aujourd'hui ?",
-    opts: [
-      { l: "A", t: "Quand je dois m'exprimer ou prendre la parole" },
-      { l: "B", t: "Quand je me compare aux autres" },
-      { l: "C", t: "Quand je dois prendre des décisions importantes" },
-      { l: "D", t: "Quand je me regarde ou pense à mon image" },
+    q:"Dans quelle situation tu te sens le plus en difficulté aujourd'hui ?",
+    opts:[
+      { l:"A", t:"Quand je dois m'exprimer ou prendre la parole" },
+      { l:"B", t:"Quand je me compare aux autres" },
+      { l:"C", t:"Quand je dois prendre des décisions importantes" },
+      { l:"D", t:"Quand je me regarde ou pense à mon image" },
     ],
   },
   {
-    q: "Quelle pensée revient le plus souvent dans ton esprit ?",
-    opts: [
-      { l: "A", t: "\"Je ne suis pas à la hauteur\"" },
-      { l: "B", t: "\"Les autres sont mieux que moi\"" },
-      { l: "C", t: "\"Je vais échouer\"" },
-      { l: "D", t: "\"Je ne suis pas assez bien physiquement\"" },
+    q:"Quelle pensée revient le plus souvent dans ton esprit ?",
+    opts:[
+      { l:"A", t:"\"Je ne suis pas à la hauteur\"" },
+      { l:"B", t:"\"Les autres sont mieux que moi\"" },
+      { l:"C", t:"\"Je vais échouer\"" },
+      { l:"D", t:"\"Je ne suis pas assez bien physiquement\"" },
     ],
   },
   {
-    q: "Quelle émotion te suit le plus en ce moment ?",
-    opts: [
-      { l: "A", t: "Le doute" },
-      { l: "B", t: "L'insécurité" },
-      { l: "C", t: "La peur" },
-      { l: "D", t: "La frustration" },
+    q:"Quelle émotion te suit le plus en ce moment ?",
+    opts:[
+      { l:"A", t:"Le doute" },
+      { l:"B", t:"L'insécurité" },
+      { l:"C", t:"La peur" },
+      { l:"D", t:"La frustration" },
     ],
   },
   {
-    q: "Face à ces situations, tu as tendance à...",
-    opts: [
-      { l: "A", t: "Te taire ou t'effacer" },
-      { l: "B", t: "Te comparer encore plus" },
-      { l: "C", t: "Reporter ou éviter" },
-      { l: "D", t: "Te critiquer intérieurement" },
+    q:"Face à ces situations, tu as tendance à…",
+    opts:[
+      { l:"A", t:"Te taire ou t'effacer" },
+      { l:"B", t:"Te comparer encore plus" },
+      { l:"C", t:"Reporter ou éviter" },
+      { l:"D", t:"Te critiquer intérieurement" },
     ],
   },
   {
-    q: "Au fond de toi, qu'est-ce que tu veux vraiment ?",
-    opts: [
-      { l: "A", t: "Oser m'exprimer librement" },
-      { l: "B", t: "Me sentir légitime et confiante" },
-      { l: "C", t: "Passer à l'action sans peur" },
-      { l: "D", t: "Me sentir belle et alignée avec moi-même" },
+    q:"Au fond de toi, qu'est-ce que tu veux vraiment ?",
+    opts:[
+      { l:"A", t:"Oser m'exprimer librement" },
+      { l:"B", t:"Me sentir légitime et confiante" },
+      { l:"C", t:"Passer à l'action sans peur" },
+      { l:"D", t:"Me sentir belle et alignée avec moi-même" },
     ],
   },
 ];
 
-// ── Calcul du profil dominant ──────────────────────────────────
-function calculerProfil(reponses) {
-  const count = { A: 0, B: 0, C: 0, D: 0 };
-  reponses.forEach(r => { if (count[r] !== undefined) count[r]++; });
-  return Object.entries(count).sort((a, b) => b[1] - a[1])[0][0];
+// ── PROFILS ───────────────────────────────────────────────────────────────────
+const PROFILS = {
+  A: {
+    label:"La Silencieuse",
+    accroche:"Tu as appris à te faire petite… pas parce que tu n'as rien à dire, mais parce que tu as douté de la valeur de ta voix.",
+    blocage:"Un blocage profond à t'exprimer, à prendre ta place, à être entendue.",
+    verite:"Ta voix n'est pas trop faible… elle a juste été trop longtemps ignorée.",
+    cle:"Commence par t'exprimer dans des espaces sécurisés — l'écriture, l'audio, le miroir. Chaque mot exprimé renforce ta présence.",
+    question:"Quelle est la chose que tu aurais aimé dire récemment mais que tu as gardée pour toi ?",
+  },
+  B: {
+    label:"La Comparée",
+    accroche:"Tu vis beaucoup à travers le regard des autres… et sans t'en rendre compte, tu te diminues.",
+    blocage:"La comparaison constante, le doute, la sensation d'être constamment \"moins que\".",
+    verite:"Tu ne manques pas de valeur. Tu manques d'ancrage dans ta propre identité.",
+    cle:"Réduis les sources de comparaison et reconnecte-toi à toi. Ton chemin est unique — et tout aussi précieux.",
+    question:"Dans quel domaine tu te compares le plus ?",
+  },
+  C: {
+    label:"L'Auto-bloquée",
+    accroche:"Tu sais ce que tu veux… mais quelque chose t'empêche de passer à l'action.",
+    blocage:"La frustration, la culpabilité, la stagnation malgré les envies et les projets.",
+    verite:"Tu n'es pas paresseuse. Tu es freinée par la peur et le doute.",
+    cle:"Arrête de viser parfait. Vise \"fait\". Une seule action imparfaite vaut mieux que mille projets parfaits dans ta tête.",
+    question:"Quelle est la chose que tu repousses depuis trop longtemps ?",
+  },
+  D: {
+    label:"La Déconnectée",
+    accroche:"Tu as du mal à te voir avec amour… et ton regard sur toi est souvent dur, critique.",
+    blocage:"Ne pas te sentir belle, pas assez, pas alignée avec toi-même.",
+    verite:"Ce n'est pas ton image qui est le problème… c'est le lien que tu as avec toi-même.",
+    cle:"Chaque jour, trouve UNE chose que tu apprécies chez toi. Commence petit. C'est ainsi que le regard sur soi se transforme.",
+    question:"Quand tu te regardes, qu'est-ce que tu vois en premier ?",
+  },
+};
+
+// ── DÉTECTION D'INTENTION ─────────────────────────────────────────────────────
+function detectIntent(text) {
+  const t = text.toLowerCase();
+  if (/confian|doute|croi|légitim|capable|valeur|mérite|suffis|à la hauteur|prête/.test(t)) return "confidence";
+  if (/regard|jugement|avis|critique|opinion|peur.*autres|plaire|acceptée/.test(t)) return "judgment";
+  if (/belle|image|corps|miroir|physique|apparence|laide|moche|beauté|estime/.test(t)) return "image";
+  if (/compar|mieux que|moins que|elles ont|elles sont|jalou/.test(t)) return "comparison";
+  if (/procrastin|reporte|demain|tarde|plus tard|action|commence|bloqu|paralys|paresse/.test(t)) return "procrastination";
+  if (/sais pas|perdue|comprends pas|quoi faire|comment|aide/.test(t)) return "confusion";
+  return "neutral";
 }
 
-// ── Composant principal ────────────────────────────────────────
+function calculerProfil(reponses) {
+  const count = { A:0, B:0, C:0, D:0 };
+  reponses.forEach(r => { if (count[r] !== undefined) count[r]++; });
+  return Object.entries(count).sort((a,b) => b[1]-a[1])[0][0];
+}
+
+// ── COMPOSANT PRINCIPAL ───────────────────────────────────────────────────────
 export default function Aura() {
   usePageBackground("aura");
-  const [messages, setMessages] = useState([{
-    role: "aura",
-    text: "Bonjour.\n\nJe suis Aura, l'Assistante Intelligente Métamorphose.\n\nJe suis là pour t'aider à mettre des mots sur ce que tu ressens.\n\nDis-moi... qu'est-ce qui t'amène aujourd'hui ?",
-    type: "accueil",
-    extra: null,
-    id: 1,
-  }]);
-  const [input,         setInput]         = useState("");
-  const [isTyping,      setIsTyping]      = useState(false);
-  const [history,       setHistory]       = useState([]);
-  const [phase,         setPhase]         = useState("accueil");   // accueil | chat | diag | loading | profil | deep
-  const [diagStep,      setDiagStep]      = useState(0);
-  const [diagReponses,  setDiagReponses]  = useState([]);
-  const [profil,        setProfil]        = useState(null);
-  const [showCTA,       setShowCTA]       = useState(false);
-  const [echangeCount,  setEchangeCount]  = useState(0);
-  const bottomRef    = useRef(null);
-  const inputRef     = useRef(null);
+  const navigate = useNavigate();
 
-  // ── Auto-scroll ──────────────────────────────────────────────
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping, phase]);
+  const [messages,     setMessages]     = useState([]);
+  const [input,        setInput]        = useState("");
+  const [isTyping,     setIsTyping]     = useState(false);
+  const [phase,        setPhase]        = useState("welcome"); // welcome|chat|pre-diag|diag|loading|profil|post|conversion
+  const [diagStep,     setDiagStep]     = useState(0);
+  const [diagRep,      setDiagRep]      = useState([]);
+  const [profil,       setProfil]       = useState(null);
+  const [exchCount,    setExchCount]    = useState(0);
+  const [diagOffered,  setDiagOffered]  = useState(false);
+  const [convOffered,  setConvOffered]  = useState(false);
 
-  // ── Message d'accueil au montage ─────────────────────────────
-  // Injection du style — séparée du message pour éviter les conflits StrictMode
+  const memory    = useRef({ intent:null, keyPhrase:null });
+  const scriptIdx = useRef({ confidence:0, judgment:0, image:0, comparison:0, procrastination:0, confusion:0, neutral:0 });
+  const bottomRef = useRef(null);
+
+  const scroll = () => setTimeout(() => bottomRef.current?.scrollIntoView({ behavior:"smooth" }), 60);
+
+  // Injection CSS
   useEffect(() => {
-    const styleId = "aura-styles";
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement("style");
-      style.id = styleId;
-      style.textContent = STYLES;
-      document.head.appendChild(style);
+    const id = "aura-v3-styles";
+    if (!document.getElementById(id)) {
+      const s = document.createElement("style");
+      s.id = id; s.textContent = STYLES;
+      document.head.appendChild(s);
     }
-    return () => {
-      const s = document.getElementById(styleId);
-      if (s) s.remove();
-    };
+    return () => { document.getElementById(id)?.remove(); };
   }, []);
 
-
-
-  // ── Ajouter un message d'Aura ─────────────────────────────────
-  function addAuraMessage(text, type = "text", extra = null) {
-    setMessages(prev => [...prev, { role: "aura", text, type, extra, id: Date.now() + Math.random() }]);
+  function addMsg(role, content, extra = {}) {
+    setMessages(prev => [...prev, { role, content, id:Date.now()+Math.random(), ...extra }]);
+    scroll();
   }
 
-  // ── Ajouter un message utilisateur ───────────────────────────
-  function addUserMessage(text) {
-    setMessages(prev => [...prev, { role: "user", text, id: Date.now() + Math.random() }]);
-  }
+  const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-  // ── Choix rapides initiaux ────────────────────────────────────
-  const CHOIX_ACCUEIL = [
-    "Manque de confiance",
-    "Peur du regard des autres",
-    "Problème d'image",
-    "Je ne sais pas exactement",
-  ];
-
-  // ── Réponse aux choix rapides d'accueil ──────────────────────
-  async function onChoixAccueil(choix) {
-    addUserMessage(choix);
-    setPhase("chat");
+  async function showTyping(ms = 1300) {
     setIsTyping(true);
-    await delay(1400);
+    await delay(ms);
     setIsTyping(false);
-    const rep = `Merci de me l'avoir dit 💖\n\nTu sais... tu es loin d'être la seule à ressentir ça.\nMais chaque blocage a une racine précise.\n\nEt si on identifiait la tienne ensemble ?`;
-    addAuraMessage(rep, "chat_propose");
-    setHistory(prev => [...prev, { role: "user", content: choix }, { role: "assistant", content: rep }]);
   }
 
-  // ── Proposer le diagnostic ────────────────────────────────────
-  function onAccepterDiag() {
-    addUserMessage("Oui, je veux comprendre");
-    setPhase("diag");
-    setDiagStep(0);
-    setDiagReponses([]);
-    setTimeout(() => {
-      addAuraMessage("Je vais te poser 5 questions pour identifier précisément ce qui te freine... 💫\n\nRéponds avec ce qui te ressemble le plus. Il n'y a pas de bonne ou mauvaise réponse.", "diag_intro");
-    }, 400);
+  function getScript(intent) {
+    const pool = SCRIPTS[intent] || SCRIPTS.neutral;
+    const idx  = scriptIdx.current[intent] || 0;
+    const item = pool[idx % pool.length];
+    scriptIdx.current[intent] = idx + 1;
+    return item;
   }
 
-  // ── Répondre à une question du diagnostic ────────────────────
-  async function onDiagReponse(lettre, texte) {
-    addUserMessage(texte);
-    const nouvellesReponses = [...diagReponses, lettre];
-    setDiagReponses(nouvellesReponses);
+  // Init
+  useEffect(() => {
+    if (messages.length > 0) return;
+    (async () => {
+      await showTyping(900);
+      addMsg("aura", "Je sens que tu veux évoluer… mais qu'il y a quelque chose qui te freine encore.");
+      await showTyping(1200);
+      addMsg("aura", "Et si on mettait des mots dessus ?\n\nJe peux t'aider à identifier ce qui bloque vraiment ta confiance et ton épanouissement.\n\nÇa ne prend qu'une minute.", { type:"welcome" });
+    })();
+  }, []);
 
-    if (diagStep < QUESTIONS.length - 1) {
-      setIsTyping(true);
-      await delay(800);
-      setIsTyping(false);
-      const feedbacks = [
-        "Je vois... c'est important ce que tu viens de partager 🌿",
-        "Je comprends... ça demande du courage de l'admettre 💖",
-        "Merci pour cette honnêteté avec toi-même 💫",
-        "Je t'entends... et ça fait sens 🌸",
-      ];
-      const feedback = feedbacks[diagStep % feedbacks.length];
-      addAuraMessage(feedback, "diag_feedback");
-      setDiagStep(diagStep + 1);
+  // ── Choix accueil ────────────────────────────────────────────
+  async function onWelcome(v) {
+    if (v === "non") {
+      addMsg("aura", "Je suis là quand tu seras prête. Tu peux me parler à tout moment.");
+      setPhase("chat");
+      return;
+    }
+    addMsg("user", "Oui, je suis prête.");
+    await showTyping(1000);
+    addMsg("aura", "Parfait.\n\nDis-moi… qu'est-ce qui t'amène aujourd'hui ?", { type:"theme" });
+    setPhase("chat");
+  }
+
+  async function onTheme(v) {
+    memory.current.intent = v;
+    const labels = { confidence:"Manque de confiance en moi", judgment:"Peur du regard des autres", image:"Problème d'image / estime de soi", confusion:"Je ne sais pas exactement" };
+    addMsg("user", labels[v] || v);
+    await showTyping(1100);
+    addMsg("aura", "Merci de me l'avoir dit.");
+    await showTyping(1000);
+    const script = getScript(v);
+    addMsg("aura", script.val);
+    await showTyping(900);
+    addMsg("aura", script.q);
+    setExchCount(1);
+    setPhase("free");
+  }
+
+  // ── Proposition diagnostic ───────────────────────────────────
+  async function onPreDiag(v) {
+    if (v === "oui") {
+      addMsg("user", "Oui, je veux comprendre.");
+      await showTyping(900);
+      addMsg("aura", "Je vais te poser 5 questions.\n\nRéponds selon ce qui te correspond le mieux. Il n'y a pas de bonne ou mauvaise réponse.");
+      await showTyping(1000);
+      addMsg("aura", QUESTIONS[0].q, { type:"diag", step:0 });
+      setPhase("diag");
+      setDiagStep(0);
+      setDiagRep([]);
     } else {
-      // Dernière question — lancer le chargement
-      setPhase("loading");
-      setIsTyping(true);
-      await delay(500);
-      setIsTyping(false);
-      addAuraMessage("Merci pour tes réponses...\nJe vais analyser ce que tu m'as partagé... 💫", "loading");
-      await delay(3000);
-      const profilCode = calculerProfil(nouvellesReponses);
-      setProfil(profilCode);
-      setPhase("profil");
-      addAuraMessage("", "profil", PROFILS[profilCode]);
+      addMsg("user", "Non, continuons à discuter.");
+      await showTyping(800);
+      addMsg("aura", "C'est tout à fait normal. Je suis là.");
+      setPhase("free");
     }
   }
 
-  // ── Après le profil — approfondissement ──────────────────────
-  async function onApprofondirProfil() {
-    addUserMessage("Je veux aller plus loin");
-    setPhase("deep");
-    setIsTyping(true);
-    await delay(1600);
-    setIsTyping(false);
-    const profilData = PROFILS[profil];
-    const rep = `Ce que tu vis ne date pas d'aujourd'hui... 🌿\n\nSouvent, ça vient d'expériences passées ou de schémas que tu as intégrés sans t'en rendre compte.\n\n${profilData.question}`;
-    addAuraMessage(rep);
-    setHistory(prev => [...prev, { role: "assistant", content: rep }]);
-    setEchangeCount(1);
+  // ── Réponse diagnostic ───────────────────────────────────────
+  async function onDiagRep(lettre, texte) {
+    addMsg("user", texte);
+    const newRep = [...diagRep, lettre];
+    setDiagRep(newRep);
+
+    const micro = ["Je note.", "Je comprends.", "Merci pour ta sincérité.", "C'est important.", "Je t'entends."];
+    await showTyping(900);
+    addMsg("aura", micro[diagStep % micro.length]);
+
+    if (diagStep < 4) {
+      await showTyping(1000);
+      addMsg("aura", QUESTIONS[diagStep+1].q, { type:"diag", step:diagStep+1 });
+      setDiagStep(diagStep+1);
+    } else {
+      setPhase("loading");
+      await showTyping(700);
+      addMsg("aura", "Merci pour tes réponses…\n\nJe vais analyser ce que tu m'as partagé.", { type:"loading" });
+      setTimeout(async () => {
+        const code = calculerProfil(newRep);
+        const p    = PROFILS[code];
+        setProfil(code);
+        setPhase("profil");
+        addMsg("aura", "", { type:"profil", profil:p });
+        await showTyping(1400);
+        addMsg("aura", p.question);
+        await showTyping(1100);
+        addMsg("aura", "Ce que tu vis n'est pas une fatalité…\n\nC'est exactement le type de transformation que j'accompagne en profondeur dans Métamorphose.", { type:"post-profil" });
+      }, 3600);
+    }
   }
 
-  // ── Envoi d'un message libre ──────────────────────────────────
+  // ── Après profil ─────────────────────────────────────────────
+  async function onPostProfil(v) {
+    if (v === "cta") { navigate("/programme"); return; }
+    if (v === "approfondir") {
+      addMsg("user", "Comprendre davantage mon blocage.");
+      await showTyping(1200);
+      addMsg("aura", "Ce que tu vis ne date pas d'aujourd'hui…\n\nSouvent, ça vient d'expériences passées ou de schémas que tu as intégrés sans t'en rendre compte.");
+      await showTyping(1400);
+      addMsg("aura", "Est-ce que tu te souviens d'un moment où tu as commencé à douter de toi ?");
+      setPhase("free");
+    } else {
+      addMsg("user", "Continuer à discuter.");
+      await showTyping(800);
+      addMsg("aura", "Avec plaisir. Dis-moi… qu'est-ce qui te pèse encore ?");
+      setPhase("free");
+    }
+  }
+
+  // ── Conversion ───────────────────────────────────────────────
+  async function onConversion(v) {
+    if (v === "programme") { navigate("/programme"); return; }
+    addMsg("user", "Continuer à discuter.");
+    await showTyping(800);
+    addMsg("aura", "Dis-moi… qu'est-ce qui te pèse encore ?");
+    setPhase("free");
+  }
+
+  // ── Envoi message libre ──────────────────────────────────────
   async function onSend() {
     const txt = input.trim();
     if (!txt || isTyping) return;
     setInput("");
-    addUserMessage(txt);
+    addMsg("user", txt);
 
-    const newHistory = [...history, { role: "user", content: txt }];
-    setHistory(newHistory);
-    setIsTyping(true);
+    const intent = detectIntent(txt);
+    if (intent !== "neutral") memory.current.intent = intent;
+    if (txt.length < 80) memory.current.keyPhrase = txt;
 
-    // Réponse locale — flow guidé sans IA externe
-    await delay(900);
-    setIsTyping(false);
+    const newCount = exchCount + 1;
+    setExchCount(newCount);
 
-    const reponsesLibres = [
-      "Merci de me partager cela. 💛\n\nChaque mot que tu poses est déjà un pas vers toi-même.\n\nVeux-tu qu'on explore ensemble ce que tu ressens ?",
-      "Je t'entends... et ce que tu traverses mérite toute ton attention. 🌿\n\nSouvent, ce qu'on n'arrive pas à nommer, c'est ce qui nous pèse le plus.",
-      "Tu n'es pas seule dans ce chemin. 💖\n\nLa transformation commence toujours par ce moment — celui où on ose dire les choses.",
-      "Ce que tu partages est précieux. ✦\n\nPrend le temps de ressentir sans te juger. C'est déjà une forme de courage.",
-    ];
-    const idx = Math.floor(Math.random() * reponsesLibres.length);
-    addAuraMessage(reponsesLibres[idx]);
+    const currentIntent = memory.current.intent || intent;
+    const script = getScript(currentIntent);
+    const useRef  = memory.current.keyPhrase && newCount > 1 && Math.random() > 0.55;
+    const val     = useRef ? `Tu m'as dit "${memory.current.keyPhrase}"…\n\n${script.val}` : script.val;
 
-    const newCount = echangeCount + 1;
-    setEchangeCount(newCount);
-    if (newCount >= 2 && !showCTA) {
-      setTimeout(() => setShowCTA(true), 1000);
+    await showTyping(1200 + Math.random()*600);
+    addMsg("aura", val);
+    await showTyping(900);
+    addMsg("aura", script.q);
+
+    // Proposer diagnostic
+    if (newCount >= 2 && !diagOffered) {
+      setDiagOffered(true);
+      await showTyping(1100);
+      addMsg("aura", "Si tu veux, je peux t'aider à identifier précisément ce qui te bloque…\n\nJ'ai un diagnostic rapide qui peut t'apporter beaucoup de clarté.", { type:"pre-diag" });
+      setPhase("pre-diag");
+      return;
+    }
+
+    // Conversion subtile
+    if (newCount >= 4 && !convOffered) {
+      setConvOffered(true);
+      await showTyping(1200);
+      addMsg("aura", "Tu sais…\n\nce que tu ressens, beaucoup de femmes le vivent en silence.\n\nMais certaines décident de ne plus rester bloquées.\n\nC'est exactement pour ça que Métamorphose existe — pour t'aider à te reconstruire, te révéler et t'assumer pleinement.", { type:"conversion" });
+      setPhase("conversion");
     }
   }
 
@@ -464,30 +601,61 @@ export default function Aura() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); }
   }
 
-  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-  // ── Rendu des messages ────────────────────────────────────────
-  function renderMessage(msg) {
+  // ── Rendu messages ────────────────────────────────────────────
+  function renderMsg(msg) {
     if (msg.role === "user") {
       return (
-        <div key={msg.id} className="msg user">
-          <div className="msg-avatar">V</div>
-          <div className="msg-bubble">{msg.text}</div>
+        <div key={msg.id} className="av-row user">
+          <div className="av-ico">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,106,.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div className="av-bub user">{msg.content}</div>
         </div>
       );
     }
 
-    // Messages spéciaux Aura
-    if (msg.type === "accueil") {
+    const Avatar = () => (
+      <div className="av-ico">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(42,21,6,.8)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </div>
+    );
+
+    // Message d'accueil
+    if (msg.type === "welcome") {
       return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="msg-bubble">{msg.text}</div>
-            {phase === "accueil" && (
-              <div className="quick-btns" style={{ marginTop: 10 }}>
-                {CHOIX_ACCUEIL.map(c => (
-                  <button key={c} className="quick-btn" onClick={() => onChoixAccueil(c)}>{c}</button>
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
+            {phase === "welcome" && (
+              <div className="av-btns">
+                <button className="av-btn rose" onClick={() => onWelcome("oui")}>Oui, je suis prête</button>
+                <button className="av-btn ghost" onClick={() => onWelcome("non")}>Pas maintenant</button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Choix thématiques
+    if (msg.type === "theme") {
+      return (
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
+            {phase === "chat" && (
+              <div className="av-btns" style={{ flexDirection:"column", alignItems:"flex-start" }}>
+                {[
+                  { v:"confidence", t:"Manque de confiance en moi" },
+                  { v:"judgment",   t:"Peur du regard des autres" },
+                  { v:"image",      t:"Problème d'image / estime de soi" },
+                  { v:"confusion",  t:"Je ne sais pas exactement" },
+                ].map(c => (
+                  <button key={c.v} className="av-btn" onClick={() => onTheme(c.v)}>{c.t}</button>
                 ))}
               </div>
             )}
@@ -496,16 +664,17 @@ export default function Aura() {
       );
     }
 
-    if (msg.type === "chat_propose") {
+    // Proposition diagnostic
+    if (msg.type === "pre-diag") {
       return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="msg-bubble">{msg.text}</div>
-            {phase === "chat" && (
-              <div className="quick-btns" style={{ marginTop: 10 }}>
-                <button className="quick-btn rose" onClick={onAccepterDiag}>Oui, je veux comprendre</button>
-                <button className="quick-btn" onClick={() => { setPhase("free"); addUserMessage("Je préfère discuter librement"); }}>Pas maintenant</button>
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
+            {phase === "pre-diag" && (
+              <div className="av-btns">
+                <button className="av-btn rose" onClick={() => onPreDiag("oui")}>Oui, je veux comprendre</button>
+                <button className="av-btn ghost" onClick={() => onPreDiag("non")}>Non, continuons à discuter</button>
               </div>
             )}
           </div>
@@ -513,40 +682,50 @@ export default function Aura() {
       );
     }
 
-    if (msg.type === "diag_intro") {
+    // Question diagnostic
+    if (msg.type === "diag") {
+      const q = QUESTIONS[msg.step];
+      const pct = Math.round((msg.step / QUESTIONS.length) * 100);
       return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="msg-bubble">{msg.text}</div>
-            {phase === "diag" && diagStep === 0 && renderDiagQuestion(0)}
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
+            {phase === "diag" && diagStep === msg.step && (
+              <div>
+                <div className="av-prog-wrap">
+                  <div className="av-prog-label">Question {msg.step+1} sur {QUESTIONS.length}</div>
+                  <div className="av-prog-bar"><div className="av-prog-fill" style={{ width:`${pct}%` }}/></div>
+                </div>
+                <div className="av-diag">
+                  <div className="av-diag-q">{q.q}</div>
+                  <div className="av-diag-opts">
+                    {q.opts.map(o => (
+                      <button key={o.l} className="av-diag-opt" onClick={() => onDiagRep(o.l, o.t)}>
+                        <span className="av-diag-letter">{o.l}</span>
+                        {o.t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );
     }
 
-    if (msg.type === "diag_feedback") {
-      return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="msg-bubble">{msg.text}</div>
-            {phase === "diag" && msg === messages.filter(m => m.type === "diag_feedback").slice(-1)[0] && renderDiagQuestion(diagStep)}
-          </div>
-        </div>
-      );
-    }
-
+    // Loader
     if (msg.type === "loading") {
       return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="msg-bubble">{msg.text}</div>
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
             {phase === "loading" && (
-              <div className="loader-card">
-                <div className="loader-spinner" />
-                <div className="loader-text">Analyse en cours...</div>
+              <div className="av-loader">
+                <div className="av-loader-bar"><div className="av-loader-fill"/></div>
+                <div className="av-loader-text">Analyse de ton profil en cours…</div>
               </div>
             )}
           </div>
@@ -554,32 +733,47 @@ export default function Aura() {
       );
     }
 
-    if (msg.type === "profil" && msg.extra) {
-      const p = msg.extra;
+    // Profil
+    if (msg.type === "profil" && msg.profil) {
+      const p = msg.profil;
       return (
-        <div key={msg.id} className="msg aura">
-          <div className="msg-avatar">A</div>
-          <div style={{ flex: 1 }}>
-            <div className="profil-card">
-              <div className="profil-badge">
-                <span className="profil-badge-icon">{p.icon}</span>
-                <span className="profil-badge-label">Ton profil : {p.label}</span>
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-profil">
+              <div className="av-profil-tag">Ton profil</div>
+              <div className="av-profil-titre">{p.label}</div>
+              <div className="av-profil-accroche">{p.accroche}</div>
+              <div className="av-profil-bloc">
+                <div className="av-profil-bloc-label">Ce qui te bloque</div>
+                <div className="av-profil-bloc-text">{p.blocage}</div>
               </div>
-              <div className="profil-title">{p.title}</div>
-              <div className="profil-desc">{p.desc}</div>
-              <div className="profil-key">
-                <span className="profil-key-icon">💡</span>
-                <span className="profil-key-text"><strong>Vérité :</strong> {p.verite}</span>
+              <div className="av-profil-bloc">
+                <div className="av-profil-bloc-label">La vérité</div>
+                <div className="av-profil-bloc-text">{p.verite}</div>
               </div>
-              <div className="profil-key">
-                <span className="profil-key-icon">✨</span>
-                <span className="profil-key-text"><strong>Première clé :</strong> {p.cle}</span>
+              <div className="av-profil-bloc">
+                <div className="av-profil-bloc-label">Ta première clé</div>
+                <div className="av-profil-bloc-text">{p.cle}</div>
               </div>
             </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Boutons post-profil
+    if (msg.type === "post-profil") {
+      return (
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
             {phase === "profil" && (
-              <div className="quick-btns" style={{ marginTop: 12, paddingLeft: 0 }}>
-                <button className="quick-btn rose" onClick={onApprofondirProfil}>Je veux aller plus loin</button>
-                <button className="quick-btn" onClick={() => { setPhase("free"); setEchangeCount(0); }}>Continuer à discuter</button>
+              <div className="av-btns" style={{ flexDirection:"column", alignItems:"flex-start" }}>
+                <button className="av-btn rose" onClick={() => onPostProfil("cta")}>Je veux commencer ma transformation</button>
+                <button className="av-btn" onClick={() => onPostProfil("approfondir")}>Comprendre davantage mon blocage</button>
+                <button className="av-btn ghost" onClick={() => onPostProfil("chat")}>Continuer à discuter</button>
               </div>
             )}
           </div>
@@ -587,110 +781,97 @@ export default function Aura() {
       );
     }
 
-    // Message texte standard d'Aura
+    // Conversion
+    if (msg.type === "conversion") {
+      return (
+        <div key={msg.id} className="av-row">
+          <Avatar/>
+          <div style={{ flex:1 }}>
+            <div className="av-bub bot">{msg.content}</div>
+            {phase === "conversion" && (
+              <div className="av-btns">
+                <button className="av-btn rose" onClick={() => onConversion("programme")}>Découvrir Métamorphose</button>
+                <button className="av-btn ghost" onClick={() => onConversion("chat")}>Continuer à discuter</button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Bulle standard
     return (
-      <div key={msg.id} className="msg aura">
-        <div className="msg-avatar">A</div>
-        <div className="msg-bubble">{msg.text}</div>
+      <div key={msg.id} className="av-row">
+        <Avatar/>
+        <div className="av-bub bot" style={{ whiteSpace:"pre-line" }}>{msg.content}</div>
       </div>
     );
   }
 
-  // ── Rendu d'une question du diagnostic ────────────────────────
-  function renderDiagQuestion(step) {
-    if (step >= QUESTIONS.length) return null;
-    const q = QUESTIONS[step];
-    const pct = Math.round((step / QUESTIONS.length) * 100);
-    return (
-      <div style={{ marginTop: 12 }}>
-        <div className="diag-progress">
-          <div className="diag-progress-label">Question {step + 1} sur {QUESTIONS.length}</div>
-          <div className="diag-progress-bar">
-            <div className="diag-progress-fill" style={{ width: `${pct}%` }} />
-          </div>
-        </div>
-        <div className="diag-card">
-          <div className="diag-q">{q.q}</div>
-          <div className="diag-opts">
-            {q.opts.map(opt => (
-              <button key={opt.l} className="diag-opt" onClick={() => onDiagReponse(opt.l, opt.t)}>
-                <span className="diag-opt-letter">{opt.l}</span>
-                {opt.t}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const canType = phase === "free" || phase === "deep" || (phase === "chat" && echangeCount > 0);
+  const canType = ["free","post","post-result"].includes(phase) ||
+    (phase === "pre-diag" && diagOffered) ||
+    (phase === "conversion" && convOffered);
 
   return (
-    <div className="aura-page">
+    <div className="av-page">
 
-
-      {/* Navbar */}
-      <nav className="navbar">
-        <Link to="/" className="nav-brand">Méta'Morph'Ose</Link>
-        <Link to="/" className="nav-back">Retour au site</Link>
+      <nav className="av-nav">
+        <Link to="/" className="av-brand">
+          <span style={{ color:"#F8F5F2" }}>Méta'</span>
+          <span style={{ color:"#C9A96A" }}>Morph'</span>
+          <span style={{ color:"#C2185B" }}>Ose</span>
+        </Link>
+        <Link to="/" className="av-back">Retour au site</Link>
       </nav>
 
-      {/* Header Aura */}
-      <div className="aura-header">
-        <div className="aura-avatar">A</div>
-        <div className="aura-name">Aura Métamorphose</div>
-        <div className="aura-sub">Assistante de transformation intérieure</div>
-        <div className="aura-status">
-          <div className="aura-dot" />
+      <div className="av-header">
+        <div className="av-avatar">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(42,21,6,.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </div>
+        <div className="av-name">Aura Métamorphose</div>
+        <div className="av-sub">Assistante de transformation intérieure</div>
+        <div className="av-status">
+          <div className="av-dot"/>
           Disponible 24h/24
         </div>
       </div>
 
-      {/* Zone de chat */}
-      <div className="chat-wrapper">
-        <div className="messages-area">
-          {messages.map(renderMessage)}
+      <div className="av-wrap">
+        <div className="av-msgs">
+          {messages.map(renderMsg)}
 
-          {/* Indicateur de frappe */}
           {isTyping && (
-            <div className="msg aura">
-              <div className="msg-avatar">A</div>
-              <div className="typing-indicator">
-                <div className="typing-dot" />
-                <div className="typing-dot" />
-                <div className="typing-dot" />
+            <div className="av-row">
+              <div className="av-ico">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(42,21,6,.8)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+              </div>
+              <div className="av-typing">
+                <div className="av-typing-dot"/><div className="av-typing-dot"/><div className="av-typing-dot"/>
               </div>
             </div>
           )}
 
-          {/* CTA de conversion douce */}
-          {showCTA && (
-            <div className="conv-cta">
-              <div className="conv-cta-text">
-                Ce que tu vis... c'est exactement ce que Métamorphose accompagne en profondeur. 🌸
-              </div>
-              <Link to="/contact" className="conv-cta-btn">Découvrir le programme</Link>
-            </div>
-          )}
-
-          <div ref={bottomRef} />
+          <div ref={bottomRef}/>
         </div>
 
-        {/* Zone de saisie */}
-        <div className="input-area">
+        <div className="av-input-area">
           <textarea
-            ref={inputRef}
-            className="input-field"
-            placeholder={canType ? "Écris ce que tu ressens..." : "Sélectionne une option ci-dessus..."}
+            className="av-input"
+            placeholder={canType ? "Écris ce que tu ressens…" : "Sélectionne une option ci-dessus…"}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={onKeyDown}
             disabled={!canType || isTyping}
             rows={1}
           />
-          <button className="send-btn" onClick={onSend} disabled={!canType || !input.trim() || isTyping}>
-            ➤
+          <button className="av-send" onClick={onSend} disabled={!canType || !input.trim() || isTyping}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
           </button>
         </div>
       </div>
