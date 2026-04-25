@@ -68,18 +68,6 @@ export default function PaiementPage() {
       <style>{STYLES}</style>
       <div style={{ background:"#0A0A0A", minHeight:"100vh", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif" }}>
 
-        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
-              <span style={{color:"#F8F5F2"}}>Méta'</span>
-              <span style={{color:"#C9A96A"}}>Morph'</span>
-              <span style={{color:"#C2185B"}}>Ose</span>
-            </span>
-          </Link>
-          <Link to="/dashboard" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".65rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>
-            Mon espace
-          </Link>
-        </nav>
 
         <div style={{ maxWidth:"680px", margin:"0 auto", padding:"48px 24px" }}>
           <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".28em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px", animation:"fadeUp .6s both" }}>

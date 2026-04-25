@@ -114,17 +114,6 @@ export default function Don() {
       <style>{STYLES}</style>
       <div style={{ background:"#0A0A0A", color:"#F8F5F2", minHeight:"100vh" }}>
 
-        {/* Nav */}
-        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.95)", backdropFilter:"blur(20px)", zIndex:100 }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
-              <span style={{color:"#F8F5F2"}}>Meta'</span>
-              <span style={{color:"#C9A96A"}}>Morph'</span>
-              <span style={{color:"#C2185B"}}>Ose</span>
-            </span>
-          </Link>
-          <Link to="/" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Accueil</Link>
-        </nav>
 
         {/* Hero */}
         <section style={{ padding:"100px 24px 72px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#110d09)", position:"relative", overflow:"hidden" }}>

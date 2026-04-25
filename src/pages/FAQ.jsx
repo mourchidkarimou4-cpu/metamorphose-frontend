@@ -85,19 +85,6 @@ export default function FAQPage() {
       <style>{STYLES}</style>
       <div style={{ background:"#0A0A0A", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
 
-        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.95)", backdropFilter:"blur(20px)", zIndex:100 }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
-              <span style={{color:"#F8F5F2"}}>Meta'</span>
-              <span style={{color:"#C9A96A"}}>Morph'</span>
-              <span style={{color:"#C2185B"}}>Ose</span>
-            </span>
-          </Link>
-          <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
-            <Link to="/" style={{ fontFamily:"'Montserrat'", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Accueil</Link>
-            <Link to="/contact" style={{ fontFamily:"'Montserrat'", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", background:"#C2185B", color:"#fff", textDecoration:"none", padding:"9px 18px", borderRadius:"2px" }}>S'inscrire</Link>
-          </div>
-        </nav>
 
         <section style={{ padding:"80px 24px 0", textAlign:"center" }}>
           <p style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"14px", animation:"fadeUp .7s both" }}>FAQ</p>

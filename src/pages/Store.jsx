@@ -267,28 +267,6 @@ export default function Store() {
     <>
       <style>{STYLES}</style>
 
-      {/* NAVBAR */}
-      <nav style={{ padding:"16px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.96)", backdropFilter:"blur(20px)", zIndex:200 }}>
-        <Link to="/" style={{ textDecoration:"none" }}>
-          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{color:"var(--blanc)"}}>Méta'</span>
-            <span style={{color:"var(--or)"}}>Morph'</span>
-            <span style={{color:"var(--rose)"}}>Ose</span>
-          </span>
-        </Link>
-        <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
-          {user ? (
-            <Link to="/dashboard" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", textDecoration:"none" }}>
-              Mon espace
-            </Link>
-          ) : (
-            <Link to="/espace-membre" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>
-              Se connecter
-            </Link>
-          )}
-          <Link to="/contact" className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem" }}>S'inscrire</Link>
-        </div>
-      </nav>
 
       <main>
         {/* HERO */}
