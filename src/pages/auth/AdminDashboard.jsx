@@ -1679,6 +1679,7 @@ function TemoignagesView({ api, toast }) {
         </div>
       )}
     <PhotosMasterclassView toast={toast} />
+    <TemoignagesMasterclassAdminView toast={toast} />
     </div>
   );
 }
