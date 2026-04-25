@@ -27,19 +27,6 @@ function ImagesView({ api, toast, refreshKey = 0 }) {
     { cle:"logo_white_black", label:"Logo White & Black",     desc:"Logo de la marque White & Black",                        ratio:"3/1" },
     { cle:"favicon",          label:"Favicon",                desc:"Icône du site dans l'onglet navigateur (32x32px)",        ratio:"1/1" },
   ];
-
-
-  const temoFields = [
-    { cle:"masterclass_temo_photo_1", label:"Georgine",   desc:"Témoignante 1 — Transformation émotionnelle" },
-    { cle:"masterclass_temo_photo_2", label:"Marie",      desc:"Témoignante 2 — Déclic intérieur" },
-    { cle:"masterclass_temo_photo_3", label:"Olivia",     desc:"Témoignante 3 — Confiance en soi" },
-    { cle:"masterclass_temo_photo_4", label:"Catherine",  desc:"Témoignante 4 — Impact professionnel" },
-    { cle:"masterclass_temo_photo_5", label:"Daniella",   desc:"Témoignante 5 — Libération du regard" },
-    { cle:"masterclass_temo_photo_6", label:"Aminata",    desc:"Témoignante 6 — Reconnexion à soi" },
-    { cle:"masterclass_temo_photo_7", label:"Ginette",    desc:"Témoignante 7 — Simplicité et puissance" },
-    { cle:"masterclass_temo_photo_8", label:"La Reine",   desc:"Témoignante 8 — Décision et passage à l'action" },
-  ];
-
   const slideFields = [
     { cle:"slide_1", label:"Slide 1", desc:"Première image du diaporama hero" },
     { cle:"slide_2", label:"Slide 2", desc:"Deuxième image du diaporama hero" },
@@ -147,38 +134,6 @@ function ImagesView({ api, toast, refreshKey = 0 }) {
         </div>
       </div>
 
-
-      {/* Photos Témoignantes Masterclass */}
-      <div style={{ marginBottom:"32px" }}>
-        <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"8px" }}>
-          Photos Témoignantes Masterclass
-        </p>
-        <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:300, color:"var(--text-sub)", marginBottom:"16px", lineHeight:1.6 }}>
-          Photos de profil des 8 témoignantes affichées sur la page Masterclass.
-        </p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"16px" }}>
-          {temoFields.map((field) => (
-            <div key={field.cle}>
-              <div style={{ width:"100%", aspectRatio:"1/1", background:"rgba(255,255,255,.04)", border:`1px dashed ${previews[field.cle]?"rgba(194,24,91,.3)":"rgba(255,255,255,.1)"}`, borderRadius:"50%", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"8px", position:"relative" }}>
-                {previews[field.cle] ? (
-                  <img src={previews[field.cle]} alt={field.label} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-                ) : (
-                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(255,255,255,.2)", textAlign:"center", padding:"8px" }}>{field.label[0]}</p>
-                )}
-                {previews[field.cle] && (
-                  <button onClick={() => removeImage(field.cle)} style={{ position:"absolute", top:"4px", right:"4px", background:"rgba(239,83,80,.85)", color:"#fff", border:"none", borderRadius:"50%", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:".55rem", fontWeight:600, width:"20px", height:"20px", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
-                )}
-              </div>
-              <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, color:"var(--text)", textAlign:"center", marginBottom:"4px" }}>{field.label}</p>
-              <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", color:"var(--text-sub)", textAlign:"center", marginBottom:"8px", lineHeight:1.4 }}>{field.desc}</p>
-              <label style={{ display:"block", textAlign:"center", padding:"7px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", cursor:uploading[field.cle]?"not-allowed":"pointer", fontFamily:"var(--ff-b)", fontSize:".6rem", fontWeight:500, letterSpacing:".08em", textTransform:"uppercase", color:uploading[field.cle]?"var(--text-sub)":"var(--rose)" }}>
-                {uploading[field.cle] ? "..." : previews[field.cle] ? "Changer" : "Ajouter"}
-                <input type="file" accept="image/*" style={{ display:"none" }} disabled={uploading[field.cle]} onChange={e => handleUpload(field.cle, e.target.files[0])}/>
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Logos et Photos */}
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Logos et Photos</p>
