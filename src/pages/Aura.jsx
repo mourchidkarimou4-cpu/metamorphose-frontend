@@ -569,17 +569,32 @@ export default function Aura() {
     const newCount = exchCount + 1;
     setExchCount(newCount);
 
-    const currentIntent = memory.current.intent || intent;
-    const script = getScript(currentIntent);
-    const useRef  = memory.current.keyPhrase && newCount > 1 && Math.random() > 0.55;
-    const val     = useRef ? `Tu m'as dit "${memory.current.keyPhrase}"…\n\n${script.val}` : script.val;
+    // ── Appel API Groq via backend ────────────────────────────
+    setIsTyping(true);
+    try {
+      const res = await fetch("/api/aura/chat/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: txt }),
+      });
+      const data = await res.json();
+      setIsTyping(false);
+      if (data.reply) {
+        addMsg("aura", data.reply);
+      } else {
+        const script = getScript(memory.current.intent || intent);
+        addMsg("aura", script.val);
+        await showTyping(900);
+        addMsg("aura", script.q);
+      }
+    } catch {
+      setIsTyping(false);
+      const script = getScript(memory.current.intent || intent);
+      addMsg("aura", script.val);
+      await showTyping(900);
+      addMsg("aura", script.q);
+    }
 
-    await showTyping(1200 + Math.random()*600);
-    addMsg("aura", val);
-    await showTyping(900);
-    addMsg("aura", script.q);
-
-    // Proposer diagnostic
     if (newCount >= 2 && !diagOffered) {
       setDiagOffered(true);
       await showTyping(1100);
@@ -588,11 +603,10 @@ export default function Aura() {
       return;
     }
 
-    // Conversion subtile
     if (newCount >= 4 && !convOffered) {
       setConvOffered(true);
       await showTyping(1200);
-      addMsg("aura", "Tu sais…\n\nce que tu ressens, beaucoup de femmes le vivent en silence.\n\nMais certaines décident de ne plus rester bloquées.\n\nC'est exactement pour ça que Métamorphose existe — pour t'aider à te reconstruire, te révéler et t'assumer pleinement.", { type:"conversion" });
+      addMsg("aura", "Tu sais…\n\nce que tu ressens, beaucoup de femmes le vivent en silence.\n\nMais certaines décident de ne plus rester bloquées.\n\nC'est exactement pour ça que Métamorphose existe.", { type:"conversion" });
       setPhase("conversion");
     }
   }
