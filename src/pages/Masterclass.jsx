@@ -372,6 +372,22 @@ export default function Masterclass() {
     <>
       <style>{STYLES}</style>
 
+      {/* ── NAVBAR ── */}
+      <nav style={{ padding:"16px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.96)", backdropFilter:"blur(20px)", zIndex:200 }}>
+        <Link to="/" style={{ textDecoration:"none" }}>
+          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
+            <span style={{color:"var(--blanc)"}}>Meta'</span>
+            <span style={{color:"var(--or)"}}>Morph'</span>
+            <span style={{color:"var(--rose)"}}>Ose</span>
+          </span>
+        </Link>
+        <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
+          <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.6)", textDecoration:"none" }}>Accueil</Link>
+          <button onClick={scrollToForm} className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem" }}>
+            Réserver ma place
+          </button>
+        </div>
+      </nav>
 
       <main>
 

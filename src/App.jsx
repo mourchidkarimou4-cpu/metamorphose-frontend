@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import ErrorBoundary   from './components/ErrorBoundary'
-import Navbar          from './components/Navbar'
 import AuthModal       from './components/AuthModal'
 import LandingPage     from './pages/LandingPage'
 import Programme       from './pages/Programme'
@@ -104,7 +103,6 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <Navbar onAuthOpen={(tab) => setAuthTab(tab)} />
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       <Routes>
         {/* ── Pages publiques ────────────────────────────────── */}

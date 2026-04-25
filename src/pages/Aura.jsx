@@ -631,6 +631,10 @@ export default function Aura() {
 
 
       {/* Navbar */}
+      <nav className="navbar">
+        <Link to="/" className="nav-brand">Méta'Morph'Ose</Link>
+        <Link to="/" className="nav-back">Retour au site</Link>
+      </nav>
 
       {/* Header Aura */}
       <div className="aura-header">
