@@ -695,7 +695,7 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
         const jours  = Math.floor(diff / (1000*60*60*24));
         const heures = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
         return (
-          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"60px", zIndex:99 }}>
+          <div style={{ background:"linear-gradient(90deg,#C2185B,#a01049)", padding:"10px 24px", textAlign:"center", position:"sticky", top:"62px", zIndex:99 }}>
             <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"#fff" }}>
               Fermeture des inscriptions dans{" "}
               <span style={{ color:"#FFD700", fontWeight:700 }}>{jours > 0 ? `${jours}j ${heures}h` : `${heures}h`}</span>
@@ -956,7 +956,7 @@ function Hero({ get }) {
   }, []);
 
   return (
-    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)", marginTop:"72px" }}>
+    <section id="accueil" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"100px 20px 100px", background:"var(--noir)", overflow:"hidden", color:"var(--blanc)" }}>
       <HeroDiaporama get={get} />
 
       {/* Contenu au-dessus du diaporama */}
