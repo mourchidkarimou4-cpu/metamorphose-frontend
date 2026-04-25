@@ -945,14 +945,7 @@ function ImagesView({ api, toast }) {
     { cle:"logo_site",        label:"Logo Meta'Morph'Ose",    desc:"Logo principal du site (format PNG transparent recommandé)", ratio:"3/1" },
     { cle:"logo_white_black", label:"Logo White & Black",     desc:"Logo de la marque White & Black",                        ratio:"3/1" },
     { cle:"favicon",          label:"Favicon",                desc:"Icône du site dans l'onglet navigateur (32x32px)",        ratio:"1/1" },
-    { cle:"masterclass_temo_photo_1", label:"Témoignage Masterclass 1 — Georgine",  desc:"Photo de la témoignante Georgine",  ratio:"1/1" },
-    { cle:"masterclass_temo_photo_2", label:"Témoignage Masterclass 2 — Marie",     desc:"Photo de la témoignante Marie",     ratio:"1/1" },
-    { cle:"masterclass_temo_photo_3", label:"Témoignage Masterclass 3 — Olivia",   desc:"Photo de la témoignante Olivia",    ratio:"1/1" },
-    { cle:"masterclass_temo_photo_4", label:"Témoignage Masterclass 4 — Catherine",desc:"Photo de la témoignante Catherine", ratio:"1/1" },
-    { cle:"masterclass_temo_photo_5", label:"Témoignage Masterclass 5 — Daniella", desc:"Photo de la témoignante Daniella",  ratio:"1/1" },
-    { cle:"masterclass_temo_photo_6", label:"Témoignage Masterclass 6 — Aminata",  desc:"Photo de la témoignante Aminata",   ratio:"1/1" },
-    { cle:"masterclass_temo_photo_7", label:"Témoignage Masterclass 7 — Ginette",  desc:"Photo de la témoignante Ginette",   ratio:"1/1" },
-    { cle:"masterclass_temo_photo_8", label:"Témoignage Masterclass 8 — La Reine", desc:"Photo de la témoignante La Reine",  ratio:"1/1" },
+
   ];
 
   const slideFields = [
