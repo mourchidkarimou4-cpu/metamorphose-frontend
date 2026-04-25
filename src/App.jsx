@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import AuraChatbot from './components/AuraChatbot'
 import { useEffect, useState, useRef } from 'react'
 import ErrorBoundary   from './components/ErrorBoundary'
 import LandingPage     from './pages/LandingPage'
