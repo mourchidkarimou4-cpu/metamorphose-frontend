@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import ErrorBoundary   from './components/ErrorBoundary'
-import AuthModal       from './components/AuthModal'
 import LandingPage     from './pages/LandingPage'
 import Programme       from './pages/Programme'
 import APropos         from './pages/APropos'
@@ -73,7 +72,6 @@ function MaintenancePage() {
 
 export default function App() {
   const [maintenance, setMaintenance] = useState(false);
-  const [authTab, setAuthTab] = useState(null);
   const isLandingRef = useRef(window.location.pathname === "/");
   const [showSplash, setShowSplash] = useState(isLandingRef.current);
 
@@ -103,7 +101,6 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       <Routes>
         {/* ── Pages publiques ────────────────────────────────── */}
         <Route path="/"              element={<LandingPage />} />
@@ -115,8 +112,8 @@ export default function App() {
         <Route path="/brunch/success"  element={<BrunchSuccess />} />
         <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
         <Route path="/contact"       element={<Contact />} />
-        <Route path="/communaute"    element={<Communaute />} />
-        <Route path="/communaute/portail" element={<CommunautePortail />} />
+        <Route path="/communaute"         element={<CommunautePortail />} />
+        <Route path="/communaute/ancien"   element={<Communaute />} />
         <Route path="/don"           element={<Don />} />
         <Route path="/store"         element={<Store />} />
         <Route path="/live"          element={<LiveMasterclass />} />
