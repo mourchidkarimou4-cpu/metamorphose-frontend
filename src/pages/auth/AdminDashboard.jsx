@@ -1686,8 +1686,108 @@ function TemoignagesView({ api, toast }) {
       )}
     </div>
   );
+    {/* ── Photos Témoignantes Masterclass ── */}
+    <PhotosMasterclassView toast={toast} />
 }
 
+
+
+/* ── PHOTOS TÉMOIGNANTES MASTERCLASS ───────────────────────── */
+function PhotosMasterclassView({ toast }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "https://metamorphose-backend.onrender.com";
+  const token = localStorage.getItem("mmorphose_token");
+  const [previews,  setPreviews]  = useState({});
+  const [uploading, setUploading] = useState({});
+
+  const TEMOS = [
+    { cle:"masterclass_temo_photo_1", nom:"Georgine" },
+    { cle:"masterclass_temo_photo_2", nom:"Marie" },
+    { cle:"masterclass_temo_photo_3", nom:"Olivia" },
+    { cle:"masterclass_temo_photo_4", nom:"Catherine" },
+    { cle:"masterclass_temo_photo_5", nom:"Daniella" },
+    { cle:"masterclass_temo_photo_6", nom:"Aminata" },
+    { cle:"masterclass_temo_photo_7", nom:"Ginette" },
+    { cle:"masterclass_temo_photo_8", nom:"La Reine" },
+  ];
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/admin/config/public/`)
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data)) return;
+        const map = {};
+        data.forEach(c => { map[c.cle] = c.valeur; });
+        const p = {};
+        TEMOS.forEach(t => { if (map[t.cle]) p[t.cle] = map[t.cle]; });
+        setPreviews(p);
+      }).catch(() => {});
+  }, []);
+
+  async function handleUpload(cle, file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast("Fichier trop lourd (max 5MB)", "error"); return; }
+    if (!file.type.startsWith("image/")) { toast("Seules les images sont acceptées", "error"); return; }
+    setUploading(u => ({ ...u, [cle]: true }));
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = e.target.result;
+      setPreviews(p => ({ ...p, [cle]: base64 }));
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("cle", cle);
+      formData.append("section", "masterclass");
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/images/upload/`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: formData,
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          setPreviews(p => ({ ...p, [cle]: data.url }));
+          toast("Photo uploadée avec succès", "success");
+        } else {
+          toast("Erreur lors de l'upload", "error");
+        }
+      } catch { toast("Erreur réseau", "error"); }
+      setUploading(u => ({ ...u, [cle]: false }));
+    };
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div style={{ marginTop:"32px", paddingTop:"28px", borderTop:"1px solid var(--border)" }}>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px", fontWeight:600 }}>
+        Photos des témoignantes — Masterclass
+      </p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))", gap:"14px" }}>
+        {TEMOS.map(t => (
+          <label key={t.cle} style={{ cursor:"pointer" }}>
+            <div style={{ aspectRatio:"1", background:"rgba(255,255,255,.03)", border:`1px dashed ${previews[t.cle]?"rgba(201,169,106,.3)":"rgba(255,255,255,.1)"}`, borderRadius:"6px", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
+              {uploading[t.cle] && (
+                <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,.5)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <p style={{ color:"#fff", fontSize:".7rem" }}>Chargement...</p>
+                </div>
+              )}
+              {previews[t.cle] ? (
+                <img src={previews[t.cle]} alt={t.nom} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+              ) : (
+                <div style={{ textAlign:"center", padding:"12px" }}>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(255,255,255,.3)", marginBottom:"4px" }}>{t.nom}</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".58rem", color:"rgba(255,255,255,.2)" }}>Ajouter photo</p>
+                </div>
+              )}
+            </div>
+            {previews[t.cle] && (
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", color:"var(--or)", textAlign:"center", marginTop:"4px" }}>{t.nom}</p>
+            )}
+            <input type="file" accept="image/*" style={{ display:"none" }} disabled={uploading[t.cle]} onChange={e => handleUpload(t.cle, e.target.files[0])}/>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /* ── RESSOURCES ADMIN — Chanson + Guide PDF ─────────────────── */
 function RessourcesAdminView({ api, toast }) {
