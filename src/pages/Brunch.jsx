@@ -257,20 +257,6 @@ export default function Brunch() {
 
       <div style={{ background:"#060608", color:"#F8F5F2", minHeight:"100vh", position:"relative" }}>
 
-        {/* ── NAV ── */}
-        <nav style={{ padding:"20px 48px", borderBottom:"1px solid rgba(201,169,106,.08)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(6,6,8,.92)", backdropFilter:"blur(24px)", zIndex:100 }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.05rem", letterSpacing:".02em" }}>
-              <span style={{color:"#F8F5F2"}}>Méta'</span>
-              <span style={{color:"#C9A96A"}}>Morph'</span>
-              <span style={{color:"#C2185B"}}>Ose</span>
-            </span>
-          </Link>
-          <div style={{ display:"flex", gap:"20px", alignItems:"center" }}>
-            <Link to="/" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(201,169,106,.4)", textDecoration:"none", transition:"color .3s" }}>Accueil</Link>
-            <button onClick={() => ouvrirFormulaire()} className="btn-rose" style={{ padding:"10px 22px", fontSize:".66rem" }}>Réserver ma place</button>
-          </div>
-        </nav>
 
         {/* ── SECTION 1 : HERO ── */}
         <section style={{ background:"#060608", padding:"140px 48px 100px", textAlign:"center", position:"relative", overflow:"hidden", minHeight:"92vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
