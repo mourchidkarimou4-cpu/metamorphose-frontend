@@ -65,7 +65,7 @@ export default function Navbar({ onAuthOpen }) {
 
   return (
     <>
-      <style>{\`
+      <style>{`
         .nav-link-item {
           display:flex; flex-direction:column; align-items:center; gap:4px;
           cursor:pointer; text-decoration:none; color:rgba(248,245,242,.45);
@@ -93,7 +93,7 @@ export default function Navbar({ onAuthOpen }) {
         @media(min-width:1101px){
           .nav-burger { display:none !important; }
         }
-      \`}</style>
+      `}</style>
 
       {/* ── NAVBAR STICKY ── */}
       <nav style={{
@@ -173,14 +173,14 @@ export default function Navbar({ onAuthOpen }) {
             zIndex:301, display:"flex", flexDirection:"column",
             animation:"slideIn .3s cubic-bezier(.16,1,.3,1)",
           }}>
-            <style>{\`@keyframes slideIn { from{transform:translateX(100%)} to{transform:none} }\`}</style>
+            <style>{`@keyframes slideIn { from{transform:translateX(100%)} to{transform:none} }`}</style>
 
             <div style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
               <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1rem", color:"#F8F5F2" }}>
                 Méta'<span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
               </span>
               <button onClick={() => setMenuOpen(false)} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"2px", width:"32px", height:"32px", cursor:"pointer", color:"rgba(201,169,106,.6)", fontSize:"1.1rem", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                ✕
+                &times;
               </button>
             </div>
 
