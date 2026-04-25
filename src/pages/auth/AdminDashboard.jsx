@@ -1684,10 +1684,9 @@ function TemoignagesView({ api, toast }) {
           </div>
         </div>
       )}
+    <PhotosMasterclassView toast={toast} />
     </div>
   );
-    {/* ── Photos Témoignantes Masterclass ── */}
-    <PhotosMasterclassView toast={toast} />
 }
 
 
