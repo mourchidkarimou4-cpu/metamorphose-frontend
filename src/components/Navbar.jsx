@@ -128,23 +128,25 @@ export default function Navbar({ onAuthOpen }) {
           })}
         </div>
 
+
         {/* CTAs desktop */}
         <div className="nav-desktop-links" style={{ display:"flex", alignItems:"center", gap:"12px", flexShrink:0 }}>
           {user ? (
-            <Link to="/dashboard" style={{ display:"flex", alignItems:"center", gap:"5px", textDecoration:"none", color:"rgba(201,169,106,.55)", fontFamily:"'Montserrat',sans-serif", fontSize:".72rem", letterSpacing:".1em", textTransform:"uppercase" }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Mon espace
+            <Link to="/dashboard" className="nav-link-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Mon espace</span>
             </Link>
           ) : (
-            <button onClick={() => onAuthOpen("login")} style={{ display:"flex", alignItems:"center", gap:"5px", background:"none", border:"none", cursor:"pointer", color:"rgba(201,169,106,.55)", fontFamily:"'Montserrat',sans-serif", fontSize:".72rem", letterSpacing:".1em", textTransform:"uppercase" }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Mon espace
+            <button onClick={() => onAuthOpen("login")} className="nav-link-item" style={{ background:"none", border:"none", cursor:"pointer" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Mon espace</span>
             </button>
           )}
           <button onClick={() => onAuthOpen("inscription")}
-            style={{ background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"background .3s", flexShrink:0 }}
+            style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"background .3s", flexShrink:0 }}
             onMouseEnter={e=>e.currentTarget.style.background="#a01049"}
             onMouseLeave={e=>e.currentTarget.style.background="#C2185B"}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
             S'inscrire
           </button>
         </div>
