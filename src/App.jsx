@@ -1,7 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import AuraChatbot from './components/AuraChatbot'
 import { useEffect, useState, useRef } from 'react'
 import ErrorBoundary   from './components/ErrorBoundary'
 import LandingPage     from './pages/LandingPage'
+import AuraChatbot from './components/AuraChatbot'
 import Programme       from './pages/Programme'
 import APropos         from './pages/APropos'
 import Temoignages     from './pages/Temoignages'
@@ -146,6 +148,7 @@ export default function App() {
         {/* ── 404 ────────────────────────────────────────────── */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+    <AuraChatbot />
     </ErrorBoundary>
   );
 }
