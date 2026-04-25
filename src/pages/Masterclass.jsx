@@ -342,6 +342,11 @@ export default function Masterclass() {
         const map = {};
         if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
         if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
+        // Charger témoignages photo masterclass
+        fetch(`${API_BASE}/api/masterclass/temoignages/`)
+          .then(r => r.json())
+          .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
+          .catch(() => {});
         const photos = {};
         [1,2,3,4,5,6,7,8].forEach(i => { if (map[`masterclass_temo_photo_${i}`]) photos[i] = map[`masterclass_temo_photo_${i}`]; });
         setPhotosTemos(photos);
@@ -352,6 +357,7 @@ export default function Masterclass() {
   const time = useCountdown(DATE_MASTERCLASS);
   const [inscrit, setInscrit] = useState(null);
   const [voirPlus, setVoirPlus] = useState(false);
+  const [temosPhoto, setTemosPhoto] = useState([]);
   const formRef = useRef(null);
   useReveal();
 
@@ -687,6 +693,27 @@ export default function Masterclass() {
                 Ce que disent les femmes qui ont déjà vécu cette expérience
               </h2>
             </div>
+
+            {/* ── Témoignages photo ── */}
+            {temosPhoto.length > 0 && (
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"24px", marginBottom:"56px" }}>
+                {temosPhoto.map((t, i) => (
+                  <div key={t.id} className="reveal" style={{ transitionDelay:`${i*.08}s` }}>
+                    <div style={{ position:"relative", paddingBottom:"133%", background:"linear-gradient(135deg,rgba(194,24,91,.08),rgba(201,169,106,.06))", border:"1px solid rgba(201,169,106,.12)", borderRadius:"4px", overflow:"hidden", marginBottom:"12px" }}>
+                      {t.photo ? (
+                        <img src={t.photo} alt={t.prenom} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                      ) : (
+                        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                          <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(201,169,106,.3)" }}>{t.prenom[0]}</p>
+                        </div>
+                      )}
+                    </div>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", fontWeight:600, color:"rgba(248,245,242,.85)", marginBottom:"6px" }}>{t.prenom}</p>
+                    {t.texte && <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:".85rem", color:"rgba(248,245,242,.55)", lineHeight:1.7 }}>« {t.texte} »</p>}
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="temo-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px", marginBottom:"32px" }}>
               {visibleTemos.map((t, i) => (

@@ -219,6 +219,7 @@ function Sidebar({ active, setActive, counts }) {
     { id:"cartes",          label:"Cartes Cadeaux" },
     { id:"temoignages",     label:"Témoignages", urgent:true },
     { id:"masterclass_admin", label:"Masterclasses" },
+    { id:"temos_masterclass", label:"Témoignages Masterclass" },
     { id:"tickets",         label:"Tickets & Événements" },
     { id:"evt_admin",       label:"Événements" },
     { id:"actu_admin",      label:"Actualités" },
@@ -2947,6 +2948,7 @@ export default function AdminDashboard() {
           {active === "comm_admin"      && <CommunauteAdminView {...viewProps} />}
           {active === "store_admin"     && <StoreAdminView {...viewProps} />}
           {active === "masterclass_admin" && <MasterclassAdminView {...viewProps} />}
+          {active === "temos_masterclass" && <TemoignagesMasterclassAdminView toast={toast} />}
           {active === "liens_paiement"   && <ConfigView {...viewProps} sectionFilter="paiement" />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
           {active === "mes_guides"      && <MesGuidesView {...viewProps} />}
@@ -4954,4 +4956,149 @@ function AgendaView({ api, toast }) {
     </div>
   )
 }
+
+
+/* ── TÉMOIGNAGES MASTERCLASS ADMIN ─────────────────────────── */
+function TemoignagesMasterclassAdminView({ toast }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "https://metamorphose-backend.onrender.com";
+  const token = localStorage.getItem("mmorphose_token");
+  const [temos, setTemos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ prenom:"", texte:"" });
+  const [photo, setPhoto] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => { charger(); }, []);
+
+  async function charger() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/masterclass/temoignages/`);
+      const data = await res.json();
+      setTemos(Array.isArray(data) ? data : []);
+    } catch { toast("Erreur chargement", "error"); }
+    setLoading(false);
+  }
+
+  async function ajouter() {
+    if (!form.prenom.trim()) { toast("Prénom requis", "error"); return; }
+    if (!photo) { toast("Photo requise", "error"); return; }
+    setSaving(true);
+    try {
+      const fd = new FormData();
+      fd.append("prenom", form.prenom);
+      fd.append("texte", form.texte);
+      fd.append("photo", photo);
+      const res = await fetch(`${API_BASE}/api/masterclass/temoignages/ajouter/`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: fd,
+      });
+      if (res.ok) {
+        toast("Témoignage ajouté", "success");
+        setForm({ prenom:"", texte:"" });
+        setPhoto(null);
+        setPreview(null);
+        charger();
+      } else { toast("Erreur lors de l'ajout", "error"); }
+    } catch { toast("Erreur réseau", "error"); }
+    setSaving(false);
+  }
+
+  async function supprimer(id) {
+    if (!window.confirm("Supprimer ce témoignage ?")) return;
+    await fetch(`${API_BASE}/api/masterclass/temoignages/${id}/supprimer/`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+    toast("Supprimé", "success");
+    charger();
+  }
+
+  function onPhotoChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPhoto(file);
+    setPreview(URL.createObjectURL(file));
+  }
+
+  const inp = { width:"100%", padding:"10px 14px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--text)", fontFamily:"var(--ff-b)", fontSize:".82rem", fontWeight:300, outline:"none", boxSizing:"border-box" };
+  const lbl = { fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".14em", textTransform:"uppercase", color:"var(--text-sub)", display:"block", marginBottom:"6px" };
+
+  return (
+    <div style={{ animation:"fadeUp .5s both" }}>
+      <div style={{ marginBottom:"32px" }}>
+        <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.6rem", fontWeight:600 }}>Témoignages Masterclass</h2>
+        <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", color:"var(--text-sub)", marginTop:"4px" }}>Photos des métamorphosées affichées sur la page Masterclass</p>
+      </div>
+
+      {/* Formulaire ajout */}
+      <div style={{ padding:"24px", background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"6px", marginBottom:"32px" }}>
+        <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", color:"var(--or)", marginBottom:"20px" }}>Ajouter un témoignage</p>
+        <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:"24px", alignItems:"start" }}>
+          {/* Upload photo */}
+          <label style={{ cursor:"pointer" }}>
+            <div style={{ aspectRatio:"3/4", background:"rgba(255,255,255,.03)", border:`1px dashed ${preview?"rgba(201,169,106,.4)":"rgba(255,255,255,.12)"}`, borderRadius:"4px", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {preview ? (
+                <img src={preview} alt="preview" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+              ) : (
+                <div style={{ textAlign:"center", padding:"16px" }}>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(255,255,255,.3)", marginBottom:"6px" }}>Cliquer pour</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(255,255,255,.3)" }}>ajouter photo</p>
+                </div>
+              )}
+            </div>
+            <input type="file" accept="image/*" style={{ display:"none" }} onChange={onPhotoChange}/>
+          </label>
+          {/* Champs texte */}
+          <div style={{ display:"flex", flexDirection:"column", gap:"14px" }}>
+            <div>
+              <label style={lbl}>Prénom *</label>
+              <input style={inp} type="text" placeholder="Ex: Georgine" value={form.prenom} onChange={e=>setForm(p=>({...p,prenom:e.target.value}))}/>
+            </div>
+            <div>
+              <label style={lbl}>Texte du témoignage</label>
+              <textarea style={{...inp,minHeight:"120px",resize:"vertical"}} placeholder="Ce que cette personne a vécu, ressenti…" value={form.texte} onChange={e=>setForm(p=>({...p,texte:e.target.value}))}/>
+            </div>
+            <button onClick={ajouter} disabled={saving} style={{ padding:"12px 24px", background:"var(--rose)", border:"none", borderRadius:"3px", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", cursor:"pointer", opacity:saving?0.6:1, alignSelf:"flex-start" }}>
+              {saving ? "Ajout en cours…" : "+ Ajouter"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Liste */}
+      {loading ? (
+        <p style={{ color:"var(--text-sub)", fontFamily:"var(--ff-b)", fontSize:".82rem" }}>Chargement…</p>
+      ) : temos.length === 0 ? (
+        <p style={{ color:"var(--text-sub)", fontFamily:"var(--ff-b)", fontSize:".82rem" }}>Aucun témoignage pour l'instant.</p>
+      ) : (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))", gap:"20px" }}>
+          {temos.map(t => (
+            <div key={t.id} style={{ background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"6px", overflow:"hidden" }}>
+              <div style={{ aspectRatio:"3/4", overflow:"hidden" }}>
+                {t.photo ? (
+                  <img src={t.photo} alt={t.prenom} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                ) : (
+                  <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(255,255,255,.03)" }}>
+                    <p style={{ color:"rgba(255,255,255,.2)", fontSize:".7rem" }}>Pas de photo</p>
+                  </div>
+                )}
+              </div>
+              <div style={{ padding:"12px" }}>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".82rem", fontWeight:600, color:"var(--text)", marginBottom:"4px" }}>{t.prenom}</p>
+                {t.texte && <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", color:"var(--text-sub)", lineHeight:1.5, marginBottom:"10px" }}>{t.texte}</p>}
+                <button onClick={() => supprimer(t.id)} style={{ padding:"6px 12px", background:"rgba(194,24,91,.1)", border:"1px solid rgba(194,24,91,.3)", borderRadius:"3px", color:"var(--rose)", fontFamily:"var(--ff-b)", fontSize:".62rem", cursor:"pointer", letterSpacing:".1em", textTransform:"uppercase" }}>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // cache-bust 1777123001
