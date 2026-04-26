@@ -1330,6 +1330,7 @@ function TemoignagesView({ api, toast }) {
   const [loading,  setLoading]  = useState(true);
   const [filter,   setFilter]   = useState("en_attente");
   const [typeFilter, setTypeFilter] = useState("tout");
+  const [showMasterclass, setShowMasterclass] = useState(false);
   const [modal,    setModal]    = useState(null);
   const [selected, setSelected] = useState(null);
   const [form,     setForm]     = useState({});
@@ -1447,11 +1448,15 @@ function TemoignagesView({ api, toast }) {
       {/* Filtres type */}
       <div style={{ display:"flex", gap:"6px", marginBottom:"20px" }}>
         {[["tout","Tous"],["texte","Texte"],["video","Vidéo"],["audio","Audio"]].map(([val,label]) => (
-          <button key={val} onClick={()=>setTypeFilter(val)} className="admin-btn"
-            style={{ background:typeFilter===val?"var(--or)":"rgba(255,255,255,.03)", color:typeFilter===val?"var(--noir)":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${typeFilter===val?"var(--or)":"var(--border)"}` }}>
+          <button key={val} onClick={()=>{ setTypeFilter(val); setShowMasterclass(false); }} className="admin-btn"
+            style={{ background:typeFilter===val&&!showMasterclass?"var(--or)":"rgba(255,255,255,.03)", color:typeFilter===val&&!showMasterclass?"var(--noir)":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${typeFilter===val&&!showMasterclass?"var(--or)":"var(--border)"}` }}>
             {label}
           </button>
         ))}
+        <button onClick={()=>setShowMasterclass(true)} className="admin-btn"
+          style={{ background:showMasterclass?"var(--rose)":"rgba(255,255,255,.03)", color:showMasterclass?"#fff":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${showMasterclass?"var(--rose)":"var(--border)"}` }}>
+          Masterclass
+        </button>
       </div>
 
       {/* Liste */}
