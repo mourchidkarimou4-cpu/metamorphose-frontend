@@ -704,7 +704,7 @@ export default function Masterclass() {
             {temosPhoto.length > 0 && (
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"24px", marginBottom:"56px" }}>
                 {temosPhoto.map((t, i) => (
-                  <div key={t.id} className="reveal" style={{ transitionDelay:`${i*.08}s` }}>
+                  <div key={t.id} style={{ transitionDelay:`${i*.08}s` }}>
                     <div style={{ position:"relative", paddingBottom:"133%", background:"linear-gradient(135deg,rgba(194,24,91,.08),rgba(201,169,106,.06))", border:"1px solid rgba(201,169,106,.12)", borderRadius:"4px", overflow:"hidden", marginBottom:"12px" }}>
                       {t.photo ? (
                         <img src={t.photo} alt={t.prenom} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
