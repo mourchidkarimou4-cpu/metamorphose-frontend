@@ -74,6 +74,11 @@ export default function Temoignages() {
         });
     }
     fetchTemos();
+    // Charger témoignages photo Masterclass
+    fetch('https://metamorphose-backend.onrender.com/api/masterclass/temoignages/')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
+      .catch(() => {});
     return () => { cancelled = true; };
   }, []);
 
@@ -247,6 +252,30 @@ export default function Temoignages() {
             </section>
           )}
 
+          {temosPhoto.length > 0 && (
+            <section style={{ padding:"64px 0 0" }}>
+              <p style={{ fontFamily:"'Montserrat'", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"24px" }}>Témoignages Masterclass</p>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"20px" }}>
+                {temosPhoto.map((t, i) => (
+                  <div key={t.id} style={{ background:"rgba(255,255,255,.025)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"4px", overflow:"hidden" }}>
+                    <div style={{ aspectRatio:"3/4", overflow:"hidden" }}>
+                      {t.photo ? (
+                        <img src={t.photo} alt={t.prenom} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                      ) : (
+                        <div style={{ width:"100%", height:"100%", background:"rgba(194,24,91,.08)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                          <span style={{ color:"#C2185B", fontSize:"1.5rem" }}>{t.prenom[0]}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ padding:"14px 16px" }}>
+                      <p style={{ fontFamily:"'Montserrat'", fontWeight:600, fontSize:".82rem", color:"rgba(248,245,242,.85)", marginBottom:"6px" }}>{t.prenom}</p>
+                      {t.texte && <p style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", fontSize:".85rem", color:"rgba(248,245,242,.5)", lineHeight:1.6 }}>« {t.texte} »</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
           <section className="reveal" style={{ padding:"64px 0 0", textAlign:"center" }}>
             <div style={{ padding:"48px 32px", background:"rgba(194,24,91,.06)", border:"1px solid rgba(194,24,91,.2)", borderRadius:"6px" }}>
               <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.4rem,4vw,2rem)", fontWeight:600, marginBottom:"14px" }}>
