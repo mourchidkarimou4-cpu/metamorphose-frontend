@@ -57,6 +57,7 @@ export default function Temoignages() {
   const get = useSiteContent();
   const [temos,   setTemos]   = useState([]);
   const [loading, setLoading] = useState(true);
+  const [temosPhoto, setTemosPhoto] = useState([]);
   useReveal();
 
   useEffect(() => {
@@ -74,6 +75,10 @@ export default function Temoignages() {
         });
     }
     fetchTemos();
+    fetch('https://metamorphose-backend.onrender.com/api/masterclass/temoignages/')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
+      .catch(() => {});
     // Charger témoignages photo Masterclass
     fetch('https://metamorphose-backend.onrender.com/api/masterclass/temoignages/')
       .then(r => r.json())
