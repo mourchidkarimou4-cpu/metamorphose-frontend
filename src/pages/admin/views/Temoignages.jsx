@@ -7,6 +7,7 @@ function TemoignagesView({ api, toast }) {
   const [loading,  setLoading]  = useState(true);
   const [filter,   setFilter]   = useState("en_attente");
   const [typeFilter, setTypeFilter] = useState("tout");
+  const [showMasterclass, setShowMasterclass] = useState(false);
   const [modal,    setModal]    = useState(null);
   const [selected, setSelected] = useState(null);
   const [form,     setForm]     = useState({});
@@ -125,7 +126,7 @@ function TemoignagesView({ api, toast }) {
       <div style={{ display:"flex", gap:"6px", marginBottom:"20px" }}>
         {[["tout","Tous"],["texte","Texte"],["video","Vidéo"],["audio","Audio"]].map(([val,label]) => (
           <button key={val} onClick={()=>setTypeFilter(val)} className="admin-btn"
-            style={{ background:typeFilter===val?"var(--or)":"rgba(255,255,255,.03)", color:typeFilter===val?"var(--noir)":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${typeFilter===val?"var(--or)":"var(--border)"}` }}>
+            style={{ background:typeFilter===val&&!showMasterclass?"var(--or)":"rgba(255,255,255,.03)", color:typeFilter===val&&!showMasterclass?"var(--noir)":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${typeFilter===val&&!showMasterclass?"var(--or)":"var(--border)"}` }} onClick={()=>{ setTypeFilter(val); setShowMasterclass(false); }}>
             {label}
           </button>
         ))}
@@ -363,3 +364,110 @@ function TemoignagesView({ api, toast }) {
 /* ── RESSOURCES ADMIN — Chanson + Guide PDF ─────────────────── */
 
 export { TemoignagesView };
+
+
+function TemoignagesMasterclassAdminView({ toast }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "https://metamorphose-backend.onrender.com";
+  const token = localStorage.getItem("mmorphose_token");
+  const [temos, setTemos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ prenom:"", texte:"" });
+  const [photo, setPhoto] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => { charger(); }, []);
+
+  async function charger() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/masterclass/temoignages/`);
+      const data = await res.json();
+      setTemos(Array.isArray(data) ? data : []);
+    } catch { toast("Erreur chargement", "error"); }
+    setLoading(false);
+  }
+
+  async function ajouter() {
+    if (!form.prenom.trim()) { toast("Prénom requis", "error"); return; }
+    if (!photo) { toast("Photo requise", "error"); return; }
+    setSaving(true);
+    try {
+      const fd = new FormData();
+      fd.append("prenom", form.prenom);
+      fd.append("texte", form.texte);
+      fd.append("photo", photo);
+      const res = await fetch(`${API_BASE}/api/masterclass/temoignages/ajouter/`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: fd,
+      });
+      if (res.ok) {
+        toast("Témoignage ajouté", "success");
+        setForm({ prenom:"", texte:"" });
+        setPhoto(null);
+        setPreview(null);
+        charger();
+      } else { toast("Erreur lors de l'ajout", "error"); }
+    } catch { toast("Erreur réseau", "error"); }
+    setSaving(false);
+  }
+
+  async function supprimer(id) {
+    if (!window.confirm("Supprimer ce témoignage ?")) return;
+    await fetch(`${API_BASE}/api/masterclass/temoignages/${id}/supprimer/`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+    toast("Supprimé", "success");
+    charger();
+  }
+
+  const inp = { width:"100%", padding:"10px 14px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"3px", color:"var(--text)", fontFamily:"var(--ff-b)", fontSize:".82rem", outline:"none", boxSizing:"border-box" };
+  const lbl = { fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".14em", textTransform:"uppercase", color:"var(--text-sub)", display:"block", marginBottom:"6px" };
+
+  return (
+    <div style={{ marginTop:"32px", paddingTop:"28px", borderTop:"2px solid rgba(194,24,91,.3)" }}>
+      <p style={{ fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"20px" }}>
+        Témoignages Masterclass — Photos des métamorphosées
+      </p>
+      <div style={{ padding:"20px", background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"6px", marginBottom:"24px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"180px 1fr", gap:"20px", alignItems:"start" }}>
+          <label style={{ cursor:"pointer" }}>
+            <div style={{ aspectRatio:"3/4", background:"rgba(255,255,255,.03)", border:`1px dashed ${preview?"rgba(201,169,106,.4)":"rgba(255,255,255,.12)"}`, borderRadius:"4px", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {preview ? (
+                <img src={preview} alt="preview" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+              ) : (
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", color:"rgba(255,255,255,.3)", textAlign:"center", padding:"12px" }}>Cliquer pour ajouter photo</p>
+              )}
+            </div>
+            <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{ const file=e.target.files[0]; if(file){setPhoto(file);setPreview(URL.createObjectURL(file));} }}/>
+          </label>
+          <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
+            <div><label style={lbl}>Prénom *</label><input style={inp} type="text" placeholder="Ex: Georgine" value={form.prenom} onChange={e=>setForm(p=>({...p,prenom:e.target.value}))}/></div>
+            <div><label style={lbl}>Texte du témoignage</label><textarea style={{...inp,minHeight:"100px",resize:"vertical"}} placeholder="Son témoignage…" value={form.texte} onChange={e=>setForm(p=>({...p,texte:e.target.value}))}/></div>
+            <button onClick={ajouter} disabled={saving} style={{ padding:"10px 20px", background:"var(--rose)", border:"none", borderRadius:"3px", color:"#fff", fontFamily:"var(--ff-b)", fontSize:".72rem", fontWeight:600, cursor:"pointer", opacity:saving?0.6:1, alignSelf:"flex-start" }}>
+              {saving ? "Ajout…" : "+ Ajouter"}
+            </button>
+          </div>
+        </div>
+      </div>
+      {loading ? <p style={{ color:"var(--text-sub)", fontSize:".82rem" }}>Chargement…</p> : (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))", gap:"16px" }}>
+          {temos.map(t => (
+            <div key={t.id} style={{ background:"rgba(255,255,255,.03)", border:"1px solid rgba(255,255,255,.08)", borderRadius:"6px", overflow:"hidden" }}>
+              <div style={{ aspectRatio:"3/4", overflow:"hidden" }}>
+                {t.photo ? <img src={t.photo} alt={t.prenom} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/> : <div style={{ width:"100%", height:"100%", background:"rgba(255,255,255,.03)", display:"flex", alignItems:"center", justifyContent:"center" }}><p style={{ color:"rgba(255,255,255,.2)", fontSize:".7rem" }}>Pas de photo</p></div>}
+              </div>
+              <div style={{ padding:"10px" }}>
+                <p style={{ fontFamily:"var(--ff-b)", fontSize:".8rem", fontWeight:600, color:"var(--text)", marginBottom:"4px" }}>{t.prenom}</p>
+                {t.texte && <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"var(--text-sub)", lineHeight:1.5, marginBottom:"8px" }}>{t.texte}</p>}
+                <button onClick={()=>supprimer(t.id)} style={{ padding:"5px 10px", background:"rgba(194,24,91,.1)", border:"1px solid rgba(194,24,91,.3)", borderRadius:"3px", color:"var(--rose)", fontFamily:"var(--ff-b)", fontSize:".6rem", cursor:"pointer" }}>Supprimer</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
