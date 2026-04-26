@@ -353,6 +353,12 @@ export default function Masterclass() {
       })
       .catch(() => {});
   }, []);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/masterclass/temoignages/`)
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
+      .catch(() => {});
+  }, []);
   usePageBackground("live");
   const time = useCountdown(DATE_MASTERCLASS);
   const [inscrit, setInscrit] = useState(null);
