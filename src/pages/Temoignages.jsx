@@ -188,7 +188,7 @@ export default function Temoignages() {
                 { prenom:"M", pays:"France",  texte:"Prélia a su créer un espace bienveillant où j'ai pu me révéler sans jugement. Une expérience transformatrice.", note:5 },
                 { prenom:"F", pays:"Sénégal", texte:"Les 8 semaines sont passées trop vite. J'en suis ressortie avec une image claire de qui je suis et où je vais.", note:5 },
               ]).map((t,i) => (
-                <div key={i} className="reveal" style={{ transitionDelay:`${i*.1}s`, padding:"28px 24px", background:"rgba(255,255,255,.025)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"4px" }}>
+                <div key={i} style={{ transitionDelay:`${i*.1}s`, padding:"28px 24px", background:"rgba(255,255,255,.025)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"4px", opacity:1 }}>
                   {/* Étoiles */}
                   {t.note && (
                     <div style={{ display:"flex", gap:"2px", marginBottom:"14px" }}>
