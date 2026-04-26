@@ -335,6 +335,7 @@ function FAQMasterclass() {
 export default function Masterclass() {
   const [photoPrelia, setPhotoPrelia] = useState("");
   const [photosTemos, setPhotosTemos] = useState({});
+  const [temosPhoto, setTemosPhoto] = useState([]);
   useEffect(() => {
     configAPI.public()
       .then(r => r.data)
@@ -363,7 +364,6 @@ export default function Masterclass() {
   const time = useCountdown(DATE_MASTERCLASS);
   const [inscrit, setInscrit] = useState(null);
   const [voirPlus, setVoirPlus] = useState(false);
-  const [temosPhoto, setTemosPhoto] = useState([]);
   const formRef = useRef(null);
   useReveal();
 
