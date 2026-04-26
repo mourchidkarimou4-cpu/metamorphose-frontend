@@ -24,6 +24,7 @@ import CommunautePortail from './pages/CommunautePortail'
 import Don             from './pages/Don'
 import Store           from './pages/Store'
 import LiveMasterclass from './pages/LiveMasterclass'
+import LiveRoom from './pages/LiveRoom'
 import LiveMeeting     from './pages/LiveMeeting'
 import Aura            from './pages/Aura'
 import Masterclass     from './pages/Masterclass'
@@ -118,6 +119,7 @@ export default function App() {
         <Route path="/don"           element={<Don />} />
         <Route path="/store"         element={<Store />} />
         <Route path="/live"          element={<LiveMasterclass />} />
+        <Route path="/live/room"     element={<LiveRoom />} />
         <Route path="/meeting/:roomId" element={<LiveMeeting />} />
         <Route path="/masterclass"   element={<Masterclass />} />
         <Route path="/aura"          element={<Aura />} />

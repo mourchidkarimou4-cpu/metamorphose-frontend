@@ -191,6 +191,11 @@ export default function LiveMasterclass() {
   });
 
   const { token, user } = useAuth();
+  const [modalSalle, setModalSalle] = useState(null);
+  const [joinEmail, setJoinEmail] = useState("");
+  const [joinCode, setJoinCode] = useState("");
+  const [joinLoading, setJoinLoading] = useState(false);
+  const [joinError, setJoinError] = useState("");
   const isAdmin = user?.is_staff === true;
 
   useEffect(() => {
@@ -231,8 +236,50 @@ export default function LiveMasterclass() {
     }
   }
 
-  function rejoindre(salleId) {
-    navigate(`/meeting/${salleId}`);
+  function rejoindre(salle) {
+    // Si admin/hôte — rejoindre directement avec token
+    if (user && token) {
+      setJoinLoading(true);
+      fetch(`${API_BASE}/api/live/${salle.id}/rejoindre/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("mmorphose_token")}` },
+      })
+      .then(r => r.json())
+      .then(data => {
+        setJoinLoading(false);
+        if (data.token) {
+          navigate("/live/room", { state: { token: data.token, livekit_url: data.livekit_url, titre: salle.titre } });
+        }
+      })
+      .catch(() => setJoinLoading(false));
+    } else {
+      // Ouvrir modal pour email + code
+      setModalSalle(salle);
+      setJoinEmail("");
+      setJoinCode("");
+      setJoinError("");
+    }
+  }
+
+  async function rejoindrePublic() {
+    if (!joinEmail.trim() || !joinCode.trim()) { setJoinError("Email et code requis"); return; }
+    setJoinLoading(true);
+    setJoinError("");
+    try {
+      const res = await fetch(`${API_BASE}/api/live/${modalSalle.id}/rejoindre-public/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: joinEmail.trim(), code: joinCode.trim().toUpperCase(), nom: joinEmail.split("@")[0] }),
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        setModalSalle(null);
+        navigate("/live/room", { state: { token: data.token, livekit_url: data.livekit_url, titre: modalSalle.titre } });
+      } else {
+        setJoinError(data.error || "Code incorrect");
+      }
+    } catch { setJoinError("Erreur réseau"); }
+    setJoinLoading(false);
   }
 
   function formatDate(d) {
@@ -315,7 +362,7 @@ export default function LiveMasterclass() {
                 </div>
 
                 <div style={{ marginTop:"20px" }}>
-                  <button className="btn-rejoindre" onClick={() => rejoindre(salle.id)}>
+                  <button className="btn-rejoindre" onClick={() => rejoindre(salle)}>
                     Rejoindre
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -370,6 +417,36 @@ export default function LiveMasterclass() {
           </>
         )}
       </div>
+      {/* ── Modal rejoindre ── */}
+      {modalSalle && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.8)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"24px" }}>
+          <div style={{ background:"#111", border:"1px solid rgba(201,169,106,.2)", borderRadius:"6px", padding:"36px", width:"100%", maxWidth:"400px" }}>
+            <p style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.2rem", fontWeight:600, marginBottom:"6px" }}>{modalSalle.titre}</p>
+            <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".78rem", color:"rgba(248,245,242,.4)", marginBottom:"24px" }}>Entrez votre email et le code fourni par Prélia</p>
+            <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginBottom:"20px" }}>
+              <input
+                type="email" placeholder="Votre email" value={joinEmail}
+                onChange={e => setJoinEmail(e.target.value)}
+                style={{ padding:"12px 14px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.1)", borderRadius:"3px", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", outline:"none" }}
+              />
+              <input
+                type="text" placeholder="Code d'accès (ex: AB12CD)" value={joinCode}
+                onChange={e => setJoinCode(e.target.value.toUpperCase())}
+                style={{ padding:"12px 14px", background:"rgba(255,255,255,.04)", border:"1px solid rgba(255,255,255,.1)", borderRadius:"3px", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif", fontSize:".85rem", outline:"none", letterSpacing:".2em" }}
+              />
+              {joinError && <p style={{ color:"#C2185B", fontFamily:"'Montserrat',sans-serif", fontSize:".75rem" }}>{joinError}</p>}
+            </div>
+            <div style={{ display:"flex", gap:"10px" }}>
+              <button onClick={() => setModalSalle(null)} style={{ flex:1, padding:"12px", background:"transparent", border:"1px solid rgba(255,255,255,.1)", borderRadius:"3px", color:"rgba(248,245,242,.5)", fontFamily:"'Montserrat',sans-serif", fontSize:".75rem", cursor:"pointer" }}>
+                Annuler
+              </button>
+              <button onClick={rejoindrePublic} disabled={joinLoading} style={{ flex:2, padding:"12px", background:"#C2185B", border:"none", borderRadius:"3px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontSize:".75rem", fontWeight:600, cursor:"pointer", opacity:joinLoading?0.6:1 }}>
+                {joinLoading ? "Connexion..." : "Rejoindre le live"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
