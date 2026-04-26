@@ -130,7 +130,12 @@ function TemoignagesView({ api, toast }) {
             {label}
           </button>
         ))}
+        <button onClick={()=>setShowMasterclass(true)} className="admin-btn"
+          style={{ background:showMasterclass?"var(--rose)":"rgba(255,255,255,.03)", color:showMasterclass?"#fff":"var(--text-sub)", padding:"7px 14px", fontSize:".65rem", border:`1px solid ${showMasterclass?"var(--rose)":"var(--border)"}` }}>
+          Masterclass
+        </button>
       </div>
+      {showMasterclass && <TemoignagesMasterclassAdminView toast={toast} />}
 
       {/* Liste */}
       {loading ? (
