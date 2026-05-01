@@ -288,7 +288,7 @@ function ModalAuth({ onClose, onSuccess }) {
     if (!email.trim() || !cle.trim()) { setError("Tous les champs sont requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await communauteAPI.verifierCle({ email: email.trim(), cle: cle.trim().toUpperCase() });
+      const res = await communauteAPI.verifierCle({ email: email.trim(), cle: cle.trim() });
       if (res.data.acces) { onSuccess(); }
       else { setError(res.data.detail || "Identifiants invalides."); }
     } catch { setError("Erreur réseau. Veuillez réessayer."); }
