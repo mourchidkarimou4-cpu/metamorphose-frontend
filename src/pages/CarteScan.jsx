@@ -5,7 +5,7 @@ import usePageBackground from "../hooks/usePageBackground";
 import { useParams, Link } from "react-router-dom";
 import api from '../services/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 /* ================================================================
    PAGE SCAN QR CODE — /carte/:code

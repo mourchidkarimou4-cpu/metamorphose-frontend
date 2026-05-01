@@ -23,6 +23,7 @@ import { PartenairesView }                      from './views/Partenaires';
 import { TicketsView }                          from './views/Tickets';
 import { AbonnesView }                          from './views/Abonnes';
 import { MasterclassAdminView }                 from './views/Masterclass';
+import { RendezVousAdminView }                   from './views/RendezVous';
 
 // ── Vues Mon Espace ───────────────────────────────────────────────
 import { MonCompteView, MesReplaysView,
@@ -273,7 +274,7 @@ function useAdminAPI() {
     };
     if (body) opts.body = JSON.stringify(body);
     try {
-      const BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+      const BASE = import.meta.env.VITE_API_URL || '';
       const res = await fetch(`${BASE}/api/admin${path}`, opts);
       if (res.status === 401) { navigate("/espace-membre"); return null; }
       if (res.status === 204) return true;
@@ -377,6 +378,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
     { id:"cartes",           label:"Cartes Cadeaux" },
     { id:"temoignages",      label:"Témoignages",         urgent:true },
     { id:"masterclass_admin",label:"Masterclasses" },
+    { id:"rendezvous_admin",label:"Rendez-vous" },
     { id:"tickets",          label:"Tickets & Événements" },
     { id:"evt_admin",        label:"Événements" },
     { id:"actu_admin",       label:"Actualités" },
@@ -563,7 +565,7 @@ export default function AdminDashboard() {
     if (!ready) return;
     const interval = setInterval(() => {
       const t = localStorage.getItem("mmorphose_token");
-      const ABASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+      const ABASE = import.meta.env.VITE_API_URL || '';
       fetch(`${ABASE}/api/admin/stats/`, { headers: { "Authorization": `Bearer ${t}` } })
         .then(r => r.ok ? r.json() : null)
         .then(d => { if (d) setStats(d); })
@@ -575,7 +577,7 @@ export default function AdminDashboard() {
   function actualiser() {
     setRefreshKey(k => k + 1);
     const t = localStorage.getItem("mmorphose_token");
-    const RBASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+    const RBASE = import.meta.env.VITE_API_URL || '';
     fetch(`${RBASE}/api/admin/stats/`, { headers: { "Authorization": `Bearer ${t}` } })
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setStats(d); })
@@ -589,7 +591,7 @@ export default function AdminDashboard() {
     if (!savedToken || !user) { navigate("/espace-membre"); return; }
     if (!user.is_staff)       { navigate("/dashboard"); return; }
     // Charger les stats puis afficher le dashboard
-    const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+    const API_BASE = import.meta.env.VITE_API_URL || '';
     fetch(`${API_BASE}/api/admin/stats/`, {
       headers: { "Authorization": `Bearer ${savedToken}` }
     })
@@ -688,6 +690,7 @@ export default function AdminDashboard() {
           {active === "comm_admin"      && <CommunauteAdminView {...viewProps} />}
           {active === "store_admin"     && <StoreAdminView {...viewProps} />}
           {active === "masterclass_admin" && <MasterclassAdminView {...viewProps} />}
+          {active === "rendezvous_admin"  && <RendezVousAdminView  {...viewProps} />}
           {active === "liens_paiement"   && <ConfigView {...viewProps} sectionFilter="paiement" />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
           {active === "mes_guides"      && <MesGuidesView {...viewProps} />}

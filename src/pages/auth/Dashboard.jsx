@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import api, { authAPI, avisAPI, learningAPI } from '../../services/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const FORMULES = { F1:'ESSENTIELLE', F2:'PERSONNALISÉE', F3:'IMMERSION', F4:'VIP' }
 

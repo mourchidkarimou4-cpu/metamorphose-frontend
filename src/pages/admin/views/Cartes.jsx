@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { FORMULES } from '../constants';
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function CartesView({ api, toast, refreshKey = 0 }) {
   const [cartes,   setCartes]   = useState([]);
   const [loading,  setLoading]  = useState(true);

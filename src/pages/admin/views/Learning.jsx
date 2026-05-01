@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { learningAPI } from '../../../services/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function LearningView({ api, toast }) {
   const [onglet,     setOnglet]     = useState('cours')
   const [cours,      setCours]      = useState([])

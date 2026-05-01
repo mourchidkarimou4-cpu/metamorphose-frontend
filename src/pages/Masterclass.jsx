@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { masterclassAPI, configAPI } from '../services/api';
 import API_URL from '../config';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
 const BACKEND = API_URL;

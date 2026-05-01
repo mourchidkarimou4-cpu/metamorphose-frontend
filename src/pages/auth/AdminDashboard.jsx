@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useNavigate, Link } from "react-router-dom";
 import { learningAPI } from '../../services/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
@@ -1692,7 +1692,7 @@ function TemoignagesView({ api, toast }) {
 
 /* ── TÉMOIGNAGES MASTERCLASS ADMIN ─────────────────────────── */
 function TemoignagesMasterclassAdminView({ toast }) {
-  const API_BASE = import.meta.env.VITE_API_URL || "https://metamorphose-backend.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_URL || '';
   const token = localStorage.getItem("mmorphose_token");
   const [temos, setTemos] = useState([]);
   const [loading, setLoading] = useState(true);

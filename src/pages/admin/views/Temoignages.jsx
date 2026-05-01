@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FORMULES } from '../constants';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function TemoignagesView({ api, toast }) {
   const [temos,    setTemos]    = useState([]);
   const [loading,  setLoading]  = useState(true);
@@ -372,7 +372,7 @@ export { TemoignagesView };
 
 
 function TemoignagesMasterclassAdminView({ toast }) {
-  const API_BASE = import.meta.env.VITE_API_URL || "https://metamorphose-backend.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_URL || '';
   const token = localStorage.getItem("mmorphose_token");
   const [temos, setTemos] = useState([]);
   const [loading, setLoading] = useState(true);

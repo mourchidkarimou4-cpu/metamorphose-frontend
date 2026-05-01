@@ -59,7 +59,7 @@ const MOBILE_SECTIONS = [
   },
 ];
 
-export default function Navbar({ onAuthOpen }) {
+export default function Navbar({ onAuthOpen, onRdvOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user } = useAuth();
 
@@ -142,6 +142,13 @@ export default function Navbar({ onAuthOpen }) {
               <span>Mon espace</span>
             </button>
           )}
+          <button onClick={onRdvOpen}
+            style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"transparent", border:"1px solid rgba(201,169,106,.35)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"all .3s", flexShrink:0 }}
+            onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
+            onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(201,169,106,.35)"; }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Prendre RDV
+          </button>
           <button onClick={() => onAuthOpen("inscription")}
             style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"background .3s", flexShrink:0 }}
             onMouseEnter={e=>e.currentTarget.style.background="#a01049"}

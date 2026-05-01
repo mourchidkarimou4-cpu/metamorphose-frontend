@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function TicketsView({ api, toast }) {
   const [onglet,     setOnglet]     = useState('evenements')
   const [evenements, setEvenements] = useState([])

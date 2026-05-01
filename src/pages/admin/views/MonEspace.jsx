@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function MonCompteView({ toast }) {
   const { token, user, updateUser } = useAuth();
   const [email,       setEmail]       = useState(user?.email      || "");

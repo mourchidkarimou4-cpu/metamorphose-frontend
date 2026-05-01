@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import ModalRendezVous from '../components/ModalRendezVous';
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "../components/AuthModal";
@@ -572,7 +573,7 @@ function Orb({ style }) {
   return <div style={{ position:"absolute", borderRadius:"50%", background:"radial-gradient(circle,rgba(201,169,106,.28),transparent 70%)", animation:"orb 10s ease-in-out infinite", pointerEvents:"none", ...style }}/>;
 }
 
-function Navbar({ scrollProgress, onAuthOpen, get }) {
+function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
   const [openMenu,  setOpenMenu]  = useState(null); // 'programme'|'formules'|'explorer'|null
@@ -808,6 +809,13 @@ function Navbar({ scrollProgress, onAuthOpen, get }) {
               Mon espace
             </button>
           )}
+          <button onClick={onRdvOpen}
+            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
+            onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
+            onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(201,169,106,.3)"; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Prendre RDV
+          </button>
           <div style={{ width:"1px", height:"12px", background:"rgba(255,255,255,.07)" }}/>
           <button onClick={() => onAuthOpen("inscription")} style={ctaLinkStyle}
             onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
@@ -2228,13 +2236,15 @@ export default function LandingPage() {
   useReveal();
 
   const [showCalc, setShowCalc] = useState(false);
+  const [showRdv,  setShowRdv]  = useState(false);
 
   return (
     <>
       <style>{STYLES}</style>
-      <Navbar scrollProgress={scrollProgress} onAuthOpen={(tab) => setAuthTab(tab)} get={get} />
+      <Navbar scrollProgress={scrollProgress} onAuthOpen={(tab) => setAuthTab(tab)} onRdvOpen={() => setShowRdv(true)} get={get} />
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       {showCalc && <CalculateurFormule onClose={() => setShowCalc(false)} />}
+      {showRdv  && <ModalRendezVous onClose={() => setShowRdv(false)} />}
 
       <WhatsAppButton get={get} />
       <AuraButton />

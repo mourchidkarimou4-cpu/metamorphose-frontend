@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 function AbonnesView({ api, toast }) {
   const [abonnes,  setAbonnes]  = useState([])
   const [loading,  setLoading]  = useState(true)
