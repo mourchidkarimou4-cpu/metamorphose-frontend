@@ -5,7 +5,7 @@ import AuthModal from "../components/AuthModal";
 import AuraButton from "../components/AuraButton";
 import api from '../services/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap');
@@ -421,9 +421,9 @@ function CalculateurFormule({ onClose }) {
 
   const FORMULES = {
     F1: { label:"ESSENTIELLE",    prix:"70 000 FCFA",  desc:"Accompagnement de groupe en ligne. Idéal pour démarrer ta transformation avec un cadre structuré.", color:"#C2185B", badge:"Startup" },
-    F2: { label:"PERSONNALISÉE",  prix:"160 000 FCFA", desc:"Accompagnement individuel en ligne avec Coach AHONON. Suivi personnalisé et adapté à ta situation.", color:"#C9A96A", badge:"Populaire" },
+    F2: { label:"PERSONNALISÉE",  prix:"160 000 FCFA", desc:"Accompagnement individuel en ligne avec Coach Prélia. Suivi personnalisé et adapté à ta situation.", color:"#C9A96A", badge:"Populaire" },
     F3: { label:"IMMERSION",      prix:"267 000 FCFA", desc:"Accompagnement de groupe en présentiel. Ateliers pratiques intensifs et transformation collective.", color:"#A8C8E0", badge:"Ambitieux" },
-    F4: { label:"VIP",            prix:"370 000 FCFA", desc:"Accompagnement individuel en présentiel VIP avec Coach AHONON. L'expérience de transformation ultime.", color:"#D8C1A0", badge:"Prestige" },
+    F4: { label:"VIP",            prix:"370 000 FCFA", desc:"Accompagnement individuel en présentiel VIP avec Coach Prélia. L'expérience de transformation ultime.", color:"#D8C1A0", badge:"Prestige" },
   };
 
   function calcResult(ans) {
@@ -1587,7 +1587,7 @@ function Formules({ get, setShowCalc, setAuthTab }) {
         "3 séances Immersives pendant le programme",
         "Dont diagnostic individuel",
         "Analyse personnalisée de ton évolution",
-        "Suivi plus rapproché avec Coach AHONON",
+        "Suivi plus rapproché avec Coach Prélia",
       ],
       ideal:"Un travail ciblé et personnalisé.",
     },

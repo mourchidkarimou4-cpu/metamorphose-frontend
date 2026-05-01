@@ -305,7 +305,7 @@ function ModalAuth({ onClose, onSuccess }) {
             Cercle privé<br/><em style={{ fontStyle:"italic", fontWeight:300, color:"#C9A96A" }}>des Métamorphosées</em>
           </h2>
           <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.35)", lineHeight:1.7 }}>
-            Votre clé d'accès vous a été transmise personnellement par Coach Ahonon à la fin de votre programme.
+            Votre clé d'accès vous a été transmise personnellement par Coach Prélia à la fin de votre programme.
           </p>
         </div>
         <form onSubmit={valider} style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
