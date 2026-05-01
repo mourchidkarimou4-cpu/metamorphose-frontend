@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { configAPI } from "../services/api";
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,300;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500;600;700&display=swap');
@@ -274,9 +274,91 @@ function FaqItem({ item }) {
   );
 }
 
+
+const WHATSAPP_COMMUNAUTE = "https://chat.whatsapp.com/K0yWRhfTnIzCTT3ilGoQw4?mode=gi_t";
+
+function ModalAuth({ onClose, onSuccess }) {
+  const [email, setEmail] = useState("");
+  const [cle, setCle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function valider(e) {
+    e.preventDefault();
+    if (!email.trim() || !cle.trim()) { setError("Tous les champs sont requis."); return; }
+    setLoading(true); setError("");
+    try {
+      const res = await communauteAPI.verifierCle({ email: email.trim(), cle: cle.trim().toUpperCase() });
+      if (res.data.acces) { onSuccess(); }
+      else { setError(res.data.detail || "Identifiants invalides."); }
+    } catch { setError("Erreur réseau. Veuillez réessayer."); }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.92)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"24px", backdropFilter:"blur(8px)" }} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div style={{ background:"linear-gradient(135deg,#080808,#0D1020)", border:"1px solid rgba(201,169,106,.2)", borderRadius:"4px", maxWidth:"480px", width:"100%", padding:"48px 40px", position:"relative" }}>
+        <div style={{ position:"absolute", top:0, left:0, right:0, height:"1px", background:"linear-gradient(90deg,transparent,#C9A96A,transparent)" }}/>
+        <div style={{ textAlign:"center", marginBottom:"40px" }}>
+          <p style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".35em", textTransform:"uppercase", color:"rgba(201,169,106,.45)", marginBottom:"14px" }}>Accès réservé</p>
+          <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.4rem,3vw,1.9rem)", fontWeight:400, color:"#F8F5F2", marginBottom:"10px" }}>
+            Cercle privé<br/><em style={{ fontStyle:"italic", fontWeight:300, color:"#C9A96A" }}>des Métamorphosées</em>
+          </h2>
+          <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.35)", lineHeight:1.7 }}>
+            Votre clé d'accès vous a été transmise personnellement par Coach Ahonon à la fin de votre programme.
+          </p>
+        </div>
+        <form onSubmit={valider} style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
+          <div>
+            <label style={{ fontFamily:"var(--ff-b)", fontSize:".58rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", display:"block", marginBottom:"8px" }}>Adresse email</label>
+            <input className="form-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="votre@email.com"/>
+          </div>
+          <div>
+            <label style={{ fontFamily:"var(--ff-b)", fontSize:".58rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", display:"block", marginBottom:"8px" }}>Clé d'accès personnelle</label>
+            <input className="form-input" value={cle} onChange={e=>setCle(e.target.value)} placeholder="Votre clé unique"/>
+          </div>
+          {error && <p style={{ background:"rgba(239,68,68,.07)", border:"1px solid rgba(239,68,68,.2)", borderRadius:"2px", padding:"10px 14px", fontFamily:"var(--ff-b)", fontSize:".75rem", color:"#f87171" }}>{error}</p>}
+          <button type="submit" className="btn-rose" disabled={loading} style={{ width:"100%", padding:"15px", marginTop:"8px" }}>
+            {loading ? "Vérification..." : "Accéder à la communauté"}
+          </button>
+        </form>
+        <button onClick={onClose} style={{ display:"block", width:"100%", marginTop:"16px", padding:"10px", background:"none", border:"none", color:"rgba(248,245,242,.2)", fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".1em", textTransform:"uppercase", cursor:"pointer" }}>Fermer</button>
+      </div>
+    </div>
+  );
+}
+
+function MessageBienvenue({ onClose }) {
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.92)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"24px", backdropFilter:"blur(8px)" }} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div style={{ maxWidth:"640px", width:"100%", maxHeight:"90vh", overflowY:"auto", padding:"24px" }}>
+        <div style={{ background:"linear-gradient(135deg,#080808,#0D1020)", border:"1px solid rgba(201,169,106,.2)", borderRadius:"4px", padding:"48px 40px", position:"relative" }}>
+          <div style={{ position:"absolute", top:0, left:0, right:0, height:"1px", background:"linear-gradient(90deg,transparent,#C9A96A,transparent)" }}/>
+          <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.3rem,3vw,1.8rem)", fontWeight:400, color:"#F8F5F2", marginBottom:"32px" }}>
+            Bienvenue dans la communauté<br/><em style={{ fontStyle:"italic", fontWeight:300, color:"#C9A96A" }}>des Métamorphosées.</em>
+          </h2>
+          <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.6)", lineHeight:1.85, marginBottom:"24px" }}>
+            Nous sommes heureuses de t'accueillir dans ce cercle privé, réservé aux femmes qui ont décidé de se choisir, de s'élever et de devenir une version plus confiante d'elles-mêmes.
+          </p>
+          <div style={{ borderTop:"1px solid rgba(201,169,106,.12)", paddingTop:"28px", marginTop:"8px" }}>
+            <a href={WHATSAPP_COMMUNAUTE} target="_blank" rel="noreferrer" className="btn-or" style={{ display:"block", width:"100%", textAlign:"center", background:"#25D366", color:"#fff" }}>
+              Intégrer la Communauté MMO
+            </a>
+          </div>
+          <button onClick={onClose} style={{ display:"block", width:"100%", marginTop:"12px", padding:"10px", background:"none", border:"none", color:"rgba(248,245,242,.2)", fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".1em", textTransform:"uppercase", cursor:"pointer" }}>Fermer</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CommunautePortail() {
   useReveal();
   useScrollProgress();
+
+  const [modal, setModal] = useState(null);
+  function ouvrirAuth() { setModal("auth"); }
+  function onAuthSuccess() { setModal("bienvenue"); }
 
   const abosRef = useRef(null);
   const formRef = useRef(null);
@@ -333,6 +415,8 @@ export default function CommunautePortail() {
   return (
     <>
       <style>{STYLES}</style>
+      {modal === "auth" && <ModalAuth onClose={() => setModal(null)} onSuccess={onAuthSuccess}/>}
+      {modal === "bienvenue" && <MessageBienvenue onClose={() => setModal(null)}/>}
       <div className="grain-overlay"/>
       <div className="scroll-bar"/>
 
@@ -385,7 +469,7 @@ export default function CommunautePortail() {
             </div>
 
             <div className="btns-flex" style={{ display:"flex", gap:"12px", flexWrap:"wrap", justifyContent:"center", animation:"fadeUp .7s .45s both" }}>
-              <button onClick={() => ouvrirFormulaire()} className="btn-rose">Rejoindre le Cercle Privé des Métamorphosés</button>
+              <button onClick={ouvrirAuth} className="btn-rose">Rejoindre le Cercle Privé des Métamorphosés</button>
               <button onClick={scrollToAbos} className="btn-ghost">Prendre mon abonnement</button>
               <Link to="/programme" className="btn-ghost">Rejoindre le Programme Métamorphose</Link>
             </div>
@@ -583,7 +667,7 @@ export default function CommunautePortail() {
               "Maintenant, élève-la."
             </div>
             <div className="reveal btns-flex" style={{ display:"flex", gap:"12px", flexWrap:"wrap", justifyContent:"center" }}>
-              <button onClick={() => ouvrirFormulaire()} className="btn-rose">Rejoindre le Cercle Privé des Métamorphosés</button>
+              <button onClick={ouvrirAuth} className="btn-rose">Rejoindre le Cercle Privé des Métamorphosés</button>
               <button onClick={scrollToAbos} className="btn-ghost">Prendre mon abonnement</button>
             </div>
             <div className="ligne-or" style={{ maxWidth:"100px", margin:"56px auto 0" }}/>

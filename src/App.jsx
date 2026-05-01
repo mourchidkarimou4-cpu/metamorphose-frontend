@@ -19,7 +19,6 @@ import ResetPassword   from './pages/ResetPassword'
 import NotFound        from './pages/NotFound'
 import PaiementPage    from './pages/Paiement'
 import SplashScreen    from './components/SplashScreen'
-import Communaute        from './pages/Communaute'
 import CommunautePortail from './pages/CommunautePortail'
 import Don             from './pages/Don'
 import Store           from './pages/Store'
@@ -32,7 +31,7 @@ import Actualites      from './pages/Actualites'
 import ScanTicket      from './pages/ScanTicket'
 import Logout          from './pages/Logout'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 /* ── Route protégée membre (clientes) ─────────────────────── */
 function PrivateRoute({ children }) {
@@ -113,7 +112,6 @@ export default function App() {
         <Route path="/carte-cadeau"  element={<CartesCadeaux />} />
         <Route path="/contact"       element={<Contact />} />
         <Route path="/communaute"         element={<CommunautePortail />} />
-        <Route path="/communaute/ancien"   element={<Communaute />} />
         <Route path="/don"           element={<Don />} />
         <Route path="/store"         element={<Store />} />
         <Route path="/live"          element={<LiveMasterclass />} />
