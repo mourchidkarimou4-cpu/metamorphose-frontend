@@ -794,21 +794,8 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
 
         </div>
 
-        {/* ── CTAs ── */}
         <div className="nav-ctas" style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
-          {user ? (
-            <Link to="/dashboard" className="cta-lux" style={ctaLinkStyle}
-              onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
-              onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
-              Mon espace
-            </Link>
-          ) : (
-            <button onClick={() => onAuthOpen("login")} className="cta-lux" style={ctaLinkStyle}
-              onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
-              onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
-              Mon espace
-            </button>
-          )}
+        {/* ── CTAs ── */}
           <button onClick={onRdvOpen}
             style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
