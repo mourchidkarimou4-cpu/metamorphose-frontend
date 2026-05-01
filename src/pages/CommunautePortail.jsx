@@ -288,10 +288,16 @@ function ModalAuth({ onClose, onSuccess }) {
     if (!email.trim() || !cle.trim()) { setError("Tous les champs sont requis."); return; }
     setLoading(true); setError("");
     try {
-      const res = await communauteAPI.verifierCle({ email: email.trim(), cle: cle.trim() });
-      if (res.data.acces) { onSuccess(); }
-      else { setError(res.data.detail || "Identifiants invalides."); }
-    } catch { setError("Erreur réseau. Veuillez réessayer."); }
+      const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://metamorphose-backend.onrender.com');
+      const res = await fetch(`${API_BASE}/api/communaute/valider-cle/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), cle: cle.trim() }),
+      });
+      const data = await res.json();
+      if (data.acces) { onSuccess(); }
+      else { setError(data.detail || "Identifiants invalides."); }
+    } catch(err) { setError("Erreur réseau. Veuillez réessayer. " + err.message); }
     setLoading(false);
   }
 
