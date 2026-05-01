@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { configAPI } from "../services/api";
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://metamorphose-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 // ── STYLES ──────────────────────────────────────────────────────────────────
 const STYLES = `
@@ -280,9 +280,6 @@ export default function Brunch() {
           <div style={{ position:"absolute", top:"30%", left:"50%", transform:"translateX(-50%)", width:"60%", height:"60%", background:"radial-gradient(ellipse 50% 40% at 50% 50%,rgba(201,169,106,.04),transparent)", pointerEvents:"none" }}/>
 
           <div style={{ position:"relative", maxWidth:"860px", margin:"0 auto" }}>
-            <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:200, fontSize:".56rem", letterSpacing:".5em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"24px", animation:"fadeUp .6s both" }}>
-              Page de vente officielle
-            </p>
 
             {/* Ligne or animée */}
             <div className="ligne-anim" style={{ maxWidth:"120px", margin:"0 auto 40px" }}/>
