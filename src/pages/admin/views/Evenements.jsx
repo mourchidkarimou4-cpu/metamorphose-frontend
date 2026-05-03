@@ -4,11 +4,7 @@ import { createPortal } from 'react-dom';
 function ModalPortal({ children }) {
   return createPortal(children, document.body);
 }
-import { createPortal } from 'react-dom';
 
-function ModalPortal({ children }) {
-  return createPortal(children, document.body);
-}
 const API_BASE = import.meta.env.VITE_API_URL || '';
 function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
   const [evts,    setEvts]    = useState([])
@@ -18,6 +14,11 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
   const [form,    setForm]    = useState({})
   const [uploading, setUploading] = useState(false)
   const token = localStorage.getItem('mmorphose_token')
+
+  useEffect(() => {
+    document.body.style.overflow = modal ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modal])
 
   function load() {
     setLoading(true)
@@ -57,7 +58,6 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
     const url = editing ? `${API_BASE}/api/evenements/admin/${editing.id}/` : `${API_BASE}/api/evenements/admin/`
     const method = editing ? 'PATCH' : 'POST'
     try {
-      // Si photo est une URL string (pas un fichier), envoyer en JSON
       const hasNewFile = form._photoFile instanceof File
       let res
       if (hasNewFile) {
@@ -118,50 +118,55 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
       ))}
 
       {modal && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.7)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}
-          onClick={e=>{ if(e.target===e.currentTarget) closeModal() }}>
-          <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:'8px', padding:'32px', maxWidth:'560px', width:'100%', maxHeight:'90vh', overflowY:'auto' }}>
-            <h3 style={{ fontFamily:'var(--ff-t)', fontSize:'1.3rem', marginBottom:'24px' }}>{editing?'Modifier':'Nouvel événement'}</h3>
-            <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
-              <div><label style={lbl}>Titre *</label><input style={inp} value={form.titre||''} onChange={e=>set('titre',e.target.value)} placeholder="Titre de l'événement"/></div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Badge</label><input style={inp} value={form.badge||''} onChange={e=>set('badge',e.target.value)} placeholder="100% GRATUIT"/></div>
-                <div><label style={lbl}>Couleur badge</label><input style={inp} value={form.badge_color||'#C9A96A'} onChange={e=>set('badge_color',e.target.value)} placeholder="#C9A96A"/></div>
+        <ModalPortal>
+          <div style={{ position:'fixed', inset:0, background:'rgba(10,10,10,.9)', backdropFilter:'blur(12px)', zIndex:99999, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px' }}
+            onClick={e=>{ if(e.target===e.currentTarget) closeModal() }}>
+            <div style={{ background:'#141414', border:'1px solid rgba(201,169,106,.15)', borderRadius:'6px', padding:'36px', width:'100%', maxWidth:'560px', maxHeight:'85vh', overflowY:'auto', animation:'fadeUp .35s both' }}
+              onClick={e=>e.stopPropagation()}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'24px' }}>
+                <h3 style={{ fontFamily:'var(--ff-t)', fontSize:'1.3rem' }}>{editing?'Modifier':'Nouvel événement'}</h3>
+                <button onClick={closeModal} style={{ background:'none', border:'none', color:'var(--text-sub)', fontSize:'1.2rem', cursor:'pointer' }}>X</button>
               </div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Date</label><input style={inp} value={form.date||''} onChange={e=>set('date',e.target.value)} placeholder="Dimanche 26 avril"/></div>
-                <div><label style={lbl}>Lieu</label><input style={inp} value={form.lieu||''} onChange={e=>set('lieu',e.target.value)} placeholder="En ligne"/></div>
-              </div>
-              <div><label style={lbl}>Description</label><textarea style={{...inp, minHeight:'100px', resize:'vertical'}} value={form.description||''} onChange={e=>set('description',e.target.value)}/></div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Texte bouton</label><input style={inp} value={form.bouton||''} onChange={e=>set('bouton',e.target.value)} placeholder="Je m'inscris"/></div>
-                <div><label style={lbl}>Lien bouton</label><input style={inp} value={form.lien||''} onChange={e=>set('lien',e.target.value)} placeholder="/masterclass"/></div>
-              </div>
-              <div>
-                <label style={lbl}>Photo / Affiche</label>
-                {form.photo && <img src={form.photo} alt="preview" style={{ width:'100%', height:'160px', objectFit:'cover', borderRadius:'4px', marginBottom:'8px' }}/>}
-                <label style={{ display:'inline-flex', alignItems:'center', gap:'8px', padding:'8px 14px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', cursor:uploading?'not-allowed':'pointer', fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'var(--or)', letterSpacing:'.1em', textTransform:'uppercase' }}>
-                  {uploading ? 'Upload...' : '+ Uploader une photo'}
-                  <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploading} onChange={e=>uploadPhoto(e.target.files[0])}/>
-                </label>
-              </div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Statut</label>
-                  <select style={inp} value={form.statut||'a_venir'} onChange={e=>set('statut',e.target.value)}>
-                    <option value="a_venir">À venir</option>
-                    <option value="en_cours">En cours</option>
-                    <option value="termine">Terminé</option>
-                  </select>
+              <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
+                <div><label style={lbl}>Titre *</label><input style={inp} value={form.titre||''} onChange={e=>set('titre',e.target.value)} placeholder="Titre de l'événement"/></div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Badge</label><input style={inp} value={form.badge||''} onChange={e=>set('badge',e.target.value)} placeholder="100% GRATUIT"/></div>
+                  <div><label style={lbl}>Couleur badge</label><input style={inp} value={form.badge_color||'#C9A96A'} onChange={e=>set('badge_color',e.target.value)} placeholder="#C9A96A"/></div>
                 </div>
-                <div><label style={lbl}>Ordre</label><input style={inp} type="number" value={form.ordre||0} onChange={e=>set('ordre',parseInt(e.target.value)||0)}/></div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Date</label><input style={inp} value={form.date||''} onChange={e=>set('date',e.target.value)} placeholder="Dimanche 26 avril"/></div>
+                  <div><label style={lbl}>Lieu</label><input style={inp} value={form.lieu||''} onChange={e=>set('lieu',e.target.value)} placeholder="En ligne"/></div>
+                </div>
+                <div><label style={lbl}>Description</label><textarea style={{...inp, minHeight:'100px', resize:'vertical'}} value={form.description||''} onChange={e=>set('description',e.target.value)}/></div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Texte bouton</label><input style={inp} value={form.bouton||''} onChange={e=>set('bouton',e.target.value)} placeholder="Je m'inscris"/></div>
+                  <div><label style={lbl}>Lien bouton</label><input style={inp} value={form.lien||''} onChange={e=>set('lien',e.target.value)} placeholder="/masterclass"/></div>
+                </div>
+                <div>
+                  <label style={lbl}>Photo / Affiche</label>
+                  {form.photo && <img src={form.photo} alt="preview" style={{ width:'100%', height:'160px', objectFit:'cover', borderRadius:'4px', marginBottom:'8px' }}/>}
+                  <label style={{ display:'inline-flex', alignItems:'center', gap:'8px', padding:'8px 14px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', cursor:uploading?'not-allowed':'pointer', fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'var(--or)', letterSpacing:'.1em', textTransform:'uppercase' }}>
+                    {uploading ? 'Upload...' : '+ Uploader une photo'}
+                    <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploading} onChange={e=>uploadPhoto(e.target.files[0])}/>
+                  </label>
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Statut</label>
+                    <select style={inp} value={form.statut||'a_venir'} onChange={e=>set('statut',e.target.value)}>
+                      <option value="a_venir">À venir</option>
+                      <option value="en_cours">En cours</option>
+                      <option value="termine">Terminé</option>
+                    </select>
+                  </div>
+                  <div><label style={lbl}>Ordre</label><input style={inp} type="number" value={form.ordre||0} onChange={e=>set('ordre',parseInt(e.target.value)||0)}/></div>
+                </div>
               </div>
-            </div>
-            <div style={{ display:'flex', gap:'10px', marginTop:'24px' }}>
-              <button className="admin-btn admin-btn-primary" onClick={sauvegarder} style={{ flex:1 }}>Enregistrer</button>
-              <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Annuler</button>
+              <div style={{ display:'flex', gap:'10px', marginTop:'24px' }}>
+                <button className="admin-btn admin-btn-primary" onClick={sauvegarder} style={{ flex:1 }}>Enregistrer</button>
+                <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Annuler</button>
+              </div>
             </div>
           </div>
-        </div>
         </ModalPortal>
       )}
     </div>
@@ -176,6 +181,11 @@ function ActualitesAdminView({ api, toast }) {
   const [form,    setForm]    = useState({})
   const [uploading, setUploading] = useState(false)
   const token = localStorage.getItem('mmorphose_token')
+
+  useEffect(() => {
+    document.body.style.overflow = modal ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modal])
 
   function load() {
     setLoading(true)
@@ -274,45 +284,49 @@ function ActualitesAdminView({ api, toast }) {
       ))}
 
       {modal && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.7)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}
-          onClick={e=>{ if(e.target===e.currentTarget) closeModal() }}>
-          <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:'8px', padding:'32px', maxWidth:'560px', width:'100%', maxHeight:'90vh', overflowY:'auto' }}>
-            <h3 style={{ fontFamily:'var(--ff-t)', fontSize:'1.3rem', marginBottom:'24px' }}>{editing?'Modifier':'Nouvelle actualité'}</h3>
-            <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
-              <div><label style={lbl}>Titre *</label><input style={inp} value={form.titre||''} onChange={e=>set('titre',e.target.value)} placeholder="Titre de l'actualité"/></div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Catégorie</label><input style={inp} value={form.categorie||''} onChange={e=>set('categorie',e.target.value)} placeholder="Formation"/></div>
-                <div><label style={lbl}>Date</label><input style={inp} value={form.date||''} onChange={e=>set('date',e.target.value)} placeholder="Avril 2026"/></div>
+        <ModalPortal>
+          <div style={{ position:'fixed', inset:0, background:'rgba(10,10,10,.9)', backdropFilter:'blur(12px)', zIndex:99999, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px' }}
+            onClick={e=>{ if(e.target===e.currentTarget) closeModal() }}>
+            <div style={{ background:'#141414', border:'1px solid rgba(201,169,106,.15)', borderRadius:'6px', padding:'36px', width:'100%', maxWidth:'560px', maxHeight:'85vh', overflowY:'auto', animation:'fadeUp .35s both' }}
+              onClick={e=>e.stopPropagation()}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'24px' }}>
+                <h3 style={{ fontFamily:'var(--ff-t)', fontSize:'1.3rem' }}>{editing?'Modifier':'Nouvelle actualité'}</h3>
+                <button onClick={closeModal} style={{ background:'none', border:'none', color:'var(--text-sub)', fontSize:'1.2rem', cursor:'pointer' }}>X</button>
               </div>
-              <div><label style={lbl}>Résumé</label><textarea style={{...inp, minHeight:'100px', resize:'vertical'}} value={form.resume||''} onChange={e=>set('resume',e.target.value)}/></div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Texte bouton</label><input style={inp} value={form.bouton||''} onChange={e=>set('bouton',e.target.value)} placeholder="Lire l'histoire"/></div>
-                <div><label style={lbl}>Lien</label><input style={inp} value={form.lien||''} onChange={e=>set('lien',e.target.value)} placeholder="/evenements"/></div>
+              <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
+                <div><label style={lbl}>Titre *</label><input style={inp} value={form.titre||''} onChange={e=>set('titre',e.target.value)} placeholder="Titre de l'actualité"/></div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Catégorie</label><input style={inp} value={form.categorie||''} onChange={e=>set('categorie',e.target.value)} placeholder="Formation"/></div>
+                  <div><label style={lbl}>Date</label><input style={inp} value={form.date||''} onChange={e=>set('date',e.target.value)} placeholder="Avril 2026"/></div>
+                </div>
+                <div><label style={lbl}>Résumé</label><textarea style={{...inp, minHeight:'100px', resize:'vertical'}} value={form.resume||''} onChange={e=>set('resume',e.target.value)}/></div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Texte bouton</label><input style={inp} value={form.bouton||''} onChange={e=>set('bouton',e.target.value)} placeholder="Lire l'histoire"/></div>
+                  <div><label style={lbl}>Lien</label><input style={inp} value={form.lien||''} onChange={e=>set('lien',e.target.value)} placeholder="/evenements"/></div>
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
+                  <div><label style={lbl}>Couleur</label><input style={inp} value={form.color||'#C9A96A'} onChange={e=>set('color',e.target.value)} placeholder="#C9A96A"/></div>
+                  <div><label style={lbl}>Ordre</label><input style={inp} type="number" value={form.ordre||0} onChange={e=>set('ordre',parseInt(e.target.value)||0)}/></div>
+                </div>
+                <div>
+                  <label style={lbl}>Photo / Affiche</label>
+                  {form.photo && <img src={form.photo} alt="preview" style={{ width:'100%', height:'160px', objectFit:'cover', borderRadius:'4px', marginBottom:'8px' }}/>}
+                  <label style={{ display:'inline-flex', alignItems:'center', gap:'8px', padding:'8px 14px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', cursor:uploading?'not-allowed':'pointer', fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'var(--or)', letterSpacing:'.1em', textTransform:'uppercase' }}>
+                    {uploading ? 'Upload...' : '+ Uploader une photo'}
+                    <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploading} onChange={e=>uploadPhoto(e.target.files[0])}/>
+                  </label>
+                </div>
               </div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-                <div><label style={lbl}>Couleur</label><input style={inp} value={form.color||'#C9A96A'} onChange={e=>set('color',e.target.value)} placeholder="#C9A96A"/></div>
-                <div><label style={lbl}>Ordre</label><input style={inp} type="number" value={form.ordre||0} onChange={e=>set('ordre',parseInt(e.target.value)||0)}/></div>
+              <div style={{ display:'flex', gap:'10px', marginTop:'24px' }}>
+                <button className="admin-btn admin-btn-primary" onClick={sauvegarder} style={{ flex:1 }}>Enregistrer</button>
+                <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Annuler</button>
               </div>
-              <div>
-                <label style={lbl}>Photo / Affiche</label>
-                {form.photo && <img src={form.photo} alt="preview" style={{ width:'100%', height:'160px', objectFit:'cover', borderRadius:'4px', marginBottom:'8px' }}/>}
-                <label style={{ display:'inline-flex', alignItems:'center', gap:'8px', padding:'8px 14px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', cursor:uploading?'not-allowed':'pointer', fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'var(--or)', letterSpacing:'.1em', textTransform:'uppercase' }}>
-                  {uploading ? 'Upload...' : '+ Uploader une photo'}
-                  <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploading} onChange={e=>uploadPhoto(e.target.files[0])}/>
-                </label>
-              </div>
-            </div>
-            <div style={{ display:'flex', gap:'10px', marginTop:'24px' }}>
-              <button className="admin-btn admin-btn-primary" onClick={sauvegarder} style={{ flex:1 }}>Enregistrer</button>
-              <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Annuler</button>
             </div>
           </div>
-        </div>
         </ModalPortal>
       )}
     </div>
   )
 }
-
 
 export { EvenementsAdminView, ActualitesAdminView };
