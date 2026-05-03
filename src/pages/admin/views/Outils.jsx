@@ -312,6 +312,59 @@ function ExportView({ toast }) {
 
 
 /* ── MODE MAINTENANCE ───────────────────────────────────────── */
+function ScanPinView({ api, toast }) {
+  const [pin,     setPin]     = useState('')
+  const [loading, setLoading] = useState(false)
+  const token = localStorage.getItem('mmorphose_token')
+  const API_BASE = import.meta.env.VITE_API_URL || ''
+
+  async function changerPin() {
+    if (pin.trim().length < 4) { toast('Le PIN doit contenir au moins 4 caractères', 'error'); return }
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/tickets/changer-pin/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin.trim() })
+      })
+      const data = await res.json()
+      if (res.ok) { toast('PIN mis à jour ✓', 'success'); setPin('') }
+      else toast(data.detail || 'Erreur', 'error')
+    } catch { toast('Erreur serveur', 'error') }
+    setLoading(false)
+  }
+
+  const inp = { width:'100%', padding:'10px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'var(--text)', fontFamily:'var(--ff-b)', fontSize:'.82rem', fontWeight:300, outline:'none', letterSpacing:'4px' }
+
+  return (
+    <div style={{ animation:'fadeUp .5s both' }}>
+      <h2 style={{ fontFamily:'var(--ff-t)', fontSize:'1.6rem', fontWeight:600, marginBottom:'8px' }}>PIN de Scan</h2>
+      <p style={{ fontFamily:'var(--ff-b)', fontSize:'.78rem', color:'var(--text-sub)', marginBottom:'32px' }}>
+        Ce PIN est demandé à la personne à l'entrée du Brunch pour accéder au scanner de tickets.
+      </p>
+      <div style={{ maxWidth:'400px', padding:'28px', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'8px' }}>
+        <label style={{ fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.14em', textTransform:'uppercase', color:'var(--text-sub)', display:'block', marginBottom:'8px' }}>
+          Nouveau PIN (min. 4 caractères)
+        </label>
+        <input
+          style={inp}
+          type="password"
+          value={pin}
+          onChange={e=>setPin(e.target.value)}
+          placeholder="••••"
+          onKeyDown={e=>{ if(e.key==='Enter') changerPin() }}
+        />
+        <p style={{ fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'rgba(248,245,242,.3)', margin:'8px 0 16px', lineHeight:1.5 }}>
+          Communiquez ce PIN uniquement à la personne qui scannera les tickets le jour de l'événement.
+        </p>
+        <button className="admin-btn admin-btn-primary" onClick={changerPin} disabled={loading}>
+          {loading ? 'Mise à jour...' : 'Enregistrer le PIN'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function MaintenanceView({ api, toast }) {
   const [actif,   setActif]   = useState(false);
   const [loading, setLoading] = useState(true);
@@ -386,4 +439,4 @@ function MaintenanceView({ api, toast }) {
 
 /* ── MON COMPTE ADMIN ──────────────────────────────────────── */
 
-export { RessourcesAdminView, ListeAttenteView, NewsletterView, ExportView, MaintenanceView };
+export { RessourcesAdminView, ListeAttenteView, NewsletterView, ExportView, MaintenanceView, ScanPinView };

@@ -12,7 +12,7 @@ import { CartesView }                           from './views/Cartes';
 import { TemoignagesView }                      from './views/Temoignages';
 import { RessourcesAdminView, ListeAttenteView,
          NewsletterView, ExportView,
-         MaintenanceView } from './views/Outils';
+         MaintenanceView, ScanPinView } from './views/Outils';
 import { LiveAdminView }                        from './views/Live';
 import { EvenementsAdminView,
          ActualitesAdminView } from './views/Evenements';
@@ -457,6 +457,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
       items: [
         { id:"export",      label:"Export CSV",       icon:"download",color:"rgba(248,245,242,.4)" },
         { id:"maintenance", label:"Mode Maintenance", icon:"tool",    color:"rgba(248,245,242,.4)" },
+        { id:"scan_pin",    label:"PIN de Scan",       icon:"ticket",  color:"rgba(201,169,106,.8)" },
       ]
     },
     {
@@ -891,6 +892,7 @@ export default function AdminDashboard() {
           {active === "newsletter"    && <NewsletterView {...viewProps} />}
           {active === "export"        && <ExportView {...viewProps} />}
           {active === "maintenance"   && <MaintenanceView {...viewProps} />}
+          {active === "scan_pin"      && <ScanPinView {...viewProps} />}
           {active === "tickets"         && <TicketsView {...viewProps} />}
           {active === "partenaires"     && <PartenairesView {...viewProps} />}
           {active === "learning"        && <LearningView {...viewProps} />}
