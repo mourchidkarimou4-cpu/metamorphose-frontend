@@ -1,5 +1,6 @@
 import API_URL from '../config.js'
 import { useState, useRef , useEffect } from "react";
+import AuraButton from '../components/AuraButton'
 import SectionCadeaux from '../components/SectionCadeaux';
 import usePageBackground from "../hooks/usePageBackground";
 import { QRCodeSVG } from "qrcode.react";
@@ -601,7 +602,7 @@ export default function CartesCadeaux() {
         </div>
       </div>
       <SectionCadeaux />
-      
+      <AuraButton />
     </>
   );
 }

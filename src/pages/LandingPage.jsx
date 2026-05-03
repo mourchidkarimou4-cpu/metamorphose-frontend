@@ -3,6 +3,7 @@ import ModalRendezVous from '../components/ModalRendezVous';
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "../components/AuthModal";
+import AuraButton from "../components/AuraButton";
 import api from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
@@ -103,13 +104,7 @@ const STYLES = `
     .grid-prelia{grid-template-columns:280px 1fr;gap:48px}
     .grid-footer{grid-template-columns:1fr 1fr;gap:28px}
     .grid-formules{grid-template-columns:1fr 1fr}
-    .nav-links{gap:12px}
-    .nav-ctas{gap:8px}
-  }
-  @media(max-width:900px){
-    .nav-links{display:none !important}
-    .nav-ctas{gap:8px}
-    .mobile-only{display:flex !important}
+    .nav-links{gap:20px}
   }
 
   /* ── MOBILE (max 768px) ── */
@@ -538,7 +533,7 @@ function WhatsAppButton({ get }) {
   const url     = `https://wa.me/message/DI23LCDIMS5SF1`;
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
+    <div style={{ position:"fixed", bottom:"80px", right:"16px", zIndex:149, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"10px" }}>
       {open && (
         <div style={{ background:"#1a1a1a", border:"1px solid rgba(201,169,106,.2)", borderRadius:"8px", padding:"20px", maxWidth:"280px", boxShadow:"0 8px 32px rgba(0,0,0,.5)", animation:"revealUp .3s both" }}>
           <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", marginBottom:"8px" }}>Contacter Prélia</p>
@@ -799,7 +794,7 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
 
         </div>
 
-        <div className="nav-ctas" style={{ display:"flex", alignItems:"center", gap:"12px", flexShrink:0 }}>
+        <div className="nav-ctas" style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
         {/* ── CTAs ── */}
           <button onClick={onRdvOpen}
             style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
@@ -1111,14 +1106,19 @@ function Hero({ get }) {
         {get("hero_sous_titre","Libérez-vous du regard des autres, révélez votre identité profonde et osez prendre votre place.")}
       </p>
 
-      <div className="btn-group" style={{ position:"relative", display:"flex", flexDirection:"column", gap:"16px", alignItems:"center", animation:"revealUp .9s .45s both", width:"100%", maxWidth:"340px" }}>
-        <a href="#formules" className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite", width:"100%", textAlign:"center", boxSizing:"border-box" }}>
+      <div className="btn-group" style={{ position:"relative", display:"flex", flexWrap:"wrap", gap:"16px", justifyContent:"center", animation:"revealUp .9s .45s both", width:"100%", maxWidth:"480px" }}>
+        <a href="#formules" className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite" }}>
           {get("hero_btn1","Je rejoins l'aventure")}
         </a>
-        <a href="#methode" className="btn-s" style={{ width:"100%", textAlign:"center", boxSizing:"border-box" }}>{get("hero_btn2","Découvrir le programme")}</a>
+        <a href="#methode" className="btn-s">{get("hero_btn2","Découvrir le programme")}</a>
       </div>
 
       </div>{/* fin wrapper contenu */}
+
+      <div style={{ position:"absolute", bottom:"36px", left:"50%", transform:"translateX(-50%)", display:"flex", flexDirection:"column", alignItems:"center", gap:"6px", animation:"revealUp .9s .7s both", zIndex:10 }}>
+        <span style={{ fontSize:".58rem", letterSpacing:".22em", textTransform:"uppercase", color:"rgba(201,169,106,.45)" }}>Découvrir</span>
+        <div style={{ width:"1px", height:"48px", background:"linear-gradient(to bottom,var(--or),transparent)", animation:"float 2.2s ease-in-out infinite" }}/>
+      </div>
     </section>
   );
 }
@@ -2232,10 +2232,9 @@ export default function LandingPage() {
       {authTab && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
       {showCalc && <CalculateurFormule onClose={() => setShowCalc(false)} />}
       {showRdv  && <ModalRendezVous onClose={() => setShowRdv(false)} />}
-      <div style={{ position:"fixed", bottom:"24px", right:"16px", zIndex:9999, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"12px" }}>
-        
-        <WhatsAppButton get={get} />
-      </div>
+
+      <WhatsAppButton get={get} />
+      <AuraButton />
 
             <main>
         <Hero get={get} />

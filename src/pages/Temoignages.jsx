@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import AuraButton from '../components/AuraButton'
 import { configAPI, avisAPI } from '../services/api';
 
 const STYLES = `
@@ -311,7 +312,7 @@ export default function Temoignages() {
           </section>
         </div>
       </div>
-      
+      <AuraButton />
     </>
   );
 }
