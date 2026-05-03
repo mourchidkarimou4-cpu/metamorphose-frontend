@@ -153,6 +153,23 @@ function TicketsView({ api, toast }) {
             <span style={{fontFamily:'var(--ff-b)',fontSize:'.72rem',color:'var(--text-sub)'}}>{tickets.length} ticket{tickets.length!==1?'s':''}</span>
           </div>
 
+          {/* Stats tickets */}
+          {!loading && tickets.length > 0 && (
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(120px,1fr))',gap:'10px',marginBottom:'20px'}}>
+              {[
+                { label:'Total',    val: tickets.length,                                          color:'var(--text)' },
+                { label:'Valides',  val: tickets.filter(t=>t.statut==='valide').length,           color:'#4CAF50' },
+                { label:'Scannés', val: tickets.filter(t=>t.statut==='scanne').length,            color:'var(--or)' },
+                { label:'Annulés', val: tickets.filter(t=>t.statut==='annule').length,            color:'#ef5350' },
+              ].map((s,i)=>(
+                <div key={i} style={{padding:'14px 16px',background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.06)',borderRadius:'4px',textAlign:'center'}}>
+                  <p style={{fontFamily:'var(--ff-t)',fontSize:'1.6rem',fontWeight:700,color:s.color,margin:'0 0 4px'}}>{s.val}</p>
+                  <p style={{fontFamily:'var(--ff-b)',fontSize:'.62rem',letterSpacing:'.12em',textTransform:'uppercase',color:'var(--text-sub)',margin:0}}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
           {loading ? <p style={{color:'var(--text-sub)',fontFamily:'var(--ff-b)'}}>Chargement...</p> :
           tickets.length===0 ? (
             <div style={{padding:'40px',textAlign:'center',background:'rgba(255,255,255,.02)',border:'1px solid rgba(255,255,255,.05)',borderRadius:'6px'}}>
