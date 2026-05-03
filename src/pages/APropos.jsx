@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AuraButton from "../components/AuraButton";
 import SectionCadeaux from '../components/SectionCadeaux';
 import { configAPI } from '../services/api';
 
@@ -309,7 +308,7 @@ export default function APropos() {
         </div>
       </div>
       <SectionCadeaux />
-      <AuraButton />
+      
     </>
   );
 }
