@@ -430,15 +430,12 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
       items: [
         { id:"config",         label:"Contenu du site",    icon:"edit",   color:"#C9A96A" },
         { id:"images",         label:"Photos & Images",    icon:"image",  color:"#C9A96A" },
-        { id:"vague",          label:"Vague & Places",     icon:"users",  color:"#C2185B" },
-        { id:"stats_site",     label:"Stats du site",      icon:"chart",  color:"#C9A96A" },
         { id:"temoignages",    label:"Témoignages",        icon:"quote",  color:"#C9A96A", urgent:true },
         { id:"partenaires",    label:"Partenaires",        icon:"link",   color:"#C9A96A" },
         { id:"ressources",     label:"Chanson & Guide PDF",icon:"music",  color:"#C9A96A" },
         { id:"newsletter",     label:"Newsletter",         icon:"send",   color:"rgba(100,130,255,.8)" },
         { id:"abonnes",        label:"Abonnés Newsletter", icon:"users",  color:"rgba(100,130,255,.8)" },
         { id:"liste_attente",  label:"Liste d'attente",    icon:"clock",  color:"rgba(100,130,255,.8)" },
-        { id:"liens_paiement", label:"Liens de paiement",  icon:"credit", color:"rgba(255,165,0,.8)" },
       ]
     },
     {
@@ -885,8 +882,6 @@ export default function AdminDashboard() {
           {active === "images"      && <ImagesView {...viewProps} />}
           {active === "cartes"      && <CartesView {...viewProps} />}
           {active === "temoignages" && <TemoignagesView {...viewProps} />}
-          {active === "vague"        && <ConfigView {...viewProps} sectionFilter="vague" />}
-          {active === "stats_site"   && <ConfigView {...viewProps} sectionFilter="stats_site" />}
           {active === "ressources"   && <RessourcesAdminView {...viewProps} />}
           {active === "liste_attente" && <ListeAttenteView {...viewProps} />}
           {active === "newsletter"    && <NewsletterView {...viewProps} />}
@@ -904,7 +899,6 @@ export default function AdminDashboard() {
           {active === "store_admin"     && <StoreAdminView {...viewProps} />}
           {active === "masterclass_admin" && <MasterclassAdminView {...viewProps} />}
           {active === "rendezvous_admin"  && <RendezVousAdminView  {...viewProps} />}
-          {active === "liens_paiement"   && <ConfigView {...viewProps} sectionFilter="paiement" />}
           {active === "mes_replays"     && <MesReplaysView {...viewProps} />}
           {active === "mes_guides"      && <MesGuidesView {...viewProps} />}
           {active === "mon_temoignage"  && <MonTemoignageView {...viewProps} />}
