@@ -587,7 +587,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
                 <div key={section.key} style={{ marginBottom:"2px" }}>
                   <button onClick={() => toggleSection(section.key)}
                     style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"8px 12px", background:"none", border:"none", cursor:"pointer", borderRadius:"2px" }}>
-                    <span style={{ fontSize:"8px", letterSpacing:".3em", textTransform:"uppercase", color: hasActive ? "rgba(201,169,106,.6)" : "rgba(248,245,242,.15)", fontWeight: hasActive ? 600 : 400 }}>{section.label}</span>
+                    <span style={{ fontFamily:"var(--ff-a)", fontSize:"12px", letterSpacing:".05em", textTransform:"uppercase", color: hasActive ? "rgba(201,169,106,.8)" : "rgba(248,245,242,.45)", fontWeight:600, fontStyle:"italic" }}>{section.label}</span>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={hasActive ? "rgba(201,169,106,.5)" : "rgba(248,245,242,.15)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition:"transform .25s" }}>
                       <polyline points="6 9 12 15 18 9"/>
                     </svg>
