@@ -216,6 +216,11 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
     probleme: [
       { cle:"probleme_titre",    label:"Titre de la section",   type:"text",     placeholder:"Vous reconnaissez-vous ?" },
       { cle:"probleme_intro",    label:"Texte d'introduction",  type:"textarea", placeholder:"..." },
+      { cle:"probleme_item1",    label:"Item 1",                type:"text",     placeholder:"La peur paralysante du regard des autres" },
+      { cle:"probleme_item2",    label:"Item 2",                type:"text",     placeholder:"Le doute et les croyances limitantes" },
+      { cle:"probleme_item3",    label:"Item 3",                type:"text",     placeholder:"La difficulté à vous affirmer" },
+      { cle:"probleme_item4",    label:"Item 4 (optionnel)",    type:"text",     placeholder:"..." },
+      { cle:"probleme_item5",    label:"Item 5 (optionnel)",    type:"text",     placeholder:"..." },
       { cle:"probleme_citation", label:"Citation mise en avant", type:"textarea", placeholder:"..." },
     ],
     methode: [
