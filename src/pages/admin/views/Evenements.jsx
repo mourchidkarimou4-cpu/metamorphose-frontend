@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+
+function ModalPortal({ children }) {
+  return createPortal(children, document.body);
+}
+import { createPortal } from 'react-dom';
+
+function ModalPortal({ children }) {
+  return createPortal(children, document.body);
+}
 const API_BASE = import.meta.env.VITE_API_URL || '';
 function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
   const [evts,    setEvts]    = useState([])
@@ -152,6 +162,7 @@ function EvenementsAdminView({ api, toast, refreshKey = 0 }) {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   )
@@ -297,6 +308,7 @@ function ActualitesAdminView({ api, toast }) {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   )

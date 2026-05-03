@@ -209,32 +209,49 @@ const STYLES = `
   }
 
   /* ── RESPONSIVE ─────────────────────────────────────────────── */
+  .admin-sidebar { width:240px; }
+
+  @media(min-width:1200px) {
+    .admin-sidebar { width:260px; }
+    .admin-main { padding:36px 48px; }
+  }
   @media(max-width:900px) {
     .hamburger-btn { display:flex; }
     .admin-topbar { display:flex; }
+    .admin-layout { flex-direction:column !important; }
+    .admin-main { padding:16px !important; }
     .admin-sidebar {
-      position:fixed !important; left:0 !important; top:0 !important;
+      position:fixed !important;
+      left:0 !important; top:0 !important;
       bottom:0 !important; height:100vh !important;
-      width:260px !important; z-index:1000;
+      width:280px !important;
+      z-index:10000 !important;
       transform:translateX(-100%) !important;
       transition:transform .3s cubic-bezier(0.4,0,0.2,1) !important;
       box-shadow:none !important;
+      overflow-y:auto !important;
     }
     .admin-sidebar.open {
       transform:translateX(0) !important;
-      box-shadow:8px 0 40px rgba(0,0,0,.6) !important;
+      box-shadow:8px 0 40px rgba(0,0,0,.8) !important;
     }
-    .admin-layout { flex-direction:column !important; }
-    .admin-main { padding:20px 16px !important; }
-  }
-  @media(max-width:480px) {
     .stat-grid { grid-template-columns:1fr 1fr !important; }
-    .admin-modal { padding:24px 16px !important; width:95vw !important; max-width:95vw !important; }
-    .img-grid { grid-template-columns:1fr !important; }
-    .row-item { flex-direction:column !important; align-items:flex-start !important; }
+    .row-item { flex-wrap:wrap !important; gap:8px !important; }
   }
-  @media(max-width:360px) {
+  @media(max-width:600px) {
+    .admin-main { padding:12px !important; }
+    .admin-sidebar { width:85vw !important; max-width:320px !important; }
+    .modal-box { padding:24px 16px !important; max-width:95vw !important; }
+    .img-grid { grid-template-columns:1fr 1fr !important; }
+    .row-item { flex-direction:column !important; align-items:flex-start !important; }
+    .admin-btn { padding:8px 12px !important; font-size:.65rem !important; }
+  }
+  @media(max-width:400px) {
+    .admin-main { padding:10px 8px !important; }
+    .admin-sidebar { width:92vw !important; }
     .stat-grid { grid-template-columns:1fr !important; }
+    .modal-box { padding:20px 12px !important; }
+    .img-grid { grid-template-columns:1fr !important; }
   }
 `;
 
@@ -504,7 +521,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
   return (
     <>
       <div className={`sidebar-overlay ${open ? "open" : ""}`} onClick={onClose} />
-      <aside className={`admin-sidebar ${open ? "open" : ""}`} style={{ width:"240px", flexShrink:0, background:"#0c0a14", borderRight:"1px solid rgba(255,255,255,.04)", display:"flex", flexDirection:"column", height:"100vh", position:"sticky", top:0, overflowY:"auto" }}>
+      <aside className={`admin-sidebar ${open ? "open" : ""}`} style={{ flexShrink:0, background:"#0c0a14", borderRight:"1px solid rgba(255,255,255,.04)", display:"flex", flexDirection:"column", height:"100vh", overflowY:"auto" }}>
 
         {/* Logo + profil */}
         <div style={{ padding:"20px 18px 14px", borderBottom:"1px solid rgba(255,255,255,.04)", flexShrink:0 }}>
@@ -522,6 +539,17 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
               <p style={{ fontFamily:"var(--ff-b)", fontSize:"12px", fontWeight:500, color:"#F8F5F2", margin:0 }}>{prenom}</p>
               <p style={{ fontFamily:"var(--ff-b)", fontSize:"9px", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.4)", margin:0 }}>Administratrice</p>
             </div>
+          </div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:"10px" }}>
+            <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:"10px", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(248,245,242,.2)", textDecoration:"none" }}>
+              Voir le site
+            </Link>
+            <button onClick={() => { logout(); window.location.href="/espace-membre"; }}
+              style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:"10px", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(239,83,80,.35)" }}
+              onMouseEnter={e=>e.target.style.color="#ef5350"}
+              onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.35)"}>
+              Déconnexion
+            </button>
           </div>
         </div>
 
@@ -582,20 +610,6 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
           )}
         </nav>
 
-        {/* Footer */}
-        <div style={{ padding:"12px 14px", borderTop:"1px solid rgba(255,255,255,.04)", flexShrink:0 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <Link to="/" style={{ fontFamily:"var(--ff-b)", fontSize:"10px", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(248,245,242,.2)", textDecoration:"none" }}>
-              Voir le site
-            </Link>
-            <button onClick={() => { logout(); window.location.href="/espace-membre"; }}
-              style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--ff-b)", fontSize:"10px", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(239,83,80,.35)" }}
-              onMouseEnter={e=>e.target.style.color="#ef5350"}
-              onMouseLeave={e=>e.target.style.color="rgba(239,83,80,.35)"}>
-              Déconnexion
-            </button>
-          </div>
-        </div>
       </aside>
     </>
   );
@@ -852,7 +866,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          <main className="admin-main" style={{ flex:1, overflow:"auto", padding:"32px 40px" }}>
+          <main className="admin-main" style={{ flex:1, padding:"32px 40px" }}>
             {/* Bouton actualiser — desktop uniquement */}
             <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:"16px" }}>
               <button onClick={actualiser} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"3px", color:"rgba(201,169,106,.6)", fontFamily:"var(--ff-b)", fontSize:".62rem", fontWeight:600, letterSpacing:".12em", textTransform:"uppercase", padding:"6px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:"6px", transition:"all .2s" }}
