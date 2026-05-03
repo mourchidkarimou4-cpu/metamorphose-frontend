@@ -357,9 +357,26 @@ function ScanPinView({ api, toast }) {
         <p style={{ fontFamily:'var(--ff-b)', fontSize:'.68rem', color:'rgba(248,245,242,.3)', margin:'8px 0 16px', lineHeight:1.5 }}>
           Communiquez ce PIN uniquement à la personne qui scannera les tickets le jour de l'événement.
         </p>
-        <button className="admin-btn admin-btn-primary" onClick={changerPin} disabled={loading}>
+        <button className="admin-btn admin-btn-primary" onClick={changerPin} disabled={loading} style={{ marginBottom:'24px' }}>
           {loading ? 'Mise à jour...' : 'Enregistrer le PIN'}
         </button>
+
+        <div style={{ borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:'20px' }}>
+          <p style={{ fontFamily:'var(--ff-b)', fontSize:'.62rem', letterSpacing:'.14em', textTransform:'uppercase', color:'var(--text-sub)', marginBottom:'12px' }}>
+            Lien de la page scanner
+          </p>
+          <div style={{ display:'flex', gap:'8px', alignItems:'center', marginBottom:'12px' }}>
+            <input readOnly value={`${window.location.origin}/scan`}
+              style={{ flex:1, padding:'10px 14px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', borderRadius:'3px', color:'rgba(248,245,242,.6)', fontFamily:'var(--ff-b)', fontSize:'.78rem', outline:'none' }}/>
+            <button className="admin-btn admin-btn-secondary" onClick={()=>{ navigator.clipboard.writeText(`${window.location.origin}/scan`); toast('Lien copié ✓', 'success') }}>
+              Copier
+            </button>
+          </div>
+          <a href="/scan" target="_blank"
+            style={{ display:'inline-flex', alignItems:'center', gap:'8px', padding:'10px 18px', background:'rgba(201,169,106,.08)', border:'1px solid rgba(201,169,106,.2)', borderRadius:'3px', color:'var(--or)', fontFamily:'var(--ff-b)', fontSize:'.7rem', fontWeight:600, letterSpacing:'.1em', textTransform:'uppercase', textDecoration:'none' }}>
+            Ouvrir la page scanner →
+          </a>
+        </div>
       </div>
     </div>
   )
