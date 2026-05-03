@@ -1,7 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import AuraButton from '../components/AuraButton'
 import { learningAPI, configAPI } from '../services/api';
 
 const STYLES = `
@@ -624,8 +623,7 @@ function DetailCours() {
           }}>← Voir tous les cours</Link>
         </div>
       </main>
-    <AuraButton />
-    </>
+        </>
   )
 }
 

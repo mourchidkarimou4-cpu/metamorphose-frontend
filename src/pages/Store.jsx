@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import usePageBackground from "../hooks/usePageBackground";
-import AuraButton from '../components/AuraButton';
 import { Link, useNavigate } from "react-router-dom";
 import { learningAPI } from '../services/api';
 
@@ -463,7 +462,6 @@ export default function Store() {
         <ModalCours cours={selectionne} onClose={() => setSelectionne(null)} />
       )}
 
-      <AuraButton />
-    </>
+          </>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
-import AuraButton from "../components/AuraButton";
 import SectionCadeaux from '../components/SectionCadeaux';
 import { configAPI } from '../services/api';
 
@@ -266,7 +265,6 @@ export default function Programme() {
         </div>
       </div>
       <SectionCadeaux />
-      <AuraButton />
-    </>
+          </>
   );
 }
