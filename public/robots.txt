@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Pages privées — ne pas indexer
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /scan
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://metamorphosehub.com/sitemap.xml
