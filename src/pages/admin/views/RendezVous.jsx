@@ -144,7 +144,7 @@ function ListeRdvView() {
     load();
   }
 
-  const TYPE_LABELS = { decouverte:'Appel Découverte', coaching:'Séance Coaching', consultation:'Consultation Image & Style' };
+  const TYPE_LABELS = { appel_decouverte:'Appel Découverte', bilan_image:'Bilan Image', seance_coaching:'Séance de Coaching' };
   const MODE_LABELS = { en_ligne:'En ligne', presentiel:'En présentiel' };
 
   return (
@@ -184,6 +184,8 @@ function ListeRdvView() {
                     <span style={{ ...s.meta, color:'#C9A96A' }}>{rdv.date} à {rdv.heure}</span>
                     <span style={s.meta}>{rdv.email}</span>
                     <span style={s.meta}>{rdv.whatsapp}</span>
+                    {rdv.type_rdv === 'seance_coaching' && <span style={{...s.meta,color:'rgba(194,24,91,.6)'}}>· {rdv.nb_seances} séance{rdv.nb_seances!=='1'?'s':''}</span>}
+                    {rdv.prix > 0 && <span style={{...s.meta,color:'rgba(201,169,106,.6)',fontWeight:500}}>{rdv.prix.toLocaleString('fr-FR')} FCFA</span>}
                   </div>
                 </div>
                 <span style={{ fontSize:11, color:'rgba(248,245,242,.2)', flexShrink:0 }}>{rdv.created_at}</span>
@@ -217,7 +219,8 @@ function ListeRdvView() {
                 ['Mode',     MODE_LABELS[selected.mode]],
                 ['Date',     `${selected.date} à ${selected.heure}`],
                 ['Durée',    `${selected.duree} min`],
-                ['Tarif',    selected.est_gratuit ? 'Gratuit' : 'Payant'],
+                ['Tarif',    selected.est_gratuit ? 'Gratuit' : `${(selected.prix||0).toLocaleString('fr-FR')} FCFA`],
+                ...(selected.type_rdv === 'seance_coaching' ? [['Séances', selected.nb_seances]] : []),
               ].map(([k, v]) => (
                 <div key={k}>
                   <p style={{ fontSize:9, letterSpacing:'.2em', textTransform:'uppercase', color:'rgba(248,245,242,.22)', marginBottom:3 }}>{k}</p>
