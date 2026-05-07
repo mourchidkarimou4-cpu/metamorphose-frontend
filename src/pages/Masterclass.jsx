@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG } from 'qrcode.react';
 import { masterclassAPI, configAPI } from '../services/api';
 import API_URL from '../config';
 

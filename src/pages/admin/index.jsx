@@ -461,6 +461,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
       key: 'monespace',
       label: 'Mon espace',
       items: [
+        { id:"mes_rdv",        label:"Mes Rendez-vous", icon:"calendar",color:"rgba(201,169,106,.8)" },
         { id:"mon_compte",     label:"Mon Compte",     icon:"user",   color:"#C9A96A" },
         { id:"mes_replays",    label:"Mes Replays",    icon:"play",   color:"#C9A96A" },
         { id:"mes_guides",     label:"Mes Guides PDF", icon:"file",   color:"#C9A96A" },
@@ -911,6 +912,7 @@ export default function AdminDashboard() {
           {active === "progression"      && <ProgressionView {...viewProps} />}
           {active === "satisfaction"     && <SatisfactionView {...viewProps} />}
           {active === "agenda"           && <AgendaView {...viewProps} />}
+          {active === "mes_rdv"          && <MesRendezVousView {...viewProps} />}
             </main>
         </div>
       </div>

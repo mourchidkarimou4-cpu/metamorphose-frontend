@@ -2,7 +2,7 @@ import API_URL from '../config.js'
 import { useState, useRef , useEffect } from "react";
 import SectionCadeaux from '../components/SectionCadeaux';
 import usePageBackground from "../hooks/usePageBackground";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG } from 'qrcode.react';
 import { Link } from "react-router-dom";
 import api, { configAPI } from '../services/api';
 

@@ -672,4 +672,105 @@ function AgendaView({ api, toast }) {
   )
 }
 
-export { NotificationsView, MessageriView, VaguesView, ProgressionView, SatisfactionView, AgendaView };
+
+function MesRendezVousView({ api, toast }) {
+  const [rdvs,    setRdvs]    = useState([])
+  const [loading, setLoading] = useState(true)
+  const token = localStorage.getItem('mmorphose_token')
+  const API_BASE = import.meta.env.VITE_API_URL || ''
+
+  const TYPE_LABELS  = { appel_decouverte:'Appel Découverte', bilan_image:'Bilan Image', seance_coaching:'Séance de Coaching' }
+  const MODE_LABELS  = { en_ligne:'En ligne', presentiel:'En présentiel' }
+  const STATUT_STYLE = {
+    en_attente: { bg:'rgba(201,169,106,.08)', color:'#C9A96A',    label:'En attente' },
+    confirme:   { bg:'rgba(76,175,80,.08)',   color:'#4CAF50',    label:'Confirmé'   },
+    refuse:     { bg:'rgba(239,68,68,.08)',   color:'#f87171',    label:'Refusé'     },
+    annule:     { bg:'rgba(255,255,255,.04)', color:'rgba(248,245,242,.3)', label:'Annulé' },
+  }
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/rendezvous/mes-rdv/`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(d => { setRdvs(Array.isArray(d) ? d : []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  return (
+    <div style={{ animation:'fadeUp .5s both' }}>
+      <div style={{ marginBottom:'28px' }}>
+        <h2 style={{ fontFamily:'var(--ff-t)', fontSize:'1.6rem', fontWeight:600 }}>Mes Rendez-vous</h2>
+        <p style={{ fontFamily:'var(--ff-b)', fontSize:'.78rem', color:'var(--text-sub)', marginTop:'4px' }}>
+          Vos séances avec Prélia APEDO AHONON
+        </p>
+      </div>
+
+      {loading ? <p style={{ color:'var(--text-sub)', fontFamily:'var(--ff-b)' }}>Chargement...</p> :
+      rdvs.length === 0 ? (
+        <div style={{ padding:'60px', textAlign:'center', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'6px' }}>
+          <p style={{ fontFamily:'var(--ff-t)', fontStyle:'italic', fontSize:'1.1rem', color:'rgba(248,245,242,.3)', marginBottom:'16px' }}>
+            Aucun rendez-vous pour le moment
+          </p>
+          <p style={{ fontFamily:'var(--ff-b)', fontSize:'.78rem', color:'rgba(248,245,242,.2)', fontWeight:300 }}>
+            Prenez rendez-vous avec Prélia depuis la page d'accueil.
+          </p>
+        </div>
+      ) : (
+        <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+          {rdvs.map(r => {
+            const st = STATUT_STYLE[r.statut] || STATUT_STYLE.en_attente
+            return (
+              <div key={r.id} style={{ padding:'20px 24px', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.05)', borderRadius:'4px', borderLeft:`3px solid ${st.color}` }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'12px', flexWrap:'wrap' }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'8px', flexWrap:'wrap' }}>
+                      <p style={{ fontFamily:'var(--ff-t)', fontSize:'1rem', fontWeight:600, color:'#F8F5F2' }}>
+                        {TYPE_LABELS[r.type_rdv] || r.type_rdv}
+                      </p>
+                      <span style={{ padding:'3px 10px', borderRadius:'2px', background:st.bg, color:st.color, fontFamily:'var(--ff-b)', fontSize:'.62rem', fontWeight:600, letterSpacing:'.1em', textTransform:'uppercase' }}>
+                        {st.label}
+                      </span>
+                    </div>
+                    <div style={{ display:'flex', gap:'16px', flexWrap:'wrap' }}>
+                      <span style={{ fontFamily:'var(--ff-b)', fontSize:'.75rem', color:'#C9A96A', fontWeight:500 }}>
+                        {r.date} à {r.heure}
+                      </span>
+                      <span style={{ fontFamily:'var(--ff-b)', fontSize:'.75rem', color:'rgba(248,245,242,.4)' }}>
+                        {MODE_LABELS[r.mode]}
+                      </span>
+                      <span style={{ fontFamily:'var(--ff-b)', fontSize:'.75rem', color:'rgba(248,245,242,.4)' }}>
+                        {r.duree_rdv} min
+                      </span>
+                      {r.prix > 0 && (
+                        <span style={{ fontFamily:'var(--ff-b)', fontSize:'.75rem', color:'rgba(201,169,106,.6)', fontWeight:500 }}>
+                          {r.prix.toLocaleString('fr-FR')} FCFA
+                        </span>
+                      )}
+                    </div>
+                    {r.statut === 'confirme' && r.lien_reunion && (
+                      <a href={r.lien_reunion} target="_blank" rel="noreferrer"
+                        style={{ display:'inline-block', marginTop:'10px', padding:'8px 16px', background:'rgba(76,175,80,.08)', border:'1px solid rgba(76,175,80,.2)', borderRadius:'3px', color:'#4CAF50', fontFamily:'var(--ff-b)', fontSize:'.68rem', fontWeight:600, letterSpacing:'.1em', textTransform:'uppercase', textDecoration:'none' }}>
+                        Rejoindre la réunion
+                      </a>
+                    )}
+                    {r.note_admin && (
+                      <p style={{ marginTop:'8px', fontFamily:'var(--ff-b)', fontSize:'.75rem', color:'rgba(248,245,242,.4)', fontStyle:'italic', fontWeight:300 }}>
+                        Message de Prélia : {r.note_admin}
+                      </p>
+                    )}
+                  </div>
+                  <span style={{ fontFamily:'var(--ff-b)', fontSize:'.65rem', color:'rgba(248,245,242,.2)', flexShrink:0 }}>
+                    {r.created_at}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export { NotificationsView, MessageriView, VaguesView, ProgressionView, SatisfactionView, AgendaView, MesRendezVousView };

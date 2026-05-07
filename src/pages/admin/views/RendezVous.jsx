@@ -149,7 +149,22 @@ function ListeRdvView() {
 
   return (
     <div>
-      <h3 style={s.subTitle}>Rendez-vous</h3>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px',flexWrap:'wrap',gap:'12px'}}>
+        <h3 style={{...s.subTitle,marginBottom:0}}>Rendez-vous</h3>
+        <button onClick={()=>{
+          const token = localStorage.getItem('mmorphose_token');
+          const API_BASE = import.meta.env.VITE_API_URL || '';
+          fetch(`${API_BASE}/api/rendezvous/admin/export-csv/`,{headers:{'Authorization':`Bearer ${token}`}})
+            .then(r=>r.blob()).then(blob=>{
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href=url; a.download='rendez-vous.csv'; a.click();
+              URL.revokeObjectURL(url);
+            });
+        }} style={s.btnOr}>
+          Exporter CSV
+        </button>
+      </div>
 
       {/* Filtres */}
       <div style={{ display:'flex', gap:8, marginBottom:20, flexWrap:'wrap' }}>
