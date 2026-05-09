@@ -408,6 +408,14 @@ function ConfigView({ api, toast, sectionFilter = null, refreshKey = 0 }) {
       { cle:"paiement_lien_f3", label:"Lien paiement IMMERSION (267 000 FCFA)",     type:"url", placeholder:"https://..." },
       { cle:"paiement_lien_f4", label:"Lien paiement VIP (370 000 FCFA)",           type:"url", placeholder:"https://..." },
     ],
+    masterclass_oratoire: [
+      { cle:"mc2_date",            label:"Date de la masterclass (ISO)",  type:"text",     placeholder:"2026-12-31T17:00:00Z" },
+      { cle:"mc2_whatsapp",        label:"Lien groupe WhatsApp",          type:"url",      placeholder:"https://chat.whatsapp.com/..." },
+      { cle:"mc2_titre",           label:"Titre",                         type:"text",     placeholder:"Ose t'exprimer..." },
+      { cle:"mc2_sous_titre",      label:"Sous-titre",                    type:"text",     placeholder:"Les cles pour..." },
+      { cle:"mc2_btn_inscription", label:"Texte bouton inscription",      type:"text",     placeholder:"JE RESERVE MA PLACE" },
+      { cle:"mc2_places_max",      label:"Nombre de places max",          type:"text",     placeholder:"500" },
+    ],
     masterclass: [
       { cle:"mc_titre",         label:"Titre Masterclass",          type:"text",     placeholder:"Masterclass GRATUITE" },
       { cle:"mc_sous_titre",    label:"Sous-titre",                 type:"textarea", placeholder:"..." },
