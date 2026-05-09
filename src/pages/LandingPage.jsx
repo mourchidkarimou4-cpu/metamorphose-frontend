@@ -763,7 +763,8 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
               <div style={{ ...panelStyle, width:"540px", padding:"28px 0 0" }} onClick={e=>e.stopPropagation()}>
                 <span style={{ ...panelLabel, margin:"0 32px 20px", paddingBottom:"10px" }}>L'univers Méta'Morph'Ose</span>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0" }}>
-                  <ExpRow title="Masterclass OSEZ"  desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
+                  <ExpRow title="Masterclass OSE"        desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
+                  <ExpRow title="Masterclass Art Oratoire" desc="Affirme ta voix · En direct"        to="/masterclass-oratoire"/>
                   <ExpRow title="Store MMO"          desc="Guides, formations & replays"       to="/store"/>
                   <ExpRow title="Lives & Replays"    desc="Sessions en direct · Jitsi"         to="/live"/>
                   <ExpRow title="Communauté MMO"     desc="Réservé aux Métamorphosées"         to="/communaute"/>
@@ -850,7 +851,8 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
             {[
               { label:"Le Programme",    to:"/programme" },
               { label:"Formules",        to:"/#formules" },
-              { label:"Masterclass",     to:"/masterclass" },
+              { label:"Masterclass OSE",      to:"/masterclass" },
+              { label:"MC Art Oratoire",     to:"/masterclass-oratoire" },
               { label:"Lives & Replays", to:"/live" },
               { label:"MMO Learning",    to:"/mmo-learning" },
             ].map((l,i) => (
