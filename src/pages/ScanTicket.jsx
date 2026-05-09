@@ -203,7 +203,7 @@ export default function ScanTicket() {
 
         {result && !loading && (
           <div style={{padding:'28px',borderRadius:'12px',textAlign:'center',background:bgColor,border:`1px solid ${border}`}}>
-            <div style={{fontSize:'3rem',marginBottom:'16px'}}>{isSuccess?'✅':isValide?'🎫':'❌'}</div>
+            <div style={{fontSize:'3rem',marginBottom:'16px'}}>{isSuccess?'[OK]':isValide?'':'[X]'}</div>
             <p style={{fontFamily:"'Playfair Display',serif",fontSize:'1.2rem',fontWeight:700,color:couleur,marginBottom:'8px'}}>
               {isSuccess?'Entrée validée !':isValide?'Ticket valide':'Ticket invalide'}
             </p>
@@ -211,10 +211,10 @@ export default function ScanTicket() {
             {result.ticket && (
               <div style={{background:'rgba(255,255,255,.04)',borderRadius:'8px',padding:'16px',textAlign:'left',marginBottom:'20px'}}>
                 <p style={{fontSize:'.85rem',fontWeight:600,marginBottom:'6px',color:'#F8F5F2'}}>{result.ticket.nom_complet}</p>
-                <p style={{fontSize:'.75rem',color:'rgba(248,245,242,.4)',marginBottom:'4px'}}>✉ {result.ticket.email}</p>
-                {result.ticket.telephone&&<p style={{fontSize:'.75rem',color:'rgba(248,245,242,.4)',marginBottom:'4px'}}>☎ {result.ticket.telephone}</p>}
+                <p style={{fontSize:'.75rem',color:'rgba(248,245,242,.4)',marginBottom:'4px'}}> {result.ticket.email}</p>
+                {result.ticket.telephone&&<p style={{fontSize:'.75rem',color:'rgba(248,245,242,.4)',marginBottom:'4px'}}> {result.ticket.telephone}</p>}
                 <p style={{fontSize:'.75rem',color:'#C9A96A',fontWeight:500,marginBottom:'4px'}}>✦ {result.ticket.evenement_nom}</p>
-                {result.ticket.evenement_lieu&&<p style={{fontSize:'.72rem',color:'rgba(248,245,242,.35)'}}>📍 {result.ticket.evenement_lieu}</p>}
+                {result.ticket.evenement_lieu&&<p style={{fontSize:'.72rem',color:'rgba(248,245,242,.35)'}}> {result.ticket.evenement_lieu}</p>}
               </div>
             )}
             {(user?.is_staff || pinOk) && isValide && !isSuccess && (
