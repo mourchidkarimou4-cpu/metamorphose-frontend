@@ -115,6 +115,7 @@ export default function App() {
         <Route path="/store"         element={<Store />} />
         <Route path="/live"          element={<LiveMasterclass />} />
         <Route path="/masterclass"   element={<Masterclass />} />
+        <Route path="/masterclass-oratoire" element={<MasterclassOratoire />} />
         <Route path="/mmo-learning"  element={<MMOLearning />} />
         <Route path="/mmo-learning/:slug" element={<MMOLearning />} />
         <Route path="/evenements"    element={<Evenements />} />
