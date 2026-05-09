@@ -15,7 +15,7 @@ const STYLES = `
   @keyframes aura-reveal { from{opacity:0;transform:scale(.97) translateY(8px)} to{opacity:1;transform:none} }
 
   .aura-fab {
-    position:fixed; bottom:100px; right:20px; z-index:9999;
+    position:fixed; bottom:120px; right:20px; z-index:9999;
     width:60px; height:60px; border-radius:50%;
     background:linear-gradient(135deg,#C2185B,#8b0f3f);
     border:none; cursor:pointer;
@@ -35,7 +35,7 @@ const STYLES = `
   }
 
   .aura-window {
-    position:fixed; bottom:172px; right:20px; z-index:9999;
+    position:fixed; bottom:192px; right:20px; z-index:9999;
     width:370px; max-width:calc(100vw - 40px);
     background:#fff; border-radius:22px;
     box-shadow:0 32px 80px rgba(0,0,0,.16), 0 4px 20px rgba(194,24,91,.1);
