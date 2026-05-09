@@ -113,4 +113,11 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://metamorphosehub.com/masterclass-oratoire</loc>
+    <lastmod>2026-05-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>

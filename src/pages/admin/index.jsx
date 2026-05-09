@@ -330,7 +330,13 @@ function Toast({ toasts }) {
 }
 
 /* ── SIDEBAR COLLAPSIBLE ────────────────────────────────────── */
-function SidebarItem({ id, label, count, urgent, active, setActive, closeSidebar }) {
+function SidebarItem({ id, label, count, urgent, active, setActive, closeSidebar, href }) {
+  if (href) return (
+    <a href={href} target="_blank" rel="noreferrer"
+      style={{ width:"100%", display:"flex", alignItems:"center", gap:"8px", padding:"8px 14px", borderRadius:"4px", border:"none", cursor:"pointer", background:"transparent", color:"var(--text-sub)", borderLeft:"2px solid transparent", textDecoration:"none", fontFamily:"var(--ff-b)", fontSize:"11px", fontWeight:400, letterSpacing:".04em" }}>
+      <span style={{ flex:1, textAlign:"left" }}>{label}</span>
+    </a>
+  );
   return (
     <button
       onClick={() => { setActive(id); closeSidebar && closeSidebar(); }}
@@ -405,6 +411,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
       label: 'Mon programme',
       items: [
         { id:"live_visio",       label:"Lives & Visio",       icon:"video",   color:"rgba(100,130,255,.8)" },
+        { id:"masterclass_oratoire_link", label:"MC Art Oratoire", icon:"mic", color:"#C9A96A", href:"/masterclass-oratoire" },
         { id:"masterclass_admin",label:"Masterclasses",       icon:"star",    color:"#C9A96A" },
         { id:"evt_admin",        label:"Événements",          icon:"map-pin", color:"rgba(100,130,255,.8)" },
         { id:"actu_admin",       label:"Actualités",          icon:"rss",     color:"rgba(100,130,255,.8)" },
