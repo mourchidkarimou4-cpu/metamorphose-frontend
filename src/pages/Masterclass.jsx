@@ -7,9 +7,7 @@ import API_URL from '../config';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
-const WHATSAPP_GROUPE = "https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t";
-const BACKEND = API_URL;
-const DATE_MASTERCLASS = "2026-04-26T17:00:00Z";
+// DATE et WHATSAPP chargés depuis SiteConfig
 
 const PAYS_INDICATIFS = [
   { pays: "Bénin", code: "+229" },
@@ -256,10 +254,10 @@ function FormulaireInscription({ onSuccess }) {
 }
 
 /* ── Message succès ─────────────────────────────────────────── */
-function MessageSucces({ inscrit }) {
+function MessageSucces({ inscrit, whatsappGroupe }) {
   return (
     <div style={{ textAlign:"center", padding:"40px 32px", background:"rgba(37,211,102,.05)", border:"1px solid rgba(37,211,102,.2)", borderRadius:"6px", animation:"fadeUp .6s both" }}>
-      <div style={{ width:"64px", height:"64px", borderRadius:"50%", background:"rgba(37,211,102,.15)", border:"2px solid rgba(37,211,102,.4)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px", fontSize:"1.8rem" }}>✓</div>
+      <div style={{ width:"64px", height:"64px", borderRadius:"50%", background:"rgba(37,211,102,.15)", border:"2px solid rgba(37,211,102,.4)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px", fontSize:"1.8rem" }}></div>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".65rem", letterSpacing:".22em", textTransform:"uppercase", color:"#25D366", marginBottom:"12px" }}>Réservation confirmée</p>
       <h3 style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.2rem,4vw,1.6rem)", fontWeight:600, marginBottom:"20px", lineHeight:1.3 }}>
         Ta réservation a été effectuée avec succès {inscrit?.prenom ? `, ${inscrit.prenom}` : ""} !
@@ -273,7 +271,7 @@ function MessageSucces({ inscrit }) {
           JE REJOINS LE GROUPE WHATSAPP
         </a>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.3)", fontStyle:"italic" }}>
-          💥 MASTERCLASS OSE 💥
+           MASTERCLASS OSE 
         </p>
       </div>
     </div>
@@ -281,13 +279,13 @@ function MessageSucces({ inscrit }) {
 }
 
 /* ── Ticket QR Code ─────────────────────────────────────────── */
-function TicketQR({ inscrit }) {
+function TicketQR({ inscrit, whatsappGroupe }) {
   const code = "MMC-" + Math.random().toString(36).substring(2,8).toUpperCase();
   return (
     <div style={{ marginTop:"24px", padding:"24px", background:"rgba(201,169,106,.05)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"6px", textAlign:"center" }}>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Ton ticket d'accès</p>
       <div style={{ display:"inline-block", padding:"12px", background:"#fff", borderRadius:"4px", marginBottom:"12px" }}>
-        <QRCodeSVG value={WHATSAPP_GROUPE} size={120}/>
+        {typeof window !== "undefined" && <QRCodeSVG value={whatsappGroupe} size={120}/>}
       </div>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", color:"rgba(248,245,242,.5)", marginBottom:"4px" }}>Code : <strong style={{color:"var(--or)"}}>{code}</strong></p>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.3)", fontWeight:300 }}>
@@ -333,35 +331,52 @@ function FAQMasterclass() {
 }
 
 export default function Masterclass() {
-  const [photoPrelia, setPhotoPrelia] = useState("");
-  const [photosTemos, setPhotosTemos] = useState({});
-  const [temosPhoto, setTemosPhoto] = useState([]);
+  const [photoPrelia,   setPhotoPrelia]   = useState("");
+  const [photosTemos,   setPhotosTemos]   = useState({});
+  const [temosPhoto,    setTemosPhoto]    = useState([]);
+  const [dateEvent,     setDateEvent]     = useState("2026-12-31T17:00:00Z");
+  const [whatsappGroupe,setWhatsappGroupe]= useState("https://chat.whatsapp.com/Es4ak1AkByN8G9AZauSail?mode=gi_t");
+  const [mcConfig,      setMcConfig]      = useState({ titre:'', sous_titre:'', places_max:500, places_restantes:500, btn_inscription:'' });
+
   useEffect(() => {
+    // Charger config site
     configAPI.public()
       .then(r => r.data)
       .then(data => {
         const map = {};
         if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
-        if (map.photo_prelia) setPhotoPrelia(map.photo_prelia);
-        // Charger témoignages photo masterclass
-        fetch(`${API_BASE}/api/masterclass/temoignages/`)
-          .then(r => r.json())
-          .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
-          .catch(() => {});
+        if (map.photo_prelia)  setPhotoPrelia(map.photo_prelia);
+        if (map.mc_date)       setDateEvent(map.mc_date);
+        if (map.mc_whatsapp)   setWhatsappGroupe(map.mc_whatsapp);
         const photos = {};
         [1,2,3,4,5,6,7,8].forEach(i => { if (map[`masterclass_temo_photo_${i}`]) photos[i] = map[`masterclass_temo_photo_${i}`]; });
         setPhotosTemos(photos);
       })
       .catch(() => {});
-  }, []);
-  useEffect(() => {
+
+    // Charger masterclass active
+    fetch(`${API_BASE}/api/masterclass/`)
+      .then(r => r.json())
+      .then(data => {
+        const mc = Array.isArray(data) ? data[0] : null;
+        if (mc) setMcConfig({
+          titre:            mc.titre || '',
+          sous_titre:       mc.description || '',
+          places_max:       mc.places_max || 500,
+          places_restantes: mc.places_restantes ?? 500,
+          btn_inscription:  mc.btn_inscription || '',
+        });
+      })
+      .catch(() => {});
+
+    // Charger témoignages photo
     fetch(`${API_BASE}/api/masterclass/temoignages/`)
       .then(r => r.json())
       .then(data => { if (Array.isArray(data)) setTemosPhoto(data); })
       .catch(() => {});
   }, []);
   usePageBackground("live");
-  const time = useCountdown(DATE_MASTERCLASS);
+  const time = useCountdown(dateEvent);
   const [inscrit, setInscrit] = useState(null);
   const [voirPlus, setVoirPlus] = useState(false);
   const formRef = useRef(null);
@@ -423,7 +438,7 @@ export default function Masterclass() {
               <div style={{ marginBottom:"20px" }}>
                 <span className="places-badge">
                   <span style={{ width:"8px", height:"8px", borderRadius:"50%", background:"var(--rose)", flexShrink:0 }}/>
-                  PLACES LIMITÉES — 50 RESTANTES SUR 500
+                  PLACES LIMITÉES — {mcConfig.places_restantes} RESTANTES SUR {mcConfig.places_max}
                 </span>
               </div>
 
@@ -476,7 +491,7 @@ export default function Masterclass() {
                 <div style={{ display:"flex", gap:"28px", flexWrap:"wrap", animation:"fadeUp .8s .4s both" }}>
                   {[
                     { val:"100%", label:"Gratuit" },
-                    { val:"500", label:"Places max" },
+                    { val:mcConfig.places_max.toString(), label:"Places max" },
                     { val:"+100", label:"Femmes transformées" },
                   ].map((s,i) => (
                     <div key={i} style={{ textAlign:"center" }}>
@@ -491,8 +506,8 @@ export default function Masterclass() {
               <div ref={formRef} style={{ background:"rgba(255,255,255,.03)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"8px", padding:"36px 28px", backdropFilter:"blur(10px)" }}>
                 {inscrit ? (
                   <>
-                    <MessageSucces inscrit={inscrit}/>
-                    <TicketQR inscrit={inscrit}/>
+                    <MessageSucces inscrit={inscrit} whatsappGroupe={whatsappGroupe}/>
+                    <TicketQR inscrit={inscrit} whatsappGroupe={whatsappGroupe}/>
                   </>
                 ) : (
                   <>
@@ -571,7 +586,7 @@ export default function Masterclass() {
                 "Attirer les bonnes opportunités",
               ].map((item, i) => (
                 <div key={i} style={{ display:"flex", gap:"14px", alignItems:"flex-start", padding:"20px 22px", background:"rgba(37,211,102,.04)", border:"1px solid rgba(37,211,102,.15)", borderRadius:"4px" }}>
-                  <span style={{ color:"#25D366", fontSize:"1.1rem", flexShrink:0, marginTop:"2px" }}>✔</span>
+                  <span style={{ color:"#25D366", fontSize:"1.1rem", flexShrink:0, marginTop:"2px" }}></span>
                   <p style={{ fontFamily:"var(--ff-b)", fontWeight:400, fontSize:".88rem", color:"rgba(248,245,242,.85)" }}>{item}</p>
                 </div>
               ))}
@@ -641,7 +656,7 @@ export default function Masterclass() {
                 JE RÉSERVE MA PLACE 100% GRATUIT
               </button>
               <p style={{ marginTop:"14px", fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.25)" }}>
-                Seulement <strong style={{color:"var(--rose)"}}>50 places</strong> restantes sur 500
+                Seulement <strong style={{color:"var(--rose)"}}>50 places</strong> restantes · Places limitées
               </p>
             </div>
           </div>
@@ -772,7 +787,7 @@ export default function Masterclass() {
                   "Tu veux révéler la femme puissante en toi",
                 ].map((item, i) => (
                   <div key={i} style={{ display:"flex", gap:"12px", alignItems:"flex-start", marginBottom:"12px" }}>
-                    <span style={{ color:"#25D366", flexShrink:0, fontSize:"1rem" }}>✓</span>
+                    <span style={{ color:"#25D366", flexShrink:0, fontSize:"1rem" }}></span>
                     <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".85rem", color:"rgba(248,245,242,.8)", lineHeight:1.6 }}>{item}</p>
                   </div>
                 ))}
@@ -781,7 +796,7 @@ export default function Masterclass() {
               {/* Pas pour */}
               <div className="reveal" style={{ padding:"36px 28px", background:"rgba(239,83,80,.03)", border:"1px solid rgba(239,83,80,.12)", borderTop:"3px solid rgba(239,83,80,.4)", borderRadius:"6px" }}>
                 <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(239,83,80,.7)", marginBottom:"20px", fontWeight:600 }}>
-                  🚫 Cette masterclass n'est pas pour toi si…
+                   Cette masterclass n'est pas pour toi si…
                 </p>
                 {[
                   "Tu préfères rester dans ta zone de confort plutôt que d'évoluer",
@@ -792,7 +807,7 @@ export default function Masterclass() {
                   "Tu cherches des solutions rapides sans travailler sur toi en profondeur",
                 ].map((item, i) => (
                   <div key={i} style={{ display:"flex", gap:"12px", alignItems:"flex-start", marginBottom:"12px" }}>
-                    <span style={{ fontFamily:"'Playfair Display',serif", fontSize:".75rem", fontWeight:700, color:"rgba(239,83,80,.6)", flexShrink:0 }}>✕</span>
+                    <span style={{ fontFamily:"'Playfair Display',serif", fontSize:".75rem", fontWeight:700, color:"rgba(239,83,80,.6)", flexShrink:0 }}></span>
                     <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".82rem", color:"rgba(248,245,242,.5)", lineHeight:1.6 }}>{item}</p>
                   </div>
                 ))}
@@ -801,7 +816,7 @@ export default function Masterclass() {
 
             {/* Urgence */}
             <div className="reveal" style={{ padding:"36px 28px", background:"rgba(194,24,91,.06)", border:"1px solid rgba(194,24,91,.2)", borderRadius:"6px", textAlign:"center", marginBottom:"36px" }}>
-              <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>⚠️ Attention</p>
+              <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", letterSpacing:".18em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>️ Attention</p>
               <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.8, maxWidth:"580px", margin:"0 auto" }}>
                 Cette masterclass n'est pas disponible en continu. C'est une opportunité unique de transformation. <strong style={{color:"var(--blanc)"}}>Chaque jour que tu attends… c'est un jour de plus où tu restes cachée.</strong>
               </p>
