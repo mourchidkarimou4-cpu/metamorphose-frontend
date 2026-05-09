@@ -280,7 +280,8 @@ function MessageSucces({ inscrit, whatsappGroupe }) {
 
 /* ── Ticket QR Code ─────────────────────────────────────────── */
 function TicketQR({ inscrit, whatsappGroupe }) {
-  const code = "MMC-" + Math.random().toString(36).substring(2,8).toUpperCase();
+  const seed = (inscrit?.email || "guest").replace(/[^a-z0-9]/gi,"").substring(0,6).toUpperCase();
+  const code = "MMC-" + seed;
   return (
     <div style={{ marginTop:"24px", padding:"24px", background:"rgba(201,169,106,.05)", border:"1px solid rgba(201,169,106,.15)", borderRadius:"6px", textAlign:"center" }}>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px" }}>Ton ticket d'accès</p>
