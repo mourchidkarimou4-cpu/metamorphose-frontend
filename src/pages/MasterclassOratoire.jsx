@@ -204,7 +204,7 @@ function FormulaireInscription({ onSuccess }) {
       <button type="submit" className="btn-p" disabled={loading} style={{ width:"100%", animation:"pulse-rose 3s ease-in-out infinite", fontSize:".8rem" }}>
         {loading ? (
           <><div style={{ width:"18px", height:"18px", border:"2px solid rgba(255,255,255,.3)", borderTopColor:"#fff", borderRadius:"50%", animation:"spin .7s linear infinite" }}/> Inscription en cours…</>
-        ) : "JE RESERVE MA PLACE MAINTENANT"}
+        ) : "JE RÉSERVE MA PLACE MAINTENANT"}
       </button>
       <p style={{ fontFamily:"var(--ff-b)", fontSize:".68rem", color:"rgba(248,245,242,.3)", textAlign:"center", lineHeight:1.6 }}>
         100% gratuit · Aucune carte bancaire requise · Places limitées
@@ -365,21 +365,21 @@ export default function MasterclassOratoire() {
                   Affirme ta voix et marque les esprits
                 </h1>
                 <p style={{ fontFamily:"var(--ff-b)", fontSize:".78rem", letterSpacing:".12em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px", animation:"fadeUp .8s .15s both" }}>
-                  Les cles pour developper une communication impactante et authentique
+                  Les clés pour développer une communication impactante et authentique
                 </p>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:"clamp(.9rem,2.5vw,1.05rem)", color:"rgba(248,245,242,.65)", lineHeight:1.85, marginBottom:"16px", animation:"fadeUp .8s .2s both" }}>
-                  Et si ta maniere de t'exprimer changeait ton impact ?
+                  Et si ta manière de t'exprimer changeait ton impact ?
                 </p>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.6)", lineHeight:1.85, marginBottom:"12px", animation:"fadeUp .8s .25s both" }}>
-                  Dans ta vie personnelle comme professionnelle, ta façon de t'exprimer influence ta presence, ta credibilite et ton impact.
+                  Dans ta vie personnelle comme professionnelle, ta façon de t'exprimer influence ta présence, ta crédibilité et ton impact.
                 </p>
                 <div style={{ padding:"16px 20px", background:"rgba(201,169,106,.05)", border:"1px solid rgba(201,169,106,.12)", borderLeft:"3px solid var(--or)", marginBottom:"28px", animation:"fadeUp .8s .3s both" }}>
                   <p style={{ fontFamily:"var(--ff-b)", fontWeight:400, fontSize:".88rem", color:"rgba(248,245,242,.8)", lineHeight:1.8 }}>
-                    La prise de parole n'est pas un don. C'est une competence qui se developpe. Et tu peux commencer des maintenant.
+                    La prise de parole n'est pas un don. C'est une compétence qui se développe. Et tu peux commencer dès maintenant.
                   </p>
                 </div>
                 <div style={{ display:"flex", gap:"28px", flexWrap:"wrap", animation:"fadeUp .8s .4s both" }}>
-                  {[{val:"100%",label:"Gratuit"},{val:placesMax.toString(),label:"Places max"},{val:"+100",label:"Femmes accompagnees"}].map((s,i) => (
+                  {[{val:"100%",label:"Gratuit"},{val:placesMax.toString(),label:"Places max"},{val:"+100",label:"Femmes accompagnées"}].map((s,i) => (
                     <div key={i} style={{ textAlign:"center" }}>
                       <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.6rem", fontWeight:700, color:"var(--rose)", lineHeight:1 }}>{s.val}</p>
                       <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".14em", textTransform:"uppercase", color:"rgba(248,245,242,.35)", fontWeight:500 }}>{s.label}</p>
@@ -393,7 +393,7 @@ export default function MasterclassOratoire() {
                 {inscrit ? <MessageSucces inscrit={inscrit} whatsappGroupe={whatsappGroupe}/> : (
                   <>
                     <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".22em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"8px" }}>Inscription gratuite</p>
-                    <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>Reserve ta place maintenant</h2>
+                    <h2 style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, marginBottom:"6px" }}>Réservez votre place maintenant</h2>
                     <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.4)", marginBottom:"24px", lineHeight:1.6 }}>
                       Masterclasse Art Oratoire · En direct
                     </p>
@@ -413,9 +413,9 @@ export default function MasterclassOratoire() {
           <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
             <div style={{ textAlign:"center", marginBottom:"48px" }}>
               <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>Au programme</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600, marginBottom:"16px" }}>Ce que tu vas decouvrir</h2>
+              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600, marginBottom:"16px" }}>Ce que tu vas découvrir</h2>
               <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.5)", lineHeight:1.8, maxWidth:"600px", margin:"0 auto" }}>
-                Au cours de cette masterclass, tu vas apprendre a :
+                Au cours de cette masterclass, tu vas apprendre à :
               </p>
             </div>
             <div className="two-col reveal" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"56px" }}>
@@ -423,7 +423,7 @@ export default function MasterclassOratoire() {
                 "Structurer une prise de parole claire",
                 "T'exprimer avec plus d'aisance",
                 "Capter l'attention",
-                "Renforcer ton impact a l'oral",
+                "Renforcer ton impact à l'oral",
               ].map((item, i) => (
                 <div key={i} className="card-point card-point-or">
                   <span style={{ color:"var(--or)", fontSize:"1rem", flexShrink:0, marginTop:"2px" }}>→</span>
@@ -441,7 +441,7 @@ export default function MasterclassOratoire() {
             <div className="two-col reveal" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"40px" }}>
               {[
                 { mot:"Structuree", desc:"Un parcours clair et progressif pour avancer pas a pas." },
-                { mot:"Inspirante", desc:"Des enseignements concrets qui vous motivent a passer a l'action." },
+                { mot:"Inspirante", desc:"Des enseignements concrets qui vous motivent a passer à l'action." },
                 { mot:"Concrete", desc:"Des outils directement applicables dans votre quotidien." },
                 { mot:"Accessible", desc:"Un moment ouvert a toutes, quel que soit votre niveau." },
               ].map((item, i) => (
@@ -452,11 +452,11 @@ export default function MasterclassOratoire() {
               ))}
             </div>
             <p className="reveal" style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(201,169,106,.6)", textAlign:"center", lineHeight:1.8 }}>
-              Un moment dedie a ton evolution.
+              Un moment dédié à ton évolution.
             </p>
             <div className="reveal" style={{ textAlign:"center", marginTop:"32px" }}>
               <button onClick={scrollToForm} className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite" }}>
-                JE M'INSCRIS A LA MASTERCLASS
+                JE M'INSCRIS À LA MASTERCLASS
               </button>
             </div>
           </div>
@@ -467,36 +467,36 @@ export default function MasterclassOratoire() {
           <div style={{ maxWidth:"900px", margin:"0 auto" }}>
             <div style={{ textAlign:"center", marginBottom:"48px" }}>
               <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Votre coach</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>A propos de Prelia APEDO AHONON</h2>
+              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>À propos de Prélia APEDO AHONON</h2>
             </div>
             <div className="prelia-grid reveal" style={{ display:"grid", gridTemplateColumns:"260px 1fr", gap:"48px", alignItems:"start" }}>
               <div>
                 <div style={{ position:"relative", paddingBottom:"120%", background:"linear-gradient(135deg,rgba(13,27,42,.4),rgba(201,169,106,.08))", border:"1px solid rgba(201,169,106,.15)", borderRadius:"4px", overflow:"hidden", marginBottom:"16px" }}>
                   {photoPrelia ? (
-                    <img src={photoPrelia} alt="Prelia APEDO AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
+                    <img src={photoPrelia} alt="Prélia APEDO AHONON" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }}/>
                   ) : (
                     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center" }}>Photo Prelia APEDO AHONON</p>
+                      <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", color:"rgba(201,169,106,.3)", textAlign:"center" }}>Photo Prélia APEDO AHONON</p>
                     </div>
                   )}
                 </div>
                 <div style={{ textAlign:"center" }}>
-                  <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)" }}>Prelia APEDO AHONON</p>
+                  <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"var(--or)" }}>Prélia APEDO AHONON</p>
                   <p style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", color:"rgba(248,245,242,.3)", marginTop:"4px" }}>Coach en Image · Fondatrice White & Black</p>
                 </div>
               </div>
               <div>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"16px" }}>
-                  Je suis <strong style={{color:"var(--blanc)"}}>Prelia APEDO AHONON</strong>, Communicatrice de formation. Coach en Image, Conferenciere, Oratrice et Leader Certifiee. Promotrice de la marque <strong style={{color:"var(--or)"}}>White & Black</strong> et Fondatrice du programme <strong style={{color:"var(--or)"}}>Meta'Morph'Ose</strong>.
+                  Je suis <strong style={{color:"var(--blanc)"}}>Prélia APEDO AHONON</strong>, Communicatrice de formation. Coach en Image, Conférencière, Oratrice et Leader Certifiee. Promotrice de la marque <strong style={{color:"var(--or)"}}>White & Black</strong> et Fondatrice du programme <strong style={{color:"var(--or)"}}>Méta'Morph'Ose</strong>.
                 </p>
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"24px" }}>
-                  J'accompagne les femmes a developper leur image, leur confiance et leur expression. Mon engagement : vous aider a devenir pleinement vous-meme pour rayonner dans tous les aspects de votre vie.
+                  J'accompagne les femmes a développer leur image, leur confiance et leur expression. Mon engagement : vous aider a devenir pleinement vous-même pour rayonner dans tous les aspects de votre vie.
                 </p>
                 <blockquote style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"var(--or)", borderLeft:"2px solid var(--rose)", paddingLeft:"20px", lineHeight:1.65, marginBottom:"20px" }}>
-                  « Aujourd'hui, j'aide les femmes a trouver leur voix et a s'exprimer avec puissance et authenticite. »
+                  « Aujourd'hui, j'aide les femmes a trouver leur voix et a s'exprimer avec puissance et authenticité. »
                 </blockquote>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:"8px" }}>
-                  {['Coach en Image certifiee','Styliste certifiee','Communicatrice de formation','Oratrice et Leader certifiee','Conferenciere','Thérapeute du coeur certifiee','Coach Mind Education certifiee'].map((c,i) => (
+                  {['Coach en Image certifiée','Styliste certifiée','Communicatrice de formation','Oratrice et Leader certifiée','Conférencière','Thérapeute du coeur certifiée','Coach Mind Education certifiée'].map((c,i) => (
                     <span key={i} style={{ padding:"6px 14px", border:"1px solid rgba(201,169,106,.2)", borderRadius:"100px", fontFamily:"var(--ff-b)", fontSize:".66rem", color:"rgba(201,169,106,.75)", fontWeight:500 }}>{c}</span>
                   ))}
                 </div>
@@ -519,16 +519,16 @@ export default function MasterclassOratoire() {
                   Cette masterclass est faite pour toi si…
                 </p>
                 {[
-                  "Tu souhaites ameliorer ta maniere de t'exprimer",
+                  "Tu souhaites ameliorer ta manière de t'exprimer",
                   "Tu veux gagner en aisance lors de tes prises de parole",
-                  "Tu veux apprendre a structurer clairement tes idees",
+                  "Tu veux apprendre a structurer clairement tes idées",
                   "Tu veux developper une communication plus impactante et authentique",
-                  "Tu veux renforcer ta presence et ton assurance a l'oral",
+                  "Tu veux renforcer ta présence et ton assurance à l'oral",
                   "Tu souhaites mieux capter l'attention lorsque tu parles",
-                  "Tu veux developper ton impact dans ta vie personnelle ou professionnelle",
-                  "Tu veux apprendre a transmettre tes idees avec plus de clarte et de fluidite",
-                  "Tu es prete a evoluer et a pratiquer pour progresser",
-                  "Tu veux developper une communication alignee avec la personne que tu es reellement",
+                  "Tu veux développer ton impact dans ta vie personnelle ou professionnelle",
+                  "Tu veux apprendre a transmettre tes idées avec plus de clarté et de fluidité",
+                  "Tu es prête à évoluer et à pratiquer pour progresser",
+                  "Tu veux developper une communication alignée avec la personne que tu es réellement",
                 ].map((item, i) => (
                   <div key={i} style={{ display:"flex", gap:"12px", alignItems:"flex-start", marginBottom:"12px" }}>
                     <span style={{ color:"var(--or)", flexShrink:0, fontSize:"1rem" }}>✓</span>
@@ -543,11 +543,11 @@ export default function MasterclassOratoire() {
                   Cette masterclass n'est pas pour toi si…
                 </p>
                 {[
-                  "Tu cherches une solution instantanee sans pratique",
-                  "Tu n'es pas prete a appliquer les conseils partages",
-                  "Tu ne souhaites pas evoluer dans ta maniere de communiquer",
+                  "Tu cherches une solution instantanée sans pratique",
+                  "Tu n'es pas prête à appliquer les conseils partagés",
+                  "Tu ne souhaites pas évoluer dans ta manière de communiquer",
                   "Tu penses que la prise de parole ne s'apprend pas",
-                  "Tu veux uniquement regarder sans passer a l'action",
+                  "Tu veux uniquement regarder sans passer à l'action",
                   "Tu refuses de sortir progressivement de ta zone de confort",
                   "Tu recherches une approche agressive ou artificielle de la communication",
                 ].map((item, i) => (
@@ -561,7 +561,7 @@ export default function MasterclassOratoire() {
 
             <div className="reveal" style={{ textAlign:"center" }}>
               <button onClick={scrollToForm} className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite" }}>
-                OUI, JE VEUX DEVELOPPER MON IMPACT
+                OUI, JE VEUX DÉVELOPPER MON IMPACT
               </button>
             </div>
           </div>
@@ -576,7 +576,7 @@ export default function MasterclassOratoire() {
             </div>
             <div className="reveal" style={{ padding:"40px 36px", background:"rgba(201,169,106,.04)", border:"1px solid rgba(201,169,106,.15)", borderTop:"3px solid var(--or)", borderRadius:"6px" }}>
               <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".9rem", color:"rgba(248,245,242,.7)", lineHeight:1.85, marginBottom:"20px" }}>
-                Une surprise attend toutes les participantes a la masterclass… En participant a cette experience, tu recevras egalement un guide exclusif offert :
+                Une surprise attend toutes les participantes à la masterclass… En participant a cette expérience, tu recevras également un guide exclusif offert :
               </p>
               <div style={{ padding:"24px", background:"rgba(255,255,255,.03)", border:"1px solid rgba(201,169,106,.1)", borderRadius:"4px", marginBottom:"24px", textAlign:"center" }}>
                 <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.3rem", fontWeight:600, color:"var(--or)", marginBottom:"8px" }}>
@@ -585,13 +585,13 @@ export default function MasterclassOratoire() {
                 <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".78rem", color:"rgba(248,245,242,.4)" }}>Guide pratique exclusif offert a toutes les participantes</p>
               </div>
               <p style={{ fontFamily:"var(--ff-b)", fontWeight:400, fontSize:".85rem", color:"rgba(248,245,242,.7)", marginBottom:"16px" }}>
-                Un guide pratique concu pour t'aider a :
+                Un guide pratique conçu pour t'aider à :
               </p>
               {[
-                "Structurer une presentation claire et fluide",
-                "Faire une premiere impression plus marquante",
-                "Developper une presence plus assuree",
-                "Mieux communiquer ton identite et ta valeur",
+                "Structurer une présentation claire et fluide",
+                "Faire une première impression plus marquante",
+                "Developper une présence plus assurée",
+                "Mieux communiquer ton identité et ta valeur",
               ].map((item, i) => (
                 <div key={i} style={{ display:"flex", gap:"12px", alignItems:"flex-start", marginBottom:"10px" }}>
                   <span style={{ color:"var(--or)", flexShrink:0 }}>→</span>
@@ -599,7 +599,7 @@ export default function MasterclassOratoire() {
                 </div>
               ))}
               <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:".95rem", color:"rgba(201,169,106,.6)", marginTop:"20px", lineHeight:1.7 }}>
-                Un support complementaire pour renforcer ton experience durant la masterclass.
+                Un support complémentaire pour renforcer ton expérience durant la masterclass.
               </p>
             </div>
           </div>
@@ -609,7 +609,7 @@ export default function MasterclassOratoire() {
         <section style={{ padding:"80px 24px", background:"#0f0f0f", borderTop:"1px solid rgba(201,169,106,.08)" }}>
           <div style={{ maxWidth:"760px", margin:"0 auto" }}>
             <div style={{ textAlign:"center", marginBottom:"56px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px" }}>Questions frequentes</p>
+              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px" }}>Questions fréquentes</p>
               <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,3vw,2.2rem)", fontWeight:600 }}>Tout ce que vous devez savoir</h2>
             </div>
             <FAQ/>
@@ -620,18 +620,18 @@ export default function MasterclassOratoire() {
         <section style={{ padding:"100px 24px", background:"linear-gradient(180deg,#0f0f0f,#0d1b2a)", textAlign:"center" }}>
           <div style={{ maxWidth:"680px", margin:"0 auto" }}>
             <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.8rem,5vw,3rem)", fontWeight:700, lineHeight:1.1, marginBottom:"20px" }}>
-              Prete a developper ton impact ?
+              Prête à développer ton impact ?
             </h2>
             <p className="reveal" style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"rgba(201,169,106,.6)", lineHeight:1.8, marginBottom:"16px" }}>
-              Rejoins cette experience et decouvre une nouvelle maniere de t'exprimer avec plus d'assurance et d'authenticite.
+              Rejoins cette expérience et découvre une nouvelle manière de t'exprimer avec plus d'assurance et d'authenticité.
             </p>
             <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.5)", marginBottom:"40px", lineHeight:1.8 }}>
-              Ta voix merite d'etre entendue. Ton impact merite d'etre amplifie.<br/>
+              Ta voix mérite d'être entendue. Ton impact mérite d'être amplifié.<br/>
               <strong style={{color:"var(--blanc)"}}>Commence ici.</strong>
             </p>
             <div className="reveal">
               <button onClick={scrollToForm} className="btn-p" style={{ padding:"20px 52px", fontSize:".82rem", animation:"pulse-rose 3s ease-in-out infinite" }}>
-                JE PARTICIPE A LA MASTERCLASS
+                JE PARTICIPE À LA MASTERCLASS
               </button>
             </div>
           </div>
@@ -647,7 +647,7 @@ export default function MasterclassOratoire() {
           <span style={{color:"var(--rose)"}}>Ose</span>
         </Link>
         <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", color:"rgba(248,245,242,.2)", marginTop:"8px" }}>
-          © 2026 Meta'Morph'Ose · White & Black · Prelia APEDO AHONON
+          © 2026 Méta'Morph'Ose · White & Black · Prélia APEDO AHONON
         </p>
       </footer>
     </>
