@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 function PartenairesView({ api, toast }) {
@@ -135,7 +136,7 @@ function PartenairesView({ api, toast }) {
       ))}
 
       {/* Modal */}
-      {modal && (
+      {modal && createPortal(
         <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={e=>e.target===e.currentTarget&&closeModal()}>
           <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',maxWidth:'480px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}}>
             <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.3rem',marginBottom:'24px'}}>
@@ -178,7 +179,7 @@ function PartenairesView({ api, toast }) {
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </div>
   )
 }
