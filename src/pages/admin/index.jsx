@@ -858,7 +858,7 @@ export default function AdminDashboard() {
           user={user}
         />
 
-        <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0, overflow:"hidden" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0, overflow:"visible" }}>
           {/* Topbar mobile */}
           <div className="admin-topbar">
             <p style={{ fontFamily:"var(--ff-t)", fontSize:".9rem", margin:0 }}>
