@@ -491,7 +491,7 @@ export default function MasterclassOratoire() {
                   J'accompagne les femmes à développer leur image, leur confiance et leur expression. Mon engagement : vous aider à devenir pleinement vous-même pour rayonner dans tous les aspects de votre vie.
                 </p>
                 <blockquote style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1.1rem", color:"var(--or)", borderLeft:"2px solid var(--rose)", paddingLeft:"20px", lineHeight:1.65, marginBottom:"20px" }}>
-                  « Aujourd'hui, j'aide les femmes à trouver leur voix et a s'exprimer avec puissance et authenticité. »
+                  « Aujourd'hui, j'aide les femmes à trouver leur voix et à s'exprimer avec puissance et authenticité. »
                 </blockquote>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:"8px" }}>
                   {['Coach en Image certifiée','Styliste certifiée','Communicatrice de formation','Oratrice et Leader certifiée','Conférencière','Thérapeute du cœur certifiée','Coach Mind Education certifiée'].map((c,i) => (
