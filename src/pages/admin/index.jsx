@@ -33,7 +33,7 @@ import { MonCompteView, MesReplaysView,
 // ── Vues Nouvelles fonctionnalités ───────────────────────────────
 import { NotificationsView, MessageriView,
          VaguesView, ProgressionView,
-         SatisfactionView, AgendaView } from './views/Nouvelles';
+         SatisfactionView, AgendaView , MesRendezVousView } from './views/Nouvelles';
 
 /* ================================================================
    ADMIN DASHBOARD — Méta'Morph'Ose
