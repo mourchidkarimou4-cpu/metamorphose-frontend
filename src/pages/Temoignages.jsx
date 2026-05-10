@@ -97,7 +97,7 @@ export default function Temoignages() {
     <>
       <style>{STYLES}</style>
       <Navbar />
-<div style={{ background:"#0A0A0A", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
+<div style={{ background:"linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%)", color:"#F8F5F2", fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
 
         
 

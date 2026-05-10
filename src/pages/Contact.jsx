@@ -97,13 +97,13 @@ export default function Contact() {
         WhatsApp
       </a>
 
-<div style={{ background:"#0A0A0A", color:"#F8F5F2", minHeight:"100vh" }}>
+<div style={{ background:"linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%)", color:"#F8F5F2", minHeight:"100vh" }}>
 
         {/* Nav */}
         
 
         {/* Hero */}
-        <section style={{ padding:"100px 24px 72px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#110d09)", position:"relative", overflow:"hidden" }}>
+        <section style={{ padding:"100px 24px 72px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#1f1408)", position:"relative", overflow:"hidden" }}>
           <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 50% at 50% 60%,rgba(201,169,106,.06),transparent)", pointerEvents:"none" }}/>
           <div style={{ position:"relative", maxWidth:"640px", margin:"0 auto" }}>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".3em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"16px", animation:"fadeUp .6s both" }}>Contact</p>

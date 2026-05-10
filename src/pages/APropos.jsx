@@ -98,13 +98,13 @@ export default function APropos() {
     <>
       <Navbar />
       <style>{STYLES}</style>
-      <div style={{ background:"#0A0A0A", color:BLANC, fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
+      <div style={{ background:"linear-gradient(180deg,#0A0A0A,#3a2518)", color:BLANC, fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
 
         {/* Nav */}
         
 
         {/* Hero */}
-        <section style={{ padding:"80px 24px 60px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#110d09)", position:"relative" }}>
+        <section style={{ padding:"80px 24px 60px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#1f1408)", position:"relative" }}>
           <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 40% at 50% 60%,rgba(201,169,106,.06),transparent 70%)" }}/>
           <div style={{ position:"relative", maxWidth:"640px", margin:"0 auto" }}>
             <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:OR, marginBottom:"14px", animation:"fadeUp .7s both" }}>À Propos de Prélia</p>

@@ -45,7 +45,7 @@ const STYLES = `
     --ease: cubic-bezier(0.4,0,0.2,1);
   }
   html { scroll-behavior: smooth; }
-  body { background: var(--noir); color: var(--blanc); font-family: var(--ff-b); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+  body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%); color: var(--blanc); font-family: var(--ff-b); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
 
   @keyframes fadeUp    { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
   @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }
@@ -412,7 +412,7 @@ export default function Masterclass() {
 <main>
 
         {/* ── HERO ── */}
-        <section style={{ padding:"80px 24px 60px", background:"linear-gradient(135deg,#0A0A0A 0%,#1a0a0f 40%,#0A0A0A 100%)", position:"relative", overflow:"hidden", minHeight:"90vh", display:"flex", alignItems:"center" }}>
+        <section style={{ padding:"80px 24px 60px", background:"linear-gradient(135deg,#0A0A0A 0%,#1f1408 40%,#2a1a10 100%)", position:"relative", overflow:"hidden", minHeight:"90vh", display:"flex", alignItems:"center" }}>
           {/* Orbes */}
           <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
             <div style={{ position:"absolute", top:"-10%", left:"-5%", width:"500px", height:"500px", borderRadius:"50%", background:"radial-gradient(circle,rgba(194,24,91,.12),transparent 70%)", animation:"orb 10s ease-in-out infinite" }}/>
