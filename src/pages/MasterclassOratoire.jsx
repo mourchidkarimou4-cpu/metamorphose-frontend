@@ -313,7 +313,7 @@ export default function MasterclassOratoire() {
             <span style={{color:"var(--rose)"}}>Ose</span>
           </span>
         </Link>
-        <button onClick={scrollToForm} className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem" }}>
+        <button onClick={scrollToForm} className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem", width:"auto" }}>
           Réserver ma place
         </button>
       </nav>
