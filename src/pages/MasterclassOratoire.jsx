@@ -166,9 +166,8 @@ function FormulaireInscription({ onSuccess }) {
     }
     setLoading(true); setError("");
     try {
-      const listRes = await fetch(`${API_BASE}/api/masterclass/`);
-      const liste   = await listRes.json();
-      const mc      = Array.isArray(liste) ? liste.find(m => m.titre?.toLowerCase().includes('oratoire') || m.titre?.toLowerCase().includes('exprimer')) || liste[0] : null;
+      const slugRes = await fetch(`${API_BASE}/api/masterclass/art-oratoire/`);
+      const mc      = slugRes.ok ? await slugRes.json() : null;
 
       if (mc) {
         const res = await fetch(`${API_BASE}/api/masterclass/${mc.id}/reserver/`, {
@@ -289,10 +288,9 @@ export default function MasterclassOratoire() {
       })
       .catch(() => {});
 
-    fetch(`${API_BASE}/api/masterclass/`)
-      .then(r => r.json())
-      .then(data => {
-        const mc = Array.isArray(data) ? data.find(m => m.titre?.toLowerCase().includes('oratoire') || m.titre?.toLowerCase().includes('exprimer')) : null;
+    fetch(`${API_BASE}/api/masterclass/art-oratoire/`)
+      .then(r => r.ok ? r.json() : null)
+      .then(mc => {
         if (mc) { setPlacesMax(mc.places_max || 500); setPlacesRest(mc.places_restantes ?? 500); }
       })
       .catch(() => {});
