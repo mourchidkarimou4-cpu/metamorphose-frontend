@@ -643,7 +643,7 @@ function AgendaView({ api, toast }) {
  {/* Modal créer session */}
  {modal && (
  <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.8)',zIndex:500,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px',overflowY:'auto'}}>
- <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'520px',width:'100%'}}>
+ <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'520px',width:'100%',maxHeight:'90vh',overflowY:'auto'}}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle session</h3>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
  <div><label style={lbl}>Titre</label><input style={inp} value={form.titre} onChange={e=>setForm(p=>({...p,titre:e.target.value}))} placeholder="Live groupe — Semaine 3"/></div>

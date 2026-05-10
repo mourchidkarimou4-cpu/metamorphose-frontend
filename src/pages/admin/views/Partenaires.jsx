@@ -133,7 +133,7 @@ function PartenairesView({ api, toast }) {
       {/* Modal */}
       {modal && (
         <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&closeModal()}>
-          <div className="modal-box" style={{maxWidth:'480px'}}>
+          <div className="modal-box" style={{maxWidth:'480px',maxHeight:'90vh',overflowY:'auto'}}>
             <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.3rem',marginBottom:'24px'}}>
               {editing ? 'Modifier le partenaire' : 'Nouveau partenaire'}
             </h3>
