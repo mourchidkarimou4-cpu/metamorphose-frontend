@@ -411,7 +411,6 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
       label: 'Mon programme',
       items: [
         { id:"live_visio",       label:"Lives & Visio",       icon:"video",   color:"rgba(100,130,255,.8)" },
-        { id:"masterclass_oratoire_link", label:"MC Art Oratoire", icon:"mic", color:"#C9A96A", href:"/masterclass-oratoire" },
         { id:"masterclass_admin",label:"Masterclasses",       icon:"star",    color:"#C9A96A" },
         { id:"evt_admin",        label:"Événements",          icon:"map-pin", color:"rgba(100,130,255,.8)" },
         { id:"actu_admin",       label:"Actualités",          icon:"rss",     color:"rgba(100,130,255,.8)" },
@@ -927,3 +926,4 @@ export default function AdminDashboard() {
     </>
   );
 }
+// dim. 10 mai 2026 04:44:26 WAT
