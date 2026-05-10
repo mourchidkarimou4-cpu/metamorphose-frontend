@@ -293,7 +293,7 @@ function VaguesView({ api, toast }) {
  {/* Modal créer vague */}
  {modal === 'create' && (
  <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.8)',zIndex:500,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}}>
- <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'500px',width:'100%'}}>
+ <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'500px',width:'100%',maxHeight:'90vh',overflowY:'auto'}}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle vague</h3>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
  <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'12px'}}>
@@ -433,7 +433,7 @@ function ProgressionView({ api, toast }) {
  {/* Modal modifier progression */}
  {selected && (
  <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.8)',zIndex:500,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}}>
- <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'440px',width:'100%'}}>
+ <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'6px',padding:'32px',maxWidth:'440px',width:'100%',maxHeight:'90vh',overflowY:'auto'}}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.1rem',fontWeight:600,marginBottom:'6px'}}>Progression — {selected.membre_prenom||selected.membre_email}</h3>
  <p style={{fontFamily:'var(--ff-b)',fontSize:'.75rem',color:'var(--text-sub)',marginBottom:'24px'}}>{selected.membre_email}</p>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
