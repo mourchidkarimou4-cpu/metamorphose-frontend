@@ -296,7 +296,7 @@ function VaguesView({ api, toast }) {
  )}
 
  {/* Modal créer vague */}
- {modal === 'create' && createPortal(
+ {modal === 'create' && (
  <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
  <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'120px',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle vague</h3>
@@ -321,7 +321,7 @@ function VaguesView({ api, toast }) {
  )}
 
  {/* Modal détail vague */}
- {modal === 'detail' && selected && createPortal(
+ {modal === 'detail' && selected && (
  <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
  <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'120px',maxWidth:'600px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
@@ -436,7 +436,7 @@ function ProgressionView({ api, toast }) {
  )}
 
  {/* Modal modifier progression */}
- {selected && createPortal(
+ {selected && (
  <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
  <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'120px',maxWidth:'440px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.1rem',fontWeight:600,marginBottom:'6px'}}>Progression — {selected.membre_prenom||selected.membre_email}</h3>
@@ -650,7 +650,7 @@ function AgendaView({ api, toast }) {
  )}
 
  {/* Modal créer session */}
- {modal && createPortal(
+ {modal && (
  <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
  <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'120px',maxWidth:'520px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle session</h3>
