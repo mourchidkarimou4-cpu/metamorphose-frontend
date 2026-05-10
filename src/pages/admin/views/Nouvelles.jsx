@@ -190,6 +190,10 @@ function VaguesView({ api, toast }) {
  const [selected, setSelected] = useState(null)
  const [loading, setLoading] = useState(true)
  const [modal, setModal] = useState(null) // 'create'|'detail'
+  useEffect(() => {
+    document.body.style.overflow = modal ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modal])
  const [form, setForm] = useState({nom:'',numero:'',date_debut:'',date_fin:'',places_max:30,statut:'planifiee',description:''})
  const [emailAdd, setEmailAdd] = useState('')
  const token = localStorage.getItem('mmorphose_token')
@@ -556,6 +560,10 @@ function AgendaView({ api, toast }) {
  const [sessions, setSessions] = useState([])
  const [loading, setLoading] = useState(true)
  const [modal, setModal] = useState(false)
+  useEffect(() => {
+    document.body.style.overflow = modal ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modal])
  const [form, setForm] = useState({titre:'',type_session:'live_groupe',date_debut:'',date_fin:'',description:'',lien_live:'',membres_invites:''})
  const token = localStorage.getItem('mmorphose_token')
 

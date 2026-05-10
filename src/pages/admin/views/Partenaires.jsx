@@ -5,6 +5,10 @@ function PartenairesView({ api, toast }) {
   const [partenaires, setPartenaires] = useState([])
   const [loading,     setLoading]     = useState(true)
   const [modal,       setModal]       = useState(false)
+  useEffect(() => {
+    document.body.style.overflow = modal ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modal])
   const [editing,     setEditing]     = useState(null)
   const [form,        setForm]        = useState({})
   const token = localStorage.getItem('mmorphose_token')
