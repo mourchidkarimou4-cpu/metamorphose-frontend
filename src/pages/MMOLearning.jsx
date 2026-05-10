@@ -191,7 +191,7 @@ function ListeCours() {
  return (
  <>
  <style>{STYLES}</style>
- <NavBar />
+ <Navbar />
 
  {/* Hero */}
  <section className="hero-pad" style={{
@@ -398,7 +398,7 @@ function DetailCours() {
  if (loading) return (
  <>
  <style>{STYLES}</style>
- <NavBar />
+ <Navbar />
  <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
  <p style={{ fontFamily:'var(--ff-a)', fontStyle:'italic', color:'rgba(248,245,242,.3)', fontSize:'1.1rem' }}>
  Chargement...
@@ -421,7 +421,7 @@ function DetailCours() {
  .contenu-cours blockquote { border-left:3px solid var(--or); padding:12px 20px; margin:24px 0; background:rgba(201,169,106,.05); font-family:var(--ff-a); font-style:italic; font-size:1.05rem; color:rgba(248,245,242,.75); }
  .contenu-cours strong { color:var(--blanc); font-weight:600; }
  `}</style>
- <NavBar />
+ <Navbar />
 
  <main style={{ maxWidth:'800px', margin:'0 auto', padding:'100px 32px 80px' }}>
  <Link to="/mmo-learning" style={{
