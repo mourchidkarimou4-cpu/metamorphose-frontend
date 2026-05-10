@@ -292,8 +292,8 @@ function VaguesView({ api, toast }) {
 
  {/* Modal créer vague */}
  {modal === 'create' && (
- <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'80px 24px 24px'}} onClick={()=>setModal(null)}>
- <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
+ <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
+ <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'60px',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle vague</h3>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
  <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'12px'}}>
@@ -317,8 +317,8 @@ function VaguesView({ api, toast }) {
 
  {/* Modal détail vague */}
  {modal === 'detail' && selected && (
- <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'80px 24px 24px'}} onClick={()=>setModal(null)}>
- <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',maxWidth:'600px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
+ <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
+ <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'60px',maxWidth:'600px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600}}>{selected.nom}</h3>
  <button onClick={()=>setModal(null)} style={{background:'none',border:'none',color:'var(--text-sub)',cursor:'pointer',fontSize:'1.2rem'}}></button>
@@ -432,8 +432,8 @@ function ProgressionView({ api, toast }) {
 
  {/* Modal modifier progression */}
  {selected && (
- <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'80px 24px 24px'}} onClick={()=>setModal(null)}>
- <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',maxWidth:'440px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
+ <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
+ <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'60px',maxWidth:'440px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.1rem',fontWeight:600,marginBottom:'6px'}}>Progression — {selected.membre_prenom||selected.membre_email}</h3>
  <p style={{fontFamily:'var(--ff-b)',fontSize:'.75rem',color:'var(--text-sub)',marginBottom:'24px'}}>{selected.membre_email}</p>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
@@ -642,8 +642,8 @@ function AgendaView({ api, toast }) {
 
  {/* Modal créer session */}
  {modal && (
- <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'80px 24px 24px'}} onClick={()=>setModal(null)}>
- <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',maxWidth:'520px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
+ <div style={{position:'fixed',inset:0,background:'rgba(10,10,10,.9)',backdropFilter:'blur(12px)',zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={()=>setModal(null)}>
+ <div style={{background:'#141414',border:'1px solid rgba(201,169,106,.15)',borderRadius:'6px',padding:'36px',width:'100%',marginTop:'60px',maxWidth:'520px',maxHeight:'85vh',overflowY:'auto',animation:'fadeUp .35s both'}} onClick={e=>e.stopPropagation()}>
  <h3 style={{fontFamily:'var(--ff-t)',fontSize:'1.2rem',fontWeight:600,marginBottom:'24px'}}>Nouvelle session</h3>
  <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
  <div><label style={lbl}>Titre</label><input style={inp} value={form.titre} onChange={e=>setForm(p=>({...p,titre:e.target.value}))} placeholder="Live groupe — Semaine 3"/></div>
