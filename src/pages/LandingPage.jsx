@@ -1124,7 +1124,7 @@ function Hero({ get }) {
 function Probleme({ get }) {
   const frictions = [1,2,3,4,5].map(i => get(`probleme_item${i}`,"")).filter(Boolean);
   return (
-    <section className="section-pad" style={{ padding:"90px 24px", background:"linear-gradient(180deg,var(--noir) 0%,#110d09 100%)", color:"var(--blanc)", textAlign:"center" }}>
+    <section className="section-pad" style={{ padding:"90px 24px", background:"linear-gradient(180deg,#0d0d0d 0%,#110d09 100%)", color:"var(--blanc)", textAlign:"center" }}>
       <div style={{ maxWidth:"780px", margin:"0 auto" }}>
         <span className="label label-light reveal" style={{ justifyContent:"center" }}>Vous vous reconnaissez ?</span>
         <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.7rem,4vw,2.9rem)", fontWeight:600, lineHeight:1.2, marginBottom:"28px" }}>
@@ -1157,7 +1157,7 @@ function Methode({ get }) {
     { code:"OSE",   weeks:get("ose_semaines","Sem. 6—8"),   color:"#A8C8E0",     title:get("ose_titre","Passage à l'action"),           desc:get("ose_desc",""),   bg:"rgba(168,200,224,.05)" },
   ];
   return (
-    <section id="methode" className="section-pad" style={{ padding:"90px 24px", background:"linear-gradient(180deg,#110d09 0%,#18100d 100%)", color:"var(--blanc)" }}>
+    <section id="methode" className="section-pad" style={{ padding:"90px 24px", background:"linear-gradient(180deg,#110d09 0%,#1f1408 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:"72px" }}>
           <span className="label label-light reveal" style={{ justifyContent:"center" }}>La Méthode</span>
@@ -1193,7 +1193,7 @@ function Programme({ get }) {
   const [open, setOpen] = useState(null);
 
   return (
-    <section style={{ padding:"120px 24px" }}>
+    <section style={{ padding:"120px 24px", background:"linear-gradient(180deg,#1f1408 0%,#2a1a10 100%)" }}>
       <div style={{ maxWidth:"800px", margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:"56px" }}>
           <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Le Programme</p>
@@ -1261,7 +1261,7 @@ function AvantApres({ get }) {
   })).filter(t => t.avant && t.apres);
 
   return (
-    <section style={{ padding:"130px 24px", background:"linear-gradient(180deg,#1f1610 0%,#2a1a10 100%)", color:"var(--blanc)" }}>
+    <section style={{ padding:"130px 24px", background:"linear-gradient(180deg,#2a1a10 0%,#3a2518 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"900px", margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:"72px" }}>
           <span className="label label-light reveal" style={{ justifyContent:"center" }}>La Transformation</span>
@@ -1312,7 +1312,7 @@ function PourQui({ get }) {
   ];
 
   return (
-    <section style={{ padding:"120px 24px", background:"linear-gradient(180deg,#2a1a10 0%,#3a2518 50%,#2a1a10 100%)", position:"relative", overflow:"hidden" }}>
+    <section style={{ padding:"120px 24px", background:"linear-gradient(180deg,#3a2518 0%,#4a3020 50%,#3a2518 100%)", position:"relative", overflow:"hidden" }}>
       <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 40% at 50% 50%,rgba(201,169,106,.06),transparent 70%)", pointerEvents:"none" }}/>
       <div style={{ maxWidth:"1000px", margin:"0 auto", position:"relative" }}>
         <div style={{ textAlign:"center", marginBottom:"56px" }}>
@@ -1372,7 +1372,7 @@ function PourQui({ get }) {
 function Prelia({ get }) {
   const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
   return (
-    <section id="prelia" style={{ padding:"130px 24px", background:"linear-gradient(135deg,#3a2518 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
+    <section id="prelia" style={{ padding:"130px 24px", background:"linear-gradient(135deg,#2a1a10 0%,#3a2518 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
         <div className="grid-prelia" style={{ display:"grid", gridTemplateColumns:"360px 1fr", gap:"72px", alignItems:"center" }}>
           <div className="reveal-left">
@@ -1435,7 +1435,7 @@ function Valeurs({ get }) {
     return { titre, desc };
   });
   return (
-    <section style={{ padding:"120px 24px", background:"radial-gradient(ellipse at 50% 100%,rgba(201,169,106,.06),transparent 70%),#2e1e14", color:"var(--blanc)" }}>
+    <section style={{ padding:"120px 24px", background:"radial-gradient(ellipse at 50% 100%,rgba(201,169,106,.08),transparent 70%),#4a3020", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:"64px" }}>
           <span className="label label-light reveal" style={{ justifyContent:"center" }}>ADN du Programme</span>
@@ -1465,7 +1465,7 @@ function Valeurs({ get }) {
 
 function Temoignages({ get }) {
   return (
-    <section id="temoignages" style={{ padding:"120px 24px", background:"linear-gradient(180deg,#2e1e14 0%,#3a2518 100%)", color:"var(--blanc)", textAlign:"center" }}>
+    <section id="temoignages" style={{ padding:"120px 24px", background:"linear-gradient(180deg,#3a2518 0%,#5a3c28 100%)", color:"var(--blanc)", textAlign:"center" }}>
       <div style={{ maxWidth:"700px", margin:"0 auto" }}>
         <span className="label label-light reveal" style={{ justifyContent:"center" }}>Témoignages</span>
         <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,3.5vw,2.4rem)", fontWeight:600, marginBottom:"24px" }}>
@@ -1489,7 +1489,7 @@ function Temoignages({ get }) {
 function PreliaTeaser({ get }) {
   const certs = get("prelia_certifications","Coach en Image certifiée|Styliste certifiée|Experte en transformation Personnelle|Oratrice & leader certifiée|Thérapeute du cœur certifiée|Coach Mind Education certifiée").split("|").filter(Boolean);
   return (
-    <section id="prelia" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#18100d 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
+    <section id="prelia" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#1f1408 0%,#2a1a10 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"980px", margin:"0 auto" }}>
         <div className="grid-prelia" style={{ display:"grid", gridTemplateColumns:"320px 1fr", gap:"64px", alignItems:"center" }}>
 
@@ -1829,7 +1829,7 @@ function Ressources({ get }) {
   }
 
   return (
-    <section style={{ padding:"90px 24px", background:"linear-gradient(180deg,#0A0A0A 0%,#110d09 100%)", color:"var(--blanc)" }}>
+    <section style={{ padding:"90px 24px", background:"linear-gradient(180deg,#5a3c28 0%,#7a5238 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"900px", margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:"56px" }}>
           <span className="label label-light reveal" style={{ justifyContent:"center" }}>Cadeaux</span>
@@ -1907,7 +1907,7 @@ function ApercuTransformations({ get }) {
   const videoUrl = get("temo_video_url","");
 
   return (
-    <section style={{ padding:"60px 24px", background:"linear-gradient(180deg,#18100d 0%,#2e1e14 100%)", color:"var(--blanc)" }}>
+    <section style={{ padding:"60px 24px", background:"linear-gradient(180deg,#2a1a10 0%,#3a2518 100%)", color:"var(--blanc)" }}>
       <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
 
         {/* Titre */}
@@ -2004,7 +2004,7 @@ function ApercuTransformations({ get }) {
 
 function CTAFinal({ get }) {
   return (
-    <section id="contact" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#f0e8da 0%,var(--blanc) 100%)", textAlign:"center", color:"var(--noir)", position:"relative", overflow:"hidden" }}>
+    <section id="contact" style={{ padding:"100px 24px", background:"linear-gradient(180deg,#F2EBE0 0%,#F8F5F2 100%)", textAlign:"center", color:"var(--noir)", position:"relative", overflow:"hidden" }}>
       <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"600px", height:"400px", background:"radial-gradient(ellipse,rgba(194,24,91,.06),transparent 70%)", pointerEvents:"none" }}/>
       <div style={{ position:"relative", maxWidth:"640px", margin:"0 auto" }}>
         <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:700, lineHeight:1.1, color:"var(--noir)", marginBottom:"24px" }}>
