@@ -41,7 +41,7 @@ const STYLES = `
     --ease: cubic-bezier(0.4,0,0.2,1);
   }
   html { scroll-behavior: smooth; }
-  body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%); color: var(--blanc); font-family: var(--ff-b); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+  body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 70%,#2e1e14 100%); color: var(--blanc); font-family: var(--ff-b); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
 
   @keyframes fadeUp    { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
   @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }

@@ -14,7 +14,7 @@ const STYLES = `
  --ff-b: 'Montserrat', sans-serif;
  --ff-a: 'Cormorant Garamond', Georgia, serif;
  }
- body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%); color: var(--blanc); font-family: var(--ff-b); }
+ body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 70%,#2e1e14 100%); color: var(--blanc); font-family: var(--ff-b); }
  ::-webkit-scrollbar { width: 3px; }
  ::-webkit-scrollbar-thumb { background: var(--or); border-radius: 2px; }
  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }

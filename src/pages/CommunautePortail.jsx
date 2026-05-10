@@ -16,7 +16,7 @@ const STYLES = `
     --ff-a:'Cormorant Garamond',Georgia,serif;
   }
   html { scroll-behavior:smooth; }
-  body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%); color:var(--blanc); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; }
+  body { background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 70%,#2e1e14 100%); color:var(--blanc); font-family:var(--ff-b); font-weight:300; line-height:1.7; overflow-x:hidden; }
 
   @keyframes fadeUp   { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:none} }
   @keyframes lineGrow { from{width:0} to{width:100%} }

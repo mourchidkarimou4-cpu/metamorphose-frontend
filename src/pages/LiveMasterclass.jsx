@@ -9,7 +9,7 @@ const STYLES = `
  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
  @keyframes spin { to{transform:rotate(360deg)} }
- .live-page { min-height:100vh; background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 65%,#F2EBE0 100%); color:#F8F5F2; font-family:'Montserrat',sans-serif; font-weight:300; }
+ .live-page { min-height:100vh; background:linear-gradient(180deg,#0A0A0A 0%,#1f1408 30%,#3a2518 70%,#2e1e14 100%); color:#F8F5F2; font-family:'Montserrat',sans-serif; font-weight:300; }
  .live-hero { text-align:center; padding:80px 24px 48px; background:linear-gradient(180deg,rgba(194,24,91,.06) 0%,transparent 100%); }
  .live-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:600; margin-bottom:14px; line-height:1.2; }
  .salle-card { padding:24px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:6px; margin-bottom:16px; animation:fadeUp .5s both; }
