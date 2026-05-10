@@ -532,7 +532,7 @@ function WhatsAppButton({ get }) {
   const url     = `https://wa.me/message/DI23LCDIMS5SF1`;
 
   return (
-    <div style={{ position:"fixed", bottom:"16px", right:"16px", zIndex:148, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"10px" }}>
+    <div style={{ position:"fixed", bottom:"16px", left:"16px", zIndex:148, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"10px" }}>
       {open && (
         <div style={{ background:"#1a1a1a", border:"1px solid rgba(201,169,106,.2)", borderRadius:"8px", padding:"20px", maxWidth:"280px", boxShadow:"0 8px 32px rgba(0,0,0,.5)", animation:"revealUp .3s both" }}>
           <p style={{ fontFamily:"var(--ff-b)", fontSize:".7rem", letterSpacing:".15em", textTransform:"uppercase", color:"var(--or)", marginBottom:"8px" }}>Contacter Prélia</p>
