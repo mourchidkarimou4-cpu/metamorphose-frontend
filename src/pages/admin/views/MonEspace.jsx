@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 function MonCompteView({ toast }) {
