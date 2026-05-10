@@ -460,6 +460,42 @@ export default function MasterclassOratoire() {
           </div>
         </section>
 
+
+        {/* 3 SECRETS */}
+        <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#0d1420,#111820)" }}>
+          <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
+            <div style={{ textAlign:"center", marginBottom:"48px" }}>
+              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--rose)", marginBottom:"12px" }}>Au coeur de la masterclass</p>
+              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600, marginBottom:"16px" }}>
+                J'aborderai avec toi ces 3 secrets
+              </h2>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:"20px" }}>
+              {[
+                { num:"01", titre:"Comment capter l'attention dès les premières secondes", desc:"Découvre pourquoi certaines personnes marquent immédiatement les esprits lorsqu'elles prennent la parole, et comment développer une présence plus captivante et impactante." },
+                { num:"02", titre:"Comment structurer tes idées pour t'exprimer avec plus de clarté", desc:"Apprends les bases d'une communication plus fluide et plus organisée afin de mieux transmettre ton message avec assurance." },
+                { num:"03", titre:"Comment développer une présence orale plus forte et plus authentique", desc:"Comprends les éléments clés qui influencent la manière dont ton message est perçu : posture, énergie, voix et expression." },
+              ].map((s, i) => (
+                <div key={i} className="reveal" style={{ display:"flex", gap:"28px", alignItems:"flex-start", padding:"32px 36px", background:"rgba(201,169,106,.03)", border:"1px solid rgba(201,169,106,.1)", borderLeft:"3px solid var(--or)", borderRadius:"4px" }}>
+                  <div style={{ flexShrink:0, textAlign:"center" }}>
+                    <p style={{ fontFamily:"var(--ff-t)", fontSize:"2.2rem", fontWeight:700, color:"rgba(201,169,106,.2)", lineHeight:1 }}>{s.num}</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontSize:".55rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(201,169,106,.35)", marginTop:"4px" }}>Secret</p>
+                  </div>
+                  <div>
+                    <p style={{ fontFamily:"var(--ff-t)", fontSize:"1.1rem", fontWeight:600, color:"var(--or)", marginBottom:"10px", lineHeight:1.3 }}>{s.titre}</p>
+                    <p style={{ fontFamily:"var(--ff-b)", fontWeight:300, fontSize:".88rem", color:"rgba(248,245,242,.65)", lineHeight:1.8 }}>{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="reveal" style={{ textAlign:"center", marginTop:"40px" }}>
+              <button onClick={scrollToForm} className="btn-p" style={{ animation:"pulse-rose 3s ease-in-out infinite" }}>
+                JE VEUX DÉCOUVRIR CES SECRETS
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* A PROPOS DE PRELIA */}
         <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#0d1420,#111820)" }}>
           <div style={{ maxWidth:"900px", margin:"0 auto" }}>
@@ -499,6 +535,30 @@ export default function MasterclassOratoire() {
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* TEMOIGNAGES */}
+        <section style={{ padding:"80px 24px", background:"linear-gradient(180deg,#111820,#0d1b2a)" }}>
+          <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
+            <div style={{ textAlign:"center", marginBottom:"56px" }}>
+              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".28em", textTransform:"uppercase", color:"var(--or)", marginBottom:"12px" }}>Elles l'ont vécu</p>
+              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.5rem,4vw,2.2rem)", fontWeight:600 }}>Ce que disent les femmes qui ont déjà vécu cette expérience</h2>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:"20px" }}>
+              {[
+                { cat:"Confiance et expression", texte:"Cette masterclass m'a permis de prendre conscience de l'importance de ma manière de m'exprimer. Les conseils étaient clairs, accessibles et surtout très applicables. Aujourd'hui, je me sens beaucoup plus à l'aise lorsque je prends la parole.", nom:"Sandrine" },
+                { cat:"Impact et communication", texte:"J'ai particulièrement aimé la façon dont Coach Prélia explique les choses avec simplicité et profondeur. Cette expérience m'a aidée à améliorer ma posture, ma manière de structurer mes idées et ma présence lorsque je parle.", nom:"Mireille" },
+                { cat:"Transformation personnelle", texte:"Avant cette masterclass, je pensais que la prise de parole était réservée à certaines personnes. J'ai compris que cela pouvait réellement se travailler. Les conseils partagés m'ont énormément aidée dans ma communication quotidienne.", nom:"Estelle" },
+              ].map((t, i) => (
+                <div key={i} className="reveal" style={{ padding:"36px", background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.06)", borderTop:"2px solid var(--or)", borderRadius:"4px" }}>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".6rem", letterSpacing:".2em", textTransform:"uppercase", color:"var(--or)", marginBottom:"16px", fontWeight:600 }}>{t.cat}</p>
+                  <p style={{ fontFamily:"var(--ff-a)", fontStyle:"italic", fontSize:"1rem", color:"rgba(248,245,242,.8)", lineHeight:1.85, marginBottom:"20px" }}>"{t.texte}"</p>
+                  <p style={{ fontFamily:"var(--ff-b)", fontSize:".75rem", fontWeight:500, color:"rgba(248,245,242,.4)", letterSpacing:".08em" }}>— {t.nom}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -603,17 +663,6 @@ export default function MasterclassOratoire() {
           </div>
         </section>
 
-        {/* FAQ */}
-        <section style={{ padding:"80px 24px", background:"#0f0f0f", borderTop:"1px solid rgba(201,169,106,.08)" }}>
-          <div style={{ maxWidth:"760px", margin:"0 auto" }}>
-            <div style={{ textAlign:"center", marginBottom:"56px" }}>
-              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px" }}>Questions fréquentes</p>
-              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,3vw,2.2rem)", fontWeight:600 }}>Tout ce que vous devez savoir</h2>
-            </div>
-            <FAQ/>
-          </div>
-        </section>
-
         {/* CTA FINAL */}
         <section style={{ padding:"100px 24px", background:"linear-gradient(180deg,#0f0f0f,#0d1b2a)", textAlign:"center" }}>
           <div style={{ maxWidth:"680px", margin:"0 auto" }}>
@@ -634,6 +683,19 @@ export default function MasterclassOratoire() {
             </div>
           </div>
         </section>
+
+        {/* FAQ */}
+        <section style={{ padding:"80px 24px", background:"#0f0f0f", borderTop:"1px solid rgba(201,169,106,.08)" }}>
+          <div style={{ maxWidth:"760px", margin:"0 auto" }}>
+            <div style={{ textAlign:"center", marginBottom:"56px" }}>
+              <p className="reveal" style={{ fontFamily:"var(--ff-b)", fontSize:".62rem", letterSpacing:".2em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", marginBottom:"12px" }}>Questions fréquentes</p>
+              <h2 className="reveal" style={{ fontFamily:"var(--ff-t)", fontSize:"clamp(1.6rem,3vw,2.2rem)", fontWeight:600 }}>Tout ce que vous devez savoir</h2>
+            </div>
+            <FAQ/>
+          </div>
+        </section>
+
+
 
       </main>
 
