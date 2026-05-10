@@ -1,232 +1,355 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import AuthModal from "./AuthModal";
+import ModalRendezVous from "./ModalRendezVous";
 
-const NAV_LINKS = [
-  { label:"Programme",   icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>, to:"/programme" },
-  { label:"Formules",    icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, to:"/#formules" },
-  { label:"Masterclass", icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>, to:"/masterclass" },
-  { label:"Lives",       icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>, to:"/live" },
-  { label:"Learning",    icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>, to:"/mmo-learning" },
-  { sep:true },
-  { label:"Le Brunch",   icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>, to:"/brunch" },
-  { label:"Communauté",  icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>, to:"/communaute" },
-  { label:"Événements",  icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, to:"/evenements" },
-  { label:"Actualités",  icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, to:"/actualites" },
-  { label:"Cadeaux",     icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>, to:"/carte-cadeau" },
-  { label:"Store",       icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>, to:"/store" },
-  { sep:true },
-  { label:"À Propos",    icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>, to:"/a-propos" },
-  { label:"Témoignages", icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>, to:"/temoignages" },
-  { label:"FAQ",         icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>, to:"/faq" },
-  { label:"Contact",     icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, to:"/contact" },
-  { label:"Don",         icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>, to:"/don" },
-];
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
-const MOBILE_SECTIONS = [
-  {
-    label:"Programme",
-    links:[
-      { label:"Le Programme",    to:"/programme",    icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg> },
-      { label:"Formules & Tarifs", to:"/#formules",  icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> },
-      { label:"Masterclass",     to:"/masterclass",  icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> },
-      { label:"Lives & Replays", to:"/live",         icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> },
-      { label:"MMO Learning",    to:"/mmo-learning", icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg> },
-    ],
-  },
-  {
-    label:"L'Univers MMO",
-    links:[
-      { label:"Le Brunch 2026",  to:"/brunch",       icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg> },
-      { label:"Communauté",      to:"/communaute",   icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> },
-      { label:"Événements",      to:"/evenements",   icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
-      { label:"Actualités",      to:"/actualites",   icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
-      { label:"Cartes Cadeaux",  to:"/carte-cadeau", icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/></svg> },
-      { label:"Store MMO",       to:"/store",        icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg> },
-    ],
-  },
-  {
-    label:"Découvrir",
-    links:[
-      { label:"À Propos",        to:"/a-propos",     icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
-      { label:"Témoignages",     to:"/temoignages",  icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> },
-      { label:"FAQ",             to:"/faq",          icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/></svg> },
-      { label:"Contact",         to:"/contact",      icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> },
-      { label:"Don",             to:"/don",          icon:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
-    ],
-  },
-];
+function useSiteConfig() {
+  const [config, setConfig] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('mmo_site_config') || '{}'); } catch { return {}; }
+  });
+  useEffect(() => {
+    fetch(`${API_BASE}/api/admin/config/public/`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        const map = {};
+        if (Array.isArray(data)) data.forEach(item => { map[item.cle] = item.valeur; });
+        try { localStorage.setItem('mmo_site_config', JSON.stringify(map)); } catch {}
+        setConfig(map);
+      }).catch(() => {});
+  }, []);
+  return (cle, defaut = "") => config[cle] || defaut;
+}
 
-export default function Navbar({ onAuthOpen, onRdvOpen }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const h = () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(window.scrollY / max, 1) : 0);
+      setScrolled(window.scrollY > 60);
+    };
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
+  }, []);
+  return { progress, scrolled };
+}
+
+export default function Navbar() {
   const { user } = useAuth();
+  const get = useSiteConfig();
+  const { progress, scrolled } = useScrollProgress();
+  const [authTab,  setAuthTab]  = useState(null);
+  const [showRdv,  setShowRdv]  = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
+
+  useEffect(() => {
+    const close = () => setOpenMenu(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, []);
+
+  const isLight    = progress > 0.72;
+  const navBg      = scrolled ? (isLight ? "rgba(248,245,242,.97)" : "rgba(10,10,10,.97)") : "transparent";
+  const borderColor= scrolled ? (isLight ? "rgba(201,169,106,.25)" : "rgba(201,169,106,.15)") : "transparent";
+  const navTextColor   = isLight && scrolled ? "rgba(10,10,10,.8)"  : "rgba(248,245,242,.75)";
+  const navLogoColor1  = isLight && scrolled ? "#0A0A0A" : "#F8F5F2";
+
+  const triggerStyle = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
+    color: navTextColor, background:"none", border:"none",
+    cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
+    gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
+  };
+  const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.95)" };
+
+  const ctaLinkStyle = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
+    color:"rgba(201,169,106,.8)", background:"none", border:"none",
+    borderBottom:"1px solid rgba(201,169,106,.35)", padding:"3px 0",
+    cursor:"pointer", textDecoration:"none", transition:"all .3s", lineHeight:1.2,
+  };
+
+  const panelStyle = {
+    position:"absolute", top:"calc(100% + 1px)", left:"50%", transform:"translateX(-50%)",
+    background:"#0d0d0d", border:"1px solid rgba(201,169,106,.12)",
+    borderTop:"1px solid rgba(201,169,106,.3)", zIndex:300,
+    animation:"panelIn .22s cubic-bezier(.4,0,.2,1) both",
+  };
+
+  const panelLabel = {
+    fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
+    fontSize:".6rem", fontWeight:300, letterSpacing:".28em", textTransform:"uppercase",
+    color:"rgba(201,169,106,.35)", marginBottom:"20px",
+    paddingBottom:"10px", borderBottom:"1px solid rgba(255,255,255,.04)", display:"block",
+  };
+
+  function toggle(name, e) { e.stopPropagation(); setOpenMenu(openMenu === name ? null : name); }
+
+  function DropRow({ num, title, desc, to }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <Link to={to} style={{ display:"flex", alignItems:"flex-start", gap:"0", padding:"11px 0", borderBottom:"1px solid rgba(255,255,255,.03)", cursor:"pointer", textDecoration:"none" }}
+        onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".95rem", color: hov ? "rgba(201,169,106,.4)" : "rgba(201,169,106,.15)", width:"30px", flexShrink:0, lineHeight:1.3, transition:"color .2s" }}>{num}</span>
+        <div style={{ flex:1 }}>
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".85rem", fontWeight:400, color: hov ? "#C9A96A" : "rgba(248,245,242,.78)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
+          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".58rem", fontWeight:300, color:"rgba(248,245,242,.25)", letterSpacing:".05em" }}>{desc}</span>
+        </div>
+        <span style={{ fontSize:".6rem", color: hov ? "rgba(201,169,106,.4)" : "rgba(255,255,255,.1)", transition:"color .2s", paddingTop:"4px" }}>→</span>
+      </Link>
+    );
+  }
+
+  function FormRow({ code, name, prix, tag }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <Link to="/#formules" style={{ display:"flex", alignItems:"center", padding:"11px 0", borderBottom:"1px solid rgba(255,255,255,.03)", cursor:"pointer", textDecoration:"none" }}
+        onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".9rem", color:"rgba(201,169,106,.2)", width:"28px" }}>{code}</span>
+        <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".83rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", flex:1, padding:"0 14px", transition:"color .2s" }}>
+          {name} {tag && <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".48rem", letterSpacing:".14em", textTransform:"uppercase", border:"1px solid rgba(201,169,106,.25)", color:"rgba(201,169,106,.6)", padding:"2px 6px", marginLeft:"8px" }}>{tag}</span>}
+        </span>
+        <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".82rem", fontWeight:300, color: hov ? "rgba(201,169,106,.7)" : "rgba(201,169,106,.4)", transition:"color .2s" }}>{prix}</span>
+      </Link>
+    );
+  }
+
+  function ExpRow({ title, desc, to }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <Link to={to} style={{ display:"flex", alignItems:"flex-start", gap:"12px", padding:"12px 14px", cursor:"pointer", textDecoration:"none", background: hov ? "rgba(201,169,106,.04)" : "transparent", transition:"background .2s" }}
+        onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>setOpenMenu(null)}>
+        <span style={{ width:"3px", height:"3px", borderRadius:"50%", background: hov ? "#C9A96A" : "rgba(201,169,106,.25)", flexShrink:0, marginTop:"8px", transition:"background .2s" }}/>
+        <div>
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".8rem", color: hov ? "#C9A96A" : "rgba(248,245,242,.75)", display:"block", marginBottom:"2px", transition:"color .2s" }}>{title}</span>
+          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".56rem", fontWeight:300, color:"rgba(248,245,242,.22)", letterSpacing:".04em" }}>{desc}</span>
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <>
       <style>{`
-        .nav-link-item {
-          display:flex; flex-direction:column; align-items:center; gap:4px;
-          cursor:pointer; text-decoration:none; color:rgba(248,245,242,.45);
-          transition:color .25s; flex-shrink:0; padding:0 2px;
-        }
-        .nav-link-item:hover { color:rgba(201,169,106,.85); }
-        .nav-link-item span {
-          font-family:'Montserrat',sans-serif; font-size:8px;
-          letter-spacing:1.8px; text-transform:uppercase; white-space:nowrap;
-          font-weight:300;
-        }
-        .nav-sep { width:1px; height:28px; background:rgba(201,169,106,.1); flex-shrink:0; margin:0 4px; }
-        .drawer-link {
-          display:flex; align-items:center; gap:10px; padding:13px 24px;
-          text-decoration:none; color:rgba(248,245,242,.72);
-          border-bottom:1px solid rgba(255,255,255,.04);
-          font-family:'Playfair Display',Georgia,serif; font-size:1rem; font-weight:600;
-          transition:all .2s;
-        }
-        .drawer-link:hover { color:#C9A96A; padding-left:32px; border-left:2px solid #C9A96A; }
-        @media(max-width:1100px){
-          .nav-desktop-links { display:none !important; }
-          .nav-burger { display:flex !important; }
-        }
-        @media(min-width:1101px){
-          .nav-burger { display:none !important; }
-        }
+        @keyframes panelIn { from{opacity:0;transform:translateX(-50%) translateY(-6px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+        .nav-lux-trigger:hover { color:rgba(201,169,106,.85) !important; }
+        .nav-lux-trigger.active { color:rgba(201,169,106,.85) !important; }
+        .nav-lux-trigger.active::after { content:''; position:absolute; bottom:-1px; left:16px; right:16px; height:1px; background:linear-gradient(90deg,transparent,rgba(201,169,106,.6),transparent); }
+        .cta-lux:hover { color:rgba(201,169,106,.85) !important; border-bottom-color:rgba(201,169,106,.6) !important; }
       `}</style>
 
-      {/* ── NAVBAR STICKY ── */}
-      <nav style={{
-        position:"sticky", top:0, left:0, right:0, zIndex:200,
-        height:"62px",
-        background:"rgba(6,6,8,.98)",
-        backdropFilter:"blur(20px)",
-        borderBottom:"1px solid rgba(201,169,106,.15)",
-        display:"flex", alignItems:"center", justifyContent:"space-between",
-        padding:"0 24px",
-      }}>
+      {authTab  && <AuthModal defaultTab={authTab} onClose={() => setAuthTab(null)} />}
+      {showRdv  && <ModalRendezVous onClose={() => setShowRdv(false)} />}
+
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0 32px", height: scrolled ? "60px" : "72px", background:navBg, backdropFilter: scrolled ? "blur(24px)" : "none", borderBottom:`1px solid ${borderColor}`, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"all .4s cubic-bezier(.4,0,.2,1)" }}>
 
         {/* Logo */}
-        <Link to="/" style={{ textDecoration:"none", flexShrink:0 }}>
-          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400 }}>
-            <span style={{ color:"#F8F5F2" }}>Méta'</span>
+        <Link to="/" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
+          {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/>}
+          <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400, letterSpacing:".04em", lineHeight:1 }}>
+            <span style={{ color: navLogoColor1 }}>Méta'</span>
             <span style={{ color:"#C9A96A" }}>Morph'</span>
             <span style={{ color:"#C2185B" }}>Ose</span>
           </span>
         </Link>
 
-        {/* Liens desktop */}
-        <div className="nav-desktop-links" style={{ display:"flex", alignItems:"center", gap:"6px", overflowX:"auto", flex:1, justifyContent:"center", padding:"0 16px" }}>
-          {NAV_LINKS.map((link, i) => {
-            if (link.sep) return <div key={i} className="nav-sep"/>;
-            return (
-              <Link key={i} to={link.to} className="nav-link-item">
-                {link.icon}
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
+        {/* Links desktop */}
+        <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }} className="nav-links-desktop">
+
+          {/* Programme */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="programme"?"active":""}`}
+              style={openMenu==="programme" ? triggerActiveStyle : triggerStyle}
+              onClick={e=>toggle("programme",e)}>
+              Programme
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.4, transition:"transform .3s", transform:openMenu==="programme"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="programme" && (
+              <div style={{ ...panelStyle, width:"440px", padding:"28px 32px" }} onClick={e=>e.stopPropagation()}>
+                <span style={panelLabel}>Le Programme</span>
+                <DropRow num="I"   title="Le Programme MMO"    desc="8 semaines · Méta · Morph · Ose"              to="/programme"/>
+                <DropRow num="II"  title="À Propos de Prélia"  desc="Son histoire, sa mission, ses certifications" to="/a-propos"/>
+                <DropRow num="III" title="Témoignages"         desc="Elles ont osé. Leur transformation parle."    to="/temoignages"/>
+                <DropRow num="IV"  title="Questions Fréquentes" desc="Tout ce que vous souhaitez savoir"           to="/faq"/>
+              </div>
+            )}
+          </div>
+
+          {/* Formules */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="formules"?"active":""}`}
+              style={openMenu==="formules" ? triggerActiveStyle : triggerStyle}
+              onClick={e=>toggle("formules",e)}>
+              Formules
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.4, transition:"transform .3s", transform:openMenu==="formules"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="formules" && (
+              <div style={{ ...panelStyle, width:"400px", padding:"24px 32px" }} onClick={e=>e.stopPropagation()}>
+                <span style={panelLabel}>4 Formules d'accompagnement</span>
+                <FormRow code="F1" name="ESSENTIELLE"   prix="70 000 FCFA"  tag="Startup"/>
+                <FormRow code="F2" name="PERSONNALISÉE" prix="160 000 FCFA" tag="Populaire"/>
+                <FormRow code="F3" name="IMMERSION"     prix="267 000 FCFA" tag="Ambitieux"/>
+                <FormRow code="F4" name="VIP"           prix="370 000 FCFA" tag="Prestige"/>
+                <div style={{ marginTop:"16px", paddingTop:"14px", borderTop:"1px solid rgba(255,255,255,.04)", textAlign:"center" }}>
+                  <Link to="/#formules" style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".75rem", color:"rgba(201,169,106,.4)", textDecoration:"none" }} onClick={()=>setOpenMenu(null)}>
+                    Trouver ma formule →
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Explorer */}
+          <div style={{ position:"relative" }}>
+            <button className={`nav-lux-trigger ${openMenu==="explorer"?"active":""}`}
+              style={{ ...(openMenu==="explorer" ? triggerActiveStyle : triggerStyle), color: openMenu==="explorer" ? "rgba(201,169,106,.95)" : "rgba(201,169,106,.45)" }}
+              onClick={e=>toggle("explorer",e)}>
+              Explorer
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ opacity:.5, transition:"transform .3s", transform:openMenu==="explorer"?"rotate(180deg)":"none" }}>
+                <path d="M1 2.5l3 3 3-3" stroke="#C9A96A" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            {openMenu==="explorer" && (
+              <div style={{ ...panelStyle, width:"540px", padding:"28px 0 0" }} onClick={e=>e.stopPropagation()}>
+                <span style={{ ...panelLabel, margin:"0 32px 20px", paddingBottom:"10px" }}>L'univers Méta'Morph'Ose</span>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0" }}>
+                  <ExpRow title="Masterclass OSE"         desc="Live gratuit · Inscription ouverte" to="/masterclass"/>
+                  <ExpRow title="Masterclass Art Oratoire" desc="Affirme ta voix · En direct"       to="/masterclass-oratoire"/>
+                  <ExpRow title="Store MMO"           desc="Guides, formations et replays"       to="/store"/>
+                  <ExpRow title="Lives et Replays"    desc="Sessions en direct · Jitsi"          to="/live"/>
+                  <ExpRow title="Communauté MMO"      desc="Réservé aux Métamorphosées"          to="/communaute"/>
+                  <ExpRow title="Don"                 desc="Soutenir le programme"               to="/don"/>
+                  <ExpRow title="MMO Learning"        desc="Cours de coaching gratuits"          to="/mmo-learning"/>
+                  <ExpRow title="Événements"          desc="Brunch, masterclass, ateliers"       to="/evenements"/>
+                  <ExpRow title="Actualités"          desc="Nouveautés et coulisses"             to="/actualites"/>
+                </div>
+                <Link to="/brunch" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 32px", borderTop:"1px solid rgba(255,255,255,.04)", textDecoration:"none", marginTop:"4px" }}
+                  onClick={()=>setOpenMenu(null)}
+                  onMouseEnter={e=>{ e.currentTarget.style.background="rgba(194,24,91,.04)"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; }}>
+                  <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontStyle:"italic", fontSize:".82rem", color:"rgba(194,24,91,.55)" }}>Le Brunch des Métamorphosées</span>
+                  <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:".65rem", color:"rgba(194,24,91,.3)", letterSpacing:".08em" }}>Événement annuel →</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Contact */}
+          <Link to="/contact" style={{ ...triggerStyle, textDecoration:"none" }}
+            onMouseEnter={e=>e.currentTarget.style.color="rgba(201,169,106,.85)"}
+            onMouseLeave={e=>e.currentTarget.style.color= navTextColor}>
+            Contact
+          </Link>
         </div>
 
-
         {/* CTAs desktop */}
-        <div className="nav-desktop-links" style={{ display:"flex", alignItems:"center", gap:"12px", flexShrink:0 }}>
-          {user ? (
-            <Link to="/dashboard" className="nav-link-item">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span>Mon espace</span>
-            </Link>
-          ) : (
-            <button onClick={() => onAuthOpen("login")} className="nav-link-item" style={{ background:"none", border:"none", cursor:"pointer" }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span>Mon espace</span>
-            </button>
-          )}
-          <button onClick={onRdvOpen}
-            style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"transparent", border:"1px solid rgba(201,169,106,.35)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"all .3s", flexShrink:0 }}
+        <div className="nav-ctas-desktop" style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
+          <button onClick={() => setShowRdv(true)}
+            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
-            onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(201,169,106,.35)"; }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(201,169,106,.3)"; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Prendre RDV
           </button>
-          <button onClick={() => onAuthOpen("inscription")}
-            style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".68rem", letterSpacing:".16em", textTransform:"uppercase", padding:"10px 20px", cursor:"pointer", transition:"background .3s", flexShrink:0 }}
-            onMouseEnter={e=>e.currentTarget.style.background="#a01049"}
-            onMouseLeave={e=>e.currentTarget.style.background="#C2185B"}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-            S'inscrire
-          </button>
+          <div style={{ width:"1px", height:"12px", background:"rgba(255,255,255,.07)" }}/>
+          {user ? (
+            <Link to="/dashboard" style={ctaLinkStyle}>Mon espace</Link>
+          ) : (
+            <button onClick={() => setAuthTab("inscription")} style={ctaLinkStyle}
+              onMouseEnter={e=>{ e.currentTarget.style.color="rgba(201,169,106,.85)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.6)"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.color="rgba(201,169,106,.55)"; e.currentTarget.style.borderBottomColor="rgba(201,169,106,.28)"; }}>
+              S'inscrire
+            </button>
+          )}
         </div>
 
         {/* Burger mobile */}
-        <div className="nav-burger" style={{ display:"none", alignItems:"center", gap:"12px" }}>
-          <button onClick={() => onAuthOpen("inscription")} style={{ background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".65rem", letterSpacing:".14em", textTransform:"uppercase", padding:"9px 16px", cursor:"pointer" }}>
-            S'inscrire
-          </button>
-          <button onClick={() => setMenuOpen(true)} style={{ background:"none", border:"none", cursor:"pointer", padding:"4px", display:"flex", flexDirection:"column", gap:"5px" }}>
-            <div style={{ width:"22px", height:"1px", background:"#C9A96A" }}/>
-            <div style={{ width:"15px", height:"1px", background:"#C9A96A" }}/>
-            <div style={{ width:"22px", height:"1px", background:"#C9A96A" }}/>
-          </button>
-        </div>
+        <button onClick={()=>setMenuOpen(true)} style={{ background:"none", border:"1px solid rgba(201,169,106,.25)", borderRadius:"2px", color:"var(--or)", padding:"7px 14px", cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".82rem", letterSpacing:".08em", display:"none" }} className="nav-burger-mobile">
+          Menu
+        </button>
       </nav>
 
-      {/* ── DRAWER MOBILE ── */}
+      {/* Menu mobile */}
       {menuOpen && (
-        <>
-          <div onClick={() => setMenuOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.6)", zIndex:300, backdropFilter:"blur(4px)" }}/>
-          <div style={{
-            position:"fixed", top:0, right:0, bottom:0, width:"min(340px,90vw)",
-            background:"#0d0b10",
-            borderLeft:"1px solid rgba(201,169,106,.15)",
-            zIndex:301, display:"flex", flexDirection:"column",
-            animation:"slideIn .3s cubic-bezier(.16,1,.3,1)",
-          }}>
-            <style>{`@keyframes slideIn { from{transform:translateX(100%)} to{transform:none} }`}</style>
-
-            <div style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
-              <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1rem", color:"#F8F5F2" }}>
-                Méta'<span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
-              </span>
-              <button onClick={() => setMenuOpen(false)} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"2px", width:"32px", height:"32px", cursor:"pointer", color:"rgba(201,169,106,.6)", fontSize:"1.1rem", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                &times;
-              </button>
-            </div>
-
-            <div style={{ flex:1, overflowY:"auto", paddingBottom:"16px" }}>
-              {MOBILE_SECTIONS.map((section, si) => (
-                <div key={si}>
-                  <p style={{ fontFamily:"'Montserrat',sans-serif", fontWeight:200, fontSize:".55rem", letterSpacing:".35em", textTransform:"uppercase", color:"rgba(201,169,106,.4)", padding:"18px 24px 6px" }}>
-                    {section.label}
-                  </p>
-                  {section.links.map((link, li) => (
-                    <Link key={li} to={link.to} className="drawer-link" onClick={() => setMenuOpen(false)}>
-                      <span style={{ color:"rgba(201,169,106,.5)", flexShrink:0 }}>{link.icon}</span>
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            <div style={{ padding:"16px 24px", borderTop:"1px solid rgba(201,169,106,.1)", display:"flex", flexDirection:"column", gap:"10px", flexShrink:0 }}>
-              <button onClick={() => { onAuthOpen("inscription"); setMenuOpen(false); }}
-                style={{ width:"100%", padding:"14px", background:"#C2185B", border:"none", borderRadius:"2px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontWeight:700, fontSize:".74rem", letterSpacing:".16em", textTransform:"uppercase", cursor:"pointer" }}>
-                S'inscrire
-              </button>
-              {user ? (
-                <Link to="/dashboard" onClick={() => setMenuOpen(false)}
-                  style={{ display:"block", width:"100%", padding:"12px", background:"rgba(201,169,106,.07)", border:"1px solid rgba(201,169,106,.2)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".7rem", fontWeight:600, letterSpacing:".15em", textTransform:"uppercase", textAlign:"center", textDecoration:"none" }}>
-                  Mon espace
-                </Link>
-              ) : (
-                <button onClick={() => { onAuthOpen("login"); setMenuOpen(false); }}
-                  style={{ width:"100%", padding:"12px", background:"rgba(201,169,106,.07)", border:"1px solid rgba(201,169,106,.2)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".7rem", letterSpacing:".15em", textTransform:"uppercase", cursor:"pointer" }}>
-                  Mon espace
-                </button>
-              )}
-            </div>
+        <div style={{ position:"fixed", inset:0, background:"#0A0A0A", zIndex:300, display:"flex", flexDirection:"column", overflowY:"auto" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"20px 24px", borderBottom:"1px solid rgba(201,169,106,.12)", flexShrink:0 }}>
+            <p style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem" }}>
+              <span style={{ color:"#F8F5F2" }}>Méta'</span><span style={{ color:"#C9A96A" }}>Morph'</span><span style={{ color:"#C2185B" }}>Ose</span>
+            </p>
+            <button onClick={()=>setMenuOpen(false)} style={{ background:"none", border:"1px solid rgba(201,169,106,.2)", borderRadius:"2px", color:"rgba(201,169,106,.6)", width:"36px", height:"36px", cursor:"pointer", fontSize:"1rem", display:"flex", alignItems:"center", justifyContent:"center" }}>x</button>
           </div>
-        </>
+          <div style={{ flex:1, padding:"8px 0 32px" }}>
+            {[
+              { section:"Programme", links:[
+                { label:"Le Programme",      to:"/programme" },
+                { label:"Formules",          to:"/#formules" },
+                { label:"Masterclass OSE",   to:"/masterclass" },
+                { label:"MC Art Oratoire",   to:"/masterclass-oratoire" },
+                { label:"Lives et Replays",  to:"/live" },
+                { label:"MMO Learning",      to:"/mmo-learning" },
+              ]},
+              { section:"L'Univers MMO", links:[
+                { label:"Store MMO",         to:"/store" },
+                { label:"Le Brunch",         to:"/brunch" },
+                { label:"Communauté",        to:"/communaute" },
+                { label:"Événements",        to:"/evenements" },
+                { label:"Actualités",        to:"/actualites" },
+                { label:"Cartes Cadeaux",    to:"/carte-cadeau" },
+              ]},
+              { section:"Découvrir", links:[
+                { label:"À Propos",          to:"/a-propos" },
+                { label:"Témoignages",       to:"/temoignages" },
+                { label:"FAQ",               to:"/faq" },
+                { label:"Contact",           to:"/contact" },
+                { label:"Don",               to:"/don" },
+              ]},
+            ].map((s,i) => (
+              <div key={i}>
+                <div style={{ padding:"20px 24px 4px" }}>
+                  <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".55rem", letterSpacing:".28em", textTransform:"uppercase", color:"#C9A96A" }}>{s.section}</p>
+                </div>
+                {s.links.map((l,j) => (
+                  <Link key={j} to={l.to} onClick={()=>setMenuOpen(false)}
+                    style={{ display:"block", fontFamily:"'Playfair Display',Georgia,serif", fontSize:"1.05rem", fontWeight:600, color:"rgba(248,245,242,.7)", textDecoration:"none", padding:"14px 24px", borderBottom:"1px solid rgba(255,255,255,.04)", transition:"all .2s" }}
+                    onMouseEnter={e=>{e.currentTarget.style.color="#F8F5F2";e.currentTarget.style.paddingLeft="32px";e.currentTarget.style.borderLeft="3px solid #C9A96A"}}
+                    onMouseLeave={e=>{e.currentTarget.style.color="rgba(248,245,242,.7)";e.currentTarget.style.paddingLeft="24px";e.currentTarget.style.borderLeft="none"}}>
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ padding:"20px 24px", borderTop:"1px solid rgba(201,169,106,.12)", display:"flex", flexDirection:"column", gap:"10px", flexShrink:0 }}>
+            <button onClick={()=>{setShowRdv(true);setMenuOpen(false);}}
+              style={{ width:"100%", padding:"14px", background:"transparent", border:"1px solid rgba(201,169,106,.4)", borderRadius:"3px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontSize:".75rem", fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", cursor:"pointer" }}>
+              Prendre RDV
+            </button>
+            <button onClick={()=>{setAuthTab("inscription");setMenuOpen(false);}}
+              style={{ width:"100%", padding:"14px", background:"#C2185B", border:"none", borderRadius:"3px", color:"#fff", fontFamily:"'Montserrat',sans-serif", fontSize:".75rem", fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", cursor:"pointer" }}>
+              S'inscrire
+            </button>
+          </div>
+        </div>
       )}
+
+      <style>{`
+        @media(max-width:900px){
+          .nav-links-desktop { display:none !important; }
+          .nav-ctas-desktop  { display:none !important; }
+          .nav-burger-mobile { display:block !important; }
+        }
+      `}</style>
     </>
   );
 }

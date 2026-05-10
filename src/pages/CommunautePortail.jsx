@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Navbar from '../components/Navbar';
 import { Link } from "react-router-dom";
 import { configAPI } from "../services/api";
 
@@ -254,7 +255,7 @@ const FAQ = [
 function FaqItem({ item }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="faq-item">
+<div className="faq-item">
       <button className="faq-btn" onClick={() => setOpen(o => !o)}>
         <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.05rem", fontWeight:600, color:open?"#C9A96A":"#F8F5F2", transition:"color .3s", lineHeight:1.4 }}>
           {item.q}
@@ -429,19 +430,7 @@ export default function CommunautePortail() {
       <div style={{ background:"#060608", color:"#F8F5F2", minHeight:"100vh", position:"relative" }}>
 
         {/* NAV */}
-        <nav style={{ padding:"20px 48px", borderBottom:"1px solid rgba(201,169,106,.08)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(6,6,8,.92)", backdropFilter:"blur(24px)", zIndex:100 }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.05rem" }}>
-              <span style={{color:"#F8F5F2"}}>Méta'</span>
-              <span style={{color:"#C9A96A"}}>Morph'</span>
-              <span style={{color:"#C2185B"}}>Ose</span>
-            </span>
-          </Link>
-          <div style={{ display:"flex", gap:"20px", alignItems:"center" }}>
-            <Link to="/" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".65rem", letterSpacing:".18em", textTransform:"uppercase", color:"rgba(201,169,106,.4)", textDecoration:"none" }}>Accueil</Link>
-            <button onClick={() => ouvrirFormulaire()} className="btn-rose" style={{ padding:"10px 22px", fontSize:".66rem" }}>Prendre mon abonnement</button>
-          </div>
-        </nav>
+        
 
         {/* SECTION 1 : HERO */}
         <section style={{ background:"#060608", padding:"140px 48px 100px", textAlign:"center", position:"relative", overflow:"hidden", minHeight:"90vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>

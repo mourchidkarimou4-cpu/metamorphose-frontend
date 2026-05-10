@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Navbar from '../components/Navbar';
 import { Link } from "react-router-dom";
 import SectionCadeaux from '../components/SectionCadeaux';
 import { configAPI } from '../services/api';
@@ -59,7 +60,7 @@ const OR = "#C9A96A", ROSE = "#C2185B", BLANC = "#F8F5F2";
 
 function SectionTitle({ label, titre }) {
   return (
-    <div style={{ marginBottom: "32px" }}>
+<div style={{ marginBottom: "32px" }}>
       <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".6rem", letterSpacing:".28em", textTransform:"uppercase", color:OR, marginBottom:"10px" }}>{label}</p>
       <h2 className="reveal" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.4rem,3.5vw,2rem)", fontWeight:700, lineHeight:1.2 }}>{titre}</h2>
       <div style={{ width:"40px", height:"1px", background:`linear-gradient(90deg,${ROSE},transparent)`, marginTop:"14px" }}/>
@@ -95,21 +96,12 @@ export default function APropos() {
 
   return (
     <>
+      <Navbar />
       <style>{STYLES}</style>
       <div style={{ background:"#0A0A0A", color:BLANC, fontFamily:"'Montserrat',sans-serif", minHeight:"100vh" }}>
 
         {/* Nav */}
-        <nav style={{ padding:"18px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.95)", backdropFilter:"blur(20px)", zIndex:100 }}>
-          <Link to="/" style={{ textDecoration:"none" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"1rem" }}>
-              <span style={{color:BLANC}}>Méta'</span><span style={{color:OR}}>Morph'</span><span style={{color:ROSE}}>Ose</span>
-            </span>
-          </Link>
-          <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
-            <Link to="/" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", color:"rgba(201,169,106,.5)", textDecoration:"none" }}>Accueil</Link>
-            <Link to="/contact" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".68rem", letterSpacing:".15em", textTransform:"uppercase", background:ROSE, color:"#fff", textDecoration:"none", padding:"9px 18px", borderRadius:"2px" }}>S'inscrire</Link>
-          </div>
-        </nav>
+        
 
         {/* Hero */}
         <section style={{ padding:"80px 24px 60px", textAlign:"center", background:"linear-gradient(180deg,#0A0A0A,#110d09)", position:"relative" }}>

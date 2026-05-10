@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { learningAPI, configAPI } from '../services/api';
@@ -33,36 +34,7 @@ const FORMAT_LABELS = { texte:'Article', video:'Vidéo', audio:'Audio', pdf:'PDF
 const NIVEAU_COLORS = { debutant:'#4CAF50', intermediaire:'#C9A96A', avance:'#C2185B' }
 const NIVEAU_LABELS = { debutant:'Débutant', intermediaire:'Intermédiaire', avance:'Avancé' }
 
-function NavBar() {
- const { user } = useAuth()
- return (
- <nav style={{
- position:'fixed', top:0, left:0, right:0, zIndex:100,
- background:'rgba(10,10,10,.95)', backdropFilter:'blur(20px)',
- borderBottom:'1px solid rgba(201,169,106,.12)',
- padding:'0 32px', height:'64px',
- display:'flex', alignItems:'center', justifyContent:'space-between',
- }}>
- <Link to="/" style={{ textDecoration:'none' }}>
- <span style={{ fontFamily:"var(--ff-t)", fontSize:'1rem' }}>
- <span style={{color:'#F8F5F2'}}>Méta'</span>
- <span style={{color:'#C9A96A'}}>Morph'</span>
- <span style={{color:'#C2185B'}}>Ose</span>
- </span>
- </Link>
- <div style={{ display:'flex', alignItems:'center', gap:'24px' }}>
- <Link to="/mmo-learning" style={{
- fontFamily:'var(--ff-b)', fontSize:'.68rem', letterSpacing:'.18em',
- textTransform:'uppercase', color:'var(--or)', textDecoration:'none', fontWeight:600,
- }}>MMO Learning</Link>
- <Link to={user ? '/dashboard' : '/espace-membre'} style={{
- fontFamily:'var(--ff-b)', fontSize:'.68rem', letterSpacing:'.15em',
- textTransform:'uppercase', color:'rgba(248,245,242,.4)', textDecoration:'none',
- }}>{user ? 'Mon espace' : 'Se connecter'}</Link>
- </div>
- </nav>
- )
-}
+
 
 function CarteCours({ cours }) {
  return (
@@ -334,7 +306,7 @@ function ListeCours() {
  </section>
 
  {/* Contenu */}
- <main className="main-pad" style={{ maxWidth:'1200px', margin:'0 auto', padding:'48px 32px 80px' }}>
+<main className="main-pad" style={{ maxWidth:'1200px', margin:'0 auto', padding:'48px 32px 80px' }}>
  {loading ? (
  <div style={{ textAlign:'center', padding:'80px' }}>
  <p style={{ fontFamily:'var(--ff-a)', fontStyle:'italic', color:'rgba(248,245,242,.3)', fontSize:'1.1rem' }}>

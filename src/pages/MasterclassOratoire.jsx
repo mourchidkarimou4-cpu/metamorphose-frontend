@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Navbar from '../components/Navbar';
 import usePageBackground from "../hooks/usePageBackground";
 import { Link } from "react-router-dom";
 import { configAPI } from '../services/api';
@@ -303,20 +304,10 @@ export default function MasterclassOratoire() {
       <style>{STYLES}</style>
 
       {/* NAVBAR */}
-      <nav style={{ padding:"16px 24px", borderBottom:"1px solid rgba(201,169,106,.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, background:"rgba(10,10,10,.96)", backdropFilter:"blur(20px)", zIndex:200 }}>
-        <Link to="/" style={{ textDecoration:"none" }}>
-          <span style={{ fontFamily:"var(--ff-t)", fontSize:"1rem" }}>
-            <span style={{color:"var(--blanc)"}}>Meta'</span>
-            <span style={{color:"var(--or)"}}>Morph'</span>
-            <span style={{color:"var(--rose)"}}>Ose</span>
-          </span>
-        </Link>
-        <button onClick={scrollToForm} className="btn-p" style={{ padding:"10px 20px", fontSize:".66rem", width:"auto" }}>
-          Réserver ma place
-        </button>
-      </nav>
+      
 
-      <main>
+      <Navbar />
+<main>
 
         {/* HERO */}
         <section style={{ padding:"80px 24px 60px", background:"linear-gradient(135deg,#0A0A0A 0%,#0d1b2a 40%,#0A0A0A 100%)", position:"relative", overflow:"hidden", minHeight:"90vh", display:"flex", alignItems:"center" }}>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Navbar from '../components/Navbar';
 import { Link } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
@@ -83,20 +84,12 @@ export default function LiveMasterclass() {
  }
 
  return (
- <div className="live-page">
+<div className="live-page">
+      <Navbar />
  <style>{STYLES}</style>
 
  {/* Header */}
- <nav style={{ padding:'18px 24px', borderBottom:'1px solid rgba(201,169,106,.1)', display:'flex', justifyContent:'space-between', alignItems:'center', position:'sticky', top:0, background:'rgba(10,10,10,.95)', backdropFilter:'blur(20px)', zIndex:100 }}>
- <Link to="/" style={{ textDecoration:'none' }}>
- <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem' }}>
- <span style={{color:'#F8F5F2'}}>Meta'</span>
- <span style={{color:'#C9A96A'}}>Morph'</span>
- <span style={{color:'#C2185B'}}>Ose</span>
- </span>
- </Link>
- <Link to="/" style={{ fontFamily:"'Montserrat'", fontSize:'.68rem', letterSpacing:'.15em', textTransform:'uppercase', color:'rgba(201,169,106,.5)', textDecoration:'none' }}>Accueil</Link>
- </nav>
+ 
 
  {/* Hero */}
  <div className="live-hero">
