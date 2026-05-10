@@ -127,7 +127,7 @@ const STYLES = `
   }
 
   .modal-overlay {
-    position:fixed; inset:0; z-index:500;
+    position:fixed; inset:0; z-index:99999;
     background:rgba(10,10,10,.9); backdrop-filter:blur(12px);
     display:flex; align-items:center; justify-content:center; padding:24px;
   }
