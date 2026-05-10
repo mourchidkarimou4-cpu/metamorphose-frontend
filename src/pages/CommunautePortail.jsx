@@ -427,6 +427,7 @@ export default function CommunautePortail() {
       <div className="grain-overlay"/>
       <div className="scroll-bar"/>
 
+      <Navbar />
       <div style={{ background:"#060608", color:"#F8F5F2", minHeight:"100vh", position:"relative" }}>
 
         {/* NAV */}
