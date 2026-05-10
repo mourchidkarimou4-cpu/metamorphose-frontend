@@ -600,7 +600,7 @@ function Sidebar({ active, setActive, counts, open, onClose, user }) {
                   </button>
                   {isOpen && section.items.map(t => (
                     <div key={t.id}
-                      onClick={() => { setActive(t.id); onClose(); }}
+                      onClick={() => { if (t.href) { window.open(t.href, '_blank'); onClose(); return; } setActive(t.id); onClose(); }}
                       style={{ display:"flex", alignItems:"center", gap:"10px", padding:"8px 12px", borderRadius:"2px", cursor:"pointer", background: active===t.id ? "rgba(201,169,106,.07)" : "transparent", borderLeft: active===t.id ? "2px solid #C9A96A" : "2px solid transparent", marginBottom:"1px", transition:"all .15s" }}>
                       <div style={{ width:"26px", height:"26px", borderRadius:"5px", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, background:"rgba(255,255,255,.03)" }}>
                         <NavIcon type={t.icon} color={active===t.id ? t.color : "rgba(248,245,242,.25)"} />

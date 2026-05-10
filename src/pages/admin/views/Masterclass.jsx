@@ -196,10 +196,10 @@ function MasterclassAdminView({ api, toast }) {
             <div style={{gridColumn:'1/-1'}}>
               <label style={lbl}>Titre *</label>
               <input style={inp} value={form.titre} onChange={e=>setForm(f=>({...f,titre:e.target.value}))} placeholder="Masterclass de Coach Prélia APEDO AHONON"/>
-              </div>
-              <div>
-                <label style={lbl}>Slug * (ex: art-oratoire, ose-etre-toi)</label>
-                <input style={inp} value={form.slug||''} onChange={e=>setForm(f=>({...f,slug:e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')}))} placeholder="art-oratoire"/>
+            </div>
+            <div style={{gridColumn:'1/-1'}}>
+              <label style={lbl}>Slug * (ex: art-oratoire, ose-etre-toi)</label>
+              <input style={inp} value={form.slug||''} onChange={e=>setForm(f=>({...f,slug:e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')}))} placeholder="art-oratoire"/>
             </div>
             <div style={{gridColumn:'1/-1'}}>
               <label style={lbl}>Description</label>
