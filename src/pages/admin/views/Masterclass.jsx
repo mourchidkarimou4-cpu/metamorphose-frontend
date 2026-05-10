@@ -10,7 +10,7 @@ function MasterclassAdminView({ api, toast }) {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [form, setForm] = useState({
-    titre:'', description:'', date:'', lieu:'', places_max:50,
+    titre:'', slug:'', description:'', date:'', lieu:'', places_max:50,
     est_active:true, gratuite:false, lien_live:'', image:null, image_url:''
   })
 
@@ -36,7 +36,7 @@ function MasterclassAdminView({ api, toast }) {
   }
 
   function resetForm() {
-    setForm({ titre:'', description:'', date:'', lieu:'', places_max:50, est_active:true, gratuite:false, lien_live:'', image:null, image_url:'' })
+    setForm({ titre:'', slug:'', description:'', date:'', lieu:'', places_max:50, est_active:true, gratuite:false, lien_live:'', image:null, image_url:'' })
     setSelected(null)
   }
 
@@ -44,6 +44,7 @@ function MasterclassAdminView({ api, toast }) {
     setSelected(mc)
     setForm({
       titre: mc.titre || '',
+        slug:  mc.slug  || '',
       description: mc.description || '',
       date: mc.date ? mc.date.slice(0,16) : '',
       lieu: mc.lieu || '',
@@ -73,7 +74,7 @@ function MasterclassAdminView({ api, toast }) {
     setSaving(true)
     let image_url = form.image_url
     if (form.image) { image_url = await uploadImage(form.image) }
-    const payload = { titre:form.titre, description:form.description, date:form.date, lieu:form.lieu, places_max:parseInt(form.places_max)||50, est_active:form.est_active, gratuite:form.gratuite, lien_live:form.lien_live, image:image_url }
+    const payload = { titre:form.titre, slug:form.slug, description:form.description, date:form.date, lieu:form.lieu, places_max:parseInt(form.places_max)||50, est_active:form.est_active, gratuite:form.gratuite, lien_live:form.lien_live, image:image_url }
     if (selected) {
       const tkn = localStorage.getItem('mmorphose_token')
       await fetch(`${API_BASE}/api/masterclass/admin/${selected.id}/`, { method:'PATCH', headers:{ 'Authorization':`Bearer ${tkn}`, 'Content-Type':'application/json' }, body:JSON.stringify(payload) })
@@ -195,6 +196,10 @@ function MasterclassAdminView({ api, toast }) {
             <div style={{gridColumn:'1/-1'}}>
               <label style={lbl}>Titre *</label>
               <input style={inp} value={form.titre} onChange={e=>setForm(f=>({...f,titre:e.target.value}))} placeholder="Masterclass de Coach Prélia APEDO AHONON"/>
+              </div>
+              <div>
+                <label style={lbl}>Slug * (ex: art-oratoire, ose-etre-toi)</label>
+                <input style={inp} value={form.slug||''} onChange={e=>setForm(f=>({...f,slug:e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')}))} placeholder="art-oratoire"/>
             </div>
             <div style={{gridColumn:'1/-1'}}>
               <label style={lbl}>Description</label>
