@@ -591,14 +591,22 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
     return () => document.removeEventListener("click", close);
   }, []);
 
-  const navBg      = scrolled ? "rgba(10,10,10,.97)" : "transparent";
-  const borderColor= scrolled ? "rgba(201,169,106,.15)" : "transparent";
+  // Adapter la navbar selon la progression scroll (ombre → lumière)
+  const isLight = scrollProgress > 0.72; // sections beige/blanc
+  const navBg      = scrolled
+    ? isLight ? "rgba(248,245,242,.97)" : "rgba(10,10,10,.97)"
+    : "transparent";
+  const borderColor= scrolled
+    ? isLight ? "rgba(201,169,106,.25)" : "rgba(201,169,106,.15)"
+    : "transparent";
+  const navTextColor = isLight && scrolled ? "rgba(10,10,10,.8)" : "rgba(248,245,242,.75)";
+  const navLogoColor1 = isLight && scrolled ? "#0A0A0A" : "#F8F5F2";
 
   /* ── Styles partagés ── */
   const triggerStyle = {
     fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
     fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
-    color:"rgba(248,245,242,.75)", background:"none", border:"none",
+    color: navTextColor, background:"none", border:"none",
     cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
     gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
   };
@@ -692,7 +700,7 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
         <a href="#" style={{ textDecoration:"none", display:"flex", flexDirection:"column", gap:"2px", flexShrink:0 }}>
           {get("logo_site","") && <img src={get("logo_site","")} alt="Logo" style={{ height:"26px", objectFit:"contain", marginBottom:"2px" }}/>}
           <span style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:".95rem", fontWeight:400, letterSpacing:".04em", lineHeight:1 }}>
-            <span style={{ color:"#F8F5F2" }}>Méta'</span>
+            <span style={{ color: navLogoColor1 }}>Méta'</span>
             <span style={{ color:"#C9A96A" }}>Morph'</span>
             <span style={{ color:"#C2185B" }}>Ose</span>
           </span>
@@ -787,7 +795,7 @@ function Navbar({ scrollProgress, onAuthOpen, onRdvOpen, get }) {
           {/* Contact */}
           <Link to="/contact" style={{ ...triggerStyle, textDecoration:"none" }}
             onMouseEnter={e=>e.currentTarget.style.color="rgba(201,169,106,.85)"}
-            onMouseLeave={e=>e.currentTarget.style.color="rgba(248,245,242,.42)"}>
+            onMouseLeave={e=>e.currentTarget.style.color= navTextColor}>
             Contact
           </Link>
 
