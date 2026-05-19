@@ -19,6 +19,7 @@ const STYLES = `
   .reveal { opacity:0; transform:translateY(30px); transition:opacity .8s ease,transform .8s ease; }
   .reveal.visible { opacity:1; transform:none; }
   @media(max-width:768px) {
+    .evt-grid { grid-template-columns:1fr !important; }
     .form-grid-2 { grid-template-columns:1fr !important; }
   }
   .evt-input { width:100%; padding:12px 16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:3px; color:#F8F5F2; font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:300; outline:none; transition:border-color .25s; }
@@ -142,9 +143,9 @@ export default function Evenements() {
             <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"40px" }}>
               Événements à venir
             </p>
-            <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
+            <div className="evt-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"20px" }}>
               {evenements.map((evt, i) => (
-                <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden", display:"grid", gridTemplateColumns:evt.photo?"1fr 1fr":"1fr" }}>
+                <div key={evt.id} className="reveal" style={{ transitionDelay:`${i*.1}s`, background:"rgba(255,255,255,.02)", border:"1px solid rgba(255,255,255,.07)", borderRadius:"6px", overflow:"hidden" }}>
                   {!evt.photo && <div style={{ height:"8px", background:`linear-gradient(90deg,${evt.badge_color}40,transparent)` }}/>}
                   <div style={{ padding:"36px 32px" }}>
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px", marginBottom:"20px" }}>
