@@ -72,16 +72,16 @@ export default function Navbar() {
 
   const triggerStyle = {
     fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
-    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
+    fontSize:".88rem", fontWeight:600, letterSpacing:".06em",
     color: navTextColor, background:"none", border:"none",
-    cursor:"pointer", padding:"8px 16px", display:"flex", alignItems:"center",
+    cursor:"pointer", padding:"6px 10px", display:"flex", alignItems:"center",
     gap:"4px", transition:"color .3s", position:"relative", whiteSpace:"nowrap",
   };
   const triggerActiveStyle = { ...triggerStyle, color:"rgba(201,169,106,.95)" };
 
   const ctaLinkStyle = {
     fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic",
-    fontSize:"1rem", fontWeight:600, letterSpacing:".08em",
+    fontSize:".88rem", fontWeight:600, letterSpacing:".06em",
     color:"rgba(201,169,106,.8)", background:"none", border:"none",
     borderBottom:"1px solid rgba(201,169,106,.35)", padding:"3px 0",
     cursor:"pointer", textDecoration:"none", transition:"all .3s", lineHeight:1.2,
@@ -272,7 +272,7 @@ export default function Navbar() {
         </div>}
 
         {/* CTAs desktop */}
-        {!isMobile && <div style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
+        {!isMobile && <div style={{ display:"flex", alignItems:"center", gap:"12px", flexShrink:0 }}>
           <button onClick={() => setShowRdv(true)}
             style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
