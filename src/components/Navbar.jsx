@@ -274,7 +274,7 @@ export default function Navbar() {
         {/* CTAs desktop */}
         {!isMobile && <div style={{ display:"flex", alignItems:"center", gap:"12px", flexShrink:0 }}>
           <button onClick={() => setShowRdv(true)}
-            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
+            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".6rem", letterSpacing:".1em", textTransform:"uppercase", padding:"7px 12px", cursor:"pointer", transition:"all .3s" }}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
             onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(201,169,106,.3)"; }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
