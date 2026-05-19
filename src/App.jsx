@@ -18,6 +18,7 @@ import CarteScan       from './pages/CarteScan'
 import ResetPassword   from './pages/ResetPassword'
 import NotFound        from './pages/NotFound'
 import PaiementPage    from './pages/Paiement'
+import RendezVousPage  from './pages/RendezVousPage'
 import SplashScreen    from './components/SplashScreen'
 import CommunautePortail from './pages/CommunautePortail'
 import Don             from './pages/Don'
@@ -126,6 +127,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/logout"        element={<Logout />} />
         <Route path="/paiement"      element={<PaiementPage />} />
+        <Route path="/rendez-vous"    element={<RendezVousPage />} />
 
         {/* ── Authentification ───────────────────────────────── */}
         <Route path="/espace-membre" element={<Login />} />
