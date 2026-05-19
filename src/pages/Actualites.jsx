@@ -25,6 +25,7 @@ const STYLES = `
   .actu-card:hover { border-color:rgba(201,169,106,.25); transform:translateY(-4px); }
   @media(max-width:900px) {
     .actu-grid { grid-template-columns:1fr !important; }
+    .coulisses-grid { grid-template-columns:1fr !important; }
     .form-2col { grid-template-columns:1fr !important; }
     .actu-card { word-break:break-word; overflow-wrap:break-word; }
   }
@@ -172,7 +173,7 @@ export default function Actualites() {
 
           {/* Coulisses & Impact */}
           <section style={{ padding:"72px 0 0" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px" }}>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px" }} className="coulisses-grid">
               {[
                 {
                   titre: "Dans les coulisses de Métamorphose",
