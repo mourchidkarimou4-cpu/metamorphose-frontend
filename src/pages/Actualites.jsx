@@ -23,13 +23,10 @@ const STYLES = `
   .actu-label { font-family:'Montserrat',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(248,245,242,.4); display:block; margin-bottom:6px; }
   .actu-card { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:6px; overflow:hidden; transition:border-color .3s,transform .3s; }
   .actu-card:hover { border-color:rgba(201,169,106,.25); transform:translateY(-4px); }
-  @media(max-width:768px) {
+  @media(max-width:900px) {
     .actu-grid { grid-template-columns:1fr !important; }
     .form-2col { grid-template-columns:1fr !important; }
     .actu-card { word-break:break-word; overflow-wrap:break-word; }
-  }
-  @media(max-width:480px) {
-    .actu-grid { grid-template-columns:1fr !important; gap:12px !important; }
   }
 `;
 
@@ -143,7 +140,7 @@ export default function Actualites() {
             <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"32px" }}>
               Dernières actualités
             </p>
-            <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(min(260px,100%),1fr))", gap:"20px" }}>
+            <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"20px" }}>
               {actus.map((actu, i) => (
                 <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
                   {actu.photo ? (
