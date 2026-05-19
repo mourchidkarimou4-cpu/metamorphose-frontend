@@ -38,10 +38,21 @@ function useScrollProgress() {
   return { progress, scrolled };
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
+  }, []);
+  return isMobile;
+}
+
 export default function Navbar() {
   const { user } = useAuth();
   const get = useSiteConfig();
   const { progress, scrolled } = useScrollProgress();
+  const isMobile = useIsMobile();
   const [authTab,  setAuthTab]  = useState(null);
   const [showRdv,  setShowRdv]  = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -161,7 +172,7 @@ export default function Navbar() {
         </Link>
 
         {/* Links desktop */}
-        <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }} className="nav-links-desktop">
+        {!isMobile && <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }}>
 
           {/* Accueil */}
           <Link to="/" style={{ ...triggerStyle, textDecoration:"none" }}
@@ -258,10 +269,10 @@ export default function Navbar() {
             onMouseLeave={e=>e.currentTarget.style.color= navTextColor}>
             Contact
           </Link>
-        </div>
+        </div>}
 
         {/* CTAs desktop */}
-        <div className="nav-ctas-desktop" style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
+        {!isMobile && <div style={{ display:"flex", alignItems:"center", gap:"20px", flexShrink:0 }}>
           <button onClick={() => setShowRdv(true)}
             style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"transparent", border:"1px solid rgba(201,169,106,.3)", borderRadius:"2px", color:"#C9A96A", fontFamily:"'Montserrat',sans-serif", fontWeight:600, fontSize:".65rem", letterSpacing:".15em", textTransform:"uppercase", padding:"9px 18px", cursor:"pointer", transition:"all .3s" }}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,106,.08)"; e.currentTarget.style.borderColor="rgba(201,169,106,.6)"; }}
@@ -279,12 +290,12 @@ export default function Navbar() {
               S'inscrire
             </button>
           )}
-        </div>
+        </div>}
 
         {/* Burger mobile */}
-        <button onClick={()=>setMenuOpen(true)} style={{ background:"none", border:"1px solid rgba(201,169,106,.25)", borderRadius:"2px", color:"var(--or)", padding:"7px 14px", cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".82rem", letterSpacing:".08em", display:"none" }} className="nav-burger-mobile">
+        {isMobile && <button onClick={()=>setMenuOpen(true)} style={{ background:"none", border:"1px solid rgba(201,169,106,.25)", borderRadius:"2px", color:"var(--or)", padding:"7px 14px", cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:".82rem", letterSpacing:".08em" }}>
           Menu
-        </button>
+        </button>}
       </nav>
 
       {/* Menu mobile */}
