@@ -163,6 +163,13 @@ export default function Navbar() {
         {/* Links desktop */}
         <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center" }} className="nav-links-desktop">
 
+          {/* Accueil */}
+          <Link to="/" style={{ ...triggerStyle, textDecoration:"none" }}
+            onMouseEnter={e=>e.currentTarget.style.color="rgba(201,169,106,.85)"}
+            onMouseLeave={e=>e.currentTarget.style.color= navTextColor}>
+            Accueil
+          </Link>
+
           {/* Programme */}
           <div style={{ position:"relative" }}>
             <button className={`nav-lux-trigger ${openMenu==="programme"?"active":""}`}
