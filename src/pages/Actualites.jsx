@@ -140,7 +140,7 @@ export default function Actualites() {
             <p className="reveal" style={{ fontFamily:"'Montserrat',sans-serif", fontSize:".62rem", letterSpacing:".25em", textTransform:"uppercase", color:"#C9A96A", marginBottom:"32px" }}>
               Dernières actualités
             </p>
-            <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"20px" }}>
+            <div className="actu-grid reveal" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(min(300px,100%),1fr))", gap:"20px" }}>
               {actus.map((actu, i) => (
                 <div key={i} className="actu-card" style={{ transitionDelay:`${i*.1}s` }}>
                   {actu.photo ? (
