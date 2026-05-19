@@ -117,6 +117,7 @@ function ListeRdvView() {
   const [selected, setSelected] = useState(null);
   const [note,     setNote]     = useState('');
   const [lien,     setLien]     = useState('');
+  const [lienPaiement, setLienPaiement] = useState('');
   const [saving,   setSaving]   = useState(false);
 
   function load() {
@@ -131,13 +132,14 @@ function ListeRdvView() {
     setSelected(rdv);
     setNote(rdv.note_admin || '');
     setLien(rdv.lien_reunion || '');
+    setLienPaiement(rdv.lien_paiement || '');
   }
 
   async function action(statut) {
     setSaving(true);
     await fetch(`${API_BASE}/api/rendezvous/admin/${selected.id}/`, {
       method:'PATCH', headers:headers(),
-      body: JSON.stringify({ statut, note_admin:note, lien_reunion:lien }),
+      body: JSON.stringify({ statut, note_admin:note, lien_reunion:lien, lien_paiement:lienPaiement }),
     });
     setSaving(false);
     setSelected(null);
@@ -255,6 +257,8 @@ function ListeRdvView() {
             <div style={{ marginBottom:14 }}>
               <label style={s.label}>Lien de réunion (Zoom/Meet)</label>
               <input style={s.input} type="url" placeholder="https://zoom.us/j/..." value={lien} onChange={e=>setLien(e.target.value)}/>
+              <label style={{...s.label, marginTop:12}}>Lien de paiement (optionnel)</label>
+              <input style={s.input} type="url" placeholder="https://fedapay.com/... ou lien Wave/MoMo" value={lienPaiement} onChange={e=>setLienPaiement(e.target.value)}/>
             </div>
 
             {/* Note admin */}
