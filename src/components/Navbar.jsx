@@ -39,9 +39,9 @@ function useScrollProgress() {
 }
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1100);
   useEffect(() => {
-    const h = () => setIsMobile(window.innerWidth <= 900);
+    const h = () => setIsMobile(window.innerWidth <= 1100);
     window.addEventListener('resize', h);
     return () => window.removeEventListener('resize', h);
   }, []);
@@ -310,6 +310,7 @@ export default function Navbar() {
           <div style={{ flex:1, padding:"8px 0 32px" }}>
             {[
               { section:"Programme", links:[
+                { label:"Accueil",           to:"/" },
                 { label:"Le Programme",      to:"/programme" },
                 { label:"Formules",          to:"/#formules" },
                 { label:"Masterclass OSE",   to:"/masterclass" },
