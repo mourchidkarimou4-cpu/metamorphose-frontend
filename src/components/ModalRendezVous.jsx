@@ -199,7 +199,7 @@ const STYLES = `
  }
 `;
 
-export default function ModalRendezVous({ onClose }) {
+export default function ModalRendezVous({ onClose, inline = false }) {
  const [step, setStep] = useState(1);
  const [typeRdv, setTypeRdv] = useState('appel_decouverte');
  const [mode, setMode] = useState('en_ligne');
@@ -275,8 +275,8 @@ export default function ModalRendezVous({ onClose }) {
  return (
  <>
  <style>{STYLES}</style>
- <div className="rdv-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
- <div className="rdv-modal">
+ <div className={inline ? '' : 'rdv-overlay'} onClick={!inline ? e => { if (e.target === e.currentTarget) onClose(); } : undefined}>
+ <div className="rdv-modal" style={inline ? {maxWidth:'900px', margin:'0 auto', maxHeight:'none'} : {}}>
  <div className="rdv-topbar"/>
  <div className="rdv-progress"><div className="rdv-progress-fill" style={{ width:`${progress}%` }}/></div>
  <button className="rdv-close" onClick={onClose}></button>
